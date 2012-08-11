@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName;
  * 
  * <pre>
  * {
- * code:"junior",
- * name:"Movies for Juniors"
+ * code: "junior",
+ * name: "Movies for Juniors"
  * }
  * </pre>
  */

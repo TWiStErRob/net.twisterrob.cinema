@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.adapter;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolde
 
 	@Override
 	protected int getItemLayoutId() {
-		return R.layout.item_films;
+		return R.layout.item_film;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.adapter;
 
 import java.util.*;
 

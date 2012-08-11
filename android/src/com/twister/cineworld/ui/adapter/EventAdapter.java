@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.adapter;
 
 import java.util.Collection;
 
@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldDistributor;
+import com.twister.cineworld.model.json.data.CineworldEvent;
 
-public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, DistributorAdapter.ViewHolder> {
-	public DistributorAdapter(final Context context, final Collection<CineworldDistributor> items) {
+public class EventAdapter extends BaseListAdapter<CineworldEvent, EventAdapter.ViewHolder> {
+	public EventAdapter(final Context context, final Collection<CineworldEvent> items) {
 		super(context, items);
 	}
 
@@ -21,7 +21,7 @@ public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, Di
 
 	@Override
 	protected int getItemLayoutId() {
-		return R.layout.item_films;
+		return R.layout.item_event;
 	}
 
 	@Override
@@ -33,10 +33,10 @@ public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, Di
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldDistributor currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final CineworldEvent currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
-				currentItem.getId()
+				currentItem.getCode()
 				);
 
 		holder.title.setText(title);

@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -23,28 +23,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.FilmsActivity"
-            android:label="@string/title_activity_main"
+            android:name=".ui.activity.FilmsActivity"
+            android:label="@string/title_activity_films"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.CinemasActivity"
-            android:label="@string/title_activity_main"
+            android:name=".ui.activity.CinemasActivity"
+            android:label="@string/title_activity_cinemas"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.CategoriesActivity"
-            android:label="@string/title_activity_main"
+            android:name=".ui.activity.CategoriesActivity"
+            android:label="@string/title_activity_categories"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.EventsActivity"
-            android:label="@string/title_activity_main"
+            android:name=".ui.activity.EventsActivity"
+            android:label="@string/title_activity_events"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.DistributorsActivity"
-            android:label="@string/title_activity_main"
+            android:name=".ui.activity.DistributorsActivity"
+            android:label="@string/title_activity_distributors"
             android:screenOrientation="portrait" >
         </activity>
     </application>

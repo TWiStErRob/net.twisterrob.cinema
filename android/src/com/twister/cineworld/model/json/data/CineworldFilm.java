@@ -7,15 +7,15 @@ import com.google.gson.annotations.SerializedName;
  * 
  * <pre>
  * {
- * 3D: false
- * advisory: ""
- * classification: "15"
- * edi: 42872
- * film_url: "https://www.cineworld.co.uk/films/5409"
- * id: 5409
- * imax: false
- * poster_url: "https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg"
- * still_url: "https://www.cineworld.co.uk/assets/media/films/5409_still.jpg"
+ * 3D: false,
+ * advisory: "",
+ * classification: "15",
+ * edi: 42872,
+ * film_url: "https://www.cineworld.co.uk/films/5409",
+ * id: 5409,
+ * imax: false,
+ * poster_url: "https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg",
+ * still_url: "https://www.cineworld.co.uk/assets/media/films/5409_still.jpg",
  * title: "Ted"
  * }
  * </pre>

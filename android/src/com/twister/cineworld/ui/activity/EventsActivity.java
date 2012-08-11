@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
@@ -8,16 +8,18 @@ import android.widget.AbsListView;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
-import com.twister.cineworld.model.json.data.CineworldCinema;
+import com.twister.cineworld.model.json.data.CineworldEvent;
+import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.adapter.EventAdapter;
 
-public class CinemasActivity extends Activity {
+public class EventsActivity extends Activity {
 	private AbsListView	m_listView;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		Tools.s_context = this;
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cinemas);
+		setContentView(R.layout.activity_events);
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 	}
@@ -29,10 +31,10 @@ public class CinemasActivity extends Activity {
 			@Override
 			public void run() {
 				Tools.toast("Requesting");
-				final List<CineworldCinema> result = new CineworldAccessor().getAllCinemas();
-				CinemasActivity.this.runOnUiThread(new Runnable() {
+				final List<CineworldEvent> result = new CineworldAccessor().getAllEvents();
+				EventsActivity.this.runOnUiThread(new Runnable() {
 					public void run() {
-						m_listView.setAdapter(new CinemaAdapter(CinemasActivity.this, result));
+						m_listView.setAdapter(new EventAdapter(EventsActivity.this, result));
 					}
 				});
 				Tools.toast("Got " + result.size());

@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
+import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.adapter.FilmAdapter;
 
 public class FilmsActivity extends Activity {
 	private AbsListView	m_listView;

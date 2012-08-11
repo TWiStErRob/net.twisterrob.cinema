@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Cineworld Browser</string>
+
     <string name="title_activity_main">Cineworld Browser</string>
+    <string name="title_activity_films">Cineworld Browser - Films</string>
+    <string name="title_activity_cinemas">Cineworld Browser - Cinemas</string>
+    <string name="title_activity_categories">Cineworld Browser - Categories</string>
+    <string name="title_activity_events">Cineworld Browser - Events</string>
+    <string name="title_activity_distributors">Cineworld Browser - Distributors</string>
+
     <string name="test">Test</string>
 </resources>

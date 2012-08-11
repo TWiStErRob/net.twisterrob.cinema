@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui;
+package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import android.widget.AbsListView;
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCategory;
+import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.adapter.CategoryAdapter;
 
 public class CategoriesActivity extends Activity {
 	private AbsListView	m_listView;
