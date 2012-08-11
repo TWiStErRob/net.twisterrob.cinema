@@ -1,6 +1,7 @@
 package com.twister.cineworld.model.json;
 
 import java.io.*;
+import java.net.*;
 
 import org.apache.http.*;
 import org.apache.http.client.HttpResponseException;
@@ -32,11 +33,10 @@ public class JsonClient {
 	 * @param requestObject post data
 	 * @param responseType type of the response we are expecting
 	 * @return instance of the class
-	 * @throws Exception use more precise exceptions
 	 */
-	public <T> T get(final String url, final Class<T> responseType) throws IOException {
+	public <T> T get(final URL url, final Class<T> responseType) throws IOException, URISyntaxException {
 		// standard post request with json content
-		HttpGet request = new HttpGet(url);
+		HttpGet request = new HttpGet(url.toURI());
 		request.setHeader("Accept", JsonClient.CONTENT_TYPE_JSON);
 		request.setHeader("Content-type", JsonClient.CONTENT_TYPE_JSON);
 
@@ -50,7 +50,6 @@ public class JsonClient {
 	 * @param requestObject post data
 	 * @param responseType type of the response we are expecting
 	 * @return instance of the class
-	 * @throws Exception use more precise exceptions
 	 */
 	public <T> T post(final String url, final Object requestObject, final Class<T> responseType) throws IOException {
 		// standard post request with json content

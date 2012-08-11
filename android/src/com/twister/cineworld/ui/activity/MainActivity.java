@@ -37,9 +37,10 @@ public class MainActivity extends ListActivity {
 	private List<Map<String, String>> getListItems() {
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		String[] activities = {
-				FilmsActivity.class.getName(), "Films",
 				CinemasActivity.class.getName(), "Cinemas",
+				FilmsActivity.class.getName(), "Films",
 				DatesActivity.class.getName(), "Dates",
+				PerformancesActivity.class.getName(), "Performances",
 				CategoriesActivity.class.getName(), "Categories",
 				EventsActivity.class.getName(), "Events",
 				DistributorsActivity.class.getName(), "Distributors",
