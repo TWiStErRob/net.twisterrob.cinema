@@ -12,11 +12,18 @@ import android.util.Log;
 
 import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
+import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.tools.IOTools;
 
 public class JsonClient {
 	private static final String	CONTENT_TYPE_JSON	= "application/json";
-	private final Gson			m_gson				= new Gson();
+	private final Gson			m_gson;
+
+	public JsonClient() {
+		m_gson = new GsonBuilder()
+				.registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
+				.create();
+	}
 
 	/**
 	 * Converts recieved JSON into passed type

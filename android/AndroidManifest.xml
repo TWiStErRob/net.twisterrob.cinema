@@ -33,6 +33,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".ui.activity.DatesActivity"
+            android:label="@string/title_activity_dates"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".ui.activity.CategoriesActivity"
             android:label="@string/title_activity_categories"
             android:screenOrientation="portrait" >

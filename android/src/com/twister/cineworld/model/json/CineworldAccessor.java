@@ -28,6 +28,10 @@ public class CineworldAccessor {
 		return getAll(CineworldAccessor.URI_CINEMAS_ALL, "cinemas", CinemasResponse.class);
 	}
 
+	public List<CineworldDate> getAllDates() {
+		return getAll(CineworldAccessor.URI_DATES_ALL, "dates", DatesResponse.class);
+	}
+
 	public List<CineworldCategory> getAllCategories() {
 		return getAll(CineworldAccessor.URI_CATEGORIES_ALL, "films", CategoriesResponse.class);
 	}

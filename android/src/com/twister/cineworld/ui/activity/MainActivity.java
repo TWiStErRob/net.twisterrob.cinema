@@ -39,6 +39,7 @@ public class MainActivity extends ListActivity {
 		String[] activities = {
 				FilmsActivity.class.getName(), "Films",
 				CinemasActivity.class.getName(), "Cinemas",
+				DatesActivity.class.getName(), "Dates",
 				CategoriesActivity.class.getName(), "Categories",
 				EventsActivity.class.getName(), "Events",
 				DistributorsActivity.class.getName(), "Distributors",
