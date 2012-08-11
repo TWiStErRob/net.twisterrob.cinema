@@ -5,6 +5,7 @@ import java.util.*;
 
 import android.util.Log;
 
+import com.google.gson.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
@@ -19,6 +20,14 @@ public class CineworldAccessor {
 	public static final String	URI_CATEGORIES_ALL		= CineworldAccessor.makeUri("categories", true);
 	public static final String	URI_EVENTS_ALL			= CineworldAccessor.makeUri("events", true);
 	public static final String	URI_DISTRIBUTORS_ALL	= CineworldAccessor.makeUri("distributors", true);
+
+	private final Gson			m_gson;
+
+	public CineworldAccessor() {
+		m_gson = new GsonBuilder()
+				.registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
+				.create();
+	}
 
 	public List<CineworldFilm> getAllFilms() {
 		return getAll(CineworldAccessor.URI_FILMS_ALL, "films", FilmsResponse.class);
@@ -49,7 +58,7 @@ public class CineworldAccessor {
 			List<T> getAll(final String url, final String objectType, final Class<Response> clazz) {
 		List<? extends T> result = Collections.emptyList();
 		try {
-			result = new JsonClient().get(url, clazz).getList();
+			result = new JsonClient(m_gson).get(url, clazz).getList();
 		} catch (IOException ex) {
 			Log.d("ACCESS", "Unable to get all " + objectType, ex);
 			Tools.toast(ex.getMessage()); // TODO
