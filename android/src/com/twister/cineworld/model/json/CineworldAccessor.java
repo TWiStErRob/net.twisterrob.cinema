@@ -5,22 +5,44 @@ import java.util.*;
 
 import android.util.Log;
 
+import com.twister.cineworld.model.json.data.*;
+import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final String	DEVELOPER_KEY	= "9qfgpF7B";
-	public static final String	BASE_URI		= "http://www.cineworld.co.uk/api/quickbook";
-	public static final String	URI_FILMS_ALL	= CineworldAccessor.makeUri("films", true);
+	public static final String	DEVELOPER_KEY			= "9qfgpF7B";
+	public static final String	BASE_URI				= "http://www.cineworld.co.uk/api";
+	public static final String	URI_FILMS_ALL			= CineworldAccessor.makeUri("quickbook/films", true);
+	public static final String	URI_CINEMAS_ALL			= CineworldAccessor.makeUri("quickbook/cinemas", true);
+	public static final String	URI_DATES_ALL			= CineworldAccessor.makeUri("quickbook/dates", true);
+	public static final String	URI_PERFORMANCES_ALL	= CineworldAccessor.makeUri("quickbook/performances", true);
+	public static final String	URI_CATEGORIES_ALL		= CineworldAccessor.makeUri("categories", true);
+	public static final String	URI_EVENTS_ALL			= CineworldAccessor.makeUri("events", true);
+	public static final String	URI_DISTRIBUTORS_ALL	= CineworldAccessor.makeUri("distributors", true);
 
 	public List<CineworldFilm> getAllFilms() {
-		List<CineworldFilm> result = Collections.emptyList();
+		return getAll(CineworldAccessor.URI_FILMS_ALL, "films", FilmsResponse.class);
+	}
+
+	public List<CineworldCinema> getAllCinemas() {
+		return getAll(CineworldAccessor.URI_CINEMAS_ALL, "cinemas", CinemasResponse.class);
+	}
+
+	public List<CineworldCategory> getAllCategories() {
+		return getAll(CineworldAccessor.URI_CATEGORIES_ALL, "films", CategoriesResponse.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends CineworldBase, Response extends BaseResponse<? extends T>>
+			List<T> getAll(final String url, final String objectType, final Class<Response> clazz) {
+		List<? extends T> result = Collections.emptyList();
 		try {
-			result = new CineworldJsonClient().get(CineworldAccessor.URI_FILMS_ALL, FilmsResponse.class).films;
+			result = new JsonClient().get(url, clazz).getList();
 		} catch (IOException ex) {
-			Log.d("ACCESS", "Unable to get all films", ex);
+			Log.d("ACCESS", "Unable to get all " + objectType, ex);
 			Tools.toast(ex.getMessage()); // TODO
 		}
-		return result;
+		return (List<T>) result; // TODO review generic bounds
 	}
 
 	private static String makeUri(final String requestType, final boolean full, final String... filters) {

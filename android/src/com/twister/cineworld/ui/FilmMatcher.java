@@ -5,7 +5,7 @@ import java.util.*;
 import android.util.Log;
 
 import com.twister.cineworld.model.*;
-import com.twister.cineworld.model.json.CineworldFilm;
+import com.twister.cineworld.model.json.data.CineworldFilm;
 
 public class FilmMatcher {
 	public List<Film> match(final List<CineworldFilm> cineFilms) {

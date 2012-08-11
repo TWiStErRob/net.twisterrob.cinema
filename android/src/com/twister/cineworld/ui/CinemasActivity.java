@@ -7,18 +7,17 @@ import android.os.Bundle;
 import android.widget.AbsListView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
-import com.twister.cineworld.model.json.data.CineworldFilm;
+import com.twister.cineworld.model.json.data.CineworldCinema;
 
-public class FilmsActivity extends Activity {
+public class CinemasActivity extends Activity {
 	private AbsListView	m_listView;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		Tools.s_context = this;
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_films);
+		setContentView(R.layout.activity_cinemas);
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 	}
@@ -30,16 +29,13 @@ public class FilmsActivity extends Activity {
 			@Override
 			public void run() {
 				Tools.toast("Requesting");
-				List<CineworldFilm> cineFilms = new CineworldAccessor().getAllFilms();
-				FilmMatcher matcher = new FilmMatcher();
-				List<Film> films = matcher.match(cineFilms);
-				final List<FilmBase> filmList = matcher.matchSeries(films);
-				FilmsActivity.this.runOnUiThread(new Runnable() {
+				final List<CineworldCinema> result = new CineworldAccessor().getAllCinemas();
+				CinemasActivity.this.runOnUiThread(new Runnable() {
 					public void run() {
-						m_listView.setAdapter(new FilmAdapter(FilmsActivity.this, filmList));
+						m_listView.setAdapter(new CinemaAdapter(CinemasActivity.this, result));
 					}
 				});
-				Tools.toast("Got " + films.size() + " / " + cineFilms.size());
+				Tools.toast("Got " + result.size());
 			}
 		}.start();
 	}

@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.*;
+import com.twister.cineworld.model.json.data.CineworldCinema;
 
-public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolder> {
-	public FilmAdapter(final Context context, final Collection<FilmBase> items) {
+public class CinemaAdapter extends BaseListAdapter<CineworldCinema, CinemaAdapter.ViewHolder> {
+	public CinemaAdapter(final Context context, final Collection<CineworldCinema> items) {
 		super(context, items);
 	}
 
@@ -33,17 +33,12 @@ public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolde
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final FilmBase currentItem, final View convertView) {
-		String title = currentItem.getTitle();
-		String description = String.format("%s (%s%s%s%s )",
-				currentItem.getClassification(),
-				currentItem.has2D()? " 2D" : "",
-				currentItem.has3D()? " 3D" : "",
-				currentItem.hasIMax2D()? " IMAX2D" : "",
-				currentItem.hasIMax3D()? " IMAX3D" : "");
-		if (currentItem instanceof FilmSerie) {
-			title = String.format("%s (%d)", title, ((FilmSerie) currentItem).getFilms().size());
-		}
+	protected void bindView(final ViewHolder holder, final CineworldCinema currentItem, final View convertView) {
+		String title = currentItem.getName();
+		String description = String.format("%s, %s",
+				currentItem.getAddress(),
+				currentItem.getPostcode()
+				);
 
 		holder.title.setText(title);
 		holder.description.setText(description);

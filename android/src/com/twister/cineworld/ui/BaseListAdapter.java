@@ -1,6 +1,5 @@
 package com.twister.cineworld.ui;
 
-
 import java.util.*;
 
 import android.content.Context;

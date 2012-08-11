@@ -3,17 +3,18 @@ package com.twister.cineworld.model.json;
 import java.io.*;
 
 import org.apache.http.*;
-import org.apache.http.client.*;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
+import com.twister.cineworld.tools.IOTools;
 
-public class CineworldJsonClient {
+public class JsonClient {
 	private static final String	CONTENT_TYPE_JSON	= "application/json";
 	private final Gson			m_gson				= new Gson();
 
@@ -29,8 +30,8 @@ public class CineworldJsonClient {
 	public <T> T get(final String url, final Class<T> responseType) throws IOException {
 		// standard post request with json content
 		HttpGet request = new HttpGet(url);
-		request.setHeader("Accept", CineworldJsonClient.CONTENT_TYPE_JSON);
-		request.setHeader("Content-type", CineworldJsonClient.CONTENT_TYPE_JSON);
+		request.setHeader("Accept", JsonClient.CONTENT_TYPE_JSON);
+		request.setHeader("Content-type", JsonClient.CONTENT_TYPE_JSON);
 
 		return any(responseType, request);
 	}
@@ -47,8 +48,8 @@ public class CineworldJsonClient {
 	public <T> T post(final String url, final Object requestObject, final Class<T> responseType) throws IOException {
 		// standard post request with json content
 		HttpPost request = new HttpPost(url);
-		request.setHeader("Accept", CineworldJsonClient.CONTENT_TYPE_JSON);
-		request.setHeader("Content-type", CineworldJsonClient.CONTENT_TYPE_JSON);
+		request.setHeader("Accept", JsonClient.CONTENT_TYPE_JSON);
+		request.setHeader("Content-type", JsonClient.CONTENT_TYPE_JSON);
 
 		// converting post data to json
 		String json = m_gson.toJson(requestObject);
@@ -61,17 +62,29 @@ public class CineworldJsonClient {
 	public <T> T any(final Class<T> responseType, final HttpUriRequest request) throws IOException {
 		Log.i("JSON", "Getting (" + responseType + "): '" + request.getURI() + "'");
 		// executing request
-		HttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
-		HttpResponse httpResponse = httpClient.execute(request);
-		HttpEntity entity = httpResponse.getEntity();
+		AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
 
-		checkResponseThrow(httpResponse, entity);
+		Reader reader = null;
+		try {
+			HttpResponse httpResponse = httpClient.execute(request);
+			HttpEntity entity = httpResponse.getEntity();
 
-		InputStream content = entity.getContent();
-		Reader reader = new InputStreamReader(content);
+			checkResponseThrow(httpResponse, entity);
 
-		T object = m_gson.fromJson(reader, responseType);
-		return object;
+			InputStream content = entity.getContent();
+			reader = new BufferedReader(new InputStreamReader(content, IOTools.getEncoding(entity)));
+			reader.mark(Integer.MAX_VALUE); // to be able to reset
+
+			T object = m_gson.fromJson(reader, responseType);
+			return object;
+		} catch (JsonParseException ex) {
+			reader.reset(); // won't be null because fromJson is after reader init
+			String contentString = IOTools.readAll(reader);
+			Log.d("JSON", contentString);
+			throw ex;
+		} finally {
+			httpClient.close();
+		}
 	}
 
 	// check if everything is as it should be
@@ -88,8 +101,8 @@ public class CineworldJsonClient {
 		}
 
 		Header contentType = entity.getContentType();
-		if (contentType == null || !contentType.getValue().startsWith(CineworldJsonClient.CONTENT_TYPE_JSON)) {
-			String message = "Received invalid content type: " + contentType.getValue() + ", expected: " + CineworldJsonClient.CONTENT_TYPE_JSON;
+		if (contentType == null || !contentType.getValue().startsWith(JsonClient.CONTENT_TYPE_JSON)) {
+			String message = "Received invalid content type: " + contentType.getValue() + ", expected: " + JsonClient.CONTENT_TYPE_JSON;
 			Log.w("JSON", message);
 			// throw new HttpResponseException(status.getStatusCode(), message);
 		}

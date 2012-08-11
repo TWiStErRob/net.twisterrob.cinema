@@ -1,6 +1,6 @@
 package com.twister.cineworld.model;
 
-import com.twister.cineworld.model.json.CineworldFilm;
+import com.twister.cineworld.model.json.data.CineworldFilm;
 
 public class Film extends FilmBase {
 	private CineworldFilm	m_2d;

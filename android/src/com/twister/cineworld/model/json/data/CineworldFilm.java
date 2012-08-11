@@ -1,18 +1,27 @@
-package com.twister.cineworld.model.json;
+package com.twister.cineworld.model.json.data;
 
 import com.google.gson.annotations.SerializedName;
 
-// 3D: false
-// advisory: ""
-// classification: "15"
-// edi: 42872
-// film_url: "https://www.cineworld.co.uk/films/5409"
-// id: 5409
-// imax: false
-// poster_url: "https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg"
-// still_url: "https://www.cineworld.co.uk/assets/media/films/5409_still.jpg"
-// title: "Ted"
-public class CineworldFilm {
+/**
+ * Example JSON:
+ * 
+ * <pre>
+ * {
+ * 3D: false
+ * advisory: ""
+ * classification: "15"
+ * edi: 42872
+ * film_url: "https://www.cineworld.co.uk/films/5409"
+ * id: 5409
+ * imax: false
+ * poster_url: "https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg"
+ * still_url: "https://www.cineworld.co.uk/assets/media/films/5409_still.jpg"
+ * title: "Ted"
+ * }
+ * </pre>
+ * 
+ */
+public class CineworldFilm extends CineworldBase {
 	@SerializedName("3D")
 	private boolean	m_3D;
 	@SerializedName("advisory")
