@@ -32,6 +32,14 @@ public class CineworldAccessor {
 		return getAll(CineworldAccessor.URI_CATEGORIES_ALL, "films", CategoriesResponse.class);
 	}
 
+	public List<CineworldEvent> getAllEvents() {
+		return getAll(CineworldAccessor.URI_EVENTS_ALL, "events", EventsResponse.class);
+	}
+
+	public List<CineworldDistributor> getAllDistributors() {
+		return getAll(CineworldAccessor.URI_DISTRIBUTORS_ALL, "distributors", DistributorsResponse.class);
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T extends CineworldBase, Response extends BaseResponse<? extends T>>
 			List<T> getAll(final String url, final String objectType, final Class<Response> clazz) {

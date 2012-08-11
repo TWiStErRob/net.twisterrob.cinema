@@ -40,6 +40,8 @@ public class MainActivity extends ListActivity {
 				FilmsActivity.class.getName(), "Films",
 				CinemasActivity.class.getName(), "Cinemas",
 				CategoriesActivity.class.getName(), "Categories",
+				EventsActivity.class.getName(), "Events",
+				DistributorsActivity.class.getName(), "Distributors",
 		};
 		for (int i = 0; i < activities.length; i += 2) {
 			Map<String, String> map = new HashMap<String, String>();
