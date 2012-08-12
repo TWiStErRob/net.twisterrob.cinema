@@ -1,9 +1,13 @@
 package com.twister.cineworld.tools;
 
 import java.io.*;
+import java.net.*;
 import java.nio.charset.Charset;
 
 import org.apache.http.*;
+
+import android.graphics.*;
+import android.graphics.drawable.*;
 
 public class IOTools {
 	private IOTools() {
@@ -42,5 +46,15 @@ public class IOTools {
 			}
 		}
 		return encoding;
+	}
+
+	public static Drawable getImage(final String url) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		connection.connect();
+		InputStream input = connection.getInputStream();
+
+		Bitmap bitmap = BitmapFactory.decodeStream(input);
+		connection.disconnect();
+		return new BitmapDrawable(bitmap);
 	}
 }
