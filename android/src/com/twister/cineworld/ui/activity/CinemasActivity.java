@@ -2,7 +2,8 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
-import android.view.*;
+import android.view.ContextMenu;
+import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
@@ -19,22 +20,16 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema, Cineworld
 		menu.setHeaderTitle(item.getName());
 	}
 
-	@Override
-	protected boolean onContextItemSelected(final MenuItem menu, final CineworldCinema item) {
-		return super.onContextItemSelected(menu);
+	public List<CineworldCinema> retrieve() {
+		return new CineworldAccessor().getAllCinemas();
 	}
 
-	public List<CineworldCinema> getList() {
-		List<CineworldCinema> result = new CineworldAccessor().getAllCinemas();
-		return result;
-	}
-
-	public List<CineworldCinema> postProcess(final List<CineworldCinema> list) {
+	public List<CineworldCinema> process(final List<CineworldCinema> list) {
 		return list;
 	}
 
-	public void updateUI(final List<CineworldCinema> result) {
-		getListView().setAdapter(new CinemaAdapter(this, result));
+	@Override
+	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
+		return new CinemaAdapter(this, result);
 	}
-
 }

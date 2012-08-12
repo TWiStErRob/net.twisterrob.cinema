@@ -3,6 +3,7 @@ package com.twister.cineworld.ui.activity;
 import java.util.List;
 
 import android.view.*;
+import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
@@ -17,13 +18,13 @@ public class FilmsActivity extends BaseListActivity<CineworldFilm, FilmBase> {
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final FilmBase filmBase) {
-		menu.setHeaderTitle(filmBase.getTitle());
+	protected void onCreateContextMenu(final ContextMenu menu, final FilmBase item) {
+		menu.setHeaderTitle(item.getTitle());
 	}
 
 	@Override
-	protected boolean onContextItemSelected(final MenuItem item, final FilmBase filmBase) {
-		switch (item.getItemId()) {
+	protected boolean onContextItemSelected(final MenuItem menu, final FilmBase item) {
+		switch (menu.getItemId()) {
 			case R.id.menuitem_film_details:
 				// TODO
 				return true;
@@ -34,24 +35,23 @@ public class FilmsActivity extends BaseListActivity<CineworldFilm, FilmBase> {
 				// TODO
 				return true;
 			default:
-				return super.onContextItemSelected(item);
+				return super.onContextItemSelected(menu, item);
 		}
 	}
 
-	public List<CineworldFilm> getList() {
-		List<CineworldFilm> cineFilms = new CineworldAccessor().getAllFilms();
-		return cineFilms;
+	public List<CineworldFilm> retrieve() {
+		return new CineworldAccessor().getAllFilms();
 	}
 
-	public List<FilmBase> postProcess(final List<CineworldFilm> list) {
+	public List<FilmBase> process(final List<CineworldFilm> list) {
 		FilmMatcher matcher = new FilmMatcher();
 		List<Film> films = matcher.match(list);
-		final List<FilmBase> filmList = matcher.matchSeries(films);
-		return filmList;
+		List<FilmBase> seriesAndFilms = matcher.matchSeries(films);
+		return seriesAndFilms;
 	}
 
-	public void updateUI(final List<FilmBase> result) {
-		getListView().setAdapter(new FilmAdapter(FilmsActivity.this, result));
+	@Override
+	protected ListAdapter createAdapter(final List<FilmBase> result) {
+		return new FilmAdapter(FilmsActivity.this, result);
 	}
-
 }

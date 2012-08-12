@@ -79,7 +79,7 @@ public class JsonClient {
 
 			InputStream content = entity.getContent();
 			reader = new BufferedReader(new InputStreamReader(content, IOTools.getEncoding(entity)));
-			reader.mark(Integer.MAX_VALUE); // to be able to reset
+			reader.mark(0); // to be able to reset
 
 			T object = m_gson.fromJson(reader, responseType);
 			return object;
@@ -89,6 +89,7 @@ public class JsonClient {
 			Log.d("JSON", contentString);
 			throw ex;
 		} finally {
+			reader.close();
 			httpClient.close();
 		}
 	}
@@ -108,8 +109,9 @@ public class JsonClient {
 
 		Header contentType = entity.getContentType();
 		if (contentType == null || !contentType.getValue().startsWith(JsonClient.CONTENT_TYPE_JSON)) {
-			String message = "Received invalid content type: " + contentType.getValue() + ", expected: " + JsonClient.CONTENT_TYPE_JSON;
-			Log.w("JSON", message);
+			// TODO
+			// String message = "Received invalid content type: " + contentType.getValue() + ", expected: " + JsonClient.CONTENT_TYPE_JSON;
+			// Log.w("JSON", message);
 			// throw new HttpResponseException(status.getStatusCode(), message);
 		}
 	}

@@ -2,43 +2,34 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.AbsListView;
+import android.view.ContextMenu;
+import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCategory;
-import com.twister.cineworld.ui.*;
 import com.twister.cineworld.ui.adapter.CategoryAdapter;
 
-public class CategoriesActivity extends Activity {
-	private AbsListView	m_listView;
-
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		Tools.s_context = this;
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_categories);
-
-		m_listView = (AbsListView) findViewById(android.R.id.list);
+public class CategoriesActivity extends BaseListActivity<CineworldCategory, CineworldCategory> {
+	public CategoriesActivity() {
+		super(R.layout.activity_categories, R.menu.context_item_category);
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		new Thread() {
-			@Override
-			public void run() {
-				Tools.toast("Requesting");
-				final List<CineworldCategory> result = new CineworldAccessor().getAllCategories();
-				CategoriesActivity.this.runOnUiThread(new Runnable() {
-					public void run() {
-						m_listView.setAdapter(new CategoryAdapter(CategoriesActivity.this, result));
-					}
-				});
-				Tools.toast("Got " + result.size());
-			}
-		}.start();
+	protected void onCreateContextMenu(final ContextMenu menu, final CineworldCategory item) {
+		menu.setHeaderTitle(item.getName());
+	}
+
+	public List<CineworldCategory> retrieve() {
+		return new CineworldAccessor().getAllCategories();
+	}
+
+	public List<CineworldCategory> process(final List<CineworldCategory> list) {
+		return list;
+	}
+
+	@Override
+	protected ListAdapter createAdapter(final List<CineworldCategory> result) {
+		return new CategoryAdapter(CategoriesActivity.this, result);
 	}
 }

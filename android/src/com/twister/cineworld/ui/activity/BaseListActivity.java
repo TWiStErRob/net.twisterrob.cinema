@@ -1,5 +1,7 @@
 package com.twister.cineworld.ui.activity;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.*;
@@ -7,10 +9,9 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.twister.cineworld.model.json.*;
-import com.twister.cineworld.ui.Tools;
+import com.twister.cineworld.ui.*;
 
-public abstract class BaseListActivity<T, UI> extends Activity implements AsyncAccessor<T, UI> {
+public abstract class BaseListActivity<RawItem, UIItem> extends Activity implements Retriever<RawItem, UIItem> {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
@@ -33,7 +34,7 @@ public abstract class BaseListActivity<T, UI> extends Activity implements AsyncA
 	@Override
 	protected void onStart() {
 		super.onStart();
-		new AsyncAccessorExecutor(this).execute(this);
+		new AsyncRetrieverExecutor(this).execute(this);
 	}
 
 	@Override
@@ -46,21 +47,29 @@ public abstract class BaseListActivity<T, UI> extends Activity implements AsyncA
 		assert v == m_listView;
 		AbsListView list = (AbsListView) v;
 		@SuppressWarnings("unchecked")
-		UI adapterItem = (UI) list.getAdapter().getItem((int) info.id);
+		UIItem adapterItem = (UIItem) list.getAdapter().getItem((int) info.id);
 		onCreateContextMenu(menu, adapterItem);
 	}
 
-	protected abstract void onCreateContextMenu(final ContextMenu menu, final UI item);
+	protected abstract void onCreateContextMenu(final ContextMenu menu, final UIItem item);
 
 	@Override
 	public final boolean onContextItemSelected(final MenuItem menu) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menu.getMenuInfo();
 		@SuppressWarnings("unchecked")
-		UI adapterItem = (UI) m_listView.getAdapter().getItem((int) info.id);
+		UIItem adapterItem = (UIItem) m_listView.getAdapter().getItem((int) info.id);
 		return onContextItemSelected(menu, adapterItem);
 	}
 
-	protected abstract boolean onContextItemSelected(MenuItem menu, UI item);
+	protected boolean onContextItemSelected(final MenuItem menu, final UIItem item) {
+		return super.onContextItemSelected(menu);
+	}
+
+	public final void update(final List<UIItem> result) {
+		getListView().setAdapter(createAdapter(result));
+	}
+
+	protected abstract ListAdapter createAdapter(List<UIItem> result);
 
 	public AbsListView getListView() {
 		return m_listView;
