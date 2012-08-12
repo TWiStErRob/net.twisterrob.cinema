@@ -8,33 +8,12 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
-import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.FilmMatcher;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
-public class FilmsActivity extends BaseListActivity<FilmBase> {
+public class FilmsActivity extends BaseListActivity<CineworldFilm, FilmBase> {
 	public FilmsActivity() {
 		super(R.layout.activity_films, R.menu.context_item_film);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		new Thread() {
-			@Override
-			public void run() {
-				Tools.toast("Requesting");
-				List<CineworldFilm> cineFilms = new CineworldAccessor().getAllFilms();
-				FilmMatcher matcher = new FilmMatcher();
-				List<Film> films = matcher.match(cineFilms);
-				final List<FilmBase> filmList = matcher.matchSeries(films);
-				FilmsActivity.this.runOnUiThread(new Runnable() {
-					public void run() {
-						getListView().setAdapter(new FilmAdapter(FilmsActivity.this, filmList));
-					}
-				});
-				Tools.toast("Got " + films.size() + " / " + cineFilms.size());
-			}
-		}.start();
 	}
 
 	@Override
@@ -58,4 +37,21 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 				return super.onContextItemSelected(item);
 		}
 	}
+
+	public List<CineworldFilm> getList() {
+		List<CineworldFilm> cineFilms = new CineworldAccessor().getAllFilms();
+		return cineFilms;
+	}
+
+	public List<FilmBase> postProcess(final List<CineworldFilm> list) {
+		FilmMatcher matcher = new FilmMatcher();
+		List<Film> films = matcher.match(list);
+		final List<FilmBase> filmList = matcher.matchSeries(films);
+		return filmList;
+	}
+
+	public void updateUI(final List<FilmBase> result) {
+		getListView().setAdapter(new FilmAdapter(FilmsActivity.this, result));
+	}
+
 }
