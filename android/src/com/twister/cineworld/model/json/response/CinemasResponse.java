@@ -10,11 +10,15 @@ public class CinemasResponse extends BaseResponse<CineworldCinema> {
 	private List<CineworldCinema>	m_cinemas;
 
 	public List<CineworldCinema> getCinemas() {
-		return Collections.unmodifiableList(m_cinemas);
+		return m_cinemas;
+	}
+
+	public void setCinemas(final List<CineworldCinema> cinemas) {
+		m_cinemas = cinemas;
 	}
 
 	@Override
 	public List<CineworldCinema> getList() {
-		return getCinemas();
+		return Collections.unmodifiableList(getCinemas());
 	}
 }

@@ -10,11 +10,15 @@ public class DistributorsResponse extends BaseResponse<CineworldDistributor> {
 	private List<CineworldDistributor>	m_distributors;
 
 	public List<CineworldDistributor> getDistributors() {
-		return Collections.unmodifiableList(m_distributors);
+		return m_distributors;
+	}
+
+	public void setDistributors(final List<CineworldDistributor> distributors) {
+		m_distributors = distributors;
 	}
 
 	@Override
 	public List<CineworldDistributor> getList() {
-		return getDistributors();
+		return Collections.unmodifiableList(getDistributors());
 	}
 }

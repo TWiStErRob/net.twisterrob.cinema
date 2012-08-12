@@ -9,9 +9,12 @@ public class FilmMatcher {
 	public List<Film> match(final List<CineworldFilm> cineFilms) {
 		List<Film> films = new LinkedList<Film>();
 		for (CineworldFilm cineFilm : cineFilms) {
-			String[] parts = cineFilm.getTitle().split("\\s*-\\s*", 2);
-			// Log.d("MATCH", Arrays.toString(parts));
-			String title = parts.length == 1? parts[0] : parts[1];
+			String title = cineFilm.getTitle();
+			if (title != null) {
+				String[] parts = title.split("\\s*-\\s*", 2);
+				// Log.d("MATCH", Arrays.toString(parts));
+				title = parts.length == 1? parts[0] : parts[1];
+			}
 			Film film = find(films, title);
 			if (film == null) {
 				film = new Film();
@@ -30,9 +33,12 @@ public class FilmMatcher {
 	public List<FilmBase> matchSeries(final List<Film> films) {
 		List<FilmSerie> filmSeries = new LinkedList<FilmSerie>();
 		for (Film film : films) {
-			String[] parts = film.getTitle().split("\\s*:\\s*", 2);
-			// Log.d("MATCH", Arrays.toString(parts));
-			String title = parts[0]; // either the whole or the basic
+			String title = film.getTitle();
+			if (title != null) {
+				String[] parts = title.split("\\s*:\\s*", 2);
+				// Log.d("MATCH", Arrays.toString(parts));
+				title = parts[0]; // either the whole or the basic
+			}
 			FilmSerie filmSerie = findSerie(filmSeries, title);
 			if (filmSerie == null) {
 				filmSerie = new FilmSerie();
@@ -53,18 +59,22 @@ public class FilmMatcher {
 	}
 
 	private FilmSerie findSerie(final List<FilmSerie> filmSeries, final String string) {
-		for (FilmSerie filmSerie : filmSeries) {
-			if (filmSerie.getTitle().equals(string)) {
-				return filmSerie;
+		if (string != null) {
+			for (FilmSerie filmSerie : filmSeries) {
+				if (string.equals(filmSerie.getTitle())) {
+					return filmSerie;
+				}
 			}
 		}
 		return null;
 	}
 
 	private Film find(final List<Film> films, final String string) {
-		for (Film film : films) {
-			if (film.getTitle().equals(string)) {
-				return film;
+		if (string != null) {
+			for (Film film : films) {
+				if (string.equals(film.getTitle())) {
+					return film;
+				}
 			}
 		}
 		return null;

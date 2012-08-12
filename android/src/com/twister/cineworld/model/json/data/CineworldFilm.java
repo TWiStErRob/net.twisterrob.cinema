@@ -47,40 +47,80 @@ public class CineworldFilm extends CineworldBase {
 		return m_3D;
 	}
 
+	public void set3D(final boolean name) {
+		m_3D = name;
+	}
+
 	public String getAdvisory() {
 		return m_advisory;
+	}
+
+	public void setAdvisory(final String advisory) {
+		m_advisory = advisory;
 	}
 
 	public String getClassification() {
 		return m_classification;
 	}
 
+	public void setClassification(final String classification) {
+		m_classification = classification;
+	}
+
 	public long getEdi() {
 		return m_edi;
+	}
+
+	public void setEdi(final long edi) {
+		m_edi = edi;
 	}
 
 	public String getFilmUrl() {
 		return m_filmUrl;
 	}
 
+	public void setFilmUrl(final String filmUrl) {
+		m_filmUrl = filmUrl;
+	}
+
 	public long getId() {
 		return m_id;
+	}
+
+	public void setId(final long id) {
+		m_id = id;
 	}
 
 	public boolean isIMax() {
 		return m_iMax;
 	}
 
+	public void setIMax(final boolean iMax) {
+		m_iMax = iMax;
+	}
+
 	public String getPosterUrl() {
 		return m_posterUrl;
+	}
+
+	public void setPosterUrl(final String posterUrl) {
+		m_posterUrl = posterUrl;
 	}
 
 	public String getStillUrl() {
 		return m_stillUrl;
 	}
 
+	public void setStillUrl(final String stillUrl) {
+		m_stillUrl = stillUrl;
+	}
+
 	public String getTitle() {
 		return m_title;
+	}
+
+	public void setTitle(final String title) {
+		m_title = title;
 	}
 
 }

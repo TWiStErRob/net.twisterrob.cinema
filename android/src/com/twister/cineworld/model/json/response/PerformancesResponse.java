@@ -13,15 +13,23 @@ public class PerformancesResponse extends BaseResponse<CineworldPerformance> {
 	private List<CineworldLegend>		m_legends;
 
 	public List<CineworldPerformance> getPerformances() {
-		return Collections.unmodifiableList(m_performances);
+		return m_performances;
+	}
+
+	public void setPerformances(final List<CineworldPerformance> performances) {
+		m_performances = performances;
 	}
 
 	public List<CineworldLegend> getLegends() {
-		return Collections.unmodifiableList(m_legends);
+		return m_legends;
+	}
+
+	public void setLegends(final List<CineworldLegend> legends) {
+		m_legends = legends;
 	}
 
 	@Override
 	public List<CineworldPerformance> getList() {
-		return getPerformances();
+		return Collections.unmodifiableList(getPerformances());
 	}
 }

@@ -10,11 +10,15 @@ public class DatesResponse extends BaseResponse<CineworldDate> {
 	private List<CineworldDate>	m_dates;
 
 	public List<CineworldDate> getDates() {
-		return Collections.unmodifiableList(m_dates);
+		return m_dates;
+	}
+
+	public void setDates(final List<CineworldDate> dates) {
+		m_dates = dates;
 	}
 
 	@Override
 	public List<CineworldDate> getList() {
-		return getDates();
+		return Collections.unmodifiableList(getDates());
 	}
 }

@@ -10,11 +10,15 @@ public class EventsResponse extends BaseResponse<CineworldEvent> {
 	private List<CineworldEvent>	m_events;
 
 	public List<CineworldEvent> getEvents() {
-		return Collections.unmodifiableList(m_events);
+		return m_events;
+	}
+
+	public void setEvents(final List<CineworldEvent> events) {
+		m_events = events;
 	}
 
 	@Override
 	public List<CineworldEvent> getList() {
-		return getEvents();
+		return Collections.unmodifiableList(getEvents());
 	}
 }

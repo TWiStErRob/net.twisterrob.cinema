@@ -10,11 +10,15 @@ public class CategoriesResponse extends BaseResponse<CineworldCategory> {
 	private List<CineworldCategory>	m_categories;
 
 	public List<CineworldCategory> getCategories() {
-		return Collections.unmodifiableList(m_categories);
+		return m_categories;
+	}
+
+	public void setCategories(final List<CineworldCategory> categories) {
+		m_categories = categories;
 	}
 
 	@Override
 	public List<CineworldCategory> getList() {
-		return getCategories();
+		return Collections.unmodifiableList(getCategories());
 	}
 }
