@@ -89,7 +89,6 @@ public class JsonClient {
 			Log.d("JSON", contentString);
 			throw ex;
 		} finally {
-			reader.close();
 			httpClient.close();
 		}
 	}

@@ -28,6 +28,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".ui.activity.CinemaActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".ui.activity.FilmsActivity"
             android:label="@string/title_activity_films"
             android:screenOrientation="portrait" >

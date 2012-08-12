@@ -8,8 +8,8 @@ import android.app.Activity;
  * Asynchronous {@link RetrieverExecutor} for processing from UI.
  * 
  * @author papp.robert.s
- * @param <RawItem> The type of items returned by the lower data handling layers
- * @param <UIItem> The type of items handled on the UI
+ * @param <RawItem> The type of item returned by the lower data handling layers
+ * @param <UIItem> The type of item handled on the UI
  */
 public class AsyncRetrieverExecutor<RawItem, UIItem> implements RetrieverExecutor<RawItem, UIItem> {
 	private Activity	m_context;
@@ -30,15 +30,13 @@ public class AsyncRetrieverExecutor<RawItem, UIItem> implements RetrieverExecuto
 		new Thread() {
 			@Override
 			public void run() {
-				Tools.toast("Requesting");
-				List<RawItem> list = retriever.retrieve();
-				final List<UIItem> result = retriever.process(list);
+				RawItem list = retriever.retrieve();
+				final UIItem result = retriever.process(list);
 				m_context.runOnUiThread(new Runnable() {
 					public void run() {
 						retriever.update(result);
 					}
 				});
-				Tools.toast("Got " + result.size());
 			}
 		}.start();
 	}

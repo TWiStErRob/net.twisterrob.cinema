@@ -23,6 +23,7 @@ public class CineworldAccessor {
 		}
 	}
 	public static final URL		URL_CINEMAS_ALL			= CineworldAccessor.makeUrl("quickbook/cinemas", "full=true");
+	public static final URL		URL_CINEMA_BY_ID		= CineworldAccessor.makeUrl("quickbook/cinemas", "full=true", "cinema=%d");
 	public static final URL		URL_FILMS_ALL			= CineworldAccessor.makeUrl("quickbook/films", "full=true");
 	public static final URL		URL_DATES_ALL			= CineworldAccessor.makeUrl("quickbook/dates");
 	public static final URL		URL_PERFORMANCES		= CineworldAccessor.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
@@ -65,7 +66,7 @@ public class CineworldAccessor {
 	public List<CineworldPerformance> getPeformances(final String cinema, final String film, final String date) {
 		try {
 			URL url = new URL(String.format(CineworldAccessor.URL_PERFORMANCES.toString(), cinema, film, date));
-			return get(url, "distributors", PerformancesResponse.class);
+			return get(url, "performances", PerformancesResponse.class);
 		} catch (MalformedURLException ex) {
 			Log.e("ACCESS", String.format("Invalid URL getPerformances: cinema='%s', film='%s', date='%s'", cinema, film, date), ex);
 			return Collections.emptyList();
@@ -100,6 +101,28 @@ public class CineworldAccessor {
 		} catch (MalformedURLException ex) {
 			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex));
 			return CineworldAccessor.BASE_URL;
+		}
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////////////
+	// More specific methods
+	// ////////////////////////////////////////////////////////////////////////////////////
+
+	public CineworldCinema getCinema(final long cinemaId) {
+		try {
+			URL url = new URL(String.format(CineworldAccessor.URL_CINEMA_BY_ID.toString(), cinemaId));
+			List<CineworldCinema> cinemas = get(url, "cinema", CinemasResponse.class);
+			if (cinemas.isEmpty()) {
+				return null;
+			} else if (cinemas.size() == 1) {
+				return cinemas.get(0);
+			} else {
+				Log.w("ACCESS", String.format("Multiple cinemas returned for id=%d", cinemaId));
+				return null;
+			}
+		} catch (MalformedURLException ex) {
+			Log.e("ACCESS", String.format("Invalid URL getCinema: cinemaId='%d', film='%s', date='%s'", cinemaId), ex);
+			return null;
 		}
 	}
 }

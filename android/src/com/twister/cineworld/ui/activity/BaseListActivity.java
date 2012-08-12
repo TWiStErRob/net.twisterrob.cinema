@@ -18,9 +18,9 @@ import com.twister.cineworld.ui.*;
  * @author papp.robert.s
  * @param <RawItem> The type of items returned by the lower data handling layers
  * @param <UIItem> The type of items handled on the UI
- * @see Retriever
+ * @see ListRetriever
  */
-public abstract class BaseListActivity<RawItem, UIItem> extends Activity implements Retriever<RawItem, UIItem> {
+public abstract class BaseListActivity<RawItem, UIItem> extends Activity implements ListRetriever<RawItem, UIItem> {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
@@ -53,7 +53,7 @@ public abstract class BaseListActivity<RawItem, UIItem> extends Activity impleme
 	}
 
 	/**
-	 * Executes the implementation of {@link Retriever} in this activity asynchronously.
+	 * Executes the implementation of {@link ListRetriever} in this activity asynchronously.
 	 * <p>
 	 * {@inheritDoc}
 	 * 
@@ -62,7 +62,7 @@ public abstract class BaseListActivity<RawItem, UIItem> extends Activity impleme
 	@Override
 	protected void onStart() {
 		super.onStart();
-		new AsyncRetrieverExecutor<RawItem, UIItem>(this).execute(this);
+		new AsyncRetrieverExecutor<List<RawItem>, List<UIItem>>(this).execute(this);
 	}
 
 	/**
