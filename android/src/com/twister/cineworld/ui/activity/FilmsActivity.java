@@ -2,12 +2,7 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.view.*;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.*;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
@@ -16,17 +11,9 @@ import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.ui.*;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
-public class FilmsActivity extends Activity {
-	private AbsListView	m_listView;
-
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		Tools.s_context = this;
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_films);
-
-		m_listView = (AbsListView) findViewById(android.R.id.list);
-		registerForContextMenu(m_listView);
+public class FilmsActivity extends BaseListActivity<FilmBase> {
+	public FilmsActivity() {
+		super(R.layout.activity_films, R.menu.context_item_film);
 	}
 
 	@Override
@@ -42,7 +29,7 @@ public class FilmsActivity extends Activity {
 				final List<FilmBase> filmList = matcher.matchSeries(films);
 				FilmsActivity.this.runOnUiThread(new Runnable() {
 					public void run() {
-						m_listView.setAdapter(new FilmAdapter(FilmsActivity.this, filmList));
+						getListView().setAdapter(new FilmAdapter(FilmsActivity.this, filmList));
 					}
 				});
 				Tools.toast("Got " + films.size() + " / " + cineFilms.size());
@@ -51,20 +38,12 @@ public class FilmsActivity extends Activity {
 	}
 
 	@Override
-	public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.context_item_film, menu);
-
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		FilmBase filmBase = (FilmBase) m_listView.getAdapter().getItem((int) info.id);
+	protected void onCreateContextMenu(final ContextMenu menu, final FilmBase filmBase) {
 		menu.setHeaderTitle(filmBase.getTitle());
 	}
 
 	@Override
-	public boolean onContextItemSelected(final MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		FilmBase film = (FilmBase) m_listView.getAdapter().getItem((int) info.id);
+	protected boolean onContextItemSelected(final MenuItem item, final FilmBase filmBase) {
 		switch (item.getItemId()) {
 			case R.id.menuitem_film_details:
 				// TODO

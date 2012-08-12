@@ -2,26 +2,17 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.AbsListView;
+import android.view.*;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
-import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.Tools;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
-public class CinemasActivity extends Activity {
-	private AbsListView	m_listView;
-
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		Tools.s_context = this;
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cinemas);
-
-		m_listView = (AbsListView) findViewById(android.R.id.list);
+public class CinemasActivity extends BaseListActivity<CineworldCinema> {
+	public CinemasActivity() {
+		super(R.layout.activity_cinemas, R.menu.context_item_cinema);
 	}
 
 	@Override
@@ -34,11 +25,22 @@ public class CinemasActivity extends Activity {
 				final List<CineworldCinema> result = new CineworldAccessor().getAllCinemas();
 				CinemasActivity.this.runOnUiThread(new Runnable() {
 					public void run() {
-						m_listView.setAdapter(new CinemaAdapter(CinemasActivity.this, result));
+						getListView().setAdapter(new CinemaAdapter(CinemasActivity.this, result));
 					}
 				});
 				Tools.toast("Got " + result.size());
 			}
 		}.start();
 	}
+
+	@Override
+	protected void onCreateContextMenu(final ContextMenu menu, final CineworldCinema item) {
+		menu.setHeaderTitle(item.getName());
+	}
+
+	@Override
+	protected boolean onContextItemSelected(final MenuItem menu, final CineworldCinema item) {
+		return super.onContextItemSelected(menu);
+	}
+
 }
