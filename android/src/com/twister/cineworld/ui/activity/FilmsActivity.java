@@ -4,7 +4,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.AbsListView;
+import android.view.*;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.*;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
@@ -23,6 +26,7 @@ public class FilmsActivity extends Activity {
 		setContentView(R.layout.activity_films);
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
+		registerForContextMenu(m_listView);
 	}
 
 	@Override
@@ -44,5 +48,35 @@ public class FilmsActivity extends Activity {
 				Tools.toast("Got " + films.size() + " / " + cineFilms.size());
 			}
 		}.start();
+	}
+
+	@Override
+	public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.context_item_film, menu);
+
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		FilmBase filmBase = (FilmBase) m_listView.getAdapter().getItem((int) info.id);
+		menu.setHeaderTitle(filmBase.getTitle());
+	}
+
+	@Override
+	public boolean onContextItemSelected(final MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		FilmBase film = (FilmBase) m_listView.getAdapter().getItem((int) info.id);
+		switch (item.getItemId()) {
+			case R.id.menuitem_film_details:
+				// TODO
+				return true;
+			case R.id.menuitem_film_when:
+				// TODO
+				return true;
+			case R.id.menuitem_film_where:
+				// TODO
+				return true;
+			default:
+				return super.onContextItemSelected(item);
+		}
 	}
 }
