@@ -3,6 +3,7 @@
 
     <string name="title_activity_main">Cineworld Browser</string>
     <string name="title_activity_cinemas">Cineworld Browser - Cinemas</string>
+    <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas</string>
     <string name="title_activity_films">Cineworld Browser - Films</string>
     <string name="title_activity_dates">Cineworld Browser - Dates</string>
     <string name="title_activity_performances">Cineworld Browser - Performances</string>

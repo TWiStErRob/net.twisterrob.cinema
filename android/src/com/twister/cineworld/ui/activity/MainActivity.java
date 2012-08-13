@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
 
 public class MainActivity extends ListActivity {
 	@Override
@@ -38,6 +39,7 @@ public class MainActivity extends ListActivity {
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		String[] activities = {
 				CinemasActivity.class.getName(), "Cinemas",
+				CinemasMapActivity.class.getName(), "Cinemas map",
 				FilmsActivity.class.getName(), "Films",
 				DatesActivity.class.getName(), "Dates",
 				PerformancesActivity.class.getName(), "Performances",

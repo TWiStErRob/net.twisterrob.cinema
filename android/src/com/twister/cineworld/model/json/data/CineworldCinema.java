@@ -1,5 +1,6 @@
 package com.twister.cineworld.model.json.data;
 
+import com.google.android.maps.GeoPoint;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -18,17 +19,19 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CineworldCinema extends CineworldBase {
 	@SerializedName("id")
-	private long	m_id;
+	private long		m_id;
 	@SerializedName("name")
-	private String	m_name;
+	private String		m_name;
 	@SerializedName("cinema_url")
-	private String	m_cinemaUrl;
+	private String		m_cinemaUrl;
 	@SerializedName("address")
-	private String	m_address;
+	private String		m_address;
 	@SerializedName("postcode")
-	private String	m_postcode;
+	private String		m_postcode;
 	@SerializedName("telephone")
-	private String	m_telephone;
+	private String		m_telephone;
+
+	private GeoPoint	m_location;
 
 	public long getId() {
 		return m_id;
@@ -78,4 +81,11 @@ public class CineworldCinema extends CineworldBase {
 		m_telephone = telephone;
 	}
 
+	public GeoPoint getLocation() {
+		return m_location;
+	}
+
+	public void setLocation(final GeoPoint location) {
+		m_location = location;
+	}
 }
