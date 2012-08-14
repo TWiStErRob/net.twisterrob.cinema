@@ -6,16 +6,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.*;
 
-public class CinemaActivity extends Activity implements Retriever<CineworldCinema, CineworldCinema> {
+public class CinemaActivity extends Activity {
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
@@ -27,19 +29,27 @@ public class CinemaActivity extends Activity implements Retriever<CineworldCinem
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cinema);
 
-		new AsyncRetrieverExecutor<CineworldCinema, CineworldCinema>(this).execute(this);
+		CinewordExecutor.execute(new CinewordGUITask<CineworldCinema>(this) {
+			@Override
+			protected CineworldCinema work() throws CineworldException {
+				Integer id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
+				return new CineworldAccessor().getCinema(id);
+			}
+
+			@Override
+			protected void present(final CineworldCinema result) {
+				update(result);
+			}
+
+			@Override
+			protected void exception(final CineworldException e) {
+				Log.e("CinemaActivity", "Error in CinemaActivity", e);
+				// TODO show the user
+			}
+		});
 	}
 
-	public CineworldCinema retrieve() {
-		Integer id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
-		return new CineworldAccessor().getCinema(id);
-	}
-
-	public CineworldCinema process(final CineworldCinema item) {
-		return item;
-	}
-
-	public void update(final CineworldCinema result) {
+	private void update(final CineworldCinema result) {
 		setTitle(String.format("Cinema details: %s", result.getName()));
 		TextView name = (TextView) findViewById(R.id.cinema_name);
 		TextView address = (TextView) findViewById(R.id.cinema_address);

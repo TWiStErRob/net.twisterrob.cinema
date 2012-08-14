@@ -20,16 +20,14 @@ public class DistributorsActivity extends BaseListActivity<CineworldDistributor,
 		menu.setHeaderTitle(item.getName());
 	}
 
-	public List<CineworldDistributor> retrieve() {
+	@Override
+	public List<CineworldDistributor> doWork() {
 		return new CineworldAccessor().getAllDistributors();
-	}
-
-	public List<CineworldDistributor> process(final List<CineworldDistributor> list) {
-		return list;
 	}
 
 	@Override
 	protected ListAdapter createAdapter(final List<CineworldDistributor> result) {
 		return new DistributorAdapter(DistributorsActivity.this, result);
 	}
+
 }

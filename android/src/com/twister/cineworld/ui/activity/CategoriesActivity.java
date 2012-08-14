@@ -20,16 +20,14 @@ public class CategoriesActivity extends BaseListActivity<CineworldCategory, Cine
 		menu.setHeaderTitle(item.getName());
 	}
 
-	public List<CineworldCategory> retrieve() {
-		return new CineworldAccessor().getAllCategories();
-	}
-
-	public List<CineworldCategory> process(final List<CineworldCategory> list) {
-		return list;
-	}
-
 	@Override
 	protected ListAdapter createAdapter(final List<CineworldCategory> result) {
 		return new CategoryAdapter(CategoriesActivity.this, result);
 	}
+
+	@Override
+	protected List<CineworldCategory> doWork() {
+		return new CineworldAccessor().getAllCategories();
+	}
+
 }

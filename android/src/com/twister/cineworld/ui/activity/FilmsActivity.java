@@ -39,11 +39,11 @@ public class FilmsActivity extends BaseListActivity<CineworldFilm, FilmBase> {
 		}
 	}
 
-	public List<CineworldFilm> retrieve() {
-		return new CineworldAccessor().getAllFilms();
-	}
+	@Override
+	public List<FilmBase> doWork() {
+		List<CineworldFilm> list = new CineworldAccessor().getAllFilms();
 
-	public List<FilmBase> process(final List<CineworldFilm> list) {
+		// transform
 		FilmMatcher matcher = new FilmMatcher();
 		List<Film> films = matcher.match(list);
 		List<FilmBase> seriesAndFilms = matcher.matchSeries(films);

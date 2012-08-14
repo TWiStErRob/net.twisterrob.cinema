@@ -20,12 +20,9 @@ public class PerformancesActivity extends BaseListActivity<CineworldPerformance,
 		menu.setHeaderTitle(item.getTime());
 	}
 
-	public List<CineworldPerformance> retrieve() {
+	@Override
+	public List<CineworldPerformance> doWork() {
 		return new CineworldAccessor().getPeformances("66", "62278", "20130427");
-	}
-
-	public List<CineworldPerformance> process(final List<CineworldPerformance> list) {
-		return list;
 	}
 
 	@Override

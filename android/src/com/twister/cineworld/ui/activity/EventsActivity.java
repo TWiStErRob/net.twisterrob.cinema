@@ -20,7 +20,8 @@ public class EventsActivity extends BaseListActivity<CineworldEvent, CineworldEv
 		menu.setHeaderTitle(item.getName());
 	}
 
-	public List<CineworldEvent> retrieve() {
+	@Override
+	public List<CineworldEvent> doWork() {
 		return new CineworldAccessor().getAllEvents();
 	}
 

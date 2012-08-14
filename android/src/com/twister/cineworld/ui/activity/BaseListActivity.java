@@ -4,11 +4,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.ui.*;
 
 /**
@@ -20,14 +22,15 @@ import com.twister.cineworld.ui.*;
  * @param <UIItem> The type of items handled on the UI
  * @see ListRetriever
  */
-public abstract class BaseListActivity<RawItem, UIItem> extends Activity implements ListRetriever<RawItem, UIItem> {
+public abstract class BaseListActivity<RawItem, UIItem> extends Activity {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
 
 	/**
-	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)} and <code>contextMenuId</code> will be
-	 * inflated in {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
+	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
+	 * and <code>contextMenuId</code> will be inflated in
+	 * {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
 	 * 
 	 * @param contentViewId Must have an {@link AbsListView} with an id of <code>android:id="@android:id/list"</code>.
 	 * @param contextMenuId Context menu for items in the list.
@@ -62,8 +65,31 @@ public abstract class BaseListActivity<RawItem, UIItem> extends Activity impleme
 	@Override
 	protected void onStart() {
 		super.onStart();
-		new AsyncRetrieverExecutor<List<RawItem>, List<UIItem>>(this).execute(this);
+		CinewordExecutor.execute(new CinewordGUITask<List<UIItem>>(this) {
+			@Override
+			protected List<UIItem> work() throws CineworldException {
+				return doWork();
+			}
+
+			@Override
+			protected void present(final List<UIItem> result) {
+				update(result);
+			}
+
+			@Override
+			protected void exception(final CineworldException e) {
+				doException(e);
+			}
+
+		});
 	}
+
+	protected void doException(final CineworldException e) {
+		Log.e("Cineworld", "Error in " + getClass().getSimpleName(), e);
+		// TODO show the user
+	}
+
+	protected abstract List<UIItem> doWork();
 
 	/**
 	 * Creates the context menu based on the <code>contextMenuId</code> given in the constructor. Extenders must use

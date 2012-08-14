@@ -20,12 +20,9 @@ public class DatesActivity extends BaseListActivity<CineworldDate, CineworldDate
 		menu.setHeaderTitle(item.getDate());
 	}
 
-	public List<CineworldDate> retrieve() {
+	@Override
+	public List<CineworldDate> doWork() {
 		return new CineworldAccessor().getAllDates();
-	}
-
-	public List<CineworldDate> process(final List<CineworldDate> list) {
-		return list;
 	}
 
 	@Override

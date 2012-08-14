@@ -34,16 +34,14 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema, Cineworld
 		}
 	}
 
-	public List<CineworldCinema> retrieve() {
-		return new CineworldAccessor().getAllCinemas();
-	}
-
-	public List<CineworldCinema> process(final List<CineworldCinema> list) {
-		return list;
-	}
-
 	@Override
 	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
 		return new CinemaAdapter(this, result);
 	}
+
+	@Override
+	protected List<CineworldCinema> doWork() {
+		return new CineworldAccessor().getAllCinemas();
+	}
+
 }
