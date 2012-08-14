@@ -237,10 +237,10 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		if (newFocus != null) {
 			int i = 0;
 			for (CineworldCinema cinema : adapter.getItems()) {
-				i++;
 				if (cinema.getLocation() == newFocus.getPoint()) {
 					break;
 				}
+				i++;
 			}
 			getSpinner().setSelection(i);
 		} else {
