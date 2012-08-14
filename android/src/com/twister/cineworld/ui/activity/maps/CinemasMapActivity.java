@@ -194,7 +194,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		for (CineworldCinema cinema : list) {
 			try {
 				GeoPoint loc = CinemasMapActivity.s_locations.get(cinema.getPostcode());
-				if (loc == null) {
+				if (loc == null && cinema.getPostcode() != null) {
 					List<Address> locs = coder.getFromLocationName(cinema.getPostcode(), 1);
 					if (!locs.isEmpty()) {
 						Address address = locs.get(0);

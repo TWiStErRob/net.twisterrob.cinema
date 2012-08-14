@@ -29,7 +29,9 @@ public class CineworldAccessor {
 	}
 
 	public List<CineworldCinema> getAllCinemas() {
-		return get(new CinemasRequest().getURL(), "cinemas", CinemasResponse.class);
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		return get(request.getURL(), "cinemas", CinemasResponse.class);
 	}
 
 	public List<CineworldFilm> getAllFilms() {
