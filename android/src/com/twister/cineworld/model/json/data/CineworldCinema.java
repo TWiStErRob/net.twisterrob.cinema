@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CineworldCinema extends CineworldBase {
 	@SerializedName("id")
-	private long		m_id;
+	private int			m_id;
 	@SerializedName("name")
 	private String		m_name;
 	@SerializedName("cinema_url")
@@ -33,14 +33,20 @@ public class CineworldCinema extends CineworldBase {
 
 	private GeoPoint	m_location;
 
-	public long getId() {
+	/**
+	 * @return Cinema ID
+	 */
+	public int getId() {
 		return m_id;
 	}
 
-	public void setId(final long id) {
+	public void setId(final int id) {
 		m_id = id;
 	}
 
+	/**
+	 * @return Cinema name
+	 */
 	public String getName() {
 		return m_name;
 	}
@@ -49,6 +55,9 @@ public class CineworldCinema extends CineworldBase {
 		m_name = name;
 	}
 
+	/**
+	 * @return Absolute URL the cinema page
+	 */
 	public String getCinemaUrl() {
 		return m_cinemaUrl;
 	}
@@ -57,6 +66,9 @@ public class CineworldCinema extends CineworldBase {
 		m_cinemaUrl = cinemaUrl;
 	}
 
+	/**
+	 * @return Full cinema address (all lines, excluding postcode)
+	 */
 	public String getAddress() {
 		return m_address;
 	}
@@ -65,6 +77,9 @@ public class CineworldCinema extends CineworldBase {
 		m_address = address;
 	}
 
+	/**
+	 * @return Cinema postcode
+	 */
 	public String getPostcode() {
 		return m_postcode;
 	}
@@ -73,6 +88,9 @@ public class CineworldCinema extends CineworldBase {
 		m_postcode = postcode;
 	}
 
+	/**
+	 * @return Cinema telephone number
+	 */
 	public String getTelephone() {
 		return m_telephone;
 	}

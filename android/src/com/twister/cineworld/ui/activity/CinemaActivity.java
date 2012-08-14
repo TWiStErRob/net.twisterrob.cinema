@@ -16,6 +16,10 @@ import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.*;
 
 public class CinemaActivity extends Activity implements Retriever<CineworldCinema, CineworldCinema> {
+	/**
+	 * Cinema ID<br>
+	 * <b>Type</b>: Integer
+	 */
 	public static final String	EXTRA_ID	= "extra_id";
 
 	@Override
@@ -27,7 +31,7 @@ public class CinemaActivity extends Activity implements Retriever<CineworldCinem
 	}
 
 	public CineworldCinema retrieve() {
-		Long id = (Long) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
+		Integer id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
 		return new CineworldAccessor().getCinema(id);
 	}
 

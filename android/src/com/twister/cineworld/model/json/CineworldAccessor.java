@@ -8,30 +8,19 @@ import android.util.Log;
 
 import com.google.gson.*;
 import com.twister.cineworld.model.json.data.*;
+import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final String	DEVELOPER_KEY			= "9qfgpF7B";
-	public static final String	BASE_URL_STRING			= "http://www.cineworld.co.uk/api/";
-	public static final URL		BASE_URL;
-	static {
-		try {
-			BASE_URL = new URL(CineworldAccessor.BASE_URL_STRING);
-		} catch (MalformedURLException ex) {
-			throw new ExceptionInInitializerError(ex);
-		}
-	}
-	public static final URL		URL_CINEMAS_ALL			= CineworldAccessor.makeUrl("quickbook/cinemas", "full=true");
-	public static final URL		URL_CINEMA_BY_ID		= CineworldAccessor.makeUrl("quickbook/cinemas", "full=true", "cinema=%d");
-	public static final URL		URL_FILMS_ALL			= CineworldAccessor.makeUrl("quickbook/films", "full=true");
-	public static final URL		URL_DATES_ALL			= CineworldAccessor.makeUrl("quickbook/dates");
-	public static final URL		URL_PERFORMANCES		= CineworldAccessor.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
-	public static final URL		URL_CATEGORIES_ALL		= CineworldAccessor.makeUrl("categories");
-	public static final URL		URL_EVENTS_ALL			= CineworldAccessor.makeUrl("events");
-	public static final URL		URL_DISTRIBUTORS_ALL	= CineworldAccessor.makeUrl("distributors");
+	public static final URL	URL_FILMS_ALL			= BaseRequest.makeUrl("quickbook/films", "full=true");
+	public static final URL	URL_DATES_ALL			= BaseRequest.makeUrl("quickbook/dates");
+	public static final URL	URL_PERFORMANCES		= BaseRequest.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
+	public static final URL	URL_CATEGORIES_ALL		= BaseRequest.makeUrl("categories");
+	public static final URL	URL_EVENTS_ALL			= BaseRequest.makeUrl("events");
+	public static final URL	URL_DISTRIBUTORS_ALL	= BaseRequest.makeUrl("distributors");
 
-	private final Gson			m_gson;
+	private final Gson		m_gson;
 
 	public CineworldAccessor() {
 		m_gson = new GsonBuilder()
@@ -40,7 +29,7 @@ public class CineworldAccessor {
 	}
 
 	public List<CineworldCinema> getAllCinemas() {
-		return get(CineworldAccessor.URL_CINEMAS_ALL, "cinemas", CinemasResponse.class);
+		return get(new CinemasRequest().getURL(), "cinemas", CinemasResponse.class);
 	}
 
 	public List<CineworldFilm> getAllFilms() {
@@ -89,39 +78,24 @@ public class CineworldAccessor {
 		return (List<T>) result; // TODO review generic bounds
 	}
 
-	private static URL makeUrl(final String requestType, final String... filters) {
-		StringBuilder filterString = new StringBuilder();
-		for (String filter : filters) {
-			filterString.append("&" + filter);
-		}
-
-		try {
-			String spec = String.format("%s?key=%s%s", requestType, CineworldAccessor.DEVELOPER_KEY, filterString);
-			return new URL(CineworldAccessor.BASE_URL, spec);
-		} catch (MalformedURLException ex) {
-			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex));
-			return CineworldAccessor.BASE_URL;
-		}
+	private <T extends CineworldBase> List<T> getList(final BaseRequest<T> request) {
+		return get(request.getURL(), request.getRequestType(), request.getResponseClass());
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////
 	// More specific methods
 	// ////////////////////////////////////////////////////////////////////////////////////
 
-	public CineworldCinema getCinema(final long cinemaId) {
-		try {
-			URL url = new URL(String.format(CineworldAccessor.URL_CINEMA_BY_ID.toString(), cinemaId));
-			List<CineworldCinema> cinemas = get(url, "cinema", CinemasResponse.class);
-			if (cinemas.isEmpty()) {
-				return null;
-			} else if (cinemas.size() == 1) {
-				return cinemas.get(0);
-			} else {
-				Log.w("ACCESS", String.format("Multiple cinemas returned for id=%d", cinemaId));
-				return null;
-			}
-		} catch (MalformedURLException ex) {
-			Log.e("ACCESS", String.format("Invalid URL getCinema: cinemaId='%d', film='%s', date='%s'", cinemaId), ex);
+	public CineworldCinema getCinema(final int cinemaId) {
+		CinemasRequest request = new CinemasRequest();
+		request.setCinema(cinemaId);
+		List<CineworldCinema> cinemas = getList(request);
+		if (cinemas.isEmpty()) {
+			return null;
+		} else if (cinemas.size() == 1) {
+			return cinemas.get(0);
+		} else {
+			Log.w("ACCESS", String.format("Multiple cinemas returned for id=%d", cinemaId));
 			return null;
 		}
 	}

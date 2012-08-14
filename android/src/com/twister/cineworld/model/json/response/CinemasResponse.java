@@ -5,6 +5,28 @@ import java.util.*;
 import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 
+/**
+ * Use this to retrieve an array of Cineworld cinemas ordered by name and returned in JSON format. An example of what will be returned is below (use the full
+ * parameter to retrieve more data for each cinema):
+ * 
+ * <pre>
+ * {"cinemas":[{
+ *     "id":78,
+ *     "name":"Aberdeen-Union-Square",
+ *     "cinema_url":"http://www.cineworld.co.uk/cinemas/78"
+ * }]}
+ * 
+ * </pre>
+ * 
+ * If any errors should occur they will be returned as an array:
+ * 
+ * <pre>
+ * {"errors":["valid key not supplied"]}
+ * </pre>
+ * 
+ * @author papp.robert.s
+ * @see CineworldCinema
+ */
 public class CinemasResponse extends BaseResponse<CineworldCinema> {
 	@SerializedName("cinemas")
 	private List<CineworldCinema>	m_cinemas;
