@@ -13,12 +13,12 @@ import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final URL	URL_FILMS_ALL			= BaseRequest.makeUrl("quickbook/films", "full=true");
-	public static final URL	URL_DATES_ALL			= BaseRequest.makeUrl("quickbook/dates");
-	public static final URL	URL_PERFORMANCES		= BaseRequest.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
-	public static final URL	URL_CATEGORIES_ALL		= BaseRequest.makeUrl("categories");
-	public static final URL	URL_EVENTS_ALL			= BaseRequest.makeUrl("events");
-	public static final URL	URL_DISTRIBUTORS_ALL	= BaseRequest.makeUrl("distributors");
+	public static final URL	URL_FILMS_ALL			= BaseListRequest.makeUrl("quickbook/films", "full=true");
+	public static final URL	URL_DATES_ALL			= BaseListRequest.makeUrl("quickbook/dates");
+	public static final URL	URL_PERFORMANCES		= BaseListRequest.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
+	public static final URL	URL_CATEGORIES_ALL		= BaseListRequest.makeUrl("categories");
+	public static final URL	URL_EVENTS_ALL			= BaseListRequest.makeUrl("events");
+	public static final URL	URL_DISTRIBUTORS_ALL	= BaseListRequest.makeUrl("distributors");
 
 	private final Gson		m_gson;
 
@@ -65,7 +65,7 @@ public class CineworldAccessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends CineworldBase, Response extends BaseResponse<? extends T>>
+	private <T extends CineworldBase, Response extends BaseListResponse<? extends T>>
 			List<T> get(final URL url, final String objectType, final Class<Response> clazz) {
 		List<? extends T> result = Collections.emptyList();
 		try {
@@ -80,7 +80,7 @@ public class CineworldAccessor {
 		return (List<T>) result; // TODO review generic bounds
 	}
 
-	private <T extends CineworldBase> List<T> getList(final BaseRequest<T> request) {
+	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) {
 		return get(request.getURL(), request.getRequestType(), request.getResponseClass());
 	}
 

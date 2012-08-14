@@ -8,7 +8,7 @@ import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.*;
 
 public class MockClient {
-	private static final Map<Class<? extends BaseResponse<?>>, BaseResponse<?>>	RESPONSE_MAPPING	= new HashMap<Class<? extends BaseResponse<?>>, BaseResponse<?>>();
+	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>	RESPONSE_MAPPING	= new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
 	static {
 		MockClient.RESPONSE_MAPPING.put(CinemasResponse.class, MockClient.createCinemasResponse());
 		MockClient.RESPONSE_MAPPING.put(FilmsResponse.class, MockClient.createFilmsResponse());
@@ -195,7 +195,7 @@ public class MockClient {
 	/**
 	 * Magic happens here.
 	 */
-	public <X extends CineworldBase, T extends BaseResponse<? extends X>>
+	public <X extends CineworldBase, T extends BaseListResponse<? extends X>>
 			T get(final URL url, final Class<T> responseType) throws IOException, URISyntaxException {
 		@SuppressWarnings("unchecked")
 		T response = (T) MockClient.RESPONSE_MAPPING.get(responseType);

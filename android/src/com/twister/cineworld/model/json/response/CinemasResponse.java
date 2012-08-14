@@ -27,7 +27,7 @@ import com.twister.cineworld.model.json.data.CineworldCinema;
  * @author papp.robert.s
  * @see CineworldCinema
  */
-public class CinemasResponse extends BaseResponse<CineworldCinema> {
+public class CinemasResponse extends BaseListResponse<CineworldCinema> {
 	@SerializedName("cinemas")
 	private List<CineworldCinema>	m_cinemas;
 

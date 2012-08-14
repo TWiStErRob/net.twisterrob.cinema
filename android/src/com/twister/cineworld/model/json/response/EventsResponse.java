@@ -5,7 +5,7 @@ import java.util.*;
 import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.data.CineworldEvent;
 
-public class EventsResponse extends BaseResponse<CineworldEvent> {
+public class EventsResponse extends BaseListResponse<CineworldEvent> {
 	@SerializedName("events")
 	private List<CineworldEvent>	m_events;
 

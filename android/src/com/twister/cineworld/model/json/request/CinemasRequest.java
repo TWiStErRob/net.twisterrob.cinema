@@ -16,7 +16,7 @@ import com.twister.cineworld.model.json.response.CinemasResponse;
  * 
  * @author papp.robert.s
  */
-public class CinemasRequest extends BaseRequest<CineworldCinema> {
+public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 	private static final String	REQUEST_TYPE	= "quickbook/cinemas";
 	private Boolean				m_full;
 	private Integer				m_film;
@@ -97,14 +97,14 @@ public class CinemasRequest extends BaseRequest<CineworldCinema> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseRequest.makeUrl(CinemasRequest.REQUEST_TYPE,
-				BaseRequest.KEY_FULL, m_full,
-				BaseRequest.KEY_FILM, m_film,
-				BaseRequest.KEY_DATE, m_date,
-				BaseRequest.KEY_CINEMA, m_cinema,
-				BaseRequest.KEY_CATEGORY, m_category,
-				BaseRequest.KEY_EVENT, m_event,
-				BaseRequest.KEY_DISTRIBUTOR, m_distributor);
+		return BaseListRequest.makeUrl(CinemasRequest.REQUEST_TYPE,
+				BaseListRequest.KEY_FULL, m_full,
+				BaseListRequest.KEY_FILM, m_film,
+				BaseListRequest.KEY_DATE, m_date,
+				BaseListRequest.KEY_CINEMA, m_cinema,
+				BaseListRequest.KEY_CATEGORY, m_category,
+				BaseListRequest.KEY_EVENT, m_event,
+				BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
 	}
 
 	/**

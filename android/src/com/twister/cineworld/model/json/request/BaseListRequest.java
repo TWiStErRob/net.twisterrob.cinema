@@ -6,9 +6,9 @@ import java.util.Arrays;
 import android.util.Log;
 
 import com.twister.cineworld.model.json.data.CineworldBase;
-import com.twister.cineworld.model.json.response.BaseResponse;
+import com.twister.cineworld.model.json.response.BaseListResponse;
 
-public abstract class BaseRequest<T extends CineworldBase> {
+public abstract class BaseListRequest<T extends CineworldBase> {
 	public static final String		DEFAULT_DEVELOPER_KEY	= "9qfgpF7B";
 	public static final String		DEFAULT_TERRITORY		= "GB";								// TODO get from config
 	public static final String		DEFAULT_CALLBACK		= null;								// no need for android
@@ -17,7 +17,7 @@ public abstract class BaseRequest<T extends CineworldBase> {
 	private static final URL		BASE_URL;
 	static {
 		try {
-			BASE_URL = new URL(BaseRequest.BASE_URL_STRING);
+			BASE_URL = new URL(BaseListRequest.BASE_URL_STRING);
 		} catch (MalformedURLException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
@@ -34,11 +34,11 @@ public abstract class BaseRequest<T extends CineworldBase> {
 	protected static final String	KEY_EVENT				= "event";
 	protected static final String	KEY_DISTRIBUTOR			= "distributor";
 
-	private String					m_key					= BaseRequest.DEFAULT_DEVELOPER_KEY;
-	private String					m_territory				= BaseRequest.DEFAULT_TERRITORY;
-	private String					m_callback				= BaseRequest.DEFAULT_CALLBACK;
+	private String					m_key					= BaseListRequest.DEFAULT_DEVELOPER_KEY;
+	private String					m_territory				= BaseListRequest.DEFAULT_TERRITORY;
+	private String					m_callback				= BaseListRequest.DEFAULT_CALLBACK;
 
-	public BaseRequest() {
+	public BaseListRequest() {
 	}
 
 	/**
@@ -46,7 +46,7 @@ public abstract class BaseRequest<T extends CineworldBase> {
 	 * @param callback (Optional, no default) Wraps the response JSON in the callback function specified to allow cross browser scripting, note that if you use
 	 *        jQuery and JSONP the callback parameter is automatically added for you.
 	 */
-	public BaseRequest(final String territory, final String callback) {
+	public BaseListRequest(final String territory, final String callback) {
 		m_territory = territory;
 		m_callback = callback;
 	}
@@ -57,7 +57,7 @@ public abstract class BaseRequest<T extends CineworldBase> {
 	 * @param callback (Optional, no default)Wraps the response JSON in the callback function specified to allow cross browser scripting, note that if you use
 	 *        jQuery and JSONP the callback parameter is automatically added for you.
 	 */
-	public BaseRequest(final String key, final String territory, final String callback) {
+	public BaseListRequest(final String key, final String territory, final String callback) {
 		m_key = key;
 		m_territory = territory;
 		m_callback = callback;
@@ -132,7 +132,7 @@ public abstract class BaseRequest<T extends CineworldBase> {
 	 * 
 	 * @return response {@link Class}
 	 */
-	public abstract Class<? extends BaseResponse<T>> getResponseClass();
+	public abstract Class<? extends BaseListResponse<T>> getResponseClass();
 
 	protected static URL makeUrl(final String requestType, final Object... filters) {
 		StringBuilder filterString = new StringBuilder();
@@ -147,11 +147,11 @@ public abstract class BaseRequest<T extends CineworldBase> {
 		}
 		String spec = requestType;
 		try {
-			spec = String.format("%s?key=%s%s", spec, BaseRequest.DEFAULT_DEVELOPER_KEY, filterString);
-			return new URL(BaseRequest.BASE_URL, spec);
+			spec = String.format("%s?key=%s%s", spec, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
+			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
 			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s -> %s)", requestType, Arrays.toString(filters), spec, ex));
-			return BaseRequest.BASE_URL; // TODO throw
+			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}
 
@@ -162,11 +162,11 @@ public abstract class BaseRequest<T extends CineworldBase> {
 		}
 
 		try {
-			String spec = String.format("%s?key=%s%s", requestType, BaseRequest.DEFAULT_DEVELOPER_KEY, filterString);
-			return new URL(BaseRequest.BASE_URL, spec);
+			String spec = String.format("%s?key=%s%s", requestType, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
+			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
 			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex));
-			return BaseRequest.BASE_URL; // TODO throw
+			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}
 }
