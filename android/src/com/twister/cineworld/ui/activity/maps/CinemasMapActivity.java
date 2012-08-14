@@ -119,8 +119,8 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		m_map.setBuiltInZoomControls(true);
 
 		GeoPoint center = new GeoPoint(54227511, -4538933);
-		m_map.getController().setCenter(center);
 		m_map.getController().setZoom(7);
+		m_map.getController().setCenter(center);
 
 		Drawable marker = getResources().getDrawable(R.drawable.cineworld_logo);
 		int markerWidth = marker.getIntrinsicWidth() / 2;
@@ -135,6 +135,18 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		m_overlay.setOnFocusChangeListener(this);
 
 		m_location = new MyLocationOverlay(this, m_map);
+		m_location.runOnFirstFix(new Runnable() {
+			public void run() {
+				Location lastFix = m_location.getLastFix();
+				final GeoPoint newCenter = new GeoPoint((int) (lastFix.getLatitude() * 1e6), (int) (lastFix.getLongitude() * 1e6));
+				m_map.post(new Runnable() {
+					public void run() {
+						m_map.getController().setZoom(11);
+						m_map.getController().setCenter(newCenter);
+					}
+				});
+			}
+		});
 		m_map.getOverlays().add(m_location);
 		m_map.postInvalidate();
 
