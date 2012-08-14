@@ -13,7 +13,7 @@ import android.util.Log;
  * </pre>
  */
 public class CineworldDate extends CineworldBase {
-	private String	m_date;
+	private String	m_date; // TODO int or calendar or anything
 
 	public String getDate() {
 		return m_date;

@@ -29,11 +29,11 @@ public class CineworldFilm extends CineworldBase {
 	@SerializedName("classification")
 	private String	m_classification;
 	@SerializedName("edi")
-	private long	m_edi;
+	private int		m_edi;
 	@SerializedName("film_url")
 	private String	m_filmUrl;
 	@SerializedName("id")
-	private long	m_id;
+	private int		m_id;
 	@SerializedName("imax")
 	private boolean	m_iMax;
 	@SerializedName("poster_url")
@@ -47,8 +47,8 @@ public class CineworldFilm extends CineworldBase {
 		return m_3D;
 	}
 
-	public void set3D(final boolean name) {
-		m_3D = name;
+	public void set3D(final boolean is3D) {
+		m_3D = is3D;
 	}
 
 	public String getAdvisory() {
@@ -67,11 +67,11 @@ public class CineworldFilm extends CineworldBase {
 		m_classification = classification;
 	}
 
-	public long getEdi() {
+	public int getEdi() {
 		return m_edi;
 	}
 
-	public void setEdi(final long edi) {
+	public void setEdi(final int edi) {
 		m_edi = edi;
 	}
 
@@ -83,11 +83,11 @@ public class CineworldFilm extends CineworldBase {
 		m_filmUrl = filmUrl;
 	}
 
-	public long getId() {
+	public int getId() {
 		return m_id;
 	}
 
-	public void setId(final long id) {
+	public void setId(final int id) {
 		m_id = id;
 	}
 

@@ -14,15 +14,15 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CineworldDistributor extends CineworldBase {
 	@SerializedName("id")
-	private String	m_id;
+	private int		m_id;
 	@SerializedName("name")
 	private String	m_name;
 
-	public String getId() {
+	public int getId() {
 		return m_id;
 	}
 
-	public void setId(final String id) {
+	public void setId(final int id) {
 		m_id = id;
 	}
 
