@@ -14,6 +14,7 @@ import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
 	public static final URL	URL_FILMS_ALL			= BaseListRequest.makeUrl("quickbook/films", "full=true");
+	public static final URL	URL_FILMS_CINEMA		= BaseListRequest.makeUrl("quickbook/films", "full=true", "cinema=%s");
 	public static final URL	URL_DATES_ALL			= BaseListRequest.makeUrl("quickbook/dates");
 	public static final URL	URL_PERFORMANCES		= BaseListRequest.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
 	public static final URL	URL_CATEGORIES_ALL		= BaseListRequest.makeUrl("categories");
@@ -31,7 +32,7 @@ public class CineworldAccessor {
 	public List<CineworldCinema> getAllCinemas() {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
-		return get(request.getURL(), "cinemas", CinemasResponse.class);
+		return getList(request);
 	}
 
 	public List<CineworldFilm> getAllFilms() {
@@ -88,9 +89,17 @@ public class CineworldAccessor {
 	// More specific methods
 	// ////////////////////////////////////////////////////////////////////////////////////
 
+	public List<CineworldCinema> getCinemas(final int filmEdi) {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setFilm(filmEdi);
+		return getList(request);
+	}
+
 	public CineworldCinema getCinema(final int cinemaId) {
 		CinemasRequest request = new CinemasRequest();
 		request.setCinema(cinemaId);
+		request.setFull(true);
 		List<CineworldCinema> cinemas = getList(request);
 		if (cinemas.isEmpty()) {
 			return null;
@@ -99,6 +108,15 @@ public class CineworldAccessor {
 		} else {
 			Log.w("ACCESS", String.format("Multiple cinemas returned for id=%d", cinemaId));
 			return null;
+		}
+	}
+
+	public List<CineworldFilm> getFilms(final int cinemaId) {
+		String url = String.format(CineworldAccessor.URL_FILMS_CINEMA.toString(), cinemaId);
+		try {
+			return get(new URL(url), "films", FilmsResponse.class);
+		} catch (MalformedURLException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 }

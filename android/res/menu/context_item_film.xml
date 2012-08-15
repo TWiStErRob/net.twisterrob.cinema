@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menuitem_film_details" android:title="Film details" />
-	<item android:id="@+id/menuitem_film_where" android:title="Where can I see this?" />
-	<item android:id="@+id/menuitem_film_when" android:title="When can I see this?" />
+	<item android:id="@+id/menuitem_film_details_2d" android:title="2D Film details" />
+	<item android:id="@+id/menuitem_film_details_3d" android:title="3D Film details" />
+	<item android:id="@+id/menuitem_film_details_2d_imax" android:title="IMAX Film details" />
+	<item android:id="@+id/menuitem_film_details_3d_imax" android:title="IMAX 3D Film details" />
+	<item android:id="@+id/menuitem_film_where_2d" android:title="Where can I see this in 2D?" />
+	<item android:id="@+id/menuitem_film_where_3d" android:title="Where can I see this in 3D?" />
+	<item android:id="@+id/menuitem_film_where_2d_imax" android:title="Where can I see this in IMAX?" />
+	<item android:id="@+id/menuitem_film_where_3d_imax" android:title="Where can I see this in IMAX 3D?" />
+	<item android:id="@+id/menuitem_film_when_2d" android:title="When can I see this in 2D?" />
+	<item android:id="@+id/menuitem_film_when_3d" android:title="When can I see this in 3D?" />
+	<item android:id="@+id/menuitem_film_when_2d_imax" android:title="When can I see this in IMAX?" />
+	<item android:id="@+id/menuitem_film_when_3d_imax" android:title="When can I see this in IMAX 3D?" />
 </menu>

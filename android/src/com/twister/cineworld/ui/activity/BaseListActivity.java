@@ -172,4 +172,14 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 	private AbsListView getListView() {
 		return m_listView;
 	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> T getExtra(final String extraKey) {
+		T result = null;
+		if (getIntent().hasExtra(extraKey)) {
+			Object object = getIntent().getExtras().get(extraKey);
+			result = (T) object;
+		}
+		return result;
+	}
 }

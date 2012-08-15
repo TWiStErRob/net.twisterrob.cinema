@@ -58,7 +58,7 @@ public class CinemaActivity extends Activity {
 
 		name.setText(String.format("%s (%d)", result.getName(), result.getId()));
 
-		// TODO find a nicer way of handlink address links
+		// TODO find a nicer way of handling address links
 		address.setText(String.format("%s, %s", result.getAddress(), result.getPostcode()));
 		address.setOnClickListener(new OnClickListener() {
 			public void onClick(final View v) {

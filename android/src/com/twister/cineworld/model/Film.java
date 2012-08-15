@@ -52,6 +52,14 @@ public class Film extends FilmBase {
 		return m_3D;
 	}
 
+	public CineworldFilm getIMax2D() {
+		return m_imax2D;
+	}
+
+	public CineworldFilm getIMax3D() {
+		return m_imax3D;
+	}
+
 	public void add(final CineworldFilm cineFilm) {
 		if (cineFilm.isIMax()) {
 			if (cineFilm.is3D()) {
