@@ -10,7 +10,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldDate;
 import com.twister.cineworld.ui.adapter.DateAdapter;
 
-public class DatesActivity extends BaseListActivity<CineworldDate, CineworldDate> {
+public class DatesActivity extends BaseListActivity<CineworldDate> {
 	public DatesActivity() {
 		super(R.layout.activity_dates, R.menu.context_item_date);
 	}

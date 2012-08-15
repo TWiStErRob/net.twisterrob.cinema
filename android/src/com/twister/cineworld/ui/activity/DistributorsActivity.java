@@ -10,7 +10,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldDistributor;
 import com.twister.cineworld.ui.adapter.DistributorAdapter;
 
-public class DistributorsActivity extends BaseListActivity<CineworldDistributor, CineworldDistributor> {
+public class DistributorsActivity extends BaseListActivity<CineworldDistributor> {
 	public DistributorsActivity() {
 		super(R.layout.activity_distributors, R.menu.context_item_distributor);
 	}

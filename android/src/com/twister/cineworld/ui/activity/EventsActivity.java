@@ -10,7 +10,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldEvent;
 import com.twister.cineworld.ui.adapter.EventAdapter;
 
-public class EventsActivity extends BaseListActivity<CineworldEvent, CineworldEvent> {
+public class EventsActivity extends BaseListActivity<CineworldEvent> {
 	public EventsActivity() {
 		super(R.layout.activity_events, R.menu.context_item_event);
 	}

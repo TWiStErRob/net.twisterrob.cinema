@@ -10,7 +10,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldPerformance;
 import com.twister.cineworld.ui.adapter.PeformanceAdapter;
 
-public class PerformancesActivity extends BaseListActivity<CineworldPerformance, CineworldPerformance> {
+public class PerformancesActivity extends BaseListActivity<CineworldPerformance> {
 	public PerformancesActivity() {
 		super(R.layout.activity_performances, R.menu.context_item_performance);
 	}

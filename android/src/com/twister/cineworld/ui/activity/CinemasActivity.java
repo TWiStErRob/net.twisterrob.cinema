@@ -11,7 +11,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
-public class CinemasActivity extends BaseListActivity<CineworldCinema, CineworldCinema> {
+public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	public CinemasActivity() {
 		super(R.layout.activity_cinemas, R.menu.context_item_cinema);
 	}

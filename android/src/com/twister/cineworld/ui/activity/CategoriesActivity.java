@@ -10,7 +10,7 @@ import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCategory;
 import com.twister.cineworld.ui.adapter.CategoryAdapter;
 
-public class CategoriesActivity extends BaseListActivity<CineworldCategory, CineworldCategory> {
+public class CategoriesActivity extends BaseListActivity<CineworldCategory> {
 	public CategoriesActivity() {
 		super(R.layout.activity_categories, R.menu.context_item_category);
 	}

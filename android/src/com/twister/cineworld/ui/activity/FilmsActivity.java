@@ -12,7 +12,7 @@ import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.ui.FilmMatcher;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
-public class FilmsActivity extends BaseListActivity<CineworldFilm, FilmBase> {
+public class FilmsActivity extends BaseListActivity<FilmBase> {
 	public FilmsActivity() {
 		super(R.layout.activity_films, R.menu.context_item_film);
 	}

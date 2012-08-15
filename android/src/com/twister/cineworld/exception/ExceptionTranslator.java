@@ -1,17 +1,13 @@
 package com.twister.cineworld.exception;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.twister.cineworld.R;
 
 /**
- * Provices utility methods for extracting messages which are to be reported to the user from a
- * {@link CineworldException}
+ * Provices utility methods for extracting messages which are to be reported to the user from a {@link CineworldException}
  * 
  * @author Zoltán Kiss
  */
-public class ExceptionTranslator {
+public abstract class ExceptionTranslator {
 
 	private ExceptionTranslator() {
 		// utility class
@@ -26,34 +22,9 @@ public class ExceptionTranslator {
 	 */
 	public static String getExceptionExplanation(final Context context, final CineworldException exception) {
 		/*
-		 * TODO Erre nem tudom szükség van-e, lehet hogy elég a resource ID-t meghatározni és a paraméterek átadhatóak a
-		 * GUI elemnek is ami a szöveget jeleníti meg...
+		 * TODO Erre nem tudom szükség van-e, lehet hogy elég a resource ID-t meghatározni és a paraméterek átadhatóak a GUI elemnek is ami a szöveget jeleníti
+		 * meg...
 		 */
-		int resId = ExceptionTranslator.getMessageResource(exception.getType());
-		return context.getString(resId, exception.getParams());
+		return context.getString(exception.getType().getMessageResourceId(), exception.getParams());
 	}
-
-	/**
-	 * Find the string resource associated with an {@link ErrorType}.
-	 * 
-	 * @param type
-	 * 
-	 * @return
-	 */
-	public static int getMessageResource(final ErrorType type) {
-		int ret;
-		switch (type) {
-			case INTERNAL:
-				ret = R.string.error_internal;
-				break;
-			case NETWORK:
-				ret = R.string.error_network;
-				break;
-			default:
-				Log.wtf(ExceptionTranslator.class.getSimpleName(), "ErrorType not mapped: " + type.name());
-				ret = R.string.error_internal;
-		}
-		return ret;
-	}
-
 }

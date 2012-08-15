@@ -18,19 +18,17 @@ import com.twister.cineworld.ui.*;
  * <code>RawItem</code> and <code>UIItem</code> may be the same.
  * 
  * @author papp.robert.s
- * @param <RawItem> The type of items returned by the lower data handling layers
  * @param <UIItem> The type of items handled on the UI
  * @see ListRetriever
  */
-public abstract class BaseListActivity<RawItem, UIItem> extends Activity {
+public abstract class BaseListActivity<UIItem> extends Activity {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
 
 	/**
-	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
-	 * and <code>contextMenuId</code> will be inflated in
-	 * {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
+	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)} and <code>contextMenuId</code> will be
+	 * inflated in {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
 	 * 
 	 * @param contentViewId Must have an {@link AbsListView} with an id of <code>android:id="@android:id/list"</code>.
 	 * @param contextMenuId Context menu for items in the list.
