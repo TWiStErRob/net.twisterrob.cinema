@@ -36,8 +36,8 @@ public class CategoryAdapter extends BaseListAdapter<CineworldCategory, Category
 	protected void bindView(final ViewHolder holder, final CineworldCategory currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
-				currentItem.getCode()
-				);
+		        currentItem.getCode()
+		        );
 
 		holder.title.setText(title);
 		holder.description.setText(description);

@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CineworldDistributor extends CineworldBase {
 	@SerializedName("id")
-	private int		m_id;
+	private int	   m_id;
 	@SerializedName("name")
 	private String	m_name;
 

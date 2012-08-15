@@ -36,8 +36,8 @@ public class DateAdapter extends BaseListAdapter<CineworldDate, DateAdapter.View
 	protected void bindView(final ViewHolder holder, final CineworldDate currentItem, final View convertView) {
 		String title = currentItem.getDate();
 		String description = String.format("%tc",
-				currentItem.getCalendar()
-				);
+		        currentItem.getCalendar()
+		        );
 
 		holder.title.setText(title);
 		holder.description.setText(description);

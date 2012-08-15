@@ -3,7 +3,8 @@ package com.twister.cineworld.ui;
 import java.util.List;
 
 /**
- * Implementations should execute the {@link Retriever} provided based on their willings. However some basic principles should hold.
+ * Implementations should execute the {@link Retriever} provided based on their willings. However some basic principles
+ * should hold.
  * 
  * @author papp.robert.s
  * @param <RawItem> The type of items returned by the lower data handling layers
@@ -20,7 +21,6 @@ public interface RetrieverExecutor<RawItem, UIItem> {
 	 * <li>{@link Retriever#retrieve()}'s result should not be modified</li>
 	 * <li>{@link Retriever#process(List)}'s result should not be modified</li>
 	 * </ul>
-	 * 
 	 * So a trivial implentation looks something like this:
 	 * 
 	 * <pre>

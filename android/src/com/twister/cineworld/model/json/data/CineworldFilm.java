@@ -19,7 +19,6 @@ import com.google.gson.annotations.SerializedName;
  * title: "Ted"
  * }
  * </pre>
- * 
  */
 public class CineworldFilm extends CineworldBase {
 	@SerializedName("3D")
@@ -29,11 +28,11 @@ public class CineworldFilm extends CineworldBase {
 	@SerializedName("classification")
 	private String	m_classification;
 	@SerializedName("edi")
-	private int		m_edi;
+	private int	    m_edi;
 	@SerializedName("film_url")
 	private String	m_filmUrl;
 	@SerializedName("id")
-	private int		m_id;
+	private int	    m_id;
 	@SerializedName("imax")
 	private boolean	m_iMax;
 	@SerializedName("poster_url")

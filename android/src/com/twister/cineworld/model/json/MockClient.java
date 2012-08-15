@@ -196,7 +196,7 @@ public class MockClient {
 	 * Magic happens here.
 	 */
 	public <X extends CineworldBase, T extends BaseListResponse<? extends X>>
-			T get(final URL url, final Class<T> responseType) throws IOException, URISyntaxException {
+	        T get(final URL url, final Class<T> responseType) throws IOException, URISyntaxException {
 		@SuppressWarnings("unchecked")
 		T response = (T) MockClient.RESPONSE_MAPPING.get(responseType);
 		return response;

@@ -3,7 +3,8 @@ package com.twister.cineworld.exception;
 import android.content.Context;
 
 /**
- * Provices utility methods for extracting messages which are to be reported to the user from a {@link CineworldException}
+ * Provices utility methods for extracting messages which are to be reported to the user from a
+ * {@link CineworldException}
  * 
  * @author Zoltán Kiss
  */
@@ -22,8 +23,8 @@ public abstract class ExceptionTranslator {
 	 */
 	public static String getExceptionExplanation(final Context context, final CineworldException exception) {
 		/*
-		 * TODO Erre nem tudom szükség van-e, lehet hogy elég a resource ID-t meghatározni és a paraméterek átadhatóak a GUI elemnek is ami a szöveget jeleníti
-		 * meg...
+		 * TODO Erre nem tudom szükség van-e, lehet hogy elég a resource ID-t meghatározni és a paraméterek átadhatóak a
+		 * GUI elemnek is ami a szöveget jeleníti meg...
 		 */
 		return context.getString(exception.getType().getMessageResourceId(), exception.getParams());
 	}

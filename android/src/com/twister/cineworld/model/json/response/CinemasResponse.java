@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 
 /**
- * Use this to retrieve an array of Cineworld cinemas ordered by name and returned in JSON format. An example of what will be returned is below (use the full
- * parameter to retrieve more data for each cinema):
+ * Use this to retrieve an array of Cineworld cinemas ordered by name and returned in JSON format. An example of what
+ * will be returned is below (use the full parameter to retrieve more data for each cinema):
  * 
  * <pre>
  * {"cinemas":[{

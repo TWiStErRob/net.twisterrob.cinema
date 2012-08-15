@@ -36,12 +36,12 @@ public class PeformanceAdapter extends BaseListAdapter<CineworldPerformance, Pef
 	protected void bindView(final ViewHolder holder, final CineworldPerformance currentItem, final View convertView) {
 		String title = currentItem.getTime();
 		String description = String.format("%s%s%s%s\n%s",
-				currentItem.getType(),
-				currentItem.isAvailable()? " avail" : "",
-				currentItem.isSubtitled()? " sub" : "",
-				currentItem.isAudioDescribed()? " ad" : "",
-				currentItem.getBookingUrl()
-				);
+		        currentItem.getType(),
+		        currentItem.isAvailable()? " avail" : "",
+		        currentItem.isSubtitled()? " sub" : "",
+		        currentItem.isAudioDescribed()? " ad" : "",
+		        currentItem.getBookingUrl()
+		        );
 
 		holder.title.setText(title);
 		holder.description.setText(description);

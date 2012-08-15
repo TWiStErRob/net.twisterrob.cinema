@@ -1,8 +1,8 @@
 package com.twister.cineworld.ui;
 
 /**
- * Abstraction to handle retrieving an item, then doing some possible transformative processing on it, and in the end updating the display with the final
- * result.
+ * Abstraction to handle retrieving an item, then doing some possible transformative processing on it, and in the end
+ * updating the display with the final result.
  * 
  * @author papp.robert.s
  * @param <RawItem> The type of item returned by the lower data handling layers

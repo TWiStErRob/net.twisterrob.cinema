@@ -3,8 +3,8 @@ package com.twister.cineworld.exception;
 import com.twister.cineworld.R;
 
 /**
- * Differentiated errors which cause exceptions in the application and get reported back to the user. Each {@link ErrorType} has it's own message text localized
- * as a format string for {@link String#format(String, Object...)}
+ * Differentiated errors which cause exceptions in the application and get reported back to the user. Each
+ * {@link ErrorType} has it's own message text localized as a format string for {@link String#format(String, Object...)}
  * 
  * @author Zoltán Kiss
  */

@@ -13,20 +13,21 @@ import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final URL	URL_FILMS_ALL			= BaseListRequest.makeUrl("quickbook/films", "full=true");
-	public static final URL	URL_FILMS_CINEMA		= BaseListRequest.makeUrl("quickbook/films", "full=true", "cinema=%s");
-	public static final URL	URL_DATES_ALL			= BaseListRequest.makeUrl("quickbook/dates");
-	public static final URL	URL_PERFORMANCES		= BaseListRequest.makeUrl("quickbook/performances", "cinema=%s", "film=%s", "date=%s");
-	public static final URL	URL_CATEGORIES_ALL		= BaseListRequest.makeUrl("categories");
-	public static final URL	URL_EVENTS_ALL			= BaseListRequest.makeUrl("events");
+	public static final URL	URL_FILMS_ALL	     = BaseListRequest.makeUrl("quickbook/films", "full=true");
+	public static final URL	URL_FILMS_CINEMA	 = BaseListRequest.makeUrl("quickbook/films", "full=true", "cinema=%s");
+	public static final URL	URL_DATES_ALL	     = BaseListRequest.makeUrl("quickbook/dates");
+	public static final URL	URL_PERFORMANCES	 = BaseListRequest.makeUrl("quickbook/performances", "cinema=%s",
+	                                                     "film=%s", "date=%s");
+	public static final URL	URL_CATEGORIES_ALL	 = BaseListRequest.makeUrl("categories");
+	public static final URL	URL_EVENTS_ALL	     = BaseListRequest.makeUrl("events");
 	public static final URL	URL_DISTRIBUTORS_ALL	= BaseListRequest.makeUrl("distributors");
 
-	private final Gson		m_gson;
+	private final Gson	    m_gson;
 
 	public CineworldAccessor() {
 		m_gson = new GsonBuilder()
-				.registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
-				.create();
+		        .registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
+		        .create();
 	}
 
 	public List<CineworldCinema> getAllCinemas() {
@@ -60,14 +61,16 @@ public class CineworldAccessor {
 			URL url = new URL(String.format(CineworldAccessor.URL_PERFORMANCES.toString(), cinema, film, date));
 			return get(url, "performances", PerformancesResponse.class);
 		} catch (MalformedURLException ex) {
-			Log.e("ACCESS", String.format("Invalid URL getPerformances: cinema='%s', film='%s', date='%s'", cinema, film, date), ex);
+			Log.e("ACCESS",
+			        String.format("Invalid URL getPerformances: cinema='%s', film='%s', date='%s'", cinema, film, date),
+			        ex);
 			return Collections.emptyList();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T extends CineworldBase, Response extends BaseListResponse<? extends T>>
-			List<T> get(final URL url, final String objectType, final Class<Response> clazz) {
+	        List<T> get(final URL url, final String objectType, final Class<Response> clazz) {
 		List<? extends T> result = Collections.emptyList();
 		try {
 			result = new JsonClient(m_gson).get(url, clazz).getList();

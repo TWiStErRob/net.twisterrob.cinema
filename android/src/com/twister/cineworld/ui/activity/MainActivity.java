@@ -38,14 +38,14 @@ public class MainActivity extends ListActivity {
 	private List<Map<String, String>> getListItems() {
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		String[] activities = {
-				CinemasActivity.class.getName(), "Cinemas",
-				CinemasMapActivity.class.getName(), "Cinemas map",
-				FilmsActivity.class.getName(), "Films",
-				DatesActivity.class.getName(), "Dates",
-				PerformancesActivity.class.getName(), "Performances",
-				CategoriesActivity.class.getName(), "Categories",
-				EventsActivity.class.getName(), "Events",
-				DistributorsActivity.class.getName(), "Distributors",
+		        CinemasActivity.class.getName(), "Cinemas",
+		        CinemasMapActivity.class.getName(), "Cinemas map",
+		        FilmsActivity.class.getName(), "Films",
+		        DatesActivity.class.getName(), "Dates",
+		        PerformancesActivity.class.getName(), "Performances",
+		        CategoriesActivity.class.getName(), "Categories",
+		        EventsActivity.class.getName(), "Events",
+		        DistributorsActivity.class.getName(), "Distributors",
 		};
 		for (int i = 0; i < activities.length; i += 2) {
 			Map<String, String> map = new HashMap<String, String>();
