@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE menu>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menuitem_film_details_2d" android:title="2D Film details" />
 	<item android:id="@+id/menuitem_film_details_3d" android:title="3D Film details" />

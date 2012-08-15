@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources>
 <resources>
     <string name="app_name">Cineworld Browser</string>
 
@@ -12,4 +14,12 @@
     <string name="title_activity_distributors">Cineworld Browser - Distributors</string>
 
     <string name="test">Test</string>
+
+    <string name="design_address_full">Place, City, P0STC0D3</string>
+
+    <string name="design_url_cinema">http://www.cineworld.co.uk/cinemas/id</string>
+
+    <string name="design_phone">0871 200 2000</string>
+
+    <string name="design_name_cinema">Cinema Name (id)</string>
 </resources>

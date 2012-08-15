@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources>
 <resources>
     <string name="error_network">A network error occured. It is possible that your internet connection is down or Cineworld service is unavailable.</string>
     <string name="error_internal">An internal error occured. This may be a bug in the application, apologies for that.</string>

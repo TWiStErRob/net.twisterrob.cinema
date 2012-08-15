@@ -50,7 +50,7 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 		Tools.s_context = this;
 		setContentView(m_contentViewId);
 
-		m_adapterView = (AdapterView<? extends Adapter>) findViewById(android.R.id.list);
+		m_adapterView = (AdapterView<?>) findViewById(android.R.id.list);
 		registerForContextMenu(m_adapterView);
 	}
 
@@ -83,7 +83,7 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		assert v == m_adapterView;
-		AdapterView<? extends Adapter> list = (AdapterView<? extends Adapter>) v;
+		AdapterView<? extends Adapter> list = (AdapterView<?>) v;
 		@SuppressWarnings("unchecked")
 		UIItem adapterItem = (UIItem) list.getAdapter().getItem((int) info.id);
 		onCreateContextMenu(menu, adapterItem);
@@ -151,8 +151,7 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 	 * 
 	 * @author papp.robert.s
 	 */
-	@SuppressWarnings("unused")
-	private AbsListView getListView() {
+	protected AbsListView getListView() {
 		return (AbsListView) m_adapterView;
 	}
 
@@ -161,7 +160,6 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 	 * 
 	 * @author papp.robert.s
 	 */
-	@SuppressWarnings("unused")
 	protected AbsSpinner getSpinner() {
 		return (AbsSpinner) m_adapterView;
 	}
