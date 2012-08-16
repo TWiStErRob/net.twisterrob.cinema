@@ -13,9 +13,6 @@ import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final URL	URL_FILMS_ALL	     = BaseListRequest.makeUrl("quickbook/films", "full=true");
-	public static final URL	URL_FILMS_CINEMA	 = BaseListRequest.makeUrl("quickbook/films", "full=true", "cinema=%s");
-	public static final URL	URL_DATES_ALL	     = BaseListRequest.makeUrl("quickbook/dates");
 	public static final URL	URL_PERFORMANCES	 = BaseListRequest.makeUrl("quickbook/performances", "cinema=%s",
 	                                                     "film=%s", "date=%s");
 	public static final URL	URL_CATEGORIES_ALL	 = BaseListRequest.makeUrl("categories");
@@ -36,16 +33,53 @@ public class CineworldAccessor {
 		return getList(request);
 	}
 
+	public CineworldCinema getCinema(final int cinemaId) {
+		CinemasRequest request = new CinemasRequest();
+		request.setCinema(cinemaId);
+		request.setFull(true);
+		return getSingular(request, cinemaId);
+	}
+
+	public List<CineworldCinema> getCinemas(final int filmEdi) {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setFilm(filmEdi);
+		return getList(request);
+	}
+
 	public List<CineworldFilm> getAllFilms() {
-		return get(CineworldAccessor.URL_FILMS_ALL, "films", FilmsResponse.class);
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		return getList(request);
+	}
+
+	public CineworldFilm getFilm(final int filmEdi) {
+		FilmsRequest request = new FilmsRequest();
+		request.setFilm(filmEdi);
+		request.setFull(true);
+		return getSingular(request, filmEdi);
+	}
+
+	public List<CineworldFilm> getFilms(final int cinemaId) {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setCinema(cinemaId);
+		return getList(request);
 	}
 
 	public List<CineworldDate> getAllDates() {
-		return get(CineworldAccessor.URL_DATES_ALL, "dates", DatesResponse.class);
+		DatesRequest request = new DatesRequest();
+		return getList(request);
+	}
+
+	public List<CineworldDate> getDates(final int filmEdi) {
+		DatesRequest request = new DatesRequest();
+		request.setFilm(filmEdi);
+		return getList(request);
 	}
 
 	public List<CineworldCategory> getAllCategories() {
-		return get(CineworldAccessor.URL_CATEGORIES_ALL, "films", CategoriesResponse.class);
+		return get(CineworldAccessor.URL_CATEGORIES_ALL, "categories", CategoriesResponse.class);
 	}
 
 	public List<CineworldEvent> getAllEvents() {
@@ -88,38 +122,15 @@ public class CineworldAccessor {
 		return get(request.getURL(), request.getRequestType(), request.getResponseClass());
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////
-	// More specific methods
-	// ////////////////////////////////////////////////////////////////////////////////////
-
-	public List<CineworldCinema> getCinemas(final int filmEdi) {
-		CinemasRequest request = new CinemasRequest();
-		request.setFull(true);
-		request.setFilm(filmEdi);
-		return getList(request);
-	}
-
-	public CineworldCinema getCinema(final int cinemaId) {
-		CinemasRequest request = new CinemasRequest();
-		request.setCinema(cinemaId);
-		request.setFull(true);
-		List<CineworldCinema> cinemas = getList(request);
-		if (cinemas.isEmpty()) {
-			return null;
-		} else if (cinemas.size() == 1) {
-			return cinemas.get(0);
+	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter) {
+		List<T> list = getList(request);
+		if (list.isEmpty()) {
+			return null; // TODO
+		} else if (list.size() == 1) {
+			return list.get(0);
 		} else {
-			Log.w("ACCESS", String.format("Multiple cinemas returned for id=%d", cinemaId));
-			return null;
-		}
-	}
-
-	public List<CineworldFilm> getFilms(final int cinemaId) {
-		String url = String.format(CineworldAccessor.URL_FILMS_CINEMA.toString(), cinemaId);
-		try {
-			return get(new URL(url), "films", FilmsResponse.class);
-		} catch (MalformedURLException ex) {
-			throw new RuntimeException(ex);
+			Log.w("ACCESS", String.format("Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
+			return null; // TODO
 		}
 	}
 }

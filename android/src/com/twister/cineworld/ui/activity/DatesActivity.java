@@ -9,7 +9,6 @@ import android.widget.ListAdapter;
 import com.twister.cineworld.R;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldDate;
-import com.twister.cineworld.ui.Tools;
 import com.twister.cineworld.ui.adapter.DateAdapter;
 
 public class DatesActivity extends BaseListActivity<CineworldDate> {
@@ -24,9 +23,7 @@ public class DatesActivity extends BaseListActivity<CineworldDate> {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		m_edi = getExtra(DatesActivity.EXTRA_EDI);
-		if (m_edi != null) {
-			Tools.toast("TODO implement film filter for dates, edi=" + m_edi);
-		}
+		setTitle(getResources().getString(R.string.title_activity_dates_loading, m_edi));
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public class DatesActivity extends BaseListActivity<CineworldDate> {
 	@Override
 	public List<CineworldDate> doWork() {
 		if (m_edi != null) {
-			return new CineworldAccessor().getAllDates(); // TODO filter on film
+			return new CineworldAccessor().getDates(m_edi);
 		} else {
 			return new CineworldAccessor().getAllDates();
 		}
@@ -45,6 +42,7 @@ public class DatesActivity extends BaseListActivity<CineworldDate> {
 
 	@Override
 	protected ListAdapter createAdapter(final List<CineworldDate> result) {
+		setTitle(getResources().getString(R.string.title_activity_dates_loaded, m_edi));
 		return new DateAdapter(DatesActivity.this, result);
 	}
 }

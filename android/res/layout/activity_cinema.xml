@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="web"
-        android:text="@string/design_address_full" />
+        android:text="@string/design_misc_address" />
 
     <TextView
         android:id="@+id/cinema_url"
@@ -30,5 +30,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="phone"
-        android:text="@string/design_phone" />
+        android:text="@string/design_misc_phone" />
 </LinearLayout>

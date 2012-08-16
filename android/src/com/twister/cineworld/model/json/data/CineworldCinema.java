@@ -2,8 +2,14 @@ package com.twister.cineworld.model.json.data;
 
 import com.google.android.maps.GeoPoint;
 import com.google.gson.annotations.SerializedName;
+import com.twister.cineworld.model.json.request.CinemasRequest;
 
 /**
+ * <p>
+ * This query returns a list of cinemas that have programmed performances. The results can be filtered by supplying
+ * optional film, date and cinema parameters. These can all take multiple values, so for example it is possible to
+ * search for all cinemas showing film1 or film2 on a specific date.
+ * </p>
  * Example JSON:
  * 
  * <pre>
@@ -16,6 +22,8 @@ import com.google.gson.annotations.SerializedName;
  * telephone: "0871 200 2000"
  * }
  * </pre>
+ * 
+ * @see CinemasRequest
  */
 public class CineworldCinema extends CineworldBase {
 	@SerializedName("id")

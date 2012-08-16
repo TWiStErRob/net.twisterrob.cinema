@@ -28,6 +28,7 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		m_edi = getExtra(CinemasActivity.EXTRA_EDI);
+		setTitle(getResources().getString(R.string.title_activity_cinemas_loading, m_edi));
 	}
 
 	@Override
@@ -56,11 +57,6 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
-		return new CinemaAdapter(this, result);
-	}
-
-	@Override
 	protected List<CineworldCinema> doWork() {
 		if (m_edi != null) {
 			return new CineworldAccessor().getCinemas(m_edi);
@@ -69,4 +65,9 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 		}
 	}
 
+	@Override
+	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
+		setTitle(getResources().getString(R.string.title_activity_cinemas_loaded, m_edi));
+		return new CinemaAdapter(this, result);
+	}
 }

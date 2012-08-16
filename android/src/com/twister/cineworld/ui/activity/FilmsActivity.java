@@ -11,7 +11,7 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.model.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
-import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.FilmMatcher;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
 public class FilmsActivity extends BaseListActivity<FilmBase> {
@@ -30,6 +30,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		m_cinemaId = getExtra(FilmsActivity.EXTRA_CINEMA_ID);
+		setTitle(getResources().getString(R.string.title_activity_films_loading, m_cinemaId));
 	}
 
 	@Override
@@ -59,10 +60,9 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 				CineworldFilm film = getFilm(item, menu.getItemId(),
 				        R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
 				        R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
-				Tools.toast("TODO implement film details of " + film.getEdi());
-				// Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
-				// intent.putExtra(FilmActivity.EXTRA_EDI, film.getEdi());
-				// this.startActivity(intent);
+				Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
+				intent.putExtra(FilmActivity.EXTRA_EDI, film.getEdi());
+				this.startActivity(intent);
 				return true;
 			}
 			case R.id.menuitem_film_when_2d:
@@ -130,6 +130,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 
 	@Override
 	protected ListAdapter createAdapter(final List<FilmBase> result) {
+		setTitle(getResources().getString(R.string.title_activity_films_loaded, m_cinemaId)); // TODO move
 		return new FilmAdapter(FilmsActivity.this, result);
 	}
 }

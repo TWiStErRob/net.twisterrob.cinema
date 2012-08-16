@@ -5,16 +5,28 @@ import java.util.regex.*;
 
 import android.util.Log;
 
+import com.twister.cineworld.model.json.request.DatesRequest;
+
 /**
+ * <p>
+ * This query returns a list of dates that have programmed performances. The results can be filtered by supplying
+ * optional film, date and cinema parameters. These can all take multiple values, so for example it is possible to
+ * search for all dates on which a cinema is showing a particular film.
+ * </p>
  * Example JSON:
  * 
  * <pre>
  * &quot;20120811&quot;
  * </pre>
+ * 
+ * @see DatesRequest
  */
 public class CineworldDate extends CineworldBase {
 	private String	m_date; // TODO int or calendar or anything
 
+	/**
+	 * @return Date (format yyyymmdd) there is a performance scheduled
+	 */
 	public String getDate() {
 		return m_date;
 	}
@@ -23,6 +35,12 @@ public class CineworldDate extends CineworldBase {
 		m_date = date;
 	}
 
+	/**
+	 * Convenience method<br>
+	 * TODO Refactor
+	 * 
+	 * @return
+	 */
 	public Calendar getCalendar() {
 		Calendar calendar = null;
 		if (getDate() != null) {

@@ -23,17 +23,19 @@ public class CinemaActivity extends Activity {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_ID	= "extra_id";
+	private Integer	           m_id;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cinema);
+		m_id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
+		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_id));
 
 		CinewordExecutor.execute(new CinewordGUITask<CineworldCinema>(this) {
 			@Override
 			protected CineworldCinema work() throws CineworldException {
-				Integer id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
-				return new CineworldAccessor().getCinema(id);
+				return new CineworldAccessor().getCinema(m_id);
 			}
 
 			@Override
@@ -50,7 +52,7 @@ public class CinemaActivity extends Activity {
 	}
 
 	private void update(final CineworldCinema result) {
-		setTitle(String.format("Cinema details: %s", result.getName()));
+		setTitle(getResources().getString(R.string.title_activity_cinema_loaded, result.getName()));
 		TextView name = (TextView) findViewById(R.id.cinema_name);
 		TextView address = (TextView) findViewById(R.id.cinema_address);
 		TextView url = (TextView) findViewById(R.id.cinema_url);

@@ -4,10 +4,17 @@
     <string name="app_name">Cineworld Browser</string>
 
     <string name="title_activity_main">Cineworld Browser</string>
-    <string name="title_activity_cinemas">Cineworld Browser - Cinemas</string>
+    <string name="title_activity_cinemas_loading">Cineworld Browser - Cinemas (film=%d)</string>
+    <string name="title_activity_cinemas_loaded">Cineworld Browser - Cinemas for film: %s</string>
+    <string name="title_activity_cinema_loading">Cineworld Browser - Cinema (cinema=%d)</string>
+    <string name="title_activity_cinema_loaded">Cineworld Browser - Cinema: %s</string>
     <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas</string>
-    <string name="title_activity_films">Cineworld Browser - Films</string>
-    <string name="title_activity_dates">Cineworld Browser - Dates</string>
+    <string name="title_activity_films_loading">Cineworld Browser - Films (cinema=%d)</string>
+    <string name="title_activity_films_loaded">Cineworld Browser - Films for cinema: %d</string>
+    <string name="title_activity_film_loading">Cineworld Browser - Film (film=%d)</string>
+    <string name="title_activity_film_loaded">Cineworld Browser - Film: %s</string>
+    <string name="title_activity_dates_loading">Cineworld Browser - Dates (film=%d)</string>
+    <string name="title_activity_dates_loaded">Cineworld Browser - Dates for film: %d</string>
     <string name="title_activity_performances">Cineworld Browser - Performances</string>
     <string name="title_activity_categories">Cineworld Browser - Categories</string>
     <string name="title_activity_events">Cineworld Browser - Events</string>
@@ -15,11 +22,18 @@
 
     <string name="test">Test</string>
 
-    <string name="design_address_full">Place, City, P0STC0D3</string>
+    <string name="design_name_cinema">Cinema Name (id)</string>
+    <string name="design_name_film">Film Full Title (edi/id)</string>
 
     <string name="design_url_cinema">http://www.cineworld.co.uk/cinemas/id</string>
+    <string name="design_url_film_details">http://www.cineworld.co.uk/films/id</string>
+    <string name="design_url_film_poster">https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg</string>
+    <string name="design_url_film_still">https://www.cineworld.co.uk/assets/media/films/5409_still.jpg</string>
+    
+    <string name="design_misc_address">Place, City, P0STC0D3</string>
+    <string name="design_misc_phone">0871 200 2000</string>
+    <string name="design_misc_classification">18</string>
+    <string name="design_misc_advisory">\???</string>
 
-    <string name="design_phone">0871 200 2000</string>
-
-    <string name="design_name_cinema">Cinema Name (id)</string>
+    <string name="design_attributes_film">IMAX 3D</string>
 </resources>
