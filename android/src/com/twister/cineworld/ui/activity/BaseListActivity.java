@@ -23,8 +23,8 @@ import com.twister.cineworld.ui.*;
  */
 public abstract class BaseListActivity<UIItem> extends Activity {
 	private AbsListView	m_listView;
-	private int	        m_contentViewId;
-	private int	        m_contextMenuId;
+	private int			m_contentViewId;
+	private int			m_contextMenuId;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}

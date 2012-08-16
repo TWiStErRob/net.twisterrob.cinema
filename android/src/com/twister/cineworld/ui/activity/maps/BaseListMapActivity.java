@@ -21,10 +21,10 @@ import com.twister.cineworld.ui.*;
  * @see ListRetriever
  */
 public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity implements
-        ListRetriever<RawItem, UIItem> {
+		ListRetriever<RawItem, UIItem> {
 	private AdapterView<? extends Adapter>	m_adapterView;
-	private int	                           m_contentViewId;
-	private int	                           m_contextMenuId;
+	private int								m_contentViewId;
+	private int								m_contextMenuId;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}

@@ -36,8 +36,8 @@ public class EventAdapter extends BaseListAdapter<CineworldEvent, EventAdapter.V
 	protected void bindView(final ViewHolder holder, final CineworldEvent currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
-		        currentItem.getCode()
-		        );
+				currentItem.getCode()
+				);
 
 		holder.title.setText(title);
 		holder.description.setText(description);

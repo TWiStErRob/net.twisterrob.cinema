@@ -21,10 +21,10 @@ import com.twister.cineworld.ui.activity.CinemaActivity;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, CineworldCinema> implements
-        OnFocusChangeListener, OnItemSelectedListener {
-	private MapView	                           m_map;
-	private MyLocationOverlay	               m_location;
-	private MyItemizedOverlay	               m_overlay;
+		OnFocusChangeListener, OnItemSelectedListener {
+	private MapView								m_map;
+	private MyLocationOverlay					m_location;
+	private MyItemizedOverlay					m_overlay;
 
 	private static final Map<String, GeoPoint>	s_locations	= new HashMap<String, GeoPoint>();
 	static {
@@ -140,7 +140,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 			public void run() {
 				Location lastFix = m_location.getLastFix();
 				final GeoPoint newCenter = new GeoPoint((int) (lastFix.getLatitude() * 1e6), (int) (lastFix
-				        .getLongitude() * 1e6));
+						.getLongitude() * 1e6));
 				m_map.post(new Runnable() {
 					public void run() {
 						m_map.getController().setZoom(11);
@@ -201,7 +201,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 					if (!locs.isEmpty()) {
 						Address address = locs.get(0);
 						loc = new GeoPoint((int) (address.getLatitude() * 1e6),
-						        (int) (locs.get(0).getLongitude() * 1e6));
+								(int) (locs.get(0).getLongitude() * 1e6));
 					}
 				}
 				cinema.setLocation(loc);

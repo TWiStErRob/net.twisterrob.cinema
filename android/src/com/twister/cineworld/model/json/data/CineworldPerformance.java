@@ -29,7 +29,7 @@ public class CineworldPerformance extends CineworldBase {
 	@SerializedName("subtitled")
 	private boolean	m_subtitled;
 	@SerializedName("ss")
-	private String	m_ss;	          // TODO what is this?
+	private String	m_ss;				// TODO what is this?
 	@SerializedName("booking_url")
 	private String	m_bookingUrl;
 

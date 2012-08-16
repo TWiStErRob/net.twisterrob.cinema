@@ -7,8 +7,8 @@ import android.view.*;
 import android.widget.BaseAdapter;
 
 public abstract class BaseListAdapter<T, VH> extends BaseAdapter {
-	protected List<T>	           m_items;
-	protected final Context	       m_context;
+	protected List<T>				m_items;
+	protected final Context			m_context;
 	protected final LayoutInflater	m_inflater;
 
 	public BaseListAdapter(final Context context, final Collection<T> items) {

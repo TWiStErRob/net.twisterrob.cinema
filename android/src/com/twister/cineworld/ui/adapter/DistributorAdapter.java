@@ -36,8 +36,8 @@ public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, Di
 	protected void bindView(final ViewHolder holder, final CineworldDistributor currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
-		        currentItem.getId()
-		        );
+				currentItem.getId()
+				);
 
 		holder.title.setText(title);
 		holder.description.setText(description);

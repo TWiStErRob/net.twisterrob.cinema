@@ -23,7 +23,7 @@ public class CinemaActivity extends Activity {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_ID	= "extra_id";
-	private Integer	           m_id;
+	private Integer				m_id;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {

@@ -9,9 +9,9 @@ public abstract class CineworldException extends Exception {
 
 	private static final long	serialVersionUID	= -295518164973462329L;
 
-	private ErrorType	      type;
+	private ErrorType			type;
 
-	private final Object[]	  params;
+	private final Object[]		params;
 
 	public CineworldException(final ErrorType type, final Object... params) {
 		super();

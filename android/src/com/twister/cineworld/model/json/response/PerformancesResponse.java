@@ -10,7 +10,7 @@ public class PerformancesResponse extends BaseListResponse<CineworldPerformance>
 	private List<CineworldPerformance>	m_performances;
 
 	@SerializedName("legends")
-	private List<CineworldLegend>	   m_legends;
+	private List<CineworldLegend>		m_legends;
 
 	public List<CineworldPerformance> getPerformances() {
 		return m_performances;

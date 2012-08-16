@@ -36,9 +36,9 @@ public class CinemaAdapter extends BaseListAdapter<CineworldCinema, CinemaAdapte
 	protected void bindView(final ViewHolder holder, final CineworldCinema currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s, %s",
-		        currentItem.getAddress(),
-		        currentItem.getPostcode()
-		        );
+				currentItem.getAddress(),
+				currentItem.getPostcode()
+				);
 
 		holder.title.setText(title);
 		holder.description.setText(description);

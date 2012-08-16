@@ -36,11 +36,11 @@ public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolde
 	protected void bindView(final ViewHolder holder, final FilmBase currentItem, final View convertView) {
 		String title = currentItem.getTitle();
 		String description = String.format("%s (%s%s%s%s )",
-		        currentItem.getClassification(),
-		        currentItem.has2D()? " 2D" : "",
-		        currentItem.has3D()? " 3D" : "",
-		        currentItem.hasIMax2D()? " IMAX2D" : "",
-		        currentItem.hasIMax3D()? " IMAX3D" : "");
+				currentItem.getClassification(),
+				currentItem.has2D()? " 2D" : "",
+				currentItem.has3D()? " 3D" : "",
+				currentItem.hasIMax2D()? " IMAX2D" : "",
+				currentItem.hasIMax3D()? " IMAX3D" : "");
 		if (currentItem instanceof FilmSerie) {
 			title = String.format("%s (%d)", title, ((FilmSerie) currentItem).getFilms().size());
 		}

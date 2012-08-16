@@ -10,8 +10,8 @@ public class CineworldDateTypeConverter implements JsonSerializer<CineworldDate>
 	}
 
 	public CineworldDate deserialize(final JsonElement json, final Type typeOfT,
-	        final JsonDeserializationContext context)
-	        throws JsonParseException {
+			final JsonDeserializationContext context)
+			throws JsonParseException {
 		CineworldDate date = new CineworldDate();
 		date.setDate(json.getAsJsonPrimitive().getAsString());
 		return date;

@@ -32,11 +32,11 @@ import com.twister.cineworld.model.json.request.FilmsRequest;
  */
 public class CineworldFilm extends CineworldBase {
 	@SerializedName("edi")
-	private int	    m_edi;
+	private int		m_edi;
 	@SerializedName("title")
 	private String	m_title;
 	@SerializedName("id")
-	private int	    m_id;
+	private int		m_id;
 	@SerializedName("classification")
 	private String	m_classification;
 	@SerializedName("advisory")

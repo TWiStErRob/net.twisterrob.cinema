@@ -13,7 +13,7 @@ import com.twister.cineworld.ui.adapter.DateAdapter;
 
 public class DatesActivity extends BaseListActivity<CineworldDate> {
 	public static final String	EXTRA_EDI	= "film_edi";
-	private Integer	           m_edi;
+	private Integer				m_edi;
 
 	public DatesActivity() {
 		super(R.layout.activity_dates, R.menu.context_item_date);

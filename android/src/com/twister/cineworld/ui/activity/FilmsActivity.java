@@ -20,7 +20,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_CINEMA_ID	= "ciname_id";
-	private Integer	           m_cinemaId;
+	private Integer				m_cinemaId;
 
 	public FilmsActivity() {
 		super(R.layout.activity_films, R.menu.context_item_film);
@@ -58,8 +58,8 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 			case R.id.menuitem_film_details_2d_imax:
 			case R.id.menuitem_film_details_3d_imax: {
 				CineworldFilm film = getFilm(item, menu.getItemId(),
-				        R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
-				        R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
+						R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
+						R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
 				intent.putExtra(FilmActivity.EXTRA_EDI, film.getEdi());
 				this.startActivity(intent);
@@ -70,8 +70,8 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 			case R.id.menuitem_film_when_2d_imax:
 			case R.id.menuitem_film_when_3d_imax: {
 				CineworldFilm film = getFilm(item, menu.getItemId(),
-				        R.id.menuitem_film_when_2d, R.id.menuitem_film_when_2d_imax,
-				        R.id.menuitem_film_when_3d, R.id.menuitem_film_when_3d_imax);
+						R.id.menuitem_film_when_2d, R.id.menuitem_film_when_2d_imax,
+						R.id.menuitem_film_when_3d, R.id.menuitem_film_when_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), DatesActivity.class);
 				intent.putExtra(DatesActivity.EXTRA_EDI, film.getEdi());
 				this.startActivity(intent);
@@ -82,8 +82,8 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 			case R.id.menuitem_film_where_2d_imax:
 			case R.id.menuitem_film_where_3d_imax: {
 				CineworldFilm film = getFilm(item, menu.getItemId(),
-				        R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
-				        R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
+						R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
+						R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
 				intent.putExtra(CinemasActivity.EXTRA_EDI, film.getEdi());
 				this.startActivity(intent);
@@ -96,7 +96,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	private CineworldFilm getFilm(final FilmBase item, final int itemId,
-	        final int id2D, final int id2dIMax, final int id3D, final int id3dIMax) {
+			final int id2D, final int id2dIMax, final int id3D, final int id3dIMax) {
 		if (item instanceof Film) {
 			Film film = (Film) item;
 			if (itemId == id2D) {

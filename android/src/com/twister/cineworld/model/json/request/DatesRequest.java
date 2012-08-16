@@ -20,11 +20,11 @@ import com.twister.cineworld.model.json.response.DatesResponse;
  */
 public class DatesRequest extends BaseListRequest<CineworldDate> {
 	private static final String	REQUEST_TYPE	= "quickbook/dates";
-	private Integer	            m_cinema;
-	private Integer	            m_film;
-	private String	            m_category;
-	private String	            m_event;
-	private Integer	            m_distributor;
+	private Integer				m_cinema;
+	private Integer				m_film;
+	private String				m_category;
+	private String				m_event;
+	private Integer				m_distributor;
 
 	/**
 	 * Creates an empty request, use the setters to provide filtering parameters.
@@ -47,7 +47,7 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 *            contain dates on which there is at least on performance for a film from this distributor.
 	 */
 	public DatesRequest(final Integer cinema, final Integer film, final String category, final String event,
-	        final Integer distributor) {
+			final Integer distributor) {
 		super();
 		m_cinema = cinema;
 		m_film = film;
@@ -77,7 +77,7 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 *            contain dates on which there is at least on performance for a film from this distributor.
 	 */
 	public DatesRequest(final String key, final String territory, final String callback, final Integer cinema,
-	        final Integer film, final String category, final String event, final Integer distributor) {
+			final Integer film, final String category, final String event, final Integer distributor) {
 		super(key, territory, callback);
 		m_cinema = cinema;
 		m_film = film;
@@ -96,11 +96,11 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	@Override
 	public URL getURL() {
 		return BaseListRequest.makeUrl(DatesRequest.REQUEST_TYPE,
-		        BaseListRequest.KEY_CINEMA, m_cinema,
-		        BaseListRequest.KEY_FILM, m_film,
-		        BaseListRequest.KEY_CATEGORY, m_category,
-		        BaseListRequest.KEY_EVENT, m_event,
-		        BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
+				BaseListRequest.KEY_CINEMA, m_cinema,
+				BaseListRequest.KEY_FILM, m_film,
+				BaseListRequest.KEY_CATEGORY, m_category,
+				BaseListRequest.KEY_EVENT, m_event,
+				BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
 	}
 
 	/**

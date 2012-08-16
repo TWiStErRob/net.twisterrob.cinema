@@ -17,7 +17,7 @@ import com.twister.cineworld.tools.IOTools;
 
 public class JsonClient {
 	private static final String	CONTENT_TYPE_JSON	= "application/json";
-	private final Gson	        m_gson;
+	private final Gson			m_gson;
 
 	public JsonClient(final Gson gson) {
 		if (gson == null) {
@@ -97,7 +97,7 @@ public class JsonClient {
 	private void checkResponseThrow(final HttpResponse httpResponse, final HttpEntity entity) throws IOException {
 		StatusLine status = httpResponse.getStatusLine();
 		int statusCode = status
-		        .getStatusCode();
+				.getStatusCode();
 		if (statusCode != HttpStatus.SC_OK) {
 			throw new HttpResponseException(status.getStatusCode(), status.getReasonPhrase());
 		}

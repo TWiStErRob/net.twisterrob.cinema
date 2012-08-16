@@ -26,13 +26,13 @@ import com.twister.cineworld.model.json.response.FilmsResponse;
  */
 public class FilmsRequest extends BaseListRequest<CineworldFilm> {
 	private static final String	REQUEST_TYPE	= "quickbook/films";
-	private Boolean	            m_full;
-	private Integer	            m_cinema;
-	private Integer	            m_date;
-	private Integer	            m_film;
-	private String	            m_category;
-	private String	            m_event;
-	private Integer	            m_distributor;
+	private Boolean				m_full;
+	private Integer				m_cinema;
+	private Integer				m_date;
+	private Integer				m_film;
+	private String				m_category;
+	private String				m_event;
+	private Integer				m_distributor;
 
 	/**
 	 * Creates an empty request, use the setters to provide filtering parameters.
@@ -58,7 +58,7 @@ public class FilmsRequest extends BaseListRequest<CineworldFilm> {
 	 *            contain films from this distributor.
 	 */
 	public FilmsRequest(final Boolean full, final Integer cinema, final Integer date, final Integer film,
-	        final String category, final String event, final Integer distributor) {
+			final String category, final String event, final Integer distributor) {
 		super();
 		m_full = full;
 		m_cinema = cinema;
@@ -93,8 +93,8 @@ public class FilmsRequest extends BaseListRequest<CineworldFilm> {
 	 *            contain films from this distributor.
 	 */
 	public FilmsRequest(final String key, final String territory, final String callback, final Boolean full,
-	        final Integer cinema, final Integer date, final Integer film, final String category, final String event,
-	        final Integer distributor) {
+			final Integer cinema, final Integer date, final Integer film, final String category, final String event,
+			final Integer distributor) {
 		super(key, territory, callback);
 		m_full = full;
 		m_cinema = cinema;
@@ -115,13 +115,13 @@ public class FilmsRequest extends BaseListRequest<CineworldFilm> {
 	@Override
 	public URL getURL() {
 		return BaseListRequest.makeUrl(FilmsRequest.REQUEST_TYPE,
-		        BaseListRequest.KEY_FULL, m_full,
-		        BaseListRequest.KEY_CINEMA, m_cinema,
-		        BaseListRequest.KEY_DATE, m_date,
-		        BaseListRequest.KEY_FILM, m_film,
-		        BaseListRequest.KEY_CATEGORY, m_category,
-		        BaseListRequest.KEY_EVENT, m_event,
-		        BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
+				BaseListRequest.KEY_FULL, m_full,
+				BaseListRequest.KEY_CINEMA, m_cinema,
+				BaseListRequest.KEY_DATE, m_date,
+				BaseListRequest.KEY_FILM, m_film,
+				BaseListRequest.KEY_CATEGORY, m_category,
+				BaseListRequest.KEY_EVENT, m_event,
+				BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
 	}
 
 	/**

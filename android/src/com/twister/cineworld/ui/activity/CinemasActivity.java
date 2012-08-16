@@ -18,7 +18,7 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_EDI	= "film_edi";
-	private Integer	           m_edi;
+	private Integer				m_edi;
 
 	public CinemasActivity() {
 		super(R.layout.activity_cinemas, R.menu.context_item_cinema);

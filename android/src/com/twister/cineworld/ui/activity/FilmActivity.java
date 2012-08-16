@@ -17,7 +17,7 @@ public class FilmActivity extends Activity {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_EDI	= "extra_edi";
-	private Integer	           m_edi;
+	private Integer				m_edi;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
