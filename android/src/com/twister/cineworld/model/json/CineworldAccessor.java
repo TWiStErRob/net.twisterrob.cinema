@@ -1,7 +1,7 @@
 package com.twister.cineworld.model.json;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import android.util.Log;
@@ -9,17 +9,10 @@ import android.util.Log;
 import com.google.gson.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
-import com.twister.cineworld.model.json.response.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	public static final URL	URL_PERFORMANCES		= BaseListRequest.makeUrl("quickbook/performances", "cinema=%s",
-															"film=%s", "date=%s");
-	public static final URL	URL_CATEGORIES_ALL		= BaseListRequest.makeUrl("categories");
-	public static final URL	URL_EVENTS_ALL			= BaseListRequest.makeUrl("events");
-	public static final URL	URL_DISTRIBUTORS_ALL	= BaseListRequest.makeUrl("distributors");
-
-	private final Gson		m_gson;
+	private final Gson	m_gson;
 
 	public CineworldAccessor() {
 		m_gson = new GsonBuilder()
@@ -79,35 +72,34 @@ public class CineworldAccessor {
 	}
 
 	public List<CineworldCategory> getAllCategories() {
-		return get(CineworldAccessor.URL_CATEGORIES_ALL, "categories", CategoriesResponse.class);
+		CategoriesRequest request = new CategoriesRequest();
+		return getList(request);
 	}
 
 	public List<CineworldEvent> getAllEvents() {
-		return get(CineworldAccessor.URL_EVENTS_ALL, "events", EventsResponse.class);
+		EventsRequest request = new EventsRequest();
+		return getList(request);
 	}
 
 	public List<CineworldDistributor> getAllDistributors() {
-		return get(CineworldAccessor.URL_DISTRIBUTORS_ALL, "distributors", DistributorsResponse.class);
+		DistributorsRequest request = new DistributorsRequest();
+		return getList(request);
 	}
 
-	public List<CineworldPerformance> getPeformances(final String cinema, final String film, final String date) {
-		try {
-			URL url = new URL(String.format(CineworldAccessor.URL_PERFORMANCES.toString(), cinema, film, date));
-			return get(url, "performances", PerformancesResponse.class);
-		} catch (MalformedURLException ex) {
-			Log.e("ACCESS",
-					String.format("Invalid URL getPerformances: cinema='%s', film='%s', date='%s'", cinema, film, date),
-					ex);
-			return Collections.emptyList();
-		}
+	public List<CineworldPerformance> getPeformances(final int cinemaId, final int filmEdi, final int date) {
+		PerformancesRequest request = new PerformancesRequest();
+		request.setCinema(cinemaId);
+		request.setFilm(filmEdi);
+		request.setDate(date);
+		return getList(request);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends CineworldBase, Response extends BaseListResponse<? extends T>>
-			List<T> get(final URL url, final String objectType, final Class<Response> clazz) {
+	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) {
+		String objectType = request.getRequestType();
 		List<? extends T> result = Collections.emptyList();
 		try {
-			result = new JsonClient(m_gson).get(url, clazz).getList();
+			result = new JsonClient(m_gson).get(request.getURL(), request.getResponseClass()).getList();
 		} catch (IOException ex) {
 			Log.d("ACCESS", "Unable to get all " + objectType, ex);
 			Tools.toast(ex.getMessage()); // TODO
@@ -116,10 +108,6 @@ public class CineworldAccessor {
 			Tools.toast(ex.getMessage()); // TODO
 		}
 		return (List<T>) result; // TODO review generic bounds
-	}
-
-	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) {
-		return get(request.getURL(), request.getRequestType(), request.getResponseClass());
 	}
 
 	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter) {

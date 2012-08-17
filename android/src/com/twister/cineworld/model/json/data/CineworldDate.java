@@ -13,11 +13,14 @@ import com.twister.cineworld.model.json.request.DatesRequest;
  * optional film, date and cinema parameters. These can all take multiple values, so for example it is possible to
  * search for all dates on which a cinema is showing a particular film.
  * </p>
+ * <p>
  * Example JSON:
  * 
  * <pre>
  * &quot;20120811&quot;
  * </pre>
+ * 
+ * </p>
  * 
  * @see DatesRequest
  */

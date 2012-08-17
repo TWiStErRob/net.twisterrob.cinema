@@ -10,6 +10,7 @@ import com.twister.cineworld.model.json.request.CinemasRequest;
  * optional film, date and cinema parameters. These can all take multiple values, so for example it is possible to
  * search for all cinemas showing film1 or film2 on a specific date.
  * </p>
+ * <p>
  * Example JSON:
  * 
  * <pre>
@@ -22,6 +23,8 @@ import com.twister.cineworld.model.json.request.CinemasRequest;
  * telephone: "0871 200 2000"
  * }
  * </pre>
+ * 
+ * </p>
  * 
  * @see CinemasRequest
  */

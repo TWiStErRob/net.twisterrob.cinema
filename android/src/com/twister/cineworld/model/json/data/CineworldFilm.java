@@ -11,6 +11,7 @@ import com.twister.cineworld.model.json.request.FilmsRequest;
  * Calls to this part of the API will return films as well as other content Cineworld show in their screens such as
  * Operas.
  * </p>
+ * <p>
  * Example JSON:
  * 
  * <pre>
@@ -27,6 +28,8 @@ import com.twister.cineworld.model.json.request.FilmsRequest;
  * title: "Ted"
  * }
  * </pre>
+ * 
+ * </p>
  * 
  * @see FilmsRequest
  */

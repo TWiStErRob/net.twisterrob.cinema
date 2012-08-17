@@ -1,8 +1,13 @@
 package com.twister.cineworld.model.json.data;
 
 import com.google.gson.annotations.SerializedName;
+import com.twister.cineworld.model.json.request.PerformancesRequest;
 
 /**
+ * <p>
+ * This query returns a list of performances that are programmed for a particular cinema, film and date.
+ * </p>
+ * <p>
  * Example JSON:
  * 
  * <pre>
@@ -12,6 +17,8 @@ import com.google.gson.annotations.SerializedName;
  * }
  * </pre>
  * 
+ * </p>
+ * <p>
  * Possible performance type codes are:
  * <ul>
  * <li>reg - Regular</li>
@@ -21,6 +28,9 @@ import com.google.gson.annotations.SerializedName;
  * <li>m4j - Movies for Juniors</li>
  * <li>dbox - D-Box</li>
  * </ul>
+ * </p>
+ * 
+ * @see PerformancesRequest
  */
 public class CineworldLegend extends CineworldBase {
 	@SerializedName("code")
@@ -28,6 +38,9 @@ public class CineworldLegend extends CineworldBase {
 	@SerializedName("name")
 	private String	m_name;
 
+	/**
+	 * @return Performance type code
+	 */
 	public String getCode() {
 		return m_code;
 	}
@@ -36,6 +49,9 @@ public class CineworldLegend extends CineworldBase {
 		m_code = code;
 	}
 
+	/**
+	 * @return Full performance type name
+	 */
 	public String getName() {
 		return m_name;
 	}
