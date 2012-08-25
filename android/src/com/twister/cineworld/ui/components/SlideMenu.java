@@ -84,8 +84,6 @@ public class SlideMenu {
 		});
 		SlideMenu.enableDisableViewGroup(
 				(LinearLayout) SlideMenu.s_parent.findViewById(android.R.id.content).getParent(), false);
-		// ((ExtendedViewPager) m_activity.findViewById(R.id.viewpager)).setPagingEnabled(false);
-		// ((ExtendedPagerTabStrip) m_activity.findViewById(R.id.viewpager_tabs)).setNavEnabled(false);
 	}
 
 	private void checkStatusBar() {
@@ -123,8 +121,6 @@ public class SlideMenu {
 
 		SlideMenu.enableDisableViewGroup(
 				(LinearLayout) SlideMenu.s_parent.findViewById(android.R.id.content).getParent(), true);
-		// ((ExtendedViewPager) m_activity.findViewById(R.id.viewpager)).setPagingEnabled(true);
-		// ((ExtendedPagerTabStrip) m_activity.findViewById(R.id.viewpager_tabs)).setNavEnabled(true);
 	}
 
 	// originally: http://stackoverflow.com/questions/5418510/disable-the-touch-events-for-all-the-views
