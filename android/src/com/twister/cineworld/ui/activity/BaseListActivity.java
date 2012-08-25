@@ -2,7 +2,6 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -24,7 +23,7 @@ import com.twister.cineworld.ui.components.*;
  * @param <UIItem> The type of items handled on the UI
  * @see ListRetriever
  */
-public abstract class BaseListActivity<UIItem> extends Activity implements OnItemClickListener {
+public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
@@ -198,6 +197,7 @@ public abstract class BaseListActivity<UIItem> extends Activity implements OnIte
 	}
 
 	public void buttonHome_Click(final View v) {
+		Log.v("SlideMenu", "buttonHome_Click");
 		m_slidemenu.show(true);
 	}
 

@@ -1,5 +1,6 @@
 package com.twister.cineworld.ui.components;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -14,8 +15,9 @@ public class SliderMenuMainMenuListener implements OnItemClickListener {
 	}
 
 	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+		Log.v("SlideMenu", "onItemClick");
 		MainMenuItem item = (MainMenuItem) parent.getItemAtPosition(position);
-		m_slider.hide();
+		m_slider.hide(false);
 		m_slider.getCurrentActivity().startActivity(item.getIntent());
 	}
 }
