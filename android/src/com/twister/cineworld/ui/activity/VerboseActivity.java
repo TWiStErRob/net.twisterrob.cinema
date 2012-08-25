@@ -54,6 +54,7 @@ public class VerboseActivity extends Activity {
 	}
 
 	private void log(final String method) {
-		Log.v(VerboseActivity.class.getSimpleName(), getClass().getSimpleName() + "." + method);
+		Log.v(VerboseActivity.class.getSimpleName(),
+				String.format("%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode()));
 	}
 }
