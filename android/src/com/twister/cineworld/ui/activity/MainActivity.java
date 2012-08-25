@@ -2,53 +2,53 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.*;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
+import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
+import com.twister.cineworld.ui.adapter.MainMenuItemAdapter;
+import com.twister.cineworld.ui.model.MainMenuItem;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends BaseListActivity<MainMenuItem> {
+	public MainActivity() {
+		super(R.layout.activity_main, 0);
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		List<Map<String, Object>> listItems = getListItems();
-		String[] from = { "label", "class" };
-		int[] to = { android.R.id.text1, android.R.id.text2 };
-		SimpleAdapter adapter = new SimpleAdapter(this, listItems, android.R.layout.simple_list_item_2, from, to);
-		setListAdapter(adapter);
-		setContentView(R.layout.activity_main);
 	}
 
 	@Override
-	protected void onListItemClick(final ListView l, final View v, final int position, final long id) {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> selected = (Map<String, Object>) getListView().getItemAtPosition(position);
-		Intent intent = new Intent(this, (Class<?>) selected.get("class"));
-		this.startActivity(intent);
+	protected ListAdapter createAdapter(final List<MainMenuItem> result) {
+		return new MainMenuItemAdapter(this, result);
 	}
 
-	private List<Map<String, Object>> getListItems() {
-		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		Object[] activities = {
-				"Cinemas", CinemasActivity.class,
-				"Cinemas map", CinemasMapActivity.class,
-				"Films", FilmsActivity.class,
-				"Dates", DatesActivity.class,
-				"Performances", PerformancesActivity.class,
-				"Categories", CategoriesActivity.class,
-				"Events", EventsActivity.class,
-				"Distributors", DistributorsActivity.class,
-		};
-		for (int i = 0; i < activities.length; i += 2) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("label", activities[i]);
-			map.put("class", activities[i + 1]);
-			result.add(map);
-		}
-		return result;
+	@Override
+	protected void updateChild(final List<MainMenuItem> result) {
+		super.updateChild(result);
+		getSlider().getList().setAdapter(createAdapter(result)); // same adapter for now
+	}
+
+	@Override
+	protected List<MainMenuItem> doWork() {
+		int icon = R.drawable.cineworld_logo;
+		return Arrays.asList(
+				new MainMenuItem("Cinemas", icon, new Intent(this, CinemasActivity.class)),
+				new MainMenuItem("Cinemas map", icon, new Intent(this, CinemasMapActivity.class)),
+				new MainMenuItem("Films", icon, new Intent(this, FilmsActivity.class)),
+				new MainMenuItem("Dates", icon, new Intent(this, DatesActivity.class)),
+				new MainMenuItem("Performances", icon, new Intent(this, PerformancesActivity.class)),
+				new MainMenuItem("Categories", icon, new Intent(this, CategoriesActivity.class)),
+				new MainMenuItem("Events", icon, new Intent(this, EventsActivity.class)),
+				new MainMenuItem("Distributors", icon, new Intent(this, DistributorsActivity.class))
+				);
+	}
+
+	@Override
+	protected void onItemClick(final MainMenuItem item) {
+		this.startActivity(item.getIntent());
 	}
 }

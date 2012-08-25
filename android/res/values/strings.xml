@@ -36,4 +36,8 @@
     <string name="design_misc_advisory">\???</string>
 
     <string name="design_attributes_film">IMAX 3D</string>
+
+    <string name="home_button">Home button</string>
+
+    <string name="forcedextract_menu_icon">menu icon</string>
 </resources>

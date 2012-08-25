@@ -9,9 +9,12 @@ import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.components.*;
 
 /**
  * Base class for listing related activities handling common UI stuff generic to all of them.<br>
@@ -21,10 +24,11 @@ import com.twister.cineworld.ui.*;
  * @param <UIItem> The type of items handled on the UI
  * @see ListRetriever
  */
-public abstract class BaseListActivity<UIItem> extends Activity {
+public abstract class BaseListActivity<UIItem> extends Activity implements OnItemClickListener {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
 	private int			m_contextMenuId;
+	private SlideMenu	m_slidemenu;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -52,6 +56,8 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 		registerForContextMenu(m_listView);
+
+		m_listView.setOnItemClickListener(this);
 	}
 
 	/**
@@ -64,6 +70,14 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		m_slidemenu = new SlideMenu(this);
+		m_slidemenu.checkEnabled();
+		m_slidemenu.getList().setOnItemClickListener(new SliderMenuMainMenuListener(m_slidemenu));
+
+		loadData();
+	}
+
+	private void loadData() {
 		CinewordExecutor.execute(new CinewordGUITask<List<UIItem>>(this) {
 			@Override
 			protected List<UIItem> work() throws CineworldException {
@@ -79,7 +93,6 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 			protected void exception(final CineworldException e) {
 				doException(e);
 			}
-
 		});
 	}
 
@@ -102,14 +115,38 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 	public final void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(m_contextMenuId, menu);
+		if (m_contextMenuId > 0) {
+			inflater.inflate(m_contextMenuId, menu);
 
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		assert v == m_listView;
-		AbsListView list = (AbsListView) v;
-		@SuppressWarnings("unchecked")
-		UIItem adapterItem = (UIItem) list.getAdapter().getItem((int) info.id);
-		onCreateContextMenu(menu, adapterItem);
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+			assert v == m_listView;
+			AbsListView list = (AbsListView) v;
+			@SuppressWarnings("unchecked")
+			UIItem adapterItem = (UIItem) list.getAdapter().getItem((int) info.id);
+			onCreateContextMenu(menu, adapterItem);
+		}
+	}
+
+	@Override
+	public void setTitle(final int titleId) {
+		super.setTitle(titleId);
+		TextView header = getHeaderTitle();
+		if (header != null) {
+			header.setText(titleId);
+		}
+	}
+
+	@Override
+	public void setTitle(final CharSequence title) {
+		super.setTitle(title);
+		TextView header = getHeaderTitle();
+		if (header != null) {
+			header.setText(title);
+		}
+	}
+
+	private TextView getHeaderTitle() {
+		return (TextView) this.findViewById(R.id.activity_title);
 	}
 
 	/**
@@ -119,7 +156,8 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 	 * @param item The selected item from the adapter.
 	 * @see #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)
 	 */
-	protected abstract void onCreateContextMenu(final ContextMenu menu, final UIItem item);
+	protected void onCreateContextMenu(final ContextMenu menu, final UIItem item) {
+	}
 
 	/**
 	 * Delegates logic to {@link #onContextItemSelected(MenuItem, Object)}, where the selected item is known.
@@ -146,6 +184,23 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 		return super.onContextItemSelected(menu);
 	}
 
+	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+		@SuppressWarnings("unchecked")
+		UIItem item = (UIItem) parent.getItemAtPosition(position);
+		onItemClick(item);
+	}
+
+	protected void onItemClick(final UIItem item) {
+	}
+
+	public SlideMenu getSlider() {
+		return m_slidemenu;
+	}
+
+	public void buttonHome_Click(final View v) {
+		m_slidemenu.show(true);
+	}
+
 	/**
 	 * Updates the list with the new adapter.
 	 * 
@@ -153,6 +208,10 @@ public abstract class BaseListActivity<UIItem> extends Activity {
 	 */
 	public final void update(final List<UIItem> result) {
 		m_listView.setAdapter(createAdapter(result));
+		updateChild(result);
+	}
+
+	protected void updateChild(final List<UIItem> result) {
 	}
 
 	/**
