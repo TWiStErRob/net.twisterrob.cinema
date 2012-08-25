@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.*;
+import android.widget.TextView;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.ui.model.MainMenuItem;
@@ -15,29 +15,31 @@ public class MainMenuItemAdapter extends BaseListAdapter<MainMenuItem, MainMenuI
 	}
 
 	protected class ViewHolder {
-		ImageView	icon;
-		TextView	label;
+		TextView	title;
+		TextView	clazz;
 	}
 
 	@Override
 	protected int getItemLayoutId() {
-		return R.layout.item_home_menu;
+		return R.layout.item_main;
 	}
 
 	@Override
 	protected ViewHolder createHolder(final View convertView) {
 		ViewHolder holder = new ViewHolder();
-		holder.icon = (ImageView) convertView.findViewById(R.id.menu_icon);
-		holder.label = (TextView) convertView.findViewById(R.id.menu_label);
+		holder.title = (TextView) convertView.findViewById(R.id.listitem_main_title);
+		holder.clazz = (TextView) convertView.findViewById(R.id.listitem_main_class);
 		return holder;
 	}
 
 	@Override
 	protected void bindView(final ViewHolder holder, final MainMenuItem currentItem, final View convertView) {
-		String label = currentItem.getTitle();
 		int icon = currentItem.getIcon();
+		String label = currentItem.getTitle();
+		String clazz = currentItem.getIntent().getComponent().getClassName();
 
-		holder.label.setText(label);
-		holder.icon.setImageResource(icon);
+		holder.title.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+		holder.title.setText(label);
+		holder.clazz.setText(clazz);
 	}
 }

@@ -8,7 +8,7 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
-import com.twister.cineworld.ui.adapter.MainMenuItemAdapter;
+import com.twister.cineworld.ui.adapter.*;
 import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class MainActivity extends BaseListActivity<MainMenuItem> {
@@ -29,7 +29,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 	@Override
 	protected void updateChild(final List<MainMenuItem> result) {
 		super.updateChild(result);
-		getSlider().getList().setAdapter(createAdapter(result)); // same adapter for now
+		getSlider().getList().setAdapter(new MainMenuItemSlideMenuAdapter(this, result));
 	}
 
 	@Override
