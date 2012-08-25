@@ -34,7 +34,7 @@ public class SlideMenu {
 		setParent(SlideMenu.s_content.getParent());
 		if (SlideMenu.s_menu == null) {
 			LayoutInflater inflater = (LayoutInflater) m_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			SlideMenu.s_menu = inflater.inflate(R.layout.home_menu, null);
+			SlideMenu.s_menu = inflater.inflate(R.layout.common_home_menu, null);
 		}
 	}
 

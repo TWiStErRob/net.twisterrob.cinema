@@ -21,7 +21,7 @@ public class MainMenuItemAdapter extends BaseListAdapter<MainMenuItem, MainMenuI
 
 	@Override
 	protected int getItemLayoutId() {
-		return R.layout.home_menu_listitem;
+		return R.layout.item_home_menu;
 	}
 
 	@Override
