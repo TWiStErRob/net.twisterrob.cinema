@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/home_button"
         android:onClick="buttonHome_Click"
-        android:src="@drawable/cineworld_logo" >
+        android:src="@drawable/ic_launcher" >
     </ImageButton>
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_alignTop="@+id/button_home"
         android:layout_toRightOf="@+id/button_home"
         android:gravity="center"
-        android:text="@string/title_activity_film_loaded"
+        android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
