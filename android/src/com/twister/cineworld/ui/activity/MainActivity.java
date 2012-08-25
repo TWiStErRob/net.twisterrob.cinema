@@ -15,8 +15,8 @@ public class MainActivity extends ListActivity {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		List<Map<String, String>> listItems = getListItems();
-		String[] from = { "label", "name" };
+		List<Map<String, Object>> listItems = getListItems();
+		String[] from = { "label", "class" };
 		int[] to = { android.R.id.text1, android.R.id.text2 };
 		SimpleAdapter adapter = new SimpleAdapter(this, listItems, android.R.layout.simple_list_item_2, from, to);
 		setListAdapter(adapter);
@@ -26,31 +26,27 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		@SuppressWarnings("unchecked")
-		Map<String, String> selected = (Map<String, String>) getListView().getItemAtPosition(position);
-		try {
-			Intent intent = new Intent(this, Class.forName(selected.get("name")));
-			this.startActivity(intent);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		Map<String, Object> selected = (Map<String, Object>) getListView().getItemAtPosition(position);
+		Intent intent = new Intent(this, (Class<?>) selected.get("class"));
+		this.startActivity(intent);
 	}
 
-	private List<Map<String, String>> getListItems() {
-		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-		String[] activities = {
-				CinemasActivity.class.getName(), "Cinemas",
-				CinemasMapActivity.class.getName(), "Cinemas map",
-				FilmsActivity.class.getName(), "Films",
-				DatesActivity.class.getName(), "Dates",
-				PerformancesActivity.class.getName(), "Performances",
-				CategoriesActivity.class.getName(), "Categories",
-				EventsActivity.class.getName(), "Events",
-				DistributorsActivity.class.getName(), "Distributors",
+	private List<Map<String, Object>> getListItems() {
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+		Object[] activities = {
+				"Cinemas", CinemasActivity.class,
+				"Cinemas map", CinemasMapActivity.class,
+				"Films", FilmsActivity.class,
+				"Dates", DatesActivity.class,
+				"Performances", PerformancesActivity.class,
+				"Categories", CategoriesActivity.class,
+				"Events", EventsActivity.class,
+				"Distributors", DistributorsActivity.class,
 		};
 		for (int i = 0; i < activities.length; i += 2) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("name", activities[i]);
-			map.put("label", activities[i + 1]);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("label", activities[i]);
+			map.put("class", activities[i + 1]);
 			result.add(map);
 		}
 		return result;
