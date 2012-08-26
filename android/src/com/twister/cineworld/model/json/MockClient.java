@@ -26,6 +26,7 @@ public class MockClient {
 			{
 				CineworldCinema cinema = new CineworldCinema();
 				cinema.setName("Cinema 1");
+				cinema.setPostcode("W6 9JT");
 				cinemas.add(cinema);
 			}
 			{
@@ -36,6 +37,7 @@ public class MockClient {
 			{
 				CineworldCinema cinema = new CineworldCinema();
 				cinema.setName("Cinema 3");
+				cinema.setPostcode("W1D 7DH");
 				cinemas.add(cinema);
 			}
 			cinemasResponse.setCinemas(cinemas);
@@ -54,6 +56,7 @@ public class MockClient {
 			{
 				CineworldFilm film = new CineworldFilm();
 				film.setTitle("Regular 2D movie");
+				film.setPosterUrl("http://www.cineworld.co.uk/assets/media/films/5438_poster.jpg");
 				film.setClassification("none");
 				films.add(film);
 			}
@@ -90,6 +93,7 @@ public class MockClient {
 			{
 				CineworldFilm film = new CineworldFilm();
 				film.setTitle("Multipart movie: Part 2");
+				film.setPosterUrl("http://www.cineworld.co.uk/assets/media/films/5437_poster.jpg");
 				films.add(film);
 			}
 			{

@@ -24,7 +24,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		OnFocusChangeListener, OnItemSelectedListener {
 	private MapView								m_map;
 	private MyLocationOverlay					m_location;
-	private MyItemizedOverlay					m_overlay;
+	private ItemizedOverlayCinemas				m_overlay;
 
 	private static final Map<String, GeoPoint>	s_locations	= new HashMap<String, GeoPoint>();
 	static {
@@ -131,7 +131,11 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		int markerWidth2 = marker2.getIntrinsicWidth();
 		int markerHeight2 = marker2.getIntrinsicHeight();
 		marker2.setBounds(0, -markerHeight2, markerWidth2, 0);
-		m_overlay = new MyItemizedOverlay(marker, marker2);
+		Drawable marker3 = getResources().getDrawable(R.drawable.cineworld_logo);
+		int markerWidth3 = marker3.getIntrinsicWidth() / 3;
+		int markerHeight3 = marker3.getIntrinsicHeight() / 3;
+		marker3.setBounds(0, -markerHeight3 / 2, markerWidth3 / 2, 0);
+		m_overlay = new ItemizedOverlayCinemas(this, m_map, marker, marker2, marker3);
 		m_map.getOverlays().add(m_overlay);
 		m_overlay.setOnFocusChangeListener(this);
 
@@ -222,8 +226,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 		super.update(result);
 		for (CineworldCinema cinema : result) {
 			if (cinema.getLocation() != null) {
-				String snippet = String.format("%s, %s", cinema.getAddress(), cinema.getPostcode());
-				m_overlay.addItem(cinema.getLocation(), cinema.getName(), snippet);
+				m_overlay.addItem(cinema);
 			}
 		}
 	}
@@ -247,6 +250,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 			}
 			getSpinner().setSelection(i);
 		} else {
+			m_overlay.onTap(-1);
 			getSpinner().setSelection(0); // TODO
 		}
 		m_map.postInvalidate();
@@ -257,14 +261,8 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 			skipEvent = false;
 			return;
 		}
-		CineworldCinema cinema = (CineworldCinema) parent.getAdapter().getItem(position);
-		for (OverlayItem item : m_overlay.getItems()) {
-			if (cinema.getLocation() == item.getPoint()) {
-				m_overlay.setFocus(item);
-				return;
-			}
-		}
-		m_overlay.setFocus(null);
+		OverlayItem item = position < m_overlay.size()? m_overlay.getItem(position) : null;
+		m_overlay.setFocus(item);
 	}
 
 	public void onNothingSelected(final AdapterView<?> parent) {

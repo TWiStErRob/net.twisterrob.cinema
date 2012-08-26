@@ -60,6 +60,18 @@ public class CineworldAccessor {
 		return getList(request);
 	}
 
+	public List<CineworldFilm> getFilms(final int cinemaId, final TimeSpan span) {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setCinema(cinemaId);
+		if (span == TimeSpan.Tomorrow) {
+			Calendar now = Calendar.getInstance();
+			now.add(Calendar.DAY_OF_MONTH, 1);
+			request.setDate(now);
+		}
+		return getList(request);
+	}
+
 	public List<CineworldDate> getAllDates() {
 		DatesRequest request = new DatesRequest();
 		return getList(request);
