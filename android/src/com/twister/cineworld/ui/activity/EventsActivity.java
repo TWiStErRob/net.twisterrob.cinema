@@ -21,7 +21,7 @@ public class EventsActivity extends BaseListActivity<CineworldEvent> {
 	}
 
 	@Override
-	public List<CineworldEvent> doWork() {
+	public List<CineworldEvent> loadList() {
 		return new CineworldAccessor().getAllEvents();
 	}
 

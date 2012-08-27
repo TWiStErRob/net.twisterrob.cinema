@@ -6,24 +6,27 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.*;
 
 public class CinemaActivity extends Activity {
+
+	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
+
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
 	 */
-	public static final String	EXTRA_ID	= "extra_id";
-	private Integer				m_id;
+	public static final String				EXTRA_ID	= "extra_id";
+	private Integer							m_id;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -32,7 +35,7 @@ public class CinemaActivity extends Activity {
 		m_id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
 		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_id));
 
-		CinewordExecutor.execute(new CinewordGUITask<CineworldCinema>(this) {
+		CineworldExecutor.execute(new CineworldGUITask<CineworldCinema>(this) {
 			@Override
 			protected CineworldCinema work() throws CineworldException {
 				return new CineworldAccessor().getCinema(m_id);
@@ -45,7 +48,7 @@ public class CinemaActivity extends Activity {
 
 			@Override
 			protected void exception(final CineworldException e) {
-				Log.e("CinemaActivity", "Error in CinemaActivity", e);
+				CinemaActivity.LOG.error("Error in CinemaActivity", e);
 				// TODO show the user
 			}
 		});

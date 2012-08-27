@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.*;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -15,6 +14,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import com.google.android.maps.*;
 import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
 import com.twister.cineworld.R;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.activity.CinemaActivity;
@@ -22,6 +22,7 @@ import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, CineworldCinema> implements
 		OnFocusChangeListener, OnItemSelectedListener {
+	private static final CineworldLogger		LOG			= LogFactory.getLog(Tag.GEO);
 	private MapView								m_map;
 	private MyLocationOverlay					m_location;
 	private ItemizedOverlayCinemas				m_overlay;
@@ -210,7 +211,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema, Cin
 				}
 				cinema.setLocation(loc);
 			} catch (IOException ex) {
-				Log.e("GEO", "Cannot get cinema location", ex);
+				CinemasMapActivity.LOG.error("Cannot get cinema location", ex);
 			}
 		}
 		return list;

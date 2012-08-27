@@ -2,9 +2,12 @@ package com.twister.cineworld.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+
+import com.twister.cineworld.log.*;
 
 public class VerboseActivity extends Activity {
+
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.UI);
 
 	public VerboseActivity() {
 		super();
@@ -54,7 +57,9 @@ public class VerboseActivity extends Activity {
 	}
 
 	private void log(final String method) {
-		Log.v(VerboseActivity.class.getSimpleName(),
-				String.format("%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode()));
+		if (VerboseActivity.LOG.isVerboseEnabled()) {
+			VerboseActivity.LOG.verbose(String.format(
+					"%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode()));
+		}
 	}
 }

@@ -32,7 +32,7 @@ public class DatesActivity extends BaseListActivity<CineworldDate> {
 	}
 
 	@Override
-	public List<CineworldDate> doWork() {
+	public List<CineworldDate> loadList() {
 		if (m_edi != null) {
 			return new CineworldAccessor().getDates(m_edi);
 		} else {

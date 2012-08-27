@@ -76,7 +76,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		item.setMarker(null);
 		final ItemizedOverlayFilmsForCinema overlay = new ItemizedOverlayFilmsForCinema(m_map, cinema, m_filmMarker);
 		m_filmsOverlay = overlay;
-		CinewordExecutor.execute(new CinewordGUITask<List<CineworldFilm>>(m_activity) {
+		CineworldExecutor.execute(new CineworldGUITask<List<CineworldFilm>>(m_activity) {
 			@Override
 			protected List<CineworldFilm> work() throws CineworldException {
 				List<CineworldFilm> films = new CineworldAccessor().getFilms(cinema.getId(), TimeSpan.Tomorrow);

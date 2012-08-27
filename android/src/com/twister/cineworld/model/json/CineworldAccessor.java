@@ -4,15 +4,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 
-import android.util.Log;
-
 import com.google.gson.*;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.ui.Tools;
 
 public class CineworldAccessor {
-	private final Gson	m_gson;
+
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.ACCESS);
+
+	private final Gson						m_gson;
 
 	public CineworldAccessor() {
 		m_gson = new GsonBuilder()
@@ -113,10 +115,14 @@ public class CineworldAccessor {
 		try {
 			result = new JsonClient(m_gson).get(request.getURL(), request.getResponseClass()).getList();
 		} catch (IOException ex) {
-			Log.d("ACCESS", "Unable to get all " + objectType, ex);
+			if (CineworldAccessor.LOG.isDebugEnabled()) {
+				CineworldAccessor.LOG.debug("Unable to get all " + objectType, ex);
+			}
 			Tools.toast(ex.getMessage()); // TODO
 		} catch (URISyntaxException ex) {
-			Log.d("ACCESS", "Unable to get all " + objectType, ex);
+			if (CineworldAccessor.LOG.isDebugEnabled()) {
+				CineworldAccessor.LOG.debug("Unable to get all " + objectType, ex);
+			}
 			Tools.toast(ex.getMessage()); // TODO
 		}
 		return (List<T>) result; // TODO review generic bounds
@@ -129,7 +135,8 @@ public class CineworldAccessor {
 		} else if (list.size() == 1) {
 			return list.get(0);
 		} else {
-			Log.w("ACCESS", String.format("Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
+			CineworldAccessor.LOG.warn(String.format(
+					"Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
 			return null; // TODO
 		}
 	}

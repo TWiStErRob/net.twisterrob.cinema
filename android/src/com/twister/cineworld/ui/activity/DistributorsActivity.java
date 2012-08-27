@@ -21,7 +21,7 @@ public class DistributorsActivity extends BaseListActivity<CineworldDistributor>
 	}
 
 	@Override
-	public List<CineworldDistributor> doWork() {
+	public List<CineworldDistributor> loadList() {
 		return new CineworldAccessor().getAllDistributors();
 	}
 

@@ -2,22 +2,24 @@ package com.twister.cineworld.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
 import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.ui.*;
 
 public class FilmActivity extends Activity {
+
+	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
 	/**
 	 * Film EDI<br>
 	 * <b>Type</b>: Integer
 	 */
-	public static final String	EXTRA_EDI	= "extra_edi";
-	private Integer				m_edi;
+	public static final String				EXTRA_EDI	= "extra_edi";
+	private Integer							m_edi;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class FilmActivity extends Activity {
 		m_edi = (Integer) getIntent().getExtras().get(FilmActivity.EXTRA_EDI);
 		setTitle(getResources().getString(R.string.title_activity_film_loading, m_edi));
 
-		CinewordExecutor.execute(new CinewordGUITask<CineworldFilm>(this) {
+		CineworldExecutor.execute(new CineworldGUITask<CineworldFilm>(this) {
 			@Override
 			protected CineworldFilm work() throws CineworldException {
 				return new CineworldAccessor().getFilm(m_edi);
@@ -39,7 +41,7 @@ public class FilmActivity extends Activity {
 
 			@Override
 			protected void exception(final CineworldException e) {
-				Log.e("FilmActivity", "Error in FilmActivity", e);
+				FilmActivity.LOG.error("Error in FilmActivity", e);
 				// TODO show the user
 			}
 		});

@@ -9,15 +9,16 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 
 import android.net.http.AndroidHttpClient;
-import android.util.Log;
 
 import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
 public class JsonClient {
-	private static final String	CONTENT_TYPE_JSON	= "application/json";
-	private final Gson			m_gson;
+	private static final CineworldLogger	LOG					= LogFactory.getLog(Tag.JSON);
+	private static final String				CONTENT_TYPE_JSON	= "application/json";
+	private final Gson						m_gson;
 
 	public JsonClient(final Gson gson) {
 		if (gson == null) {
@@ -66,7 +67,7 @@ public class JsonClient {
 	}
 
 	public <T> T any(final Class<T> responseType, final HttpUriRequest request) throws IOException {
-		Log.i("JSON", "Getting (" + responseType + "): '" + request.getURI() + "'");
+		JsonClient.LOG.info("Getting (" + responseType + "): '" + request.getURI() + "'");
 		// executing request
 		AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
 
@@ -86,7 +87,7 @@ public class JsonClient {
 		} catch (JsonParseException ex) {
 			reader.reset(); // won't be null because fromJson is after reader init
 			String contentString = IOTools.readAll(reader);
-			Log.d("JSON", contentString);
+			JsonClient.LOG.debug(contentString);
 			throw ex;
 		} finally {
 			httpClient.close();

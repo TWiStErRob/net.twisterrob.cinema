@@ -21,7 +21,7 @@ public class PerformancesActivity extends BaseListActivity<CineworldPerformance>
 	}
 
 	@Override
-	public List<CineworldPerformance> doWork() {
+	public List<CineworldPerformance> loadList() {
 		return new CineworldAccessor().getPeformances(66, 62278, 20130427);
 	}
 

@@ -3,20 +3,21 @@ package com.twister.cineworld.model.json.request;
 import java.net.*;
 import java.util.Arrays;
 
-import android.util.Log;
-
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.data.CineworldBase;
 import com.twister.cineworld.model.json.response.BaseListResponse;
 
 public abstract class BaseListRequest<T extends CineworldBase> {
-	public static final String		DEFAULT_DEVELOPER_KEY	= "9qfgpF7B";
-	// TODO get from config
-	public static final String		DEFAULT_TERRITORY		= "GB";
-	// no need for android
-	public static final String		DEFAULT_CALLBACK		= null;
+	private static final CineworldLogger	LOG						= LogFactory.getLog(Tag.ACCESS);
 
-	private static final String		BASE_URL_STRING			= "http://www.cineworld.co.uk/api/";
-	private static final URL		BASE_URL;
+	private static final String				DEFAULT_DEVELOPER_KEY	= "9qfgpF7B";
+	// TODO get from config
+	private static final String				DEFAULT_TERRITORY		= "GB";
+	// no need for android
+	private static final String				DEFAULT_CALLBACK		= null;
+
+	private static final String				BASE_URL_STRING			= "http://www.cineworld.co.uk/api/";
+	private static final URL				BASE_URL;
 	static {
 		try {
 			BASE_URL = new URL(BaseListRequest.BASE_URL_STRING);
@@ -25,20 +26,20 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 		}
 	}
 
-	protected static final String	KEY_KEY					= "key";
-	protected static final String	KEY_TERRITORY			= "territory";
-	protected static final String	KEY_CALLBACK			= "callback";
-	protected static final String	KEY_FULL				= "full";
-	protected static final String	KEY_FILM				= "film";
-	protected static final String	KEY_DATE				= "date";
-	protected static final String	KEY_CINEMA				= "cinema";
-	protected static final String	KEY_CATEGORY			= "category";
-	protected static final String	KEY_EVENT				= "event";
-	protected static final String	KEY_DISTRIBUTOR			= "distributor";
+	protected static final String			KEY_KEY					= "key";
+	protected static final String			KEY_TERRITORY			= "territory";
+	protected static final String			KEY_CALLBACK			= "callback";
+	protected static final String			KEY_FULL				= "full";
+	protected static final String			KEY_FILM				= "film";
+	protected static final String			KEY_DATE				= "date";
+	protected static final String			KEY_CINEMA				= "cinema";
+	protected static final String			KEY_CATEGORY			= "category";
+	protected static final String			KEY_EVENT				= "event";
+	protected static final String			KEY_DISTRIBUTOR			= "distributor";
 
-	private String					m_key					= BaseListRequest.DEFAULT_DEVELOPER_KEY;
-	private String					m_territory				= BaseListRequest.DEFAULT_TERRITORY;
-	private String					m_callback				= BaseListRequest.DEFAULT_CALLBACK;
+	private String							m_key					= BaseListRequest.DEFAULT_DEVELOPER_KEY;
+	private String							m_territory				= BaseListRequest.DEFAULT_TERRITORY;
+	private String							m_callback				= BaseListRequest.DEFAULT_CALLBACK;
 
 	public BaseListRequest() {
 	}
@@ -157,8 +158,8 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 			spec = String.format("%s?key=%s%s", spec, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
 			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s -> %s)", requestType,
-					Arrays.toString(filters), spec, ex));
+			BaseListRequest.LOG.error(String.format(
+					"Cannot initialize urls: %s (%s -> %s)", requestType, Arrays.toString(filters), spec, ex), ex);
 			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}
@@ -174,7 +175,8 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 					.format("%s?key=%s%s", requestType, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
 			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			Log.e("ACCESS", String.format("Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex));
+			BaseListRequest.LOG.error(String.format(
+					"Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex), ex);
 			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}

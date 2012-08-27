@@ -13,11 +13,11 @@ import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class MainActivity extends BaseListActivity<MainMenuItem> {
 	public MainActivity() {
-		super(R.layout.activity_main, 0);
+		super(R.layout.activity_main);
 	}
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
@@ -33,7 +33,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 	}
 
 	@Override
-	protected List<MainMenuItem> doWork() {
+	protected List<MainMenuItem> loadList() {
 		int icon = R.drawable.cineworld_logo;
 		return Arrays.asList(
 				new MainMenuItem("Cinemas", icon, new Intent(this, CinemasActivity.class)),

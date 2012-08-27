@@ -26,7 +26,7 @@ public class CategoriesActivity extends BaseListActivity<CineworldCategory> {
 	}
 
 	@Override
-	protected List<CineworldCategory> doWork() {
+	protected List<CineworldCategory> loadList() {
 		return new CineworldAccessor().getAllCategories();
 	}
 

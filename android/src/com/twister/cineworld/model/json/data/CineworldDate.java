@@ -3,8 +3,7 @@ package com.twister.cineworld.model.json.data;
 import java.util.Calendar;
 import java.util.regex.*;
 
-import android.util.Log;
-
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.request.DatesRequest;
 
 /**
@@ -25,7 +24,10 @@ import com.twister.cineworld.model.json.request.DatesRequest;
  * @see DatesRequest
  */
 public class CineworldDate extends CineworldBase {
-	private String	m_date; // TODO int or calendar or anything
+
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.JSON);
+
+	private String							m_date;							// TODO int or calendar or anything
 
 	/**
 	 * @return Date (format yyyymmdd) there is a performance scheduled
@@ -59,10 +61,10 @@ public class CineworldDate extends CineworldBase {
 				calendar.clear(Calendar.SECOND); // not affected by time zone
 				calendar.clear(Calendar.MILLISECOND); // not affected by time zone
 			} else {
-				Log.w(CineworldDate.class.getName(), "Invalid date: " + getDate());
+				CineworldDate.LOG.warn("Invalid date: " + getDate());
 			}
 		} else {
-			Log.w(CineworldDate.class.getName(), "Empty date");
+			CineworldDate.LOG.warn("Empty date");
 		}
 		return calendar;
 	}

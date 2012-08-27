@@ -3,7 +3,6 @@ package com.twister.cineworld.ui.activity;
 import java.util.List;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
@@ -16,17 +15,18 @@ import com.twister.cineworld.ui.*;
 import com.twister.cineworld.ui.components.*;
 
 /**
- * Base class for listing related activities handling common UI stuff generic to all of them.<br>
- * <code>RawItem</code> and <code>UIItem</code> may be the same.
+ * Base class for listing related activities handling common UI stuff generic to all of them.
  * 
  * @author papp.robert.s
  * @param <UIItem> The type of items handled on the UI
- * @see ListRetriever
  */
 public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener {
 	private AbsListView	m_listView;
 	private int			m_contentViewId;
-	private int			m_contextMenuId;
+	/**
+	 * Context menu for items in the list. <code>null</code>, if there is no context menu
+	 */
+	private Integer		m_contextMenuId;
 	private SlideMenu	m_slidemenu;
 
 	/**
@@ -40,6 +40,11 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	public BaseListActivity(final int contentViewId, final int contextMenuId) {
 		m_contentViewId = contentViewId;
 		m_contextMenuId = contextMenuId;
+	}
+
+	public BaseListActivity(final int contentViewId) {
+		m_contentViewId = contentViewId;
+		m_contextMenuId = null;
 	}
 
 	/**
@@ -56,52 +61,54 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 		registerForContextMenu(m_listView);
-
 		m_listView.setOnItemClickListener(this);
-	}
 
-	/**
-	 * Executes the implementation of {@link ListRetriever} in this activity asynchronously.
-	 * <p>
-	 * {@inheritDoc}
-	 * 
-	 * @see AsyncRetrieverExecutor
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
 		m_slidemenu = new SlideMenu(this);
 		m_slidemenu.checkEnabled();
 		m_slidemenu.getList().setOnItemClickListener(new SliderMenuMainMenuListener(m_slidemenu));
 
-		loadData();
+		startLoad();
 	}
 
-	private void loadData() {
-		CinewordExecutor.execute(new CinewordGUITask<List<UIItem>>(this) {
+	/**
+	 * Initiates data loading.
+	 */
+	protected void startLoad() {
+		// start data loading
+		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
 			@Override
 			protected List<UIItem> work() throws CineworldException {
-				return doWork();
+				return BaseListActivity.this.loadList();
 			}
 
 			@Override
 			protected void present(final List<UIItem> result) {
-				update(result);
+				BaseListActivity.this.displayList(result);
 			}
 
 			@Override
 			protected void exception(final CineworldException e) {
-				doException(e);
+				BaseListActivity.this.exception(e);
 			}
 		});
 	}
 
-	protected void doException(final CineworldException e) {
-		Log.e("Cineworld", "Error in " + getClass().getSimpleName(), e);
-		// TODO show the user
+	/**
+	 * Override this method in case something has to be done in case an exception happens other than user notification
+	 * and logging.
+	 * 
+	 * @param exception the exception
+	 */
+	protected void exception(final CineworldException exception) {
+		// optionally overridden by children
 	}
 
-	protected abstract List<UIItem> doWork();
+	/**
+	 * Data acquisition is called in this method. This will be executed on a background thread.
+	 * 
+	 * @return a {@link List} of items to be presented
+	 */
+	protected abstract List<UIItem> loadList();
 
 	/**
 	 * Creates the context menu based on the <code>contextMenuId</code> given in the constructor. Extenders must use
@@ -115,7 +122,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	public final void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		if (m_contextMenuId > 0) {
+		if (m_contextMenuId != null) {
 			inflater.inflate(m_contextMenuId, menu);
 
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
@@ -197,17 +204,12 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		return m_slidemenu;
 	}
 
-	public void buttonHome_Click(final View v) {
-		Log.v("SlideMenu", "buttonHome_Click");
-		m_slidemenu.show(true);
-	}
-
 	/**
 	 * Updates the list with the new adapter.
 	 * 
 	 * @see #createAdapter(List)
 	 */
-	public final void update(final List<UIItem> result) {
+	protected final void displayList(final List<UIItem> result) {
 		m_listView.setAdapter(createAdapter(result));
 		updateChild(result);
 	}
@@ -220,7 +222,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * 
 	 * @param result the items to be displayed in the list
 	 * @return the adapter to be used for the list
-	 * @see #update(List)
+	 * @see #displayList(List)
 	 */
 	protected abstract ListAdapter createAdapter(List<UIItem> result);
 

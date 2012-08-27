@@ -57,7 +57,7 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	}
 
 	@Override
-	protected List<CineworldCinema> doWork() {
+	protected List<CineworldCinema> loadList() {
 		if (m_edi != null) {
 			return new CineworldAccessor().getCinemas(m_edi);
 		} else {

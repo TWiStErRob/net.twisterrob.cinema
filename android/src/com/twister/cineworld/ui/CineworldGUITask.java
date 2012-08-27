@@ -3,6 +3,7 @@ package com.twister.cineworld.ui;
 import android.app.Activity;
 
 import com.twister.cineworld.exception.*;
+import com.twister.cineworld.log.*;
 
 /**
  * Base class for background tasks which have to be presented on the GUI when they finish.
@@ -10,21 +11,23 @@ import com.twister.cineworld.exception.*;
  * @author Zoltán Kiss
  * @param <R>
  */
-public abstract class CinewordGUITask<R> extends LoggedRunnable {
+public abstract class CineworldGUITask<R> extends LoggedRunnable {
 
-	protected final Activity	activity;
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.SYSTEM);
 
-	public CinewordGUITask(final Activity activity) {
+	protected final Activity				activity;
+
+	public CineworldGUITask(final Activity activity) {
 		this.activity = activity;
 	}
 
 	@Override
-	protected final void execute() {
+	protected final void loggedRun() {
 		try {
 			final R result = work();
 			this.activity.runOnUiThread(new LoggedRunnable() {
 				@Override
-				protected void execute() {
+				protected void loggedRun() {
 					present(result);
 				}
 			});
@@ -36,6 +39,7 @@ public abstract class CinewordGUITask<R> extends LoggedRunnable {
 	}
 
 	private void handleException(final CineworldException e) {
+		CineworldGUITask.LOG.error("Exception while executing task #" + this.taskId, e);
 		/*
 		 * TODO Talán itt lenne érdemes csinálni egy általános metódust valami error dialog meghívására és akkor
 		 * konzisztensen viselkedne az alkalmazás. Ekkor az exception metódusban csak az Activity specifikus dolgokat
@@ -43,7 +47,7 @@ public abstract class CinewordGUITask<R> extends LoggedRunnable {
 		 */
 		activity.runOnUiThread(new LoggedRunnable() {
 			@Override
-			protected void execute() {
+			protected void loggedRun() {
 				exception(e);
 			}
 		});
@@ -62,15 +66,15 @@ public abstract class CinewordGUITask<R> extends LoggedRunnable {
 	 * Presents the results of the work. This callback is executed on a GUI thread. This method should not do any
 	 * calculations, just plain presentation.
 	 * 
-	 * @param result
+	 * @param result the return value of {@link #work()}
 	 */
 	protected abstract void present(R result);
 
 	/**
 	 * Exception handler callback. Whenever an exception occurs, this method is called on a GUI thread.
 	 * 
-	 * @param e
+	 * @param exception the exception
 	 */
-	protected abstract void exception(CineworldException e);
+	protected abstract void exception(CineworldException exception);
 
 }

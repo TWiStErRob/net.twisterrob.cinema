@@ -113,7 +113,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	@Override
-	public List<FilmBase> doWork() {
+	public List<FilmBase> loadList() {
 		List<CineworldFilm> list;
 		if (m_cinemaId != null) {
 			list = new CineworldAccessor().getFilms(m_cinemaId);

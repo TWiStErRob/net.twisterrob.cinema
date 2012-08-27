@@ -3,22 +3,22 @@ package com.twister.cineworld.ui.components;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.*;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.log.*;
 
 public class SlideMenu {
-	private static final boolean	DEBUG		= false;
-	private static boolean			s_menuShown	= false;
-	private static View				s_menu;
-	private static LinearLayout		s_content;
-	private static FrameLayout		s_parent;
-	private static int				s_menuSize;
-	private Activity				m_activity;
+	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
+	private static boolean					s_menuShown	= false;
+	private static View						s_menu;
+	private static LinearLayout				s_content;
+	private static FrameLayout				s_parent;
+	private static int						s_menuSize;
+	private Activity						m_activity;
 
 	public SlideMenu(final Activity activity) {
 		this.m_activity = activity;
@@ -26,8 +26,8 @@ public class SlideMenu {
 	}
 
 	private void init() {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("init()- menuShown: %s", SlideMenu.s_menuShown));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("init()- menuShown: %s", SlideMenu.s_menuShown));
 		}
 		SlideMenu.s_menuSize = (int) (m_activity.getResources().getDisplayMetrics().widthPixels * 0.80f);
 		SlideMenu.s_content = ((LinearLayout) m_activity.findViewById(android.R.id.content).getParent());
@@ -55,9 +55,8 @@ public class SlideMenu {
 
 	// call this in your onCreate() for screen rotation
 	public void checkEnabled() {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(),
-					String.format("checkEnabled()- menuShown: %s", SlideMenu.s_menuShown));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("checkEnabled()- menuShown: %s", SlideMenu.s_menuShown));
 		}
 		if (SlideMenu.s_menuShown) {
 			this.hide(false);
@@ -66,13 +65,15 @@ public class SlideMenu {
 	}
 
 	public void show() {
-		Log.d(SlideMenu.class.getSimpleName(), String.format("show()- menuShown: %s", SlideMenu.s_menuShown));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("show()- menuShown: %s", SlideMenu.s_menuShown));
+		}
 		this.show(true);
 	}
 
 	public void show(final boolean animate) {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("show(%s)- menuShown: %s, parent: %s", animate,
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("show(%s)- menuShown: %s, parent: %s", animate,
 					SlideMenu.s_menuShown, SlideMenu.s_parent));
 		}
 		checkStatusBar();
@@ -109,15 +110,15 @@ public class SlideMenu {
 	}
 
 	public void hide() {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("hide()- menuShown: %s", SlideMenu.s_menuShown));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("hide()- menuShown: %s", SlideMenu.s_menuShown));
 		}
 		this.hide(true);
 	}
 
 	public void hide(final boolean animate) {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("hide(%s)- menuShown: %s, parent: %s", animate,
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("hide(%s)- menuShown: %s, parent: %s", animate,
 					SlideMenu.s_menuShown, SlideMenu.s_parent));
 		}
 		if (!SlideMenu.s_menuShown) {
@@ -140,15 +141,15 @@ public class SlideMenu {
 	}
 
 	private void addView() {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("addView()"));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("addView()"));
 		}
 		SlideMenu.s_parent.addView(SlideMenu.s_menu);
 	}
 
 	private void removeView() {
-		if (SlideMenu.DEBUG) {
-			Log.d(SlideMenu.class.getSimpleName(), String.format("removeView()"));
+		if (SlideMenu.LOG.isVerboseEnabled()) {
+			SlideMenu.LOG.verbose(String.format("removeView()"));
 		}
 		SlideMenu.s_parent.removeView(SlideMenu.s_menu);
 	}
