@@ -200,6 +200,13 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	protected void onItemClick(final UIItem item) {
 	}
 
+	/**
+	 * R.layout.common_header/R.id.button_home handler
+	 */
+	public void buttonHome_Click(final View v) {
+		m_slidemenu.show(true);
+	}
+
 	public SlideMenu getSlider() {
 		return m_slidemenu;
 	}
