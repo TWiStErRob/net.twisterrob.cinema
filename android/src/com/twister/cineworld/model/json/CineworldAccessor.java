@@ -1,68 +1,68 @@
 package com.twister.cineworld.model.json;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import com.google.gson.*;
-import com.twister.cineworld.log.*;
+import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
-import com.twister.cineworld.ui.Tools;
+import com.twister.cineworld.model.json.response.BaseListResponse;
 
 public class CineworldAccessor {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.ACCESS);
-
-	private final Gson						m_gson;
+	private final JsonClient	m_jsonClient;
 
 	public CineworldAccessor() {
-		m_gson = new GsonBuilder()
+		Gson gson = new GsonBuilder()
 				.registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
 				.create();
+		m_jsonClient = new JsonClient(gson);
 	}
 
-	public List<CineworldCinema> getAllCinemas() {
+	public List<CineworldCinema> getAllCinemas() throws InternalException, ExternalException, NetworkException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		return getList(request);
 	}
 
-	public CineworldCinema getCinema(final int cinemaId) {
+	public CineworldCinema getCinema(final int cinemaId) throws InternalException, ExternalException, NetworkException {
 		CinemasRequest request = new CinemasRequest();
 		request.setCinema(cinemaId);
 		request.setFull(true);
 		return getSingular(request, cinemaId);
 	}
 
-	public List<CineworldCinema> getCinemas(final int filmEdi) {
+	public List<CineworldCinema> getCinemas(final int filmEdi) throws InternalException, ExternalException,
+			NetworkException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		request.setFilm(filmEdi);
 		return getList(request);
 	}
 
-	public List<CineworldFilm> getAllFilms() {
+	public List<CineworldFilm> getAllFilms() throws InternalException, ExternalException, NetworkException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		return getList(request);
 	}
 
-	public CineworldFilm getFilm(final int filmEdi) {
+	public CineworldFilm getFilm(final int filmEdi) throws InternalException, ExternalException, NetworkException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFilm(filmEdi);
 		request.setFull(true);
 		return getSingular(request, filmEdi);
 	}
 
-	public List<CineworldFilm> getFilms(final int cinemaId) {
+	public List<CineworldFilm> getFilms(final int cinemaId) throws InternalException, ExternalException,
+			NetworkException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
 		return getList(request);
 	}
 
-	public List<CineworldFilm> getFilms(final int cinemaId, final TimeSpan span) {
+	public List<CineworldFilm> getFilms(final int cinemaId, final TimeSpan span) throws InternalException,
+			ExternalException, NetworkException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -74,33 +74,36 @@ public class CineworldAccessor {
 		return getList(request);
 	}
 
-	public List<CineworldDate> getAllDates() {
+	public List<CineworldDate> getAllDates() throws InternalException, ExternalException, NetworkException {
 		DatesRequest request = new DatesRequest();
 		return getList(request);
 	}
 
-	public List<CineworldDate> getDates(final int filmEdi) {
+	public List<CineworldDate> getDates(final int filmEdi) throws InternalException, ExternalException,
+			NetworkException {
 		DatesRequest request = new DatesRequest();
 		request.setFilm(filmEdi);
 		return getList(request);
 	}
 
-	public List<CineworldCategory> getAllCategories() {
+	public List<CineworldCategory> getAllCategories() throws InternalException, ExternalException, NetworkException {
 		CategoriesRequest request = new CategoriesRequest();
 		return getList(request);
 	}
 
-	public List<CineworldEvent> getAllEvents() {
+	public List<CineworldEvent> getAllEvents() throws InternalException, ExternalException, NetworkException {
 		EventsRequest request = new EventsRequest();
 		return getList(request);
 	}
 
-	public List<CineworldDistributor> getAllDistributors() {
+	public List<CineworldDistributor> getAllDistributors() throws InternalException, ExternalException,
+			NetworkException {
 		DistributorsRequest request = new DistributorsRequest();
 		return getList(request);
 	}
 
-	public List<CineworldPerformance> getPeformances(final int cinemaId, final int filmEdi, final int date) {
+	public List<CineworldPerformance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+			throws InternalException, ExternalException, NetworkException {
 		PerformancesRequest request = new PerformancesRequest();
 		request.setCinema(cinemaId);
 		request.setFilm(filmEdi);
@@ -108,36 +111,25 @@ public class CineworldAccessor {
 		return getList(request);
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) {
-		String objectType = request.getRequestType();
-		List<? extends T> result = Collections.emptyList();
-		try {
-			result = new JsonClient(m_gson).get(request.getURL(), request.getResponseClass()).getList();
-		} catch (IOException ex) {
-			if (CineworldAccessor.LOG.isDebugEnabled()) {
-				CineworldAccessor.LOG.debug("Unable to get all " + objectType, ex);
-			}
-			Tools.toast(ex.getMessage()); // TODO
-		} catch (URISyntaxException ex) {
-			if (CineworldAccessor.LOG.isDebugEnabled()) {
-				CineworldAccessor.LOG.debug("Unable to get all " + objectType, ex);
-			}
-			Tools.toast(ex.getMessage()); // TODO
+	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws InternalException,
+			ExternalException, NetworkException {
+		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
+		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+			throw new InternalException("Errors in JSON response: " + response.getErrors());
 		}
-		return (List<T>) result; // TODO review generic bounds
+		return response.getList();
 	}
 
-	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter) {
+	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter)
+			throws InternalException, ExternalException, NetworkException {
 		List<T> list = getList(request);
 		if (list.isEmpty()) {
-			return null; // TODO
+			throw new InternalException("No results for request");
 		} else if (list.size() == 1) {
 			return list.get(0);
 		} else {
-			CineworldAccessor.LOG.warn(String.format(
+			throw new InternalException(String.format(
 					"Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
-			return null; // TODO
 		}
 	}
 }

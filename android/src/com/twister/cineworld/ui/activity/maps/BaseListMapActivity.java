@@ -9,19 +9,16 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.maps.MapActivity;
+import com.twister.cineworld.exception.*;
 import com.twister.cineworld.ui.*;
 
 /**
- * Base class for listing related activities handling common UI stuff generic to all of them.<br>
- * <code>RawItem</code> and <code>UIItem</code> may be the same.
+ * Base class for listing related activities on a map, handling common UI stuff generic to all of them.<br>
  * 
  * @author papp.robert.s
- * @param <RawItem> The type of items returned by the lower data handling layers
  * @param <UIItem> The type of items handled on the UI
- * @see ListRetriever
  */
-public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity implements
-		ListRetriever<RawItem, UIItem> {
+public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	private AdapterView<? extends Adapter>	m_adapterView;
 	private int								m_contentViewId;
 	private int								m_contextMenuId;
@@ -54,17 +51,40 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 		registerForContextMenu(m_adapterView);
 	}
 
-	/**
-	 * Executes the implementation of {@link ListRetriever} in this activity asynchronously.
-	 * <p>
-	 * {@inheritDoc}
-	 * 
-	 * @see AsyncRetrieverExecutor
-	 */
 	@Override
 	protected void onStart() {
 		super.onStart();
-		new AsyncRetrieverExecutor<List<RawItem>, List<UIItem>>(this).execute(this);
+		startLoad();
+	}
+
+	/**
+	 * Initiates data loading.
+	 */
+	protected final void startLoad() {
+		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
+
+			@Override
+			protected List<UIItem> work() throws CineworldException {
+				return loadList();
+			}
+
+			@Override
+			protected void present(final List<UIItem> result) {
+				update(result);
+			}
+
+			@Override
+			protected void exception(final CineworldException exception) {
+				exceptionInternal(exception);
+			}
+
+		});
+	}
+
+	private final void exceptionInternal(final CineworldException exception) {
+		Toast toast = Toast.makeText(this, Translator.translate(this, exception),
+				Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	/**
@@ -133,7 +153,6 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 			((AbsListView) m_adapterView).setAdapter((ListAdapter) createAdapter(result));
 		} else {
 			((AbsSpinner) m_adapterView).setAdapter((SpinnerAdapter) createAdapter(result));
-
 		}
 	}
 
@@ -163,4 +182,13 @@ public abstract class BaseListMapActivity<RawItem, UIItem> extends MapActivity i
 	protected AbsSpinner getSpinner() {
 		return (AbsSpinner) m_adapterView;
 	}
+
+	/**
+	 * Data acquisition is called in this method. This will be executed on a background thread.
+	 * 
+	 * @return a {@link List} of items to be presented
+	 * @throws CineworldException if data could not be loaded
+	 */
+	protected abstract List<UIItem> loadList() throws CineworldException;
+
 }

@@ -1,6 +1,6 @@
 package com.twister.cineworld.model.json.response;
 
-import java.util.*;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.data.CineworldBase;
@@ -12,6 +12,6 @@ public abstract class BaseListResponse<T extends CineworldBase> {
 	public abstract List<T> getList();
 
 	public List<String> getErrors() {
-		return Collections.unmodifiableList(m_errors);
+		return m_errors;
 	}
 }

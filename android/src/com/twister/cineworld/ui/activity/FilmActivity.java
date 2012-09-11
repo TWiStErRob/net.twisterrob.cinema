@@ -2,10 +2,10 @@ package com.twister.cineworld.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.*;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
@@ -41,10 +41,14 @@ public class FilmActivity extends Activity {
 
 			@Override
 			protected void exception(final CineworldException e) {
-				FilmActivity.LOG.error("Error in FilmActivity", e);
-				// TODO show the user
+				exceptionInternal(e);
 			}
 		});
+	}
+
+	private final void exceptionInternal(final CineworldException e) {
+		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	private void update(final CineworldFilm result) {

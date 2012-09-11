@@ -8,25 +8,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.log.*;
+import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.*;
 
 public class CinemaActivity extends Activity {
 
-	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
-
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
 	 */
-	public static final String				EXTRA_ID	= "extra_id";
-	private Integer							m_id;
+	public static final String	EXTRA_ID	= "extra_id";
+	private Integer				m_id;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -48,10 +45,14 @@ public class CinemaActivity extends Activity {
 
 			@Override
 			protected void exception(final CineworldException e) {
-				CinemaActivity.LOG.error("Error in CinemaActivity", e);
-				// TODO show the user
+				exceptionInternal(e);
 			}
 		});
+	}
+
+	private final void exceptionInternal(final CineworldException e) {
+		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	private void update(final CineworldCinema result) {

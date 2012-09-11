@@ -8,12 +8,15 @@ import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.*;
 import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.json.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.tools.*;
 import com.twister.cineworld.ui.*;
 
 public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
+	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
+
 	private ArrayList<CineworldCinema>		m_items		= new ArrayList<CineworldCinema>();
 	private Drawable						m_markerSelected;
 	private MapView							m_map;
@@ -84,7 +87,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 					try {
 						film.setPoster(IOTools.getImage(film.getPosterUrl()));
 					} catch (IOException ex) {
-						// throw new NetworkException("Cannot get poster from: " + film.getPosterUrl(), ex);
+						ItemizedOverlayCinemas.LOG.warn("Could not download film poster: " + film.getPosterUrl());
 					}
 				}
 				return films;
@@ -97,7 +100,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 
 			@Override
 			protected void exception(final CineworldException e) {
-
+				// TODO is there anything to do here?
 			}
 
 		});

@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
 import com.twister.cineworld.ui.adapter.*;
 import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class MainActivity extends BaseListActivity<MainMenuItem> {
+
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.UI);
+
 	public MainActivity() {
 		super(R.layout.activity_main);
 	}
@@ -19,6 +23,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		MainActivity.LOG.info("Main activity created");
 	}
 
 	@Override

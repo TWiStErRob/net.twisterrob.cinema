@@ -6,6 +6,7 @@ import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCategory;
 import com.twister.cineworld.ui.adapter.CategoryAdapter;
@@ -26,7 +27,7 @@ public class CategoriesActivity extends BaseListActivity<CineworldCategory> {
 	}
 
 	@Override
-	protected List<CineworldCategory> loadList() {
+	protected List<CineworldCategory> loadList() throws CineworldException {
 		return new CineworldAccessor().getAllCategories();
 	}
 

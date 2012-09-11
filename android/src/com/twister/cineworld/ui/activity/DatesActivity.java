@@ -7,6 +7,7 @@ import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldDate;
 import com.twister.cineworld.ui.adapter.DateAdapter;
@@ -32,7 +33,7 @@ public class DatesActivity extends BaseListActivity<CineworldDate> {
 	}
 
 	@Override
-	public List<CineworldDate> loadList() {
+	public List<CineworldDate> loadList() throws CineworldException {
 		if (m_edi != null) {
 			return new CineworldAccessor().getDates(m_edi);
 		} else {

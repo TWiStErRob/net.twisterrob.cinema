@@ -8,6 +8,7 @@ import android.view.*;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.*;
 import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
@@ -113,7 +114,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	@Override
-	public List<FilmBase> loadList() {
+	public List<FilmBase> loadList() throws CineworldException {
 		List<CineworldFilm> list;
 		if (m_cinemaId != null) {
 			list = new CineworldAccessor().getFilms(m_cinemaId);
