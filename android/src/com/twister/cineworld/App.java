@@ -1,6 +1,8 @@
 package com.twister.cineworld;
 
 import com.twister.cineworld.db.DataBaseHelper;
+import com.twister.cineworld.model.accessor.CineworldAccessor;
+import com.twister.cineworld.model.accessor.impl.JSONCineworldAccessor;
 
 public class App extends android.app.Application {
 	private static/* final */App	s_instance;
@@ -21,5 +23,9 @@ public class App extends android.app.Application {
 
 	public DataBaseHelper getDataBaseHelper() {
 		return m_dataBaseHelper;
+	}
+
+	public CineworldAccessor getCineworldAccessor() {
+		return new JSONCineworldAccessor();
 	}
 }

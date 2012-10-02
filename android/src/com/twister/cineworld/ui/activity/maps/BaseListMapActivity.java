@@ -9,7 +9,7 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.maps.MapActivity;
-import com.twister.cineworld.exception.*;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.ui.*;
 
 /**

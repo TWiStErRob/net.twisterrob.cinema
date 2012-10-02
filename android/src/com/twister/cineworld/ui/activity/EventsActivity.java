@@ -5,9 +5,8 @@ import java.util.List;
 import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
-import com.twister.cineworld.R;
+import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldEvent;
 import com.twister.cineworld.ui.adapter.EventAdapter;
 
@@ -23,7 +22,7 @@ public class EventsActivity extends BaseListActivity<CineworldEvent> {
 
 	@Override
 	public List<CineworldEvent> loadList() throws CineworldException {
-		return new CineworldAccessor().getAllEvents();
+		return App.getInstance().getCineworldAccessor().getAllEvents();
 	}
 
 	public List<CineworldEvent> process(final List<CineworldEvent> list) {

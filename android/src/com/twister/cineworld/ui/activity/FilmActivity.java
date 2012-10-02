@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.*;
 
-import com.twister.cineworld.R;
-import com.twister.cineworld.exception.*;
+import com.twister.cineworld.*;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.ui.*;
 
@@ -31,7 +30,7 @@ public class FilmActivity extends Activity {
 		CineworldExecutor.execute(new CineworldGUITask<CineworldFilm>(this) {
 			@Override
 			protected CineworldFilm work() throws CineworldException {
-				return new CineworldAccessor().getFilm(m_edi);
+				return App.getInstance().getCineworldAccessor().getFilm(m_edi);
 			}
 
 			@Override

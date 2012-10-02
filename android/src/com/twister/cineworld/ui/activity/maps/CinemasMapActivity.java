@@ -13,10 +13,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.google.android.maps.*;
 import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
-import com.twister.cineworld.R;
+import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.activity.CinemaActivity;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
@@ -171,7 +170,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> imp
 
 	@Override
 	protected List<CineworldCinema> loadList() throws CineworldException {
-		List<CineworldCinema> cinemas = new CineworldAccessor().getAllCinemas();
+		List<CineworldCinema> cinemas = App.getInstance().getCineworldAccessor().getAllCinemas();
 		Geocoder coder = new Geocoder(this);
 		for (CineworldCinema cinema : cinemas) {
 			try {

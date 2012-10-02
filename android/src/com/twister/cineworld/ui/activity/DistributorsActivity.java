@@ -5,9 +5,8 @@ import java.util.List;
 import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
-import com.twister.cineworld.R;
+import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.CineworldAccessor;
 import com.twister.cineworld.model.json.data.CineworldDistributor;
 import com.twister.cineworld.ui.adapter.DistributorAdapter;
 
@@ -23,7 +22,7 @@ public class DistributorsActivity extends BaseListActivity<CineworldDistributor>
 
 	@Override
 	public List<CineworldDistributor> loadList() throws CineworldException {
-		return new CineworldAccessor().getAllDistributors();
+		return App.getInstance().getCineworldAccessor().getAllDistributors();
 	}
 
 	@Override

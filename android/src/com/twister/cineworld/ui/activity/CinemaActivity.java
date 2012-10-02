@@ -10,9 +10,8 @@ import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
 
-import com.twister.cineworld.R;
-import com.twister.cineworld.exception.*;
-import com.twister.cineworld.model.json.CineworldAccessor;
+import com.twister.cineworld.*;
+import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.json.data.CineworldCinema;
 import com.twister.cineworld.ui.*;
 
@@ -35,7 +34,7 @@ public class CinemaActivity extends Activity {
 		CineworldExecutor.execute(new CineworldGUITask<CineworldCinema>(this) {
 			@Override
 			protected CineworldCinema work() throws CineworldException {
-				return new CineworldAccessor().getCinema(m_id);
+				return App.getInstance().getCineworldAccessor().getCinema(m_id);
 			}
 
 			@Override
