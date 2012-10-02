@@ -11,8 +11,10 @@ import android.graphics.drawable.*;
 
 public class IOTools {
 	// TODO check if UTF-8 is used by cineworld
-	private static final String	DEFAULT_HTTP_ENCODING		= Charset.defaultCharset().name();
+	public static final String	ENCODING					= Charset.defaultCharset().name();
+	private static final String	DEFAULT_HTTP_ENCODING		= IOTools.ENCODING;
 	private static final String	HTTP_HEADER_CHARSET_PREFIX	= "charset=";
+	public static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
 
 	private IOTools() {
 		// prevent instantiation

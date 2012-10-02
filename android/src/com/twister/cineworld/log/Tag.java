@@ -12,6 +12,7 @@ public enum Tag {
 	 * Bear in mind that the length of tags cannot be longer than 23 characters according to the Android API.
 	 */
 	JSON,
+	DB,
 	ACCESS,
 	UI,
 	GEO,

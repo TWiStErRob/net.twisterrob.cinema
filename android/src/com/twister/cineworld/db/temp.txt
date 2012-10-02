@@ -1,0 +1,84 @@
+
+	public List<CineworldCinema> getCinemas() {
+		return null;
+	}
+
+	private static class DataBaseAccessor {
+		SQLiteDatabase	m_database;
+
+		SQLiteStatement	insertStop;
+
+		private void prepareStatements(final SQLiteDatabase database) {
+			if (database != this.m_database) {
+				this.m_database = database;
+				if (insertStop != null) {
+					insertStop.close();
+				}
+				insertStop = database
+						.compileStatement("INSERT INTO Stop(_route, name, time, latitude, longitude) VALUES(?, ?, ?, ?, ?);");
+			}
+		}
+
+		public void insertRoutes(final List<Route> routes) {
+			for (Route route : routes) {
+				insertRoute(route);
+			}
+		}
+
+		public void insertRoute(final Route route) {
+			SQLiteDatabase database = getWritableDatabase();
+			prepareStatements(database);
+			try {
+				database.beginTransaction();
+				DatabaseUtils.bindObjectToProgram(insertRoute, 1, route.region);
+				DatabaseUtils.bindObjectToProgram(insertRoute, 2, route.name);
+				if (route.direction != null) {
+					DatabaseUtils.bindObjectToProgram(insertRoute, 3, route.direction.ordinal());
+				} else {
+					insertRoute.bindNull(3);
+				}
+				DatabaseUtils.bindObjectToProgram(insertRoute, 4, route.description);
+				long routeID;
+				try {
+					routeID = insertRoute.executeInsert();
+				} catch (SQLiteConstraintException ex) {
+					routeID = getRouteID(route.region, route.name, route.direction);
+				}
+				// Log.debug(String.format("Inserting route %s -> %d", route.name, routeID));
+				insertStops(routeID, route.stops);
+				insertSchedules(routeID, route.schedules);
+				route.ID = (int) routeID;
+				database.setTransactionSuccessful();
+			} finally {
+				database.endTransaction();
+			}
+		}
+
+		private void insertStops(final long routeID, final List<Stop> stops) {
+			for (Stop stop : stops) {
+				DatabaseUtils.bindObjectToProgram(insertStop, 1, routeID);
+				DatabaseUtils.bindObjectToProgram(insertStop, 2, stop.name);
+				DatabaseUtils.bindObjectToProgram(insertStop, 3, stop.time);
+				Double lat = stop.location != null? stop.location.lat : null;
+				Double lon = stop.location != null? stop.location.lon : null;
+				DatabaseUtils.bindObjectToProgram(insertStop, 4, lat);
+				DatabaseUtils.bindObjectToProgram(insertStop, 5, lon);
+				// Log.debug(String.format("Inserting stop %d/%s -> %d", routeID, stop.name, stop.time));
+				insertStop.execute();
+			}
+		}
+
+		protected long getRouteID(final String region, final String name, final RouteDirection direction) {
+			SQLiteDatabase database = getWritableDatabase();
+			String dir = direction != null? String.valueOf(direction.ordinal()) : null;
+			return DatabaseUtils.longForQuery(database,
+					"SELECT _id FROM Route WHERE region = ? AND name = ? AND direction = ?", // <format>
+					new String[] { region, name, dir });
+		}
+
+		public int getNumberOfRoutes() {
+			SQLiteDatabase db = getReadableDatabase();
+			int entries = (int) DatabaseUtils.queryNumEntries(db, "Route");
+			return entries;
+		}
+	}
