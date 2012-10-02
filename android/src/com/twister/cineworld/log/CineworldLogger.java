@@ -56,12 +56,12 @@ public class CineworldLogger {
 		Log.i(m_tag, message, t);
 	}
 
-	public void warn(final String message) {
-		Log.w(m_tag, message);
+	public void warn(final String message, final Object... params) {
+		Log.w(m_tag, String.format(message, params));
 	}
 
-	public void warn(final String message, final Throwable t) {
-		Log.w(m_tag, message, t);
+	public void warn(final Throwable t, final String message, final Object... params) {
+		Log.w(m_tag, String.format(message, params), t);
 	}
 
 	public void error(final String message) {

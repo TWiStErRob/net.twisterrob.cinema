@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui.activity.maps;
+package com.twister.cineworld.model.generic;
 
 import java.util.*;
 

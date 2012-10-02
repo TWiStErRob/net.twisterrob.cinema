@@ -27,5 +27,6 @@ public class App extends android.app.Application {
 
 	public CineworldAccessor getCineworldAccessor() {
 		return new JSONCineworldAccessor();
+		// return new TrivialDBCacheCineworldAccessor(new DBCineworldAccessor(), new JSONCineworldAccessor());
 	}
 }

@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldCinema;
+import com.twister.cineworld.model.generic.Cinema;
 
-public class CinemaAdapter extends BaseListAdapter<CineworldCinema, CinemaAdapter.ViewHolder> {
-	public CinemaAdapter(final Context context, final Collection<CineworldCinema> items) {
+public class CinemaAdapter extends BaseListAdapter<Cinema, CinemaAdapter.ViewHolder> {
+	public CinemaAdapter(final Context context, final Collection<Cinema> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class CinemaAdapter extends BaseListAdapter<CineworldCinema, CinemaAdapte
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldCinema currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final Cinema currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s, %s",
 				currentItem.getAddress(),

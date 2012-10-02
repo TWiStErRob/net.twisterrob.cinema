@@ -1,6 +1,6 @@
 package com.twister.cineworld.ui.activity;
 
-import java.util.List;
+import java.util.*;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldCinema;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
-public class CinemasActivity extends BaseListActivity<CineworldCinema> {
+public class CinemasActivity extends BaseListActivity<Cinema> {
 	/**
 	 * Film EDI<br>
 	 * <b>Type</b>: Integer
@@ -32,12 +32,12 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldCinema item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Cinema item) {
 		menu.setHeaderTitle(item.getName());
 	}
 
 	@Override
-	protected boolean onContextItemSelected(final MenuItem menu, final CineworldCinema item) {
+	protected boolean onContextItemSelected(final MenuItem menu, final Cinema item) {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_cinema_details: {
 				Intent intent = new Intent(getApplicationContext(), CinemaActivity.class);
@@ -57,16 +57,16 @@ public class CinemasActivity extends BaseListActivity<CineworldCinema> {
 	}
 
 	@Override
-	protected List<CineworldCinema> loadList() throws CineworldException {
+	protected List<Cinema> loadList() throws CineworldException {
 		if (m_edi != null) {
-			return App.getInstance().getCineworldAccessor().getCinemas(m_edi);
+			return Collections.emptyList(); // FIXME App.getInstance().getCineworldAccessor().getCinemas(m_edi);
 		} else {
 			return App.getInstance().getCineworldAccessor().getAllCinemas();
 		}
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
+	protected ListAdapter createAdapter(final List<Cinema> result) {
 		setTitle(getResources().getString(R.string.title_activity_cinemas_loaded, m_edi));
 		return new CinemaAdapter(this, result);
 	}

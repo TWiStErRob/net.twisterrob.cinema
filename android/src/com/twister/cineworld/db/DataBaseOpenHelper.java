@@ -12,7 +12,7 @@ import com.twister.cineworld.tools.IOTools;
 class DataBaseOpenHelper extends SQLiteOpenHelper {
 	private static final String				DB_SCHEMA_FILE	= "CineworldExtra.v1.sql";
 	private static final String				DB_NAME			= "CineworldExtra";
-	private static final int				DB_VERSION		= 1;
+	private static final int				DB_VERSION		= 9;
 	private static final CineworldLogger	LOGGER			= LogFactory.getLog(Tag.DB);
 
 	public DataBaseOpenHelper(final Context context) {
@@ -24,7 +24,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 		DataBaseOpenHelper.LOGGER.debug("Opening database: " + db);
 		super.onOpen(db);
 		DataBaseOpenHelper.LOGGER.info("Opened database: " + db);
-		// db.execSQL("DELETE FROM Route WHERE direction IS NULL;");
+		// db.execSQL("DELETE FROM Cinema;");
 	}
 
 	@Override
@@ -59,7 +59,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 			}
 			sb.append(line);
 			sb.append(IOTools.LINE_SEPARATOR);
-			if (line.matches(";\\s*$")) {
+			if (line.matches(".*;\\s*$")) {
 				return sb.toString();  // ends in a semicolon -> end of statement
 			}
 		}
@@ -68,6 +68,6 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		// if (oldVersion < 2 && 2 <= newVersion)
+		onCreate(db);
 	}
 }

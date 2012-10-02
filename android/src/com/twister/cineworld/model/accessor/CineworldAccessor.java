@@ -3,12 +3,13 @@ package com.twister.cineworld.model.accessor;
 import java.util.List;
 
 import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.model.json.TimeSpan;
 import com.twister.cineworld.model.json.data.*;
 
 public interface CineworldAccessor {
 
-	List<CineworldCinema> getAllCinemas() throws CineworldException;
+	List<Cinema> getAllCinemas() throws CineworldException;
 
 	CineworldCinema getCinema(int cinemaId) throws CineworldException;
 

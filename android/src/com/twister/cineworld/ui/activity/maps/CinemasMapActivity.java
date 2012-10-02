@@ -1,11 +1,10 @@
 package com.twister.cineworld.ui.activity.maps;
 
-import java.io.IOException;
 import java.util.List;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.location.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
@@ -16,11 +15,11 @@ import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.json.data.CineworldCinema;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.activity.CinemaActivity;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
-public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> implements
+public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		OnFocusChangeListener, OnItemSelectedListener {
 	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.GEO);
 	private MapView							m_map;
@@ -93,12 +92,12 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> imp
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldCinema item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Cinema item) {
 		menu.setHeaderTitle(item.getName());
 	}
 
 	@Override
-	protected boolean onContextItemSelected(final MenuItem menu, final CineworldCinema item) {
+	protected boolean onContextItemSelected(final MenuItem menu, final Cinema item) {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_cinema_details:
 				Intent intent = new Intent(getApplicationContext(), CinemaActivity.class);
@@ -111,14 +110,14 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> imp
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldCinema> result) {
+	protected ListAdapter createAdapter(final List<Cinema> result) {
 		return new CinemaAdapter(this, result);
 	}
 
 	@Override
-	public void update(final List<CineworldCinema> result) {
+	public void update(final List<Cinema> result) {
 		super.update(result);
-		for (CineworldCinema cinema : result) {
+		for (Cinema cinema : result) {
 			if (cinema.getLocation() != null) {
 				m_overlay.addItem(cinema);
 			}
@@ -136,7 +135,7 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> imp
 		skipEvent = true;
 		if (newFocus != null) {
 			int i = 0;
-			for (CineworldCinema cinema : adapter.getItems()) {
+			for (Cinema cinema : adapter.getItems()) {
 				if (cinema.getLocation() == newFocus.getPoint()) {
 					break;
 				}
@@ -169,24 +168,10 @@ public class CinemasMapActivity extends BaseListMapActivity<CineworldCinema> imp
 	}
 
 	@Override
-	protected List<CineworldCinema> loadList() throws CineworldException {
-		List<CineworldCinema> cinemas = App.getInstance().getCineworldAccessor().getAllCinemas();
-		Geocoder coder = new Geocoder(this);
-		for (CineworldCinema cinema : cinemas) {
-			try {
-				GeoPoint loc = GeoCache.getGeoPoint(cinema.getPostcode());
-				if (loc == null && cinema.getPostcode() != null) {
-					List<Address> locs = coder.getFromLocationName(cinema.getPostcode(), 1);
-					if (!locs.isEmpty()) {
-						Address address = locs.get(0);
-						loc = new GeoPoint((int) (address.getLatitude() * 1e6),
-								(int) (locs.get(0).getLongitude() * 1e6));
-					}
-				}
-				cinema.setLocation(loc);
-			} catch (IOException ex) {
-				CinemasMapActivity.LOG.warn("Cannot get cinema location: " + cinema.getPostcode(), ex);
-			}
+	protected List<Cinema> loadList() throws CineworldException {
+		List<Cinema> cinemas = App.getInstance().getCineworldAccessor().getAllCinemas();
+		for (Cinema cinema : cinemas) {
+			cinema.getLocation();
 		}
 		return cinemas;
 	}

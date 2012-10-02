@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.gson.*;
 import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.model.json.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
@@ -21,10 +22,23 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		m_jsonClient = new JsonClient(gson);
 	}
 
-	public List<CineworldCinema> getAllCinemas() throws CineworldException {
+	public List<Cinema> getAllCinemas() throws CineworldException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
-		return getList(request);
+		List<CineworldCinema> responseCinemas = getList(request);
+		List<Cinema> cinemas = new ArrayList<Cinema>(responseCinemas.size());
+		for (CineworldCinema cineworldCinema : responseCinemas) {
+			Cinema cinema = new Cinema();
+			cinema.setId(cineworldCinema.getId());
+			cinema.setName(cineworldCinema.getName());
+			cinema.setUrl(cineworldCinema.getCinemaUrl());
+			cinema.setTelephone(cineworldCinema.getTelephone());
+			cinema.setAddress(cineworldCinema.getAddress());
+			cinema.setPostcode(cineworldCinema.getPostcode());
+			cinemas.add(cinema);
+		}
+
+		return cinemas;
 	}
 
 	public CineworldCinema getCinema(final int cinemaId) throws CineworldException {

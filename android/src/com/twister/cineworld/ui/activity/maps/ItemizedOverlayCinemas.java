@@ -11,15 +11,16 @@ import com.twister.cineworld.App;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.model.json.TimeSpan;
-import com.twister.cineworld.model.json.data.*;
+import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.tools.*;
 import com.twister.cineworld.ui.*;
 
 public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
 
-	private ArrayList<CineworldCinema>		m_items		= new ArrayList<CineworldCinema>();
+	private ArrayList<Cinema>				m_items		= new ArrayList<Cinema>();
 	private Drawable						m_markerSelected;
 	private MapView							m_map;
 	private ItemizedOverlayFilmsForCinema	m_filmsOverlay;
@@ -38,7 +39,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		populate();
 	}
 
-	public void addItem(final CineworldCinema cinema) {
+	public void addItem(final Cinema cinema) {
 		m_items.add(cinema);
 		populate();
 	}
@@ -48,7 +49,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		CollectionTools.ensureIndexValid(m_itemCache, i);
 		OverlayItem item = m_itemCache.get(i);
 		if (item == null) {
-			CineworldCinema cinema = m_items.get(i);
+			Cinema cinema = m_items.get(i);
 			item = new OverlayItem(cinema.getLocation(), cinema.getName(),
 					String.format("%s, %s", cinema.getAddress(), cinema.getPostcode())) {
 				@Override
@@ -66,7 +67,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		return m_items.size();
 	}
 
-	public List<CineworldCinema> getItems() {
+	public List<Cinema> getItems() {
 		return Collections.unmodifiableList(m_items);
 	}
 
@@ -77,7 +78,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			return false;
 		}
 		OverlayItem item = getItem(index);
-		final CineworldCinema cinema = m_items.get(index);
+		final Cinema cinema = m_items.get(index);
 		item.setMarker(null);
 		final ItemizedOverlayFilmsForCinema overlay = new ItemizedOverlayFilmsForCinema(m_map, cinema, m_filmMarker);
 		m_filmsOverlay = overlay;

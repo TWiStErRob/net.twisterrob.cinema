@@ -6,16 +6,17 @@ import android.graphics.*;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.*;
-import com.twister.cineworld.model.json.data.*;
+import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.tools.CollectionTools;
 
 public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> {
 	private final ArrayList<CineworldFilm>	m_items		= new ArrayList<CineworldFilm>();
 	private final ArrayList<OverlayItem>	m_itemCache	= new ArrayList<OverlayItem>();
-	private CineworldCinema					m_cinema;
+	private Cinema							m_cinema;
 	private MapView							m_map;
 
-	public ItemizedOverlayFilmsForCinema(final MapView map, final CineworldCinema cinema,
+	public ItemizedOverlayFilmsForCinema(final MapView map, final Cinema cinema,
 			final Drawable defaultMarker) {
 		super(defaultMarker);
 		m_map = map;
