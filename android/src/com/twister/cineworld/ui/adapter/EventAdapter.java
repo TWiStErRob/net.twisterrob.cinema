@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldEvent;
+import com.twister.cineworld.model.generic.Event;
 
-public class EventAdapter extends BaseListAdapter<CineworldEvent, EventAdapter.ViewHolder> {
-	public EventAdapter(final Context context, final Collection<CineworldEvent> items) {
+public class EventAdapter extends BaseListAdapter<Event, EventAdapter.ViewHolder> {
+	public EventAdapter(final Context context, final Collection<Event> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class EventAdapter extends BaseListAdapter<CineworldEvent, EventAdapter.V
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldEvent currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final Event currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
 				currentItem.getCode()

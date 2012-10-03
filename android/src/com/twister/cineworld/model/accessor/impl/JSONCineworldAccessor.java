@@ -5,7 +5,7 @@ import java.util.*;
 import com.google.gson.*;
 import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
-import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
@@ -26,17 +26,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		List<CineworldCinema> responseCinemas = getList(request);
-		List<Cinema> cinemas = new ArrayList<Cinema>(responseCinemas.size());
-		for (CineworldCinema cineworldCinema : responseCinemas) {
-			Cinema cinema = new Cinema();
-			cinema.setId(cineworldCinema.getId());
-			cinema.setName(cineworldCinema.getName());
-			cinema.setUrl(cineworldCinema.getCinemaUrl());
-			cinema.setTelephone(cineworldCinema.getTelephone());
-			cinema.setAddress(cineworldCinema.getAddress());
-			cinema.setPostcode(cineworldCinema.getPostcode());
-			cinemas.add(cinema);
-		}
+		List<Cinema> cinemas = convert(responseCinemas);
 
 		return cinemas;
 	}
@@ -98,28 +88,36 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return getList(request);
 	}
 
-	public List<CineworldCategory> getAllCategories() throws CineworldException {
+	public List<Category> getAllCategories() throws CineworldException {
 		CategoriesRequest request = new CategoriesRequest();
-		return getList(request);
+		List<CineworldCategory> list = getList(request);
+		List<Category> result = convert(list);
+		return result;
 	}
 
-	public List<CineworldEvent> getAllEvents() throws CineworldException {
+	public List<Event> getAllEvents() throws CineworldException {
 		EventsRequest request = new EventsRequest();
-		return getList(request);
+		List<CineworldEvent> list = getList(request);
+		List<Event> result = convert(list);
+		return result;
 	}
 
-	public List<CineworldDistributor> getAllDistributors() throws CineworldException {
+	public List<Distributor> getAllDistributors() throws CineworldException {
 		DistributorsRequest request = new DistributorsRequest();
-		return getList(request);
+		List<CineworldDistributor> list = getList(request);
+		List<Distributor> result = convert(list);
+		return result;
 	}
 
-	public List<CineworldPerformance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
 			throws CineworldException {
 		PerformancesRequest request = new PerformancesRequest();
 		request.setCinema(cinemaId);
 		request.setFilm(filmEdi);
 		request.setDate(date);
-		return getList(request);
+		List<CineworldPerformance> list = getList(request);
+		List<Performance> result = convert(list);
+		return result;
 	}
 
 	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws CineworldException {
@@ -141,5 +139,60 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 			throw new InternalException(String.format(
 					"Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
 		}
+	}
+
+	private <TOut extends GenericBase, TIn extends CineworldBase> List<TOut> convert(final List<TIn> responseItems) {
+		List<TOut> cinemas = new ArrayList<TOut>(responseItems.size());
+		for (TIn cineworldObject : responseItems) {
+			TOut object = convert(cineworldObject);
+			cinemas.add(object);
+		}
+		return cinemas;
+	}
+
+	// TODO Dozer
+	@SuppressWarnings("unchecked")
+	private <TOut extends GenericBase, TIn extends CineworldBase> TOut convert(final TIn cineworldObject) {
+		GenericBase result = null;
+		if (cineworldObject instanceof CineworldCinema) {
+			CineworldCinema cineworld = (CineworldCinema) cineworldObject;
+			Cinema generic = new Cinema();
+			generic.setId(cineworld.getId());
+			generic.setName(cineworld.getName());
+			generic.setUrl(cineworld.getCinemaUrl());
+			generic.setTelephone(cineworld.getTelephone());
+			generic.setAddress(cineworld.getAddress());
+			generic.setPostcode(cineworld.getPostcode());
+			result = generic;
+		} else if (cineworldObject instanceof CineworldCategory) {
+			CineworldCategory cineworld = (CineworldCategory) cineworldObject;
+			Category generic = new Category();
+			generic.setCode(cineworld.getCode());
+			generic.setName(cineworld.getName());
+			result = generic;
+		} else if (cineworldObject instanceof CineworldEvent) {
+			CineworldEvent cineworld = (CineworldEvent) cineworldObject;
+			Event generic = new Event();
+			generic.setCode(cineworld.getCode());
+			generic.setName(cineworld.getName());
+			result = generic;
+		} else if (cineworldObject instanceof CineworldDistributor) {
+			CineworldDistributor cineworld = (CineworldDistributor) cineworldObject;
+			Distributor generic = new Distributor();
+			generic.setId(cineworld.getId());
+			generic.setName(cineworld.getName());
+			result = generic;
+		} else if (cineworldObject instanceof CineworldPerformance) {
+			CineworldPerformance cineworld = (CineworldPerformance) cineworldObject;
+			Performance generic = new Performance();
+			generic.setTime(cineworld.getTime());
+			generic.setType(cineworld.getType());
+			generic.setBookingUrl(cineworld.getBookingUrl());
+			generic.setAvailable(cineworld.isAvailable());
+			generic.setSubtitled(cineworld.isSubtitled());
+			generic.setAudioDescribed(cineworld.isAudioDescribed());
+			result = generic;
+		}
+		return (TOut) result;
 	}
 }

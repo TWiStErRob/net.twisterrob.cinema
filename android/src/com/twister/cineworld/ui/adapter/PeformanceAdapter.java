@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldPerformance;
+import com.twister.cineworld.model.generic.Performance;
 
-public class PeformanceAdapter extends BaseListAdapter<CineworldPerformance, PeformanceAdapter.ViewHolder> {
-	public PeformanceAdapter(final Context context, final Collection<CineworldPerformance> items) {
+public class PeformanceAdapter extends BaseListAdapter<Performance, PeformanceAdapter.ViewHolder> {
+	public PeformanceAdapter(final Context context, final Collection<Performance> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class PeformanceAdapter extends BaseListAdapter<CineworldPerformance, Pef
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldPerformance currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final Performance currentItem, final View convertView) {
 		String title = currentItem.getTime();
 		String description = String.format("%s%s%s%s\n%s",
 				currentItem.getType(),

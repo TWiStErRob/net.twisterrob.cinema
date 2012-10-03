@@ -7,26 +7,26 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldPerformance;
+import com.twister.cineworld.model.generic.Performance;
 import com.twister.cineworld.ui.adapter.PeformanceAdapter;
 
-public class PerformancesActivity extends BaseListActivity<CineworldPerformance> {
+public class PerformancesActivity extends BaseListActivity<Performance> {
 	public PerformancesActivity() {
 		super(R.layout.activity_performances, R.menu.context_item_performance);
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldPerformance item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Performance item) {
 		menu.setHeaderTitle(item.getTime());
 	}
 
 	@Override
-	public List<CineworldPerformance> loadList() throws CineworldException {
+	public List<Performance> loadList() throws CineworldException {
 		return App.getInstance().getCineworldAccessor().getPeformances(66, 62278, 20130427);
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldPerformance> result) {
+	protected ListAdapter createAdapter(final List<Performance> result) {
 		return new PeformanceAdapter(PerformancesActivity.this, result);
 	}
 }

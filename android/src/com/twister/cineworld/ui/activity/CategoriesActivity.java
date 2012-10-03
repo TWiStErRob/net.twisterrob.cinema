@@ -7,26 +7,26 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldCategory;
+import com.twister.cineworld.model.generic.Category;
 import com.twister.cineworld.ui.adapter.CategoryAdapter;
 
-public class CategoriesActivity extends BaseListActivity<CineworldCategory> {
+public class CategoriesActivity extends BaseListActivity<Category> {
 	public CategoriesActivity() {
 		super(R.layout.activity_categories, R.menu.context_item_category);
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldCategory item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Category item) {
 		menu.setHeaderTitle(item.getName());
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldCategory> result) {
+	protected ListAdapter createAdapter(final List<Category> result) {
 		return new CategoryAdapter(CategoriesActivity.this, result);
 	}
 
 	@Override
-	protected List<CineworldCategory> loadList() throws CineworldException {
+	protected List<Category> loadList() throws CineworldException {
 		return App.getInstance().getCineworldAccessor().getAllCategories();
 	}
 

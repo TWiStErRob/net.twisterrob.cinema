@@ -7,26 +7,26 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldDistributor;
+import com.twister.cineworld.model.generic.Distributor;
 import com.twister.cineworld.ui.adapter.DistributorAdapter;
 
-public class DistributorsActivity extends BaseListActivity<CineworldDistributor> {
+public class DistributorsActivity extends BaseListActivity<Distributor> {
 	public DistributorsActivity() {
 		super(R.layout.activity_distributors, R.menu.context_item_distributor);
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldDistributor item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Distributor item) {
 		menu.setHeaderTitle(item.getName());
 	}
 
 	@Override
-	public List<CineworldDistributor> loadList() throws CineworldException {
+	public List<Distributor> loadList() throws CineworldException {
 		return App.getInstance().getCineworldAccessor().getAllDistributors();
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldDistributor> result) {
+	protected ListAdapter createAdapter(final List<Distributor> result) {
 		return new DistributorAdapter(DistributorsActivity.this, result);
 	}
 

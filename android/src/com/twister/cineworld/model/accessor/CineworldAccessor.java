@@ -3,7 +3,7 @@ package com.twister.cineworld.model.accessor;
 import java.util.List;
 
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
 import com.twister.cineworld.model.json.data.*;
 
@@ -27,12 +27,12 @@ public interface CineworldAccessor {
 
 	List<CineworldDate> getDates(int filmEdi) throws CineworldException;
 
-	List<CineworldCategory> getAllCategories() throws CineworldException;
+	List<Category> getAllCategories() throws CineworldException;
 
-	List<CineworldEvent> getAllEvents() throws CineworldException;
+	List<Event> getAllEvents() throws CineworldException;
 
-	List<CineworldDistributor> getAllDistributors() throws CineworldException;
+	List<Distributor> getAllDistributors() throws CineworldException;
 
-	List<CineworldPerformance> getPeformances(int cinemaId, int filmEdi, int date) throws CineworldException;
+	List<Performance> getPeformances(int cinemaId, int filmEdi, int date) throws CineworldException;
 
 }

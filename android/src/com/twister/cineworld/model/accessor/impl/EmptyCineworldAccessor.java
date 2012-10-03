@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
-import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
 import com.twister.cineworld.model.json.data.*;
 
@@ -45,19 +45,19 @@ public class EmptyCineworldAccessor implements CineworldAccessor {
 		return Collections.emptyList();
 	}
 
-	public List<CineworldCategory> getAllCategories() throws CineworldException {
+	public List<Category> getAllCategories() throws CineworldException {
 		return Collections.emptyList();
 	}
 
-	public List<CineworldEvent> getAllEvents() throws CineworldException {
+	public List<Event> getAllEvents() throws CineworldException {
 		return Collections.emptyList();
 	}
 
-	public List<CineworldDistributor> getAllDistributors() throws CineworldException {
+	public List<Distributor> getAllDistributors() throws CineworldException {
 		return Collections.emptyList();
 	}
 
-	public List<CineworldPerformance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
 			throws CineworldException {
 		return Collections.emptyList();
 	}

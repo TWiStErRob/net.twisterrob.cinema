@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldDistributor;
+import com.twister.cineworld.model.generic.Distributor;
 
-public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, DistributorAdapter.ViewHolder> {
-	public DistributorAdapter(final Context context, final Collection<CineworldDistributor> items) {
+public class DistributorAdapter extends BaseListAdapter<Distributor, DistributorAdapter.ViewHolder> {
+	public DistributorAdapter(final Context context, final Collection<Distributor> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class DistributorAdapter extends BaseListAdapter<CineworldDistributor, Di
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldDistributor currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final Distributor currentItem, final View convertView) {
 		String title = currentItem.getName();
 		String description = String.format("%s",
 				currentItem.getId()

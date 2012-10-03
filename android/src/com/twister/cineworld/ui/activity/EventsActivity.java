@@ -7,30 +7,30 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldEvent;
+import com.twister.cineworld.model.generic.Event;
 import com.twister.cineworld.ui.adapter.EventAdapter;
 
-public class EventsActivity extends BaseListActivity<CineworldEvent> {
+public class EventsActivity extends BaseListActivity<Event> {
 	public EventsActivity() {
 		super(R.layout.activity_events, R.menu.context_item_event);
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final CineworldEvent item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final Event item) {
 		menu.setHeaderTitle(item.getName());
 	}
 
 	@Override
-	public List<CineworldEvent> loadList() throws CineworldException {
+	public List<Event> loadList() throws CineworldException {
 		return App.getInstance().getCineworldAccessor().getAllEvents();
 	}
 
-	public List<CineworldEvent> process(final List<CineworldEvent> list) {
+	public List<Event> process(final List<Event> list) {
 		return list;
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<CineworldEvent> result) {
+	protected ListAdapter createAdapter(final List<Event> result) {
 		return new EventAdapter(EventsActivity.this, result);
 	}
 }
