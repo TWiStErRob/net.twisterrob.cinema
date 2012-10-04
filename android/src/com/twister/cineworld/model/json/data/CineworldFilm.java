@@ -1,7 +1,5 @@
 package com.twister.cineworld.model.json.data;
 
-import android.graphics.drawable.Drawable;
-
 import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.request.FilmsRequest;
 
@@ -37,27 +35,25 @@ import com.twister.cineworld.model.json.request.FilmsRequest;
  */
 public class CineworldFilm extends CineworldBase {
 	@SerializedName("edi")
-	private int					m_edi;
+	private int		m_edi;
 	@SerializedName("title")
-	private String				m_title;
+	private String	m_title;
 	@SerializedName("id")
-	private int					m_id;
+	private int		m_id;
 	@SerializedName("classification")
-	private String				m_classification;
+	private String	m_classification;
 	@SerializedName("advisory")
-	private String				m_advisory;
+	private String	m_advisory;
 	@SerializedName("poster_url")
-	private String				m_posterUrl;
+	private String	m_posterUrl;
 	@SerializedName("still_url")
-	private String				m_stillUrl;
+	private String	m_stillUrl;
 	@SerializedName("film_url")
-	private String				m_filmUrl;
+	private String	m_filmUrl;
 	@SerializedName("3D")
-	private boolean				m_3D;
+	private boolean	m_3D;
 	@SerializedName("imax")
-	private boolean				m_iMax;
-
-	private volatile Drawable	m_poster;
+	private boolean	m_iMax;
 
 	/**
 	 * The EDI number used in responses are supplied by Nielsen-EDI for films, other content will have unique numbers
@@ -170,13 +166,5 @@ public class CineworldFilm extends CineworldBase {
 
 	public void setIMax(final boolean iMax) {
 		m_iMax = iMax;
-	}
-
-	public Drawable getPoster() {
-		return m_poster;
-	}
-
-	public void setPoster(final Drawable poster) {
-		m_poster = poster;
 	}
 }

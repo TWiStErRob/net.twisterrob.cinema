@@ -11,9 +11,8 @@ import com.twister.cineworld.App;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
-import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
-import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.cineworld.tools.*;
 import com.twister.cineworld.ui.*;
 
@@ -82,12 +81,12 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		item.setMarker(null);
 		final ItemizedOverlayFilmsForCinema overlay = new ItemizedOverlayFilmsForCinema(m_map, cinema, m_filmMarker);
 		m_filmsOverlay = overlay;
-		CineworldExecutor.execute(new CineworldGUITask<List<CineworldFilm>>(m_activity) {
+		CineworldExecutor.execute(new CineworldGUITask<List<Film>>(m_activity) {
 			@Override
-			protected List<CineworldFilm> work() throws CineworldException {
+			protected List<Film> work() throws CineworldException {
 				CineworldAccessor accessor = App.getInstance().getCineworldAccessor();
-				List<CineworldFilm> films = accessor.getFilms(cinema.getId(), TimeSpan.Tomorrow);
-				for (CineworldFilm film : films) {
+				List<Film> films = accessor.getFilms(cinema.getId(), TimeSpan.Tomorrow);
+				for (Film film : films) {
 					try {
 						film.setPoster(IOTools.getImage(film.getPosterUrl()));
 					} catch (IOException ex) {
@@ -98,7 +97,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			}
 
 			@Override
-			protected void present(final List<CineworldFilm> result) {
+			protected void present(final List<Film> result) {
 				overlay.addAll(result);
 			}
 

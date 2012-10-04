@@ -1,14 +1,10 @@
-package com.twister.cineworld.model;
+package com.twister.cineworld.model.generic;
 
-public abstract class FilmBase {
+public abstract class MovieBase extends GenericBase {
 
 	private String	m_title;
 	private String	m_classification;
 	private String	m_advisory;
-
-	public FilmBase() {
-		super();
-	}
 
 	public String getTitle() {
 		return m_title;
@@ -41,5 +37,4 @@ public abstract class FilmBase {
 	public abstract boolean hasIMax2D();
 
 	public abstract boolean hasIMax3D();
-
 }

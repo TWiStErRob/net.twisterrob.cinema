@@ -14,17 +14,15 @@ import com.google.android.maps.*;
 import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.activity.CinemaActivity;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		OnFocusChangeListener, OnItemSelectedListener {
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.GEO);
-	private MapView							m_map;
-	private MyLocationOverlay				m_location;
-	private ItemizedOverlayCinemas			m_overlay;
+	private MapView					m_map;
+	private MyLocationOverlay		m_location;
+	private ItemizedOverlayCinemas	m_overlay;
 
 	public CinemasMapActivity() {
 		super(R.layout.activity_cinemas_map, R.menu.context_item_cinema);

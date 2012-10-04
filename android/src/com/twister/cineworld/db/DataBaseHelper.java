@@ -137,6 +137,7 @@ public class DataBaseHelper {
 			return cinema;
 		}
 
+		@SuppressWarnings("unused")
 		public int getNumberOfCinemas() {
 			SQLiteDatabase db = getReadableDatabase();
 			int entries = (int) DatabaseUtils.queryNumEntries(db, "Cinema");

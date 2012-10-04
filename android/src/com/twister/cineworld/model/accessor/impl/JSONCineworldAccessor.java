@@ -49,27 +49,33 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<CineworldFilm> getAllFilms() throws CineworldException {
+	public List<Film> getAllFilms() throws CineworldException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
-		return getList(request);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
 	}
 
-	public CineworldFilm getFilm(final int filmEdi) throws CineworldException {
+	public Film getFilm(final int filmEdi) throws CineworldException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFilm(filmEdi);
 		request.setFull(true);
-		return getSingular(request, filmEdi);
+		CineworldFilm single = getSingular(request, filmEdi);
+		Film result = convert(single);
+		return result;
 	}
 
-	public List<CineworldFilm> getFilms(final int cinemaId) throws CineworldException {
+	public List<Film> getFilms(final int cinemaId) throws CineworldException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
-		return getList(request);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
 	}
 
-	public List<CineworldFilm> getFilms(final int cinemaId, final TimeSpan span) throws CineworldException {
+	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws CineworldException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -78,7 +84,9 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 			now.add(Calendar.DAY_OF_MONTH, 1);
 			request.setDate(now);
 		}
-		return getList(request);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
 	}
 
 	public List<Date> getAllDates() throws CineworldException {

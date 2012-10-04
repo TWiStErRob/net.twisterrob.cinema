@@ -9,12 +9,11 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.*;
-import com.twister.cineworld.model.json.data.CineworldFilm;
-import com.twister.cineworld.ui.FilmMatcher;
+import com.twister.cineworld.model.MovieMatcher;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
-public class FilmsActivity extends BaseListActivity<FilmBase> {
+public class FilmsActivity extends BaseListActivity<MovieBase> {
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
@@ -34,7 +33,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	@Override
-	protected void onCreateContextMenu(final ContextMenu menu, final FilmBase item) {
+	protected void onCreateContextMenu(final ContextMenu menu, final MovieBase item) {
 		menu.setHeaderTitle(item.getTitle());
 		menu.findItem(R.id.menuitem_film_details_2d).setVisible(item.has2D());
 		menu.findItem(R.id.menuitem_film_when_2d).setVisible(item.has2D());
@@ -51,13 +50,13 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	@Override
-	protected boolean onContextItemSelected(final MenuItem menu, final FilmBase item) {
+	protected boolean onContextItemSelected(final MenuItem menu, final MovieBase item) {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_film_details_2d:
 			case R.id.menuitem_film_details_3d:
 			case R.id.menuitem_film_details_2d_imax:
 			case R.id.menuitem_film_details_3d_imax: {
-				CineworldFilm film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, menu.getItemId(),
 						R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
 						R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
@@ -69,7 +68,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 			case R.id.menuitem_film_when_3d:
 			case R.id.menuitem_film_when_2d_imax:
 			case R.id.menuitem_film_when_3d_imax: {
-				CineworldFilm film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, menu.getItemId(),
 						R.id.menuitem_film_when_2d, R.id.menuitem_film_when_2d_imax,
 						R.id.menuitem_film_when_3d, R.id.menuitem_film_when_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), DatesActivity.class);
@@ -81,7 +80,7 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 			case R.id.menuitem_film_where_3d:
 			case R.id.menuitem_film_where_2d_imax:
 			case R.id.menuitem_film_where_3d_imax: {
-				CineworldFilm film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, menu.getItemId(),
 						R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
 						R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
@@ -95,10 +94,10 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 		}
 	}
 
-	private CineworldFilm getFilm(final FilmBase item, final int itemId,
+	private Film getFilm(final MovieBase item, final int itemId,
 			final int id2D, final int id2dIMax, final int id3D, final int id3dIMax) {
-		if (item instanceof Film) {
-			Film film = (Film) item;
+		if (item instanceof Movie) {
+			Movie film = (Movie) item;
 			if (itemId == id2D) {
 				return film.get2D();
 			} else if (itemId == id3D) {
@@ -113,8 +112,8 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 	}
 
 	@Override
-	public List<FilmBase> loadList() throws CineworldException {
-		List<CineworldFilm> list;
+	public List<MovieBase> loadList() throws CineworldException {
+		List<com.twister.cineworld.model.generic.Film> list;
 		if (m_cinemaId != null) {
 			list = App.getInstance().getCineworldAccessor().getFilms(m_cinemaId);
 		} else {
@@ -122,14 +121,14 @@ public class FilmsActivity extends BaseListActivity<FilmBase> {
 		}
 
 		// transform
-		FilmMatcher matcher = new FilmMatcher();
-		List<Film> films = matcher.match(list);
-		List<FilmBase> seriesAndFilms = matcher.matchSeries(films);
+		MovieMatcher matcher = new MovieMatcher();
+		List<Movie> films = matcher.match(list);
+		List<MovieBase> seriesAndFilms = matcher.matchSeries(films);
 		return seriesAndFilms;
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<FilmBase> result) {
+	protected ListAdapter createAdapter(final List<MovieBase> result) {
 		setTitle(getResources().getString(R.string.title_activity_films_loaded, m_cinemaId)); // TODO move
 		return new FilmAdapter(FilmsActivity.this, result);
 	}

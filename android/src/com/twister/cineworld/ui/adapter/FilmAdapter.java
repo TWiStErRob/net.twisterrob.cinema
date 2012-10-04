@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.*;
+import com.twister.cineworld.model.generic.*;
 
-public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolder> {
-	public FilmAdapter(final Context context, final Collection<FilmBase> items) {
+public class FilmAdapter extends BaseListAdapter<MovieBase, FilmAdapter.ViewHolder> {
+	public FilmAdapter(final Context context, final Collection<MovieBase> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolde
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final FilmBase currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final MovieBase currentItem, final View convertView) {
 		String title = currentItem.getTitle();
 		String description = String.format("%s (%s%s%s%s )",
 				currentItem.getClassification(),
@@ -41,8 +41,8 @@ public class FilmAdapter extends BaseListAdapter<FilmBase, FilmAdapter.ViewHolde
 				currentItem.has3D()? " 3D" : "",
 				currentItem.hasIMax2D()? " IMAX2D" : "",
 				currentItem.hasIMax3D()? " IMAX3D" : "");
-		if (currentItem instanceof FilmSerie) {
-			title = String.format("%s (%d)", title, ((FilmSerie) currentItem).getFilms().size());
+		if (currentItem instanceof MovieSerie) {
+			title = String.format("%s (%d)", title, ((MovieSerie) currentItem).getFilms().size());
 		}
 
 		holder.title.setText(title);

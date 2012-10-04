@@ -7,6 +7,7 @@ public class Performance extends GenericBase {
 	private boolean	m_audioDescribed;
 	private boolean	m_subtitled;
 	private String	m_bookingUrl;
+	@SuppressWarnings("unused")
 	private String	m_ss;				// TODO what is this?
 
 	public String getTime() {

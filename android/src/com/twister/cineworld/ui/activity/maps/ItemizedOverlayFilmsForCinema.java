@@ -6,12 +6,11 @@ import android.graphics.*;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.*;
-import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.model.json.data.CineworldFilm;
+import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.tools.CollectionTools;
 
 public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> {
-	private final ArrayList<CineworldFilm>	m_items		= new ArrayList<CineworldFilm>();
+	private final ArrayList<Film>			m_items		= new ArrayList<Film>();
 	private final ArrayList<OverlayItem>	m_itemCache	= new ArrayList<OverlayItem>();
 	private Cinema							m_cinema;
 	private MapView							m_map;
@@ -28,7 +27,7 @@ public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> 
 		CollectionTools.ensureIndexValid(m_itemCache, i);
 		OverlayItem item = m_itemCache.get(i);
 		if (item == null) {
-			final CineworldFilm film = m_items.get(i);
+			final Film film = m_items.get(i);
 			item = new OverlayItem(getLocation(i), film.getTitle(), String.valueOf(film.getEdi())) {
 				@Override
 				public Drawable getMarker(final int stateBitset) {
@@ -94,12 +93,12 @@ public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> 
 		return m_items.size();
 	}
 
-	public void add(final CineworldFilm film) {
+	public void add(final Film film) {
 		m_items.add(film);
 		populate();
 	}
 
-	public void addAll(final Collection<CineworldFilm> films) {
+	public void addAll(final Collection<Film> films) {
 		m_items.addAll(films);
 		populate();
 	}

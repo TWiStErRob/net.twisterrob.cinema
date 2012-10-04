@@ -6,19 +6,16 @@ import android.widget.*;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.json.data.CineworldFilm;
+import com.twister.cineworld.model.generic.Film;
 import com.twister.cineworld.ui.*;
 
 public class FilmActivity extends Activity {
-
-	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
 	/**
 	 * Film EDI<br>
 	 * <b>Type</b>: Integer
 	 */
-	public static final String				EXTRA_EDI	= "extra_edi";
-	private Integer							m_edi;
+	public static final String	EXTRA_EDI	= "extra_edi";
+	private Integer				m_edi;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -27,14 +24,14 @@ public class FilmActivity extends Activity {
 		m_edi = (Integer) getIntent().getExtras().get(FilmActivity.EXTRA_EDI);
 		setTitle(getResources().getString(R.string.title_activity_film_loading, m_edi));
 
-		CineworldExecutor.execute(new CineworldGUITask<CineworldFilm>(this) {
+		CineworldExecutor.execute(new CineworldGUITask<Film>(this) {
 			@Override
-			protected CineworldFilm work() throws CineworldException {
+			protected Film work() throws CineworldException {
 				return App.getInstance().getCineworldAccessor().getFilm(m_edi);
 			}
 
 			@Override
-			protected void present(final CineworldFilm result) {
+			protected void present(final Film result) {
 				update(result);
 			}
 
@@ -50,7 +47,7 @@ public class FilmActivity extends Activity {
 		toast.show();
 	}
 
-	private void update(final CineworldFilm result) {
+	private void update(final Film result) {
 		setTitle(getResources().getString(R.string.title_activity_film_loaded, result.getTitle()));
 		TextView title = (TextView) findViewById(R.id.film_title);
 		TextView attributes = (TextView) findViewById(R.id.film_attributes);
