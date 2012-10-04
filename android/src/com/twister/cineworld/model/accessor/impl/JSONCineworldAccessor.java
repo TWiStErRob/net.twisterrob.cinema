@@ -6,13 +6,13 @@ import com.google.gson.*;
 import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
 import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.model.json.response.BaseListResponse;
 
 public class JSONCineworldAccessor implements CineworldAccessor {
-
 	private final JsonClient	m_jsonClient;
 
 	public JSONCineworldAccessor() {
@@ -31,18 +31,22 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return cinemas;
 	}
 
-	public CineworldCinema getCinema(final int cinemaId) throws CineworldException {
+	public Cinema getCinema(final int cinemaId) throws CineworldException {
 		CinemasRequest request = new CinemasRequest();
 		request.setCinema(cinemaId);
 		request.setFull(true);
-		return getSingular(request, cinemaId);
+		CineworldCinema single = getSingular(request, cinemaId);
+		Cinema result = convert(single);
+		return result;
 	}
 
-	public List<CineworldCinema> getCinemas(final int filmEdi) throws CineworldException {
+	public List<Cinema> getCinemas(final int filmEdi) throws CineworldException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		request.setFilm(filmEdi);
-		return getList(request);
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		return result;
 	}
 
 	public List<CineworldFilm> getAllFilms() throws CineworldException {
@@ -77,15 +81,19 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return getList(request);
 	}
 
-	public List<CineworldDate> getAllDates() throws CineworldException {
+	public List<Date> getAllDates() throws CineworldException {
 		DatesRequest request = new DatesRequest();
-		return getList(request);
+		List<CineworldDate> list = getList(request);
+		List<Date> result = convert(list);
+		return result;
 	}
 
-	public List<CineworldDate> getDates(final int filmEdi) throws CineworldException {
+	public List<Date> getDates(final int filmEdi) throws CineworldException {
 		DatesRequest request = new DatesRequest();
 		request.setFilm(filmEdi);
-		return getList(request);
+		List<CineworldDate> list = getList(request);
+		List<Date> result = convert(list);
+		return result;
 	}
 
 	public List<Category> getAllCategories() throws CineworldException {
@@ -191,6 +199,11 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 			generic.setAvailable(cineworld.isAvailable());
 			generic.setSubtitled(cineworld.isSubtitled());
 			generic.setAudioDescribed(cineworld.isAudioDescribed());
+			result = generic;
+		} else if (cineworldObject instanceof CineworldDate) {
+			CineworldDate cineworld = (CineworldDate) cineworldObject;
+			Date generic = new Date();
+			generic.setDate(cineworld.getDate());
 			result = generic;
 		}
 		return (TOut) result;

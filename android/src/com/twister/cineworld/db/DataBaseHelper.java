@@ -44,6 +44,10 @@ public class DataBaseHelper {
 		return m_reader.getCinemas();
 	}
 
+	public Cinema getCinema(final int cinemaId) {
+		return m_reader.getCinema(cinemaId);
+	}
+
 	private class DataBaseWriter {
 		private SQLiteDatabase	m_db;
 
@@ -99,6 +103,8 @@ public class DataBaseHelper {
 	}
 
 	private class DataBaseReader {
+		private final String[]	CINEMA_DETAILS	= { "_id", "name", "postcode", "latitude", "longitude" };
+
 		public long getCinemaID(final String name) {
 			SQLiteDatabase database = getReadableDatabase();
 			return DatabaseUtils.longForQuery(database, "SELECT _id FROM Cinema WHERE name = ?", new String[] { name });
@@ -107,8 +113,7 @@ public class DataBaseHelper {
 		public List<Cinema> getCinemas() {
 			List<Cinema> cinemas = new ArrayList<Cinema>();
 			SQLiteDatabase database = getReadableDatabase();
-			Cursor cursor = database.query("Cinema",
-					new String[] { "_id", "name", "postcode", "latitude", "longitude" }, null, null, null, null, null);
+			Cursor cursor = database.query("Cinema", CINEMA_DETAILS, null, null, null, null, null);
 			while (cursor.moveToNext()) {
 				Cinema cinema = getCinema(cursor);
 				cinemas.add(cinema);
@@ -136,6 +141,19 @@ public class DataBaseHelper {
 			SQLiteDatabase db = getReadableDatabase();
 			int entries = (int) DatabaseUtils.queryNumEntries(db, "Cinema");
 			return entries;
+		}
+
+		public Cinema getCinema(final int cinemaId) {
+			SQLiteDatabase database = getReadableDatabase();
+			Cursor cursor = database.query("Cinema", CINEMA_DETAILS, "_id = ?",
+					new String[] { String.valueOf(cinemaId) }, null, null,
+					null);
+			Cinema cinema = null;
+			if (cursor.moveToNext()) {
+				cinema = getCinema(cursor);
+			}
+			cursor.close();
+			return cinema;
 		}
 	}
 

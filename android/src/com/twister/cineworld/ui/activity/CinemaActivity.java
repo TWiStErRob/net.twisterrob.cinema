@@ -12,7 +12,7 @@ import android.widget.*;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.CineworldException;
-import com.twister.cineworld.model.json.data.CineworldCinema;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.*;
 
 public class CinemaActivity extends Activity {
@@ -31,14 +31,14 @@ public class CinemaActivity extends Activity {
 		m_id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
 		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_id));
 
-		CineworldExecutor.execute(new CineworldGUITask<CineworldCinema>(this) {
+		CineworldExecutor.execute(new CineworldGUITask<Cinema>(this) {
 			@Override
-			protected CineworldCinema work() throws CineworldException {
+			protected Cinema work() throws CineworldException {
 				return App.getInstance().getCineworldAccessor().getCinema(m_id);
 			}
 
 			@Override
-			protected void present(final CineworldCinema result) {
+			protected void present(final Cinema result) {
 				update(result);
 			}
 
@@ -54,7 +54,7 @@ public class CinemaActivity extends Activity {
 		toast.show();
 	}
 
-	private void update(final CineworldCinema result) {
+	private void update(final Cinema result) {
 		setTitle(getResources().getString(R.string.title_activity_cinema_loaded, result.getName()));
 		TextView name = (TextView) findViewById(R.id.cinema_name);
 		TextView address = (TextView) findViewById(R.id.cinema_address);
@@ -73,7 +73,7 @@ public class CinemaActivity extends Activity {
 				startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
 			}
 		});
-		url.setText(result.getCinemaUrl());
+		url.setText(result.getUrl());
 		phone.setText(result.getTelephone());
 	}
 }

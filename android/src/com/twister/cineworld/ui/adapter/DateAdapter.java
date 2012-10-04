@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.model.json.data.CineworldDate;
+import com.twister.cineworld.model.generic.Date;
 
-public class DateAdapter extends BaseListAdapter<CineworldDate, DateAdapter.ViewHolder> {
-	public DateAdapter(final Context context, final Collection<CineworldDate> items) {
+public class DateAdapter extends BaseListAdapter<Date, DateAdapter.ViewHolder> {
+	public DateAdapter(final Context context, final Collection<Date> items) {
 		super(context, items);
 	}
 
@@ -33,7 +33,7 @@ public class DateAdapter extends BaseListAdapter<CineworldDate, DateAdapter.View
 	}
 
 	@Override
-	protected void bindView(final ViewHolder holder, final CineworldDate currentItem, final View convertView) {
+	protected void bindView(final ViewHolder holder, final Date currentItem, final View convertView) {
 		String title = currentItem.getDate();
 		String description = String.format("%tc",
 				currentItem.getCalendar()

@@ -5,15 +5,15 @@ import java.util.List;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
-import com.twister.cineworld.model.json.data.*;
+import com.twister.cineworld.model.json.data.CineworldFilm;
 
 public interface CineworldAccessor {
 
 	List<Cinema> getAllCinemas() throws CineworldException;
 
-	CineworldCinema getCinema(int cinemaId) throws CineworldException;
+	Cinema getCinema(int cinemaId) throws CineworldException;
 
-	List<CineworldCinema> getCinemas(int filmEdi) throws CineworldException;
+	List<Cinema> getCinemas(int filmEdi) throws CineworldException;
 
 	List<CineworldFilm> getAllFilms() throws CineworldException;
 
@@ -23,9 +23,9 @@ public interface CineworldAccessor {
 
 	List<CineworldFilm> getFilms(int cinemaId, TimeSpan span) throws CineworldException;
 
-	List<CineworldDate> getAllDates() throws CineworldException;
+	List<Date> getAllDates() throws CineworldException;
 
-	List<CineworldDate> getDates(int filmEdi) throws CineworldException;
+	List<Date> getDates(int filmEdi) throws CineworldException;
 
 	List<Category> getAllCategories() throws CineworldException;
 

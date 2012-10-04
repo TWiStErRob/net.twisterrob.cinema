@@ -1,6 +1,6 @@
 package com.twister.cineworld.model.accessor.impl;
 
-import java.util.List;
+import java.util.*;
 
 import com.twister.cineworld.App;
 import com.twister.cineworld.db.DataBaseHelper;
@@ -8,7 +8,6 @@ import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.CineworldAccessor;
 import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.model.json.data.CineworldCinema;
 
 public class TrivialDBCacheCineworldAccessor extends EmptyCineworldAccessor {
 	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.ACCESS);
@@ -38,8 +37,17 @@ public class TrivialDBCacheCineworldAccessor extends EmptyCineworldAccessor {
 	}
 
 	@Override
-	public CineworldCinema getCinema(final int cinemaId) throws CineworldException {
-		// TODO Auto-generated method stub
-		return null;
+	public Cinema getCinema(final int cinemaId) throws CineworldException {
+		Cinema cinema = m_dbAccessor.getCinema(cinemaId);
+		if (cinema == null) {
+			TrivialDBCacheCineworldAccessor.LOG.debug("No data in DB, requesting cinemas...");
+			cinema = m_otherAccessor.getCinema(cinemaId);
+			TrivialDBCacheCineworldAccessor.LOG.debug("No data in DB, inserting a new cinema: " + cinema);
+			m_dbh.addCinemas(Collections.singletonList(cinema));
+			TrivialDBCacheCineworldAccessor.LOG.debug("Returning from other source: " + cinema);
+		} else {
+			TrivialDBCacheCineworldAccessor.LOG.debug("Returning from DB: " + cinema);
+		}
+		return cinema;
 	}
 }

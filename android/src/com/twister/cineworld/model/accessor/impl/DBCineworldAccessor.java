@@ -6,7 +6,6 @@ import com.twister.cineworld.App;
 import com.twister.cineworld.db.DataBaseHelper;
 import com.twister.cineworld.exception.CineworldException;
 import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.model.json.data.CineworldCinema;
 
 public class DBCineworldAccessor extends EmptyCineworldAccessor {
 	private DataBaseHelper	m_db;
@@ -21,8 +20,7 @@ public class DBCineworldAccessor extends EmptyCineworldAccessor {
 	}
 
 	@Override
-	public CineworldCinema getCinema(final int cinemaId) throws CineworldException {
-		// TODO Auto-generated method stub
-		return null;
+	public Cinema getCinema(final int cinemaId) throws CineworldException {
+		return m_db.getCinema(cinemaId);
 	}
 }
