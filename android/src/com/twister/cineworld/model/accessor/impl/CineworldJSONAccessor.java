@@ -213,6 +213,20 @@ public class CineworldJSONAccessor implements Accessor {
 			Date generic = new Date();
 			generic.setDate(cineworld.getDate());
 			result = generic;
+		} else if (cineworldObject instanceof CineworldFilm) {
+			CineworldFilm cineworld = (CineworldFilm) cineworldObject;
+			Film generic = new Film();
+			generic.setId(cineworld.getId());
+			generic.setEdi(cineworld.getEdi());
+			generic.setTitle(cineworld.getTitle());
+			generic.setClassification(cineworld.getClassification());
+			generic.setAdvisory(cineworld.getAdvisory());
+			generic.setPosterUrl(cineworld.getPosterUrl());
+			generic.setStillUrl(cineworld.getStillUrl());
+			generic.setFilmUrl(cineworld.getFilmUrl());
+			generic.set3D(cineworld.is3D());
+			generic.setIMax(cineworld.isIMax());
+			result = generic;
 		}
 		return (TOut) result;
 	}
