@@ -31,14 +31,14 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 					present(result);
 				}
 			});
-		} catch (CineworldException e) {
+		} catch (ApplicationException e) {
 			handleException(e);
 		} catch (RuntimeException e) {
 			handleException(new InternalException(e));
 		}
 	}
 
-	private void handleException(final CineworldException e) {
+	private void handleException(final ApplicationException e) {
 		CineworldGUITask.LOG.error("Exception while executing task #" + this.taskId, e);
 		/*
 		 * TODO Talán itt lenne érdemes csinálni egy általános metódust valami error dialog meghívására és akkor
@@ -58,9 +58,9 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 	 * executed on a background thread, no GUI calls are allowed here.
 	 * 
 	 * @return The results of the work
-	 * @throws CineworldException if any error occurs
+	 * @throws ApplicationException if any error occurs
 	 */
-	protected abstract R work() throws CineworldException;
+	protected abstract R work() throws ApplicationException;
 
 	/**
 	 * Presents the results of the work. This callback is executed on a GUI thread. This method should not do any
@@ -75,6 +75,6 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 	 * 
 	 * @param exception the exception
 	 */
-	protected abstract void exception(CineworldException exception);
+	protected abstract void exception(ApplicationException exception);
 
 }

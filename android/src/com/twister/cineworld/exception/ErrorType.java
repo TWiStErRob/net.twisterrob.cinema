@@ -10,25 +10,28 @@ import com.twister.cineworld.R;
  */
 enum ErrorType {
 	/**
-	 * A network error occured. It is possible that your internet connection is down.
+	 * A network error occurred. It is possible that your Internet connection is down.
 	 * <p>
 	 * <b>No Parameters</b>
+	 * </p>
 	 */
 	NETWORK(R.string.error_network),
 	/**
-	 * An internal error occured. This may be a bug in the application, apologies for that.
+	 * An internal error occurred. This may be a bug in the application, apologies for that.
 	 * <p>
 	 * <b>No Parameters</b>
+	 * </p>
 	 */
 	INTERNAL(R.string.error_internal),
 	/**
-	 * An error occured in one of the systems we depend on: %1$s. This probably means a malfunction in that system,
+	 * An error occurred in one of the systems we depend on: %1$s. This probably means a malfunction in that system,
 	 * please try again later.
 	 * <p>
 	 * <b>Parameters</b>:
 	 * <ol>
 	 * <li>Malfunctioning system</li>
 	 * </ol>
+	 * </p>
 	 */
 	EXTERNAL(R.string.error_external);
 

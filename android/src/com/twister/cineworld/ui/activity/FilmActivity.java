@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.*;
 
 import com.twister.cineworld.*;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Film;
 import com.twister.cineworld.ui.*;
 
@@ -26,7 +26,7 @@ public class FilmActivity extends Activity {
 
 		CineworldExecutor.execute(new CineworldGUITask<Film>(this) {
 			@Override
-			protected Film work() throws CineworldException {
+			protected Film work() throws ApplicationException {
 				return App.getInstance().getCineworldAccessor().getFilm(m_edi);
 			}
 
@@ -36,13 +36,13 @@ public class FilmActivity extends Activity {
 			}
 
 			@Override
-			protected void exception(final CineworldException e) {
+			protected void exception(final ApplicationException e) {
 				exceptionInternal(e);
 			}
 		});
 	}
 
-	private final void exceptionInternal(final CineworldException e) {
+	private final void exceptionInternal(final ApplicationException e) {
 		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
 		toast.show();
 	}

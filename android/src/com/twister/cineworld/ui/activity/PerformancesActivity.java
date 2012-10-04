@@ -6,7 +6,7 @@ import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Performance;
 import com.twister.cineworld.ui.adapter.PeformanceAdapter;
 
@@ -21,7 +21,7 @@ public class PerformancesActivity extends BaseListActivity<Performance> {
 	}
 
 	@Override
-	public List<Performance> loadList() throws CineworldException {
+	public List<Performance> loadList() throws ApplicationException {
 		return App.getInstance().getCineworldAccessor().getPeformances(66, 62278, 20130427);
 	}
 

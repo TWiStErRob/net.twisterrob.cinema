@@ -9,7 +9,7 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.maps.MapActivity;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
 
 /**
@@ -64,7 +64,7 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
 
 			@Override
-			protected List<UIItem> work() throws CineworldException {
+			protected List<UIItem> work() throws ApplicationException {
 				return loadList();
 			}
 
@@ -74,14 +74,14 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 			}
 
 			@Override
-			protected void exception(final CineworldException exception) {
+			protected void exception(final ApplicationException exception) {
 				exceptionInternal(exception);
 			}
 
 		});
 	}
 
-	private final void exceptionInternal(final CineworldException exception) {
+	private final void exceptionInternal(final ApplicationException exception) {
 		Toast toast = Toast.makeText(this, Translator.translate(this, exception),
 				Toast.LENGTH_SHORT);
 		toast.show();
@@ -187,8 +187,8 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	 * Data acquisition is called in this method. This will be executed on a background thread.
 	 * 
 	 * @return a {@link List} of items to be presented
-	 * @throws CineworldException if data could not be loaded
+	 * @throws ApplicationException if data could not be loaded
 	 */
-	protected abstract List<UIItem> loadList() throws CineworldException;
+	protected abstract List<UIItem> loadList() throws ApplicationException;
 
 }

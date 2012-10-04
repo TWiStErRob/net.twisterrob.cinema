@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.google.gson.*;
 import com.twister.cineworld.exception.*;
-import com.twister.cineworld.model.accessor.CineworldAccessor;
+import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.*;
@@ -12,17 +12,17 @@ import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.model.json.response.BaseListResponse;
 
-public class JSONCineworldAccessor implements CineworldAccessor {
+public class CineworldJSONAccessor implements Accessor {
 	private final JsonClient	m_jsonClient;
 
-	public JSONCineworldAccessor() {
+	public CineworldJSONAccessor() {
 		Gson gson = new GsonBuilder()
 				.registerTypeAdapter(CineworldDate.class, new CineworldDateTypeConverter())
 				.create();
-		m_jsonClient = new JsonClient(gson);
+		m_jsonClient = new ApacheHttpJsonClient(gson);
 	}
 
-	public List<Cinema> getAllCinemas() throws CineworldException {
+	public List<Cinema> getAllCinemas() throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		List<CineworldCinema> responseCinemas = getList(request);
@@ -31,7 +31,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return cinemas;
 	}
 
-	public Cinema getCinema(final int cinemaId) throws CineworldException {
+	public Cinema getCinema(final int cinemaId) throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setCinema(cinemaId);
 		request.setFull(true);
@@ -40,7 +40,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Cinema> getCinemas(final int filmEdi) throws CineworldException {
+	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		request.setFilm(filmEdi);
@@ -49,7 +49,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Film> getAllFilms() throws CineworldException {
+	public List<Film> getAllFilms() throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		List<CineworldFilm> list = getList(request);
@@ -57,7 +57,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public Film getFilm(final int filmEdi) throws CineworldException {
+	public Film getFilm(final int filmEdi) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFilm(filmEdi);
 		request.setFull(true);
@@ -66,7 +66,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Film> getFilms(final int cinemaId) throws CineworldException {
+	public List<Film> getFilms(final int cinemaId) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -75,7 +75,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws CineworldException {
+	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -89,14 +89,14 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Date> getAllDates() throws CineworldException {
+	public List<Date> getAllDates() throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		List<CineworldDate> list = getList(request);
 		List<Date> result = convert(list);
 		return result;
 	}
 
-	public List<Date> getDates(final int filmEdi) throws CineworldException {
+	public List<Date> getDates(final int filmEdi) throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		request.setFilm(filmEdi);
 		List<CineworldDate> list = getList(request);
@@ -104,21 +104,21 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	public List<Category> getAllCategories() throws CineworldException {
+	public List<Category> getAllCategories() throws ApplicationException {
 		CategoriesRequest request = new CategoriesRequest();
 		List<CineworldCategory> list = getList(request);
 		List<Category> result = convert(list);
 		return result;
 	}
 
-	public List<Event> getAllEvents() throws CineworldException {
+	public List<Event> getAllEvents() throws ApplicationException {
 		EventsRequest request = new EventsRequest();
 		List<CineworldEvent> list = getList(request);
 		List<Event> result = convert(list);
 		return result;
 	}
 
-	public List<Distributor> getAllDistributors() throws CineworldException {
+	public List<Distributor> getAllDistributors() throws ApplicationException {
 		DistributorsRequest request = new DistributorsRequest();
 		List<CineworldDistributor> list = getList(request);
 		List<Distributor> result = convert(list);
@@ -126,7 +126,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 	}
 
 	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
-			throws CineworldException {
+			throws ApplicationException {
 		PerformancesRequest request = new PerformancesRequest();
 		request.setCinema(cinemaId);
 		request.setFilm(filmEdi);
@@ -136,7 +136,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 		return result;
 	}
 
-	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws CineworldException {
+	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws ApplicationException {
 		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
 		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 			throw new InternalException("Errors in JSON response: " + response.getErrors());
@@ -145,7 +145,7 @@ public class JSONCineworldAccessor implements CineworldAccessor {
 	}
 
 	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter)
-			throws CineworldException {
+			throws ApplicationException {
 		List<T> list = getList(request);
 		if (list.isEmpty()) {
 			throw new InternalException("No results for request");

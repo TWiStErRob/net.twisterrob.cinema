@@ -3,7 +3,7 @@ package com.twister.cineworld.exception;
 import com.twister.cineworld.R;
 import com.twister.cineworld.ui.Translated;
 
-public class ExternalException extends CineworldException {
+public class ExternalException extends ApplicationException {
 
 	private static final long	serialVersionUID	= 6036021854062972178L;
 

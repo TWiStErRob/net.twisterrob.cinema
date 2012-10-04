@@ -8,9 +8,9 @@ import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.*;
 import com.twister.cineworld.App;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.accessor.CineworldAccessor;
+import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
 import com.twister.cineworld.tools.*;
@@ -83,8 +83,8 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		m_filmsOverlay = overlay;
 		CineworldExecutor.execute(new CineworldGUITask<List<Film>>(m_activity) {
 			@Override
-			protected List<Film> work() throws CineworldException {
-				CineworldAccessor accessor = App.getInstance().getCineworldAccessor();
+			protected List<Film> work() throws ApplicationException {
+				Accessor accessor = App.getInstance().getCineworldAccessor();
 				List<Film> films = accessor.getFilms(cinema.getId(), TimeSpan.Tomorrow);
 				for (Film film : films) {
 					try {
@@ -102,7 +102,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			}
 
 			@Override
-			protected void exception(final CineworldException e) {
+			protected void exception(final ApplicationException e) {
 				// TODO is there anything to do here?
 			}
 

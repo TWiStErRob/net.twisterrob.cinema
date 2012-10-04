@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources>
 <resources>
-    <string name="error_network">A network error occured. It is possible that your internet connection is down or Cineworld service is unavailable.</string>
-    <string name="error_internal">An internal error occured. This may be a bug in the application, apologies for that.</string>
-    <string name="error_external">An error occured in one of the systems we depend on: %1$s. This probably means a malfunction in that system, please try again later.</string>
+    <string name="error_network">A network error occurred. It is possible that your Internet connection is down or Cineworld service is unavailable.</string>
+    <string name="error_internal">An internal error occurred. This may be a bug in the application, apologies for that.</string>
+    <string name="error_external">An error occurred in one of the systems we depend on: %1$s. This probably means a malfunction in that system, please try again later.</string>
     <string name="system_cineworld">Cineworld Server</string>
     
 </resources>

@@ -1,13 +1,13 @@
 package com.twister.cineworld.model.json;
 
-import java.io.IOException;
-import java.net.*;
+import java.net.URL;
 import java.util.*;
 
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.*;
 
-public class MockClient {
+public class MockClient implements JsonClient {
 	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>	RESPONSE_MAPPING	= new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
 	static {
 		MockClient.RESPONSE_MAPPING.put(CinemasResponse.class, MockClient.createCinemasResponse());
@@ -17,6 +17,24 @@ public class MockClient {
 		MockClient.RESPONSE_MAPPING.put(CategoriesResponse.class, MockClient.createCategoriesResponse());
 		MockClient.RESPONSE_MAPPING.put(EventsResponse.class, MockClient.createEventsResponse());
 		MockClient.RESPONSE_MAPPING.put(DistributorsResponse.class, MockClient.createDistributorsResponse());
+	}
+
+	public <T> T get(final URL url, final Class<T> responseType) throws ApplicationException {
+		return any(responseType);
+	}
+
+	public <T> T post(final String url, final Object requestObject, final Class<T> responseType)
+			throws ApplicationException {
+		return any(responseType);
+	}
+
+	/**
+	 * Magic happens here.
+	 */
+	protected <T> T any(final Class<T> responseType) throws ApplicationException {
+		@SuppressWarnings("unchecked")
+		T response = (T) MockClient.RESPONSE_MAPPING.get(responseType);
+		return response;
 	}
 
 	private static CinemasResponse createCinemasResponse() {
@@ -194,15 +212,5 @@ public class MockClient {
 			distributorsResponse.setDistributors(distributors);
 		}
 		return distributorsResponse;
-	}
-
-	/**
-	 * Magic happens here.
-	 */
-	public <X extends CineworldBase, T extends BaseListResponse<? extends X>>
-			T get(final URL url, final Class<T> responseType) throws IOException, URISyntaxException {
-		@SuppressWarnings("unchecked")
-		T response = (T) MockClient.RESPONSE_MAPPING.get(responseType);
-		return response;
 	}
 }

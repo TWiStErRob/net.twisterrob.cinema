@@ -1,6 +1,6 @@
 package com.twister.cineworld.exception;
 
-public class NetworkException extends CineworldException {
+public class NetworkException extends ApplicationException {
 
 	private static final long	serialVersionUID	= 2106172394798240654L;
 

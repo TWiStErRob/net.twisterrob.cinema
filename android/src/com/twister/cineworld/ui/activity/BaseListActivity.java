@@ -10,7 +10,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.twister.cineworld.R;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
 import com.twister.cineworld.ui.components.*;
 
@@ -78,7 +78,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		// start data loading
 		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
 			@Override
-			protected List<UIItem> work() throws CineworldException {
+			protected List<UIItem> work() throws ApplicationException {
 				return BaseListActivity.this.loadList();
 			}
 
@@ -88,7 +88,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 			}
 
 			@Override
-			protected void exception(final CineworldException e) {
+			protected void exception(final ApplicationException e) {
 				exceptionInternal(e);
 			}
 		});
@@ -100,7 +100,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * 
 	 * @param exception the exception
 	 */
-	protected void exception(final CineworldException exception) {
+	protected void exception(final ApplicationException exception) {
 		// optionally overridden by children
 	}
 
@@ -108,9 +108,9 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * Data acquisition is called in this method. This will be executed on a background thread.
 	 * 
 	 * @return a {@link List} of items to be presented
-	 * @throws CineworldException if data could not be loaded
+	 * @throws ApplicationException if data could not be loaded
 	 */
-	protected abstract List<UIItem> loadList() throws CineworldException;
+	protected abstract List<UIItem> loadList() throws ApplicationException;
 
 	/**
 	 * Creates the context menu based on the <code>contextMenuId</code> given in the constructor. Extenders must use
@@ -255,7 +255,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		return result;
 	}
 
-	private final void exceptionInternal(final CineworldException e) {
+	private final void exceptionInternal(final ApplicationException e) {
 		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
 		toast.show();
 		BaseListActivity.this.exception(e);

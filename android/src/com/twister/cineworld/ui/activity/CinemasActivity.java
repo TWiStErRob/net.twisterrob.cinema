@@ -8,7 +8,7 @@ import android.view.*;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
@@ -57,7 +57,7 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	}
 
 	@Override
-	protected List<Cinema> loadList() throws CineworldException {
+	protected List<Cinema> loadList() throws ApplicationException {
 		if (m_edi != null) {
 			return Collections.emptyList(); // FIXME App.getInstance().getCineworldAccessor().getCinemas(m_edi);
 		} else {

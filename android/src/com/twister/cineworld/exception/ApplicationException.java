@@ -7,7 +7,7 @@ import com.twister.cineworld.ui.Translated;
  * 
  * @author Zoltán Kiss
  */
-public abstract class CineworldException extends Exception implements Translated {
+public abstract class ApplicationException extends Exception implements Translated {
 
 	private static final long	serialVersionUID	= -295518164973462329L;
 
@@ -15,28 +15,28 @@ public abstract class CineworldException extends Exception implements Translated
 
 	private final Object[]		params;
 
-	public CineworldException(final ErrorType type, final Object[] params) {
+	public ApplicationException(final ErrorType type, final Object[] params) {
 		super();
 		checkType(type);
 		this.type = type;
 		this.params = params;
 	}
 
-	public CineworldException(final ErrorType type, final String message, final Object[] params) {
+	public ApplicationException(final ErrorType type, final String message, final Object[] params) {
 		super(message);
 		checkType(type);
 		this.type = type;
 		this.params = params;
 	}
 
-	public CineworldException(final ErrorType type, final Exception cause, final Object[] params) {
+	public ApplicationException(final ErrorType type, final Exception cause, final Object[] params) {
 		super(cause);
 		checkType(type);
 		this.type = type;
 		this.params = params;
 	}
 
-	public CineworldException(final ErrorType type, final String message, final Exception cause, final Object[] params) {
+	public ApplicationException(final ErrorType type, final String message, final Exception cause, final Object[] params) {
 		super(message, cause);
 		checkType(type);
 		this.type = type;

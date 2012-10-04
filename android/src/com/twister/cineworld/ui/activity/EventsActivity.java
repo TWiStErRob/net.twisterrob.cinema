@@ -6,7 +6,7 @@ import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
-import com.twister.cineworld.exception.CineworldException;
+import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Event;
 import com.twister.cineworld.ui.adapter.EventAdapter;
 
@@ -21,7 +21,7 @@ public class EventsActivity extends BaseListActivity<Event> {
 	}
 
 	@Override
-	public List<Event> loadList() throws CineworldException {
+	public List<Event> loadList() throws ApplicationException {
 		return App.getInstance().getCineworldAccessor().getAllEvents();
 	}
 
