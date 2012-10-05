@@ -73,7 +73,7 @@ public class CinemaActivity extends Activity {
 				startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
 			}
 		});
-		url.setText(result.getUrl());
+		url.setText(result.getDetailsUrl());
 		phone.setText(result.getTelephone());
 	}
 }

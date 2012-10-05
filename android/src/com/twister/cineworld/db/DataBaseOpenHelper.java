@@ -3,6 +3,7 @@ package com.twister.cineworld.db;
 import java.io.*;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.*;
 
 import com.twister.cineworld.App;
@@ -10,7 +11,9 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
 class DataBaseOpenHelper extends SQLiteOpenHelper {
-	private static final String				DB_SCHEMA_FILE	= "CineworldExtra.v1.sql";
+	private static final String				DB_SCHEMA_FILE	= "CineworldExtra.v1.schema.sql";
+	private static final String				DB_DATA_FILE	= "CineworldExtra.v1.data.sql";
+	private static final String				DB_CLEAN_FILE	= "CineworldExtra.v1.clean.sql";
 	private static final String				DB_NAME			= "CineworldExtra";
 	private static final int				DB_VERSION		= 9;
 	private static final CineworldLogger	LOGGER			= LogFactory.getLog(Tag.DB);
@@ -22,6 +25,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
 		DataBaseOpenHelper.LOGGER.debug("Opening database: " + db);
+		// onCreate(db); // for DB development, always clear and initialize
 		super.onOpen(db);
 		DataBaseOpenHelper.LOGGER.info("Opened database: " + db);
 		// db.execSQL("DELETE FROM Cinema;");
@@ -30,23 +34,28 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
 		DataBaseOpenHelper.LOGGER.debug("Creating database: " + db);
+		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_CLEAN_FILE);
 		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_SCHEMA_FILE);
+		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_DATA_FILE);
 		DataBaseOpenHelper.LOGGER.info("Created database: " + db);
 	}
 
 	private static void execFile(final SQLiteDatabase db, final String dbSchemaFile) {
 		DataBaseOpenHelper.LOGGER.debug("Executing file " + dbSchemaFile + " into database: " + db);
 		InputStream s;
+		String statement = null;
 		try {
 			s = App.getInstance().getAssets().open(dbSchemaFile);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(s, IOTools.ENCODING));
-			String statement = null;
 			while ((statement = DataBaseOpenHelper.getNextStatement(reader)) != null) {
 				db.execSQL(statement);
 			}
+		} catch (SQLException e) {
+			DataBaseOpenHelper.LOGGER.error("Error creating database from file: "
+					+ dbSchemaFile + " while executing\n" + statement, e);
 		} catch (IOException e) {
 			DataBaseOpenHelper.LOGGER.error("Error creating database from file: "
-					+ DataBaseOpenHelper.DB_SCHEMA_FILE, e);
+					+ dbSchemaFile, e);
 		}
 	}
 

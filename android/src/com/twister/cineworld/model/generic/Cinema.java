@@ -1,17 +1,12 @@
 package com.twister.cineworld.model.generic;
 
-import java.io.IOException;
-import java.util.List;
-
-import android.location.*;
-
 import com.google.android.maps.GeoPoint;
-import com.twister.cineworld.App;
 
 public class Cinema extends GenericBase {
 	private int			m_id;
 	private String		m_name;
-	private String		m_url;
+	private String		m_detailsUrl;
+	private String		m_territory;
 	private String		m_address;
 	private String		m_postcode;
 	private String		m_telephone;
@@ -33,12 +28,20 @@ public class Cinema extends GenericBase {
 		m_name = name;
 	}
 
-	public String getUrl() {
-		return m_url;
+	public String getDetailsUrl() {
+		return m_detailsUrl;
 	}
 
-	public void setUrl(final String url) {
-		m_url = url;
+	public void setDetailsUrl(final String detailsUrl) {
+		m_detailsUrl = detailsUrl;
+	}
+
+	public String getTerritory() {
+		return m_territory;
+	}
+
+	public void setTerritory(final String territory) {
+		m_territory = territory;
 	}
 
 	public String getAddress() {
@@ -66,23 +69,6 @@ public class Cinema extends GenericBase {
 	}
 
 	public GeoPoint getLocation() {
-		if (m_location == null) {
-			GeoPoint loc = GeoCache.getGeoPoint(m_postcode);
-			if (loc == null && m_postcode != null) {
-				Geocoder coder = new Geocoder(App.getInstance());
-				try {
-					List<Address> locs = coder.getFromLocationName(m_postcode, 1);
-					if (!locs.isEmpty()) {
-						Address address = locs.get(0);
-						loc = new GeoPoint((int) (address.getLatitude() * 1e6),
-								(int) (locs.get(0).getLongitude() * 1e6));
-					}
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-			m_location = loc;
-		}
 		return m_location;
 	}
 

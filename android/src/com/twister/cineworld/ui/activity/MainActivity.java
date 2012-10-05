@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListAdapter;
 
-import com.twister.cineworld.R;
+import com.twister.cineworld.*;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
 import com.twister.cineworld.ui.adapter.*;
@@ -18,6 +18,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 
 	public MainActivity() {
 		super(R.layout.activity_main);
+		App.getInstance().getDataBaseHelper().openDB(); // Init DB
 	}
 
 	@Override

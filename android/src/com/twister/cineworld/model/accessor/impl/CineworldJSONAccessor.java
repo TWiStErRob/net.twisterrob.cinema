@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.gson.*;
 import com.twister.cineworld.exception.*;
 import com.twister.cineworld.model.accessor.Accessor;
+import com.twister.cineworld.model.accessor.impl.util.GeoCache;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.*;
@@ -175,10 +176,11 @@ public class CineworldJSONAccessor implements Accessor {
 			Cinema generic = new Cinema();
 			generic.setId(cineworld.getId());
 			generic.setName(cineworld.getName());
-			generic.setUrl(cineworld.getCinemaUrl());
-			generic.setTelephone(cineworld.getTelephone());
+			generic.setDetailsUrl(cineworld.getCinemaUrl());
 			generic.setAddress(cineworld.getAddress());
 			generic.setPostcode(cineworld.getPostcode());
+			generic.setTelephone(cineworld.getTelephone());
+			generic.setLocation(GeoCache.getGeoPoint(cineworld.getPostcode()));
 			result = generic;
 		} else if (cineworldObject instanceof CineworldCategory) {
 			CineworldCategory cineworld = (CineworldCategory) cineworldObject;
