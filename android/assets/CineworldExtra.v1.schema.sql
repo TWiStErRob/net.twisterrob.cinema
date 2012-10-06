@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Cinema (
 	--SECONDARY KEY(name)
 );
 
+-- TODO Film can be in multiple categories (Lion King "edi":42157: family, junior)
 CREATE TABLE IF NOT EXISTS FilmCategory (
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,

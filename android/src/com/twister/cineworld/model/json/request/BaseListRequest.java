@@ -146,11 +146,22 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 		StringBuilder filterString = new StringBuilder();
 		assert filters.length % 2 == 0;
 		for (int i = 0; i < filters.length; i += 2) {
-			if (filters[i + 1] != null) {
-				filterString.append('&');
-				filterString.append(filters[i]);
-				filterString.append('=');
-				filterString.append(filters[i + 1]);
+			Object filterKey = filters[i];
+			Object filterValues = filters[i + 1];
+			if (filterValues != null) {
+				if (filterValues instanceof Iterable<?>) {
+					for (Object filterValue : (Iterable<?>) filterValues) {
+						filterString.append('&');
+						filterString.append(filterKey);
+						filterString.append('=');
+						filterString.append(filterValue);
+					}
+				} else {
+					filterString.append('&');
+					filterString.append(filterKey);
+					filterString.append('=');
+					filterString.append(filterValues);
+				}
 			}
 		}
 		String spec = requestType;
