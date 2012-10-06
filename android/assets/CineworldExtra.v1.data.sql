@@ -91,4 +91,4 @@ INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('OX286GW', 
 INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('WV111TZ', +52.596272, -  2.093200);
 INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('N22 6LU', +51.594544, -  0.106456);
 INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('BA201NP', +50.940369, -  2.625528);
-INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('GU111WG', +51.250604, -  0.7683035); // Aldershot - manual lookup
+INSERT INTO "Helper:GeoCache" (postcode, latitude, longitude) VALUES('GU111WG', +51.250679, -  0.768437); // http://www.cineworld.co.uk/cinemas/87?map=true fallback
