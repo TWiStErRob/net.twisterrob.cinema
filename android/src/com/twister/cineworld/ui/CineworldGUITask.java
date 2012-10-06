@@ -31,15 +31,15 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 					present(result);
 				}
 			});
-		} catch (ApplicationException e) {
-			handleException(e);
-		} catch (RuntimeException e) {
-			handleException(new InternalException(e));
+		} catch (ApplicationException ex) {
+			handleException(ex);
+		} catch (RuntimeException ex) {
+			handleException(new InternalException(ex));
 		}
 	}
 
-	private void handleException(final ApplicationException e) {
-		CineworldGUITask.LOG.error("Exception while executing task #" + this.taskId, e);
+	private void handleException(final ApplicationException ex) {
+		CineworldGUITask.LOG.error("Exception while executing task #%d", ex, this.taskId);
 		/*
 		 * TODO Talán itt lenne érdemes csinálni egy általános metódust valami error dialog meghívására és akkor
 		 * konzisztensen viselkedne az alkalmazás. Ekkor az exception metódusban csak az Activity specifikus dolgokat
@@ -48,7 +48,7 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 		activity.runOnUiThread(new LoggedRunnable() {
 			@Override
 			protected void loggedRun() {
-				exception(e);
+				exception(ex);
 			}
 		});
 	}

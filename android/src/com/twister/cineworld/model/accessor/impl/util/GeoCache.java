@@ -61,7 +61,7 @@ public class GeoCache {
 			if ("Service not Available".equals(ex.getMessage())) {
 				GeoCache.LOG.warn("Cannot locate postcode: %s; %s", postCode, ex.getMessage());
 			} else {
-				GeoCache.LOG.warn(ex, "Cannot locate postcode: %s", postCode);
+				GeoCache.LOG.warn("Cannot locate postcode: %s", ex, postCode);
 			}
 		}
 		return loc;

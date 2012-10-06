@@ -20,9 +20,9 @@ public class Date extends GenericBase {
 
 	public Calendar getCalendar() {
 		Calendar calendar = null;
-		if (getDate() != null) {
+		if (m_date != null) {
 			Pattern pattern = Pattern.compile("(\\d{4})(\\d{2})(\\d{2})");
-			Matcher matcher = pattern.matcher(getDate());
+			Matcher matcher = pattern.matcher(m_date);
 			if (matcher.find()) {
 				calendar = Calendar.getInstance();
 				calendar.set(Calendar.YEAR, Integer.parseInt(matcher.group(1)));
@@ -33,7 +33,7 @@ public class Date extends GenericBase {
 				calendar.clear(Calendar.SECOND); // not affected by time zone
 				calendar.clear(Calendar.MILLISECOND); // not affected by time zone
 			} else {
-				Date.LOG.warn("Invalid date: " + getDate());
+				Date.LOG.warn("Invalid date: %s", m_date);
 			}
 		} else {
 			Date.LOG.warn("Empty date");

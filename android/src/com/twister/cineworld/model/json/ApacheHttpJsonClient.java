@@ -88,7 +88,7 @@ public class ApacheHttpJsonClient implements JsonClient {
 	protected <T> T any(final Class<T> responseType, final HttpUriRequest request) throws ExternalException,
 			NetworkException {
 		if (ApacheHttpJsonClient.LOG.isDebugEnabled()) {
-			ApacheHttpJsonClient.LOG.debug("Getting (" + responseType + "): '" + request.getURI() + "'");
+			ApacheHttpJsonClient.LOG.debug("Getting (%s): '%s'", responseType, request.getURI());
 		}
 		// executing request
 		AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
@@ -108,8 +108,9 @@ public class ApacheHttpJsonClient implements JsonClient {
 			T object = m_gson.fromJson(json, responseType);
 			return object;
 		} catch (JsonParseException ex) {
-			throw new ExternalException("Could not parse JSON response:\n" + json, ex,
-					ExternalException.System.CINEWORLD);
+			// FIXME this is a generic class, should be no reference to Cineworld
+			throw new ExternalException(ExternalException.System.CINEWORLD,
+					"Could not parse JSON response:\n %s", ex, json);
 		} catch (IOException ex) {
 			throw new NetworkException("Could not get response", ex);
 		} finally {
@@ -142,7 +143,8 @@ public class ApacheHttpJsonClient implements JsonClient {
 		}
 
 		if (entity == null) {
-			throw new ExternalException("Empty response", ExternalException.System.CINEWORLD);
+			// FIXME this is a generic class, should be no reference to Cineworld
+			throw new ExternalException(ExternalException.System.CINEWORLD, "Empty response");
 		}
 	}
 }

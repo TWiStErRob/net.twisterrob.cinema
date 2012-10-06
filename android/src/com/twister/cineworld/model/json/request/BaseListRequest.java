@@ -158,8 +158,8 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 			spec = String.format("%s?key=%s%s", spec, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
 			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			BaseListRequest.LOG.error(String.format(
-					"Cannot initialize urls: %s (%s -> %s)", requestType, Arrays.toString(filters), spec, ex), ex);
+			BaseListRequest.LOG.error("Cannot initialize urls: %s (%s -> %s)", ex,
+					requestType, Arrays.toString(filters), spec);
 			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}
@@ -175,8 +175,8 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 					.format("%s?key=%s%s", requestType, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
 			return new URL(BaseListRequest.BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			BaseListRequest.LOG.error(String.format(
-					"Cannot initialize urls: %s (%s)", requestType, Arrays.toString(filters), ex), ex);
+			BaseListRequest.LOG.error("Cannot initialize urls: %s (%s)", ex,
+					requestType, Arrays.toString(filters));
 			return BaseListRequest.BASE_URL; // TODO throw
 		}
 	}

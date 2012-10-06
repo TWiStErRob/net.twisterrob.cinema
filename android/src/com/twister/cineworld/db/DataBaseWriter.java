@@ -42,8 +42,8 @@ class DataBaseWriter {
 
 	public void insertCinema(final Cinema cinema) {
 		try {
-			DataBaseWriter.LOG.debug(String.format("Inserting cinema: %d, %d, %s, %s",
-					cinema.getCompanyId(), cinema.getId(), cinema.getName(), cinema.getPostcode()));
+			DataBaseWriter.LOG.debug("Inserting cinema: %d, %d, %s, %s",
+					cinema.getCompanyId(), cinema.getId(), cinema.getName(), cinema.getPostcode());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
 			database.beginTransaction();
@@ -68,7 +68,7 @@ class DataBaseWriter {
 			try {
 				cinemaID = m_insertCinema.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn(ex, "Cannot insert cinema, getting existing (%d, %s)",
+				DataBaseWriter.LOG.warn("Cannot insert cinema, getting existing (%d, %s)", ex,
 						cinema.getCompanyId(), cinema.getName());
 				cinemaID = getCinemaID(cinema.getCompanyId(), cinema.getName());
 			}

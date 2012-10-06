@@ -35,9 +35,7 @@ public class CategoryAdapter extends BaseListAdapter<Category, CategoryAdapter.V
 	@Override
 	protected void bindView(final ViewHolder holder, final Category currentItem, final View convertView) {
 		String title = currentItem.getName();
-		String description = String.format("%s",
-				currentItem.getCode()
-				);
+		String description = String.format("%s", currentItem.getCode());
 
 		holder.title.setText(title);
 		holder.description.setText(description);

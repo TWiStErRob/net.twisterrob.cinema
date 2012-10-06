@@ -10,10 +10,9 @@ import com.twister.cineworld.log.*;
  * @author Zoltán Kiss
  */
 public abstract class LoggedRunnable implements Runnable {
-
-	private static final Log		LOG	= LogFactory.getLog(Tag.SYSTEM);
-
-	private static final AtomicLong	SEQ	= new AtomicLong(System.currentTimeMillis());
+	private static final Log		LOG			= LogFactory.getLog(Tag.SYSTEM);
+	private static final String		LOG_FORMAT	= "%3$s (#%2$d) %1$s: %4$s";
+	private static final AtomicLong	SEQ			= new AtomicLong(System.currentTimeMillis());
 
 	protected final String			taskId;
 
@@ -23,18 +22,17 @@ public abstract class LoggedRunnable implements Runnable {
 
 	public final void run() {
 		if (LoggedRunnable.LOG.isVerboseEnabled()) {
-			LoggedRunnable.LOG.verbose(LoggedRunnable.class.getSimpleName() + " (#" + taskId + ") started: "
-					+ getClass().getName());
+			LoggedRunnable.LOG.verbose(LoggedRunnable.LOG_FORMAT, "started", taskId,
+					LoggedRunnable.class.getSimpleName(), getClass().getName());
 		}
 		try {
 			loggedRun();
-		} catch (RuntimeException e) {
-			LoggedRunnable.LOG.wtf("Uncaught exception in " + LoggedRunnable.class.getSimpleName() + " #"
-					+ taskId, e);
+		} catch (RuntimeException ex) {
+			LoggedRunnable.LOG.wtf("Uncaught exception in %s #%d", ex, LoggedRunnable.class.getSimpleName(), taskId);
 		} finally {
 			if (LoggedRunnable.LOG.isVerboseEnabled()) {
-				LoggedRunnable.LOG.verbose(LoggedRunnable.class.getSimpleName() + " (#" + taskId + ") finished: "
-						+ getClass().getName());
+				LoggedRunnable.LOG.verbose(LoggedRunnable.LOG_FORMAT, "finished", taskId,
+						LoggedRunnable.class.getSimpleName(), getClass().getName());
 			}
 		}
 	}

@@ -28,11 +28,11 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 		if (cinemas.isEmpty()) {
 			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
 			cinemas = m_otherAccessor.getAllCinemas();
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
 			m_dbh.addCinemas(cinemas);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
 		}
 		return cinemas;
 	}
@@ -43,11 +43,11 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 		if (cinema == null) {
 			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
 			cinema = m_otherAccessor.getCinema(cinemaId);
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting a new cinema: " + cinema);
+			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting a new cinema: %d", cinema);
 			m_dbh.addCinemas(Collections.singletonList(cinema));
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: " + cinema);
+			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d", cinema);
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: " + cinema);
+			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d", cinema);
 		}
 		return cinema;
 	}
@@ -58,11 +58,11 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 		if (cinemas.isEmpty()) {
 			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
 			cinemas = m_otherAccessor.getCinemas(filmEdi);
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
 			m_dbh.addCinemas(cinemas);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: " + cinemas.size() + " cinemas...");
+			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
 		}
 		return cinemas;
 	}

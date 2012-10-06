@@ -148,7 +148,7 @@ public class CineworldJSONAccessor implements Accessor {
 	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws ApplicationException {
 		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
 		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-			throw new InternalException("Errors in JSON response: " + response.getErrors());
+			throw new InternalException("Errors in JSON response: %s", response.getErrors());
 		}
 		return response.getList();
 	}
@@ -161,8 +161,7 @@ public class CineworldJSONAccessor implements Accessor {
 		} else if (list.size() == 1) {
 			return list.get(0);
 		} else {
-			throw new InternalException(String.format(
-					"Multiple %s returned for parameter=%s", request.getRequestType(), parameter));
+			throw new InternalException("Multiple %s returned for parameter=%s", request.getRequestType(), parameter);
 		}
 	}
 

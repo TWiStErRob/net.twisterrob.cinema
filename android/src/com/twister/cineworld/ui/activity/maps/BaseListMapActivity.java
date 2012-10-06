@@ -44,7 +44,6 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Tools.s_context = this;
 		setContentView(m_contentViewId);
 
 		m_adapterView = (AdapterView<?>) findViewById(android.R.id.list);

@@ -58,8 +58,7 @@ public class VerboseActivity extends Activity {
 
 	private void log(final String method) {
 		if (VerboseActivity.LOG.isVerboseEnabled()) {
-			VerboseActivity.LOG.verbose(String.format(
-					"%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode()));
+			VerboseActivity.LOG.verbose("%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode());
 		}
 	}
 }

@@ -56,7 +56,6 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Tools.s_context = this;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(m_contentViewId);
 

@@ -26,9 +26,7 @@ public class SlideMenu {
 	}
 
 	private void init() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("init()- menuShown: %s", SlideMenu.s_menuShown));
-		}
+		SlideMenu.LOG.verbose("init()- menuShown: %s", SlideMenu.s_menuShown);
 		SlideMenu.s_menuSize = (int) (m_activity.getResources().getDisplayMetrics().widthPixels * 0.80f);
 		SlideMenu.s_content = ((LinearLayout) m_activity.findViewById(android.R.id.content).getParent());
 		setParent(SlideMenu.s_content.getParent());
@@ -55,9 +53,7 @@ public class SlideMenu {
 
 	// call this in your onCreate() for screen rotation
 	public void checkEnabled() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("checkEnabled()- menuShown: %s", SlideMenu.s_menuShown));
-		}
+		SlideMenu.LOG.verbose("checkEnabled()- menuShown: %s", SlideMenu.s_menuShown);
 		if (SlideMenu.s_menuShown) {
 			this.hide(false);
 			this.show(false);
@@ -65,17 +61,13 @@ public class SlideMenu {
 	}
 
 	public void show() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("show()- menuShown: %s", SlideMenu.s_menuShown));
-		}
+		SlideMenu.LOG.verbose("show()- menuShown: %s", SlideMenu.s_menuShown);
 		this.show(true);
 	}
 
 	public void show(final boolean animate) {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("show(%s)- menuShown: %s, parent: %s", animate,
-					SlideMenu.s_menuShown, SlideMenu.s_parent));
-		}
+		SlideMenu.LOG
+				.verbose("show(%s)- menuShown: %s, parent: %s", animate, SlideMenu.s_menuShown, SlideMenu.s_parent);
 		checkStatusBar();
 		if (SlideMenu.s_menuShown) {
 			return;
@@ -110,17 +102,13 @@ public class SlideMenu {
 	}
 
 	public void hide() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("hide()- menuShown: %s", SlideMenu.s_menuShown));
-		}
+		SlideMenu.LOG.verbose("hide()- menuShown: %s", SlideMenu.s_menuShown);
 		this.hide(true);
 	}
 
 	public void hide(final boolean animate) {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("hide(%s)- menuShown: %s, parent: %s", animate,
-					SlideMenu.s_menuShown, SlideMenu.s_parent));
-		}
+		SlideMenu.LOG
+				.verbose("hide(%s)- menuShown: %s, parent: %s", animate, SlideMenu.s_menuShown, SlideMenu.s_parent);
 		if (!SlideMenu.s_menuShown) {
 			return;
 		}
@@ -141,16 +129,12 @@ public class SlideMenu {
 	}
 
 	private void addView() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("addView()"));
-		}
+		SlideMenu.LOG.verbose("addView()");
 		SlideMenu.s_parent.addView(SlideMenu.s_menu);
 	}
 
 	private void removeView() {
-		if (SlideMenu.LOG.isVerboseEnabled()) {
-			SlideMenu.LOG.verbose(String.format("removeView()"));
-		}
+		SlideMenu.LOG.verbose("removeView()");
 		SlideMenu.s_parent.removeView(SlideMenu.s_menu);
 	}
 }

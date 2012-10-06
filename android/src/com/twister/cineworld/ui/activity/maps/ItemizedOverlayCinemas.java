@@ -90,7 +90,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 					try {
 						film.setPoster(IOTools.getImage(film.getPosterUrl()));
 					} catch (IOException ex) {
-						ItemizedOverlayCinemas.LOG.warn("Could not download film poster: " + film.getPosterUrl());
+						ItemizedOverlayCinemas.LOG.warn("Could not download film poster: %s", ex, film.getPosterUrl());
 					}
 				}
 				return films;
