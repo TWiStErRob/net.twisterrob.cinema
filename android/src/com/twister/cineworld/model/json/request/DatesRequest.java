@@ -1,7 +1,7 @@
 package com.twister.cineworld.model.json.request;
 
 import java.net.URL;
-import java.util.List;
+import java.util.*;
 
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.DatesResponse;
@@ -155,6 +155,28 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 
 	/**
 	 * @optional N/A
+	 * @param cinema Cinema ID to retrieve dates for, or for all cinemas if excluded. More than one cinema id can be
+	 *            passed in, by assigning multiple values: cinema=1&cinema=2 - this will mean dates are retrieved on
+	 *            which there are performances at at least ONE of the cinemas.
+	 * @see CineworldCinema
+	 */
+	public void setCinema(final Integer cinema) {
+		m_cinema = Collections.singletonList(cinema);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param cinema Cinema ID to retrieve dates for, or for all cinemas if excluded. More than one cinema id can be
+	 *            passed in, by assigning multiple values: cinema=1&cinema=2 - this will mean dates are retrieved on
+	 *            which there are performances at at least ONE of the cinemas.
+	 * @see CineworldCinema
+	 */
+	public void setCinema(final CineworldCinema cinema) {
+		setCinema(cinema == null? null : cinema.getId());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Film EDI to retrieve dates for, or for all films if excluded. More than one edi can be passed in, by
 	 *         assigning multiple values: film=1234&film=2345 - this will mean dates are retrieved that match at least
 	 *         ONE edi.
@@ -173,6 +195,28 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 */
 	public void setFilms(final List<Integer> film) {
 		m_film = film;
+	}
+
+	/**
+	 * @optional N/A
+	 * @param film Film EDI to retrieve dates for, or for all films if excluded. More than one edi can be passed in, by
+	 *            assigning multiple values: film=1234&film=2345 - this will mean dates are retrieved that match at
+	 *            least ONE edi.
+	 * @see CineworldFilm
+	 */
+	public void setFilm(final Integer film) {
+		m_film = Collections.singletonList(film);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param film Film EDI to retrieve dates for, or for all films if excluded. More than one edi can be passed in, by
+	 *            assigning multiple values: film=1234&film=2345 - this will mean dates are retrieved that match at
+	 *            least ONE edi.
+	 * @see CineworldFilm
+	 */
+	public void setFilm(final CineworldFilm film) {
+		setFilm(film == null? null : film.getId());
 	}
 
 	/**
@@ -197,6 +241,26 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 
 	/**
 	 * @optional N/A
+	 * @param category Category code- this can be passed in to filter the results to only contain dates on which there
+	 *            is at least on performance for a film in this category.
+	 * @see CineworldCategory
+	 */
+	public void setCategory(final String category) {
+		m_category = Collections.singletonList(category);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param category Category code- this can be passed in to filter the results to only contain dates on which there
+	 *            is at least on performance for a film in this category.
+	 * @see CineworldCategory
+	 */
+	public void setCategory(final CineworldCategory category) {
+		setCategory(category == null? null : category.getCode());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Event code- this can be passed in to filter the results to only contain dates on which there is at least
 	 *         on performance for a film linked to this event.
 	 * @see CineworldEvent
@@ -217,6 +281,26 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 
 	/**
 	 * @optional N/A
+	 * @param event Event code- this can be passed in to filter the results to only contain dates on which there is at
+	 *            least on performance for a film linked to this event.
+	 * @see CineworldEvent
+	 */
+	public void setEvent(final String event) {
+		m_event = Collections.singletonList(event);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param event Event code- this can be passed in to filter the results to only contain dates on which there is at
+	 *            least on performance for a film linked to this event.
+	 * @see CineworldEvent
+	 */
+	public void setEvent(final CineworldEvent event) {
+		setEvent(event == null? null : event.getCode());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Distributor id- this can be passed in to filter the results to only contain dates on which there is at
 	 *         least on performance for a film from this distributor.
 	 * @see CineworldDistributor
@@ -233,5 +317,25 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 */
 	public void setDistributors(final List<Integer> distributor) {
 		m_distributor = distributor;
+	}
+
+	/**
+	 * @optional N/A
+	 * @param distributor Distributor id- this can be passed in to filter the results to only contain dates on which
+	 *            there is at least on performance for a film from this distributor.
+	 * @see CineworldDistributor
+	 */
+	public void setDistributor(final Integer distributor) {
+		m_distributor = Collections.singletonList(distributor);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param distributor Distributor id- this can be passed in to filter the results to only contain dates on which
+	 *            there is at least on performance for a film from this distributor.
+	 * @see CineworldDistributor
+	 */
+	public void setDistributor(final CineworldDistributor distributor) {
+		setDistributor(distributor == null? null : distributor.getId());
 	}
 }

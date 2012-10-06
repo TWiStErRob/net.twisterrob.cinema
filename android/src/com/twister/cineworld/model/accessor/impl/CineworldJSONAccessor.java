@@ -38,7 +38,7 @@ public class CineworldJSONAccessor implements Accessor {
 
 	public Cinema getCinema(final int cinemaId) throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
-		request.setCinemas(Arrays.asList(cinemaId));
+		request.setCinema(cinemaId);
 		request.setFull(true);
 		CineworldCinema single = getSingular(request, cinemaId);
 		Cinema result = convert(single);
@@ -49,7 +49,7 @@ public class CineworldJSONAccessor implements Accessor {
 	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
-		request.setFilms(Arrays.asList(filmEdi));
+		request.setFilm(filmEdi);
 		List<CineworldCinema> list = getList(request);
 		List<Cinema> result = convert(list);
 		for (Cinema cinema : result) {
@@ -68,7 +68,7 @@ public class CineworldJSONAccessor implements Accessor {
 
 	public Film getFilm(final int filmEdi) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
-		request.setFilms(Arrays.asList(filmEdi));
+		request.setFilm(filmEdi);
 		request.setFull(true);
 		CineworldFilm single = getSingular(request, filmEdi);
 		Film result = convert(single);
@@ -78,7 +78,7 @@ public class CineworldJSONAccessor implements Accessor {
 	public List<Film> getFilms(final int cinemaId) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
-		request.setCinemas(Arrays.asList(cinemaId));
+		request.setCinema(cinemaId);
 		List<CineworldFilm> list = getList(request);
 		List<Film> result = convert(list);
 		return result;
@@ -87,7 +87,7 @@ public class CineworldJSONAccessor implements Accessor {
 	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
-		request.setCinemas(Arrays.asList(cinemaId));
+		request.setCinema(cinemaId);
 		if (span == TimeSpan.Tomorrow) {
 			Calendar now = Calendar.getInstance();
 			now.add(Calendar.DAY_OF_MONTH, 1); // 1 day later
@@ -107,7 +107,7 @@ public class CineworldJSONAccessor implements Accessor {
 
 	public List<Date> getDates(final int filmEdi) throws ApplicationException {
 		DatesRequest request = new DatesRequest();
-		request.setFilms(Arrays.asList(filmEdi));
+		request.setFilm(filmEdi);
 		List<CineworldDate> list = getList(request);
 		List<Date> result = convert(list);
 		return result;

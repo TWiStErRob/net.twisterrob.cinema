@@ -1,7 +1,7 @@
 package com.twister.cineworld.model.json.request;
 
 import java.net.URL;
-import java.util.List;
+import java.util.*;
 
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.CinemasResponse;
@@ -185,6 +185,28 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 
 	/**
 	 * @optional N/A
+	 * @param film Film EDI to retrieve all cinemas showing this film, or for all films if excluded. More than one edi
+	 *            can be passed in, by assigning multiple values: film=1234&film=2345 - this will mean cinemas are
+	 *            retrieved that are showing at least ONE of the films.
+	 * @see CineworldFilm
+	 */
+	public void setFilm(final Integer film) {
+		m_film = Collections.singletonList(film);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param film Film EDI to retrieve all cinemas showing this film, or for all films if excluded. More than one edi
+	 *            can be passed in, by assigning multiple values: film=1234&film=2345 - this will mean cinemas are
+	 *            retrieved that are showing at least ONE of the films.
+	 * @see CineworldFilm
+	 */
+	public void setFilm(final CineworldFilm film) {
+		setFilm(film == null? null : film.getId());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Date (format yyyymmdd) - retrieves cinemas with performances on this date, or on any date if excluded;
 	 *         several dates can be passed in: date=20100810&date=20100811.
 	 * @see CineworldDate
@@ -205,6 +227,49 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 
 	/**
 	 * @optional N/A
+	 * @param date Date (format yyyymmdd) - retrieves cinemas with performances on this date, or on any date if
+	 *            excluded; several dates can be passed in: date=20100810&date=20100811.
+	 * @see CineworldDate
+	 */
+	public void setDate(final Integer date) {
+		m_date = Collections.singletonList(date);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param date Date (format yyyymmdd) - retrieves cinemas with performances on this date, or on any date if
+	 *            excluded; several dates can be passed in: date=20100810&date=20100811.
+	 * @see CineworldDate
+	 * @throws NumberFormatException if date is invalid
+	 */
+	public void setDate(final CineworldDate date) {
+		setDate(date.getDate());
+	}
+
+	/**
+	 * @optional N/A
+	 * @param date Date (format yyyymmdd) - retrieves cinemas with performances on this date, or on any date if
+	 *            excluded; several dates can be passed in: date=20100810&date=20100811.
+	 * @see CineworldDate
+	 * @throws NumberFormatException if date is invalid
+	 */
+	public void setDate(final String date) {
+		setDate(date == null? null : Integer.parseInt(date));
+	}
+
+	/**
+	 * @optional N/A
+	 * @param date Date (format yyyymmdd) - retrieves cinemas with performances on this date, or on any date if
+	 *            excluded; several dates can be passed in: date=20100810&date=20100811.
+	 * @see CineworldDate
+	 * @throws NumberFormatException if date is invalid
+	 */
+	public void setDate(final Calendar date) {
+		setDate(date == null? null : String.format("%1$tY%1$tm%1$td", date));
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Cinema ID to retrieve - this can be passed in if information for a particular cinema is required.
 	 * @see CineworldCinema
 	 */
@@ -219,6 +284,24 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 	 */
 	public void setCinemas(final List<Integer> cinema) {
 		m_cinema = cinema;
+	}
+
+	/**
+	 * @optional N/A
+	 * @param cinema Cinema ID to retrieve - this can be passed in if information for a particular cinema is required.
+	 * @see CineworldCinema
+	 */
+	public void setCinema(final Integer cinema) {
+		m_cinema = Collections.singletonList(cinema);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param cinema Cinema ID to retrieve - this can be passed in if information for a particular cinema is required.
+	 * @see CineworldCinema
+	 */
+	public void setCinema(final CineworldCinema cinema) {
+		setCinema(cinema == null? null : cinema.getId());
 	}
 
 	/**
@@ -243,6 +326,26 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 
 	/**
 	 * @optional N/A
+	 * @param category Category code- this can be passed in to filter the results to only contain cinemas that have at
+	 *            least on performance for a film in this category.
+	 * @see CineworldCategory
+	 */
+	public void setCategory(final String category) {
+		m_category = Collections.singletonList(category);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param category Category code- this can be passed in to filter the results to only contain cinemas that have at
+	 *            least on performance for a film in this category.
+	 * @see CineworldCategory
+	 */
+	public void setCategory(final CineworldCategory category) {
+		setCategory(category == null? null : category.getCode());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Event code- this can be passed in to filter the results to only contain cinemas that have at least on
 	 *         performance for a film linked to this event.
 	 * @see CineworldEvent
@@ -263,6 +366,26 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 
 	/**
 	 * @optional N/A
+	 * @param event Event code- this can be passed in to filter the results to only contain cinemas that have at least
+	 *            on performance for a film linked to this event.
+	 * @see CineworldEvent
+	 */
+	public void setEvent(final String event) {
+		m_event = Collections.singletonList(event);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param event Event code- this can be passed in to filter the results to only contain cinemas that have at least
+	 *            on performance for a film linked to this event.
+	 * @see CineworldEvent
+	 */
+	public void setEvent(final CineworldEvent event) {
+		setEvent(event == null? null : event.getCode());
+	}
+
+	/**
+	 * @optional N/A
 	 * @return Distributor id- this can be passed in to filter the results to only contain cinemas that have at least on
 	 *         performance for a film from this distributor.
 	 * @see CineworldDistributor
@@ -279,5 +402,25 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 	 */
 	public void setDistributors(final List<Integer> distributor) {
 		m_distributor = distributor;
+	}
+
+	/**
+	 * @optional N/A
+	 * @param distributor Distributor id- this can be passed in to filter the results to only contain cinemas that have
+	 *            at least on performance for a film from this distributor.
+	 * @see CineworldDistributor
+	 */
+	public void setDistributor(final Integer distributor) {
+		m_distributor = Collections.singletonList(distributor);
+	}
+
+	/**
+	 * @optional N/A
+	 * @param distributor Distributor id- this can be passed in to filter the results to only contain cinemas that have
+	 *            at least on performance for a film from this distributor.
+	 * @see CineworldDistributor
+	 */
+	public void setDistributor(final CineworldDistributor distributor) {
+		setDistributor(distributor == null? null : distributor.getId());
 	}
 }
