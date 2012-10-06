@@ -15,12 +15,12 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
 public class ApacheHttpJsonClient implements JsonClient {
-	private static final CineworldLogger	LOG					= LogFactory.getLog(Tag.JSON);
-	private static final String				HEADER_CONTENT_TYPE	= "Content-type";
-	private static final String				HEADER_ACCEPT		= "Accept";
-	private static final String				CONTENT_TYPE_JSON	= "application/json";
+	private static final Log	LOG					= LogFactory.getLog(Tag.JSON);
+	private static final String	HEADER_CONTENT_TYPE	= "Content-type";
+	private static final String	HEADER_ACCEPT		= "Accept";
+	private static final String	CONTENT_TYPE_JSON	= "application/json";
 
-	private final Gson						m_gson;
+	private final Gson			m_gson;
 
 	public ApacheHttpJsonClient(final Gson gson) {
 		if (gson == null) {

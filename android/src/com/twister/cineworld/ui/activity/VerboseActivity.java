@@ -7,7 +7,7 @@ import com.twister.cineworld.log.*;
 
 public class VerboseActivity extends Activity {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.UI);
+	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	public VerboseActivity() {
 		super();

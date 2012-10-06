@@ -9,9 +9,9 @@ import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class SliderMenuMainMenuListener implements OnItemClickListener {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.UI);
+	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
-	private SlideMenu						m_slider;
+	private SlideMenu			m_slider;
 
 	public SliderMenuMainMenuListener(final SlideMenu slider) {
 		m_slider = slider;

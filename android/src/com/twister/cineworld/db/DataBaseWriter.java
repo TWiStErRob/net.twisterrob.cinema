@@ -10,12 +10,12 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.Cinema;
 
 class DataBaseWriter {
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.DB);
+	private static final Log		LOG	= LogFactory.getLog(Tag.DB);
 
 	/* Queries at the end */
 
-	private final DataBaseHelper			m_dataBaseHelper;
-	private SQLiteDatabase					m_database;
+	private final DataBaseHelper	m_dataBaseHelper;
+	private SQLiteDatabase			m_database;
 
 	public DataBaseWriter(final DataBaseHelper dataBaseHelper) {
 		m_dataBaseHelper = dataBaseHelper;

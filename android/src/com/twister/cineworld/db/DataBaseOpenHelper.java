@@ -13,12 +13,13 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
 class DataBaseOpenHelper extends SQLiteOpenHelper {
+
 	private static final String				DB_SCHEMA_FILE	= "CineworldExtra.v1.schema.sql";
 	private static final String				DB_DATA_FILE	= "CineworldExtra.v1.data.sql";
 	private static final String				DB_CLEAN_FILE	= "CineworldExtra.v1.clean.sql";
 	private static final String				DB_NAME			= "CineworldExtra";
 	private static final int				DB_VERSION		= 12;
-	private static final CineworldLogger	LOG				= LogFactory.getLog(Tag.DB);
+	private static final Log	LOG				= LogFactory.getLog(Tag.DB);
 	// @formatter:off
 	private static CursorFactory			m_factory		= new CursorFactory() {
 		public Cursor newCursor(final SQLiteDatabase db,

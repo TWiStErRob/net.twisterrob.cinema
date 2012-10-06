@@ -17,7 +17,7 @@ import com.twister.cineworld.tools.*;
 import com.twister.cineworld.ui.*;
 
 public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
-	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
+	private static final Log				LOG			= LogFactory.getLog(Tag.UI);
 
 	private ArrayList<Cinema>				m_items		= new ArrayList<Cinema>();
 	private Drawable						m_markerSelected;

@@ -1,6 +1,5 @@
 package com.twister.cineworld.model.generic;
 
-
 public class Movie extends MovieBase {
 	private Film	m_2D;
 	private Film	m_3D;

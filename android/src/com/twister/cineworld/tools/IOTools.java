@@ -12,12 +12,12 @@ import android.graphics.drawable.*;
 import com.twister.cineworld.log.*;
 
 public class IOTools {
-	private static final CineworldLogger	LOG							= LogFactory.getLog(Tag.IO);
+	private static final Log	LOG							= LogFactory.getLog(Tag.IO);
 	// TODO check if UTF-8 is used by cineworld
-	public static final String				ENCODING					= Charset.defaultCharset().name();
-	private static final String				DEFAULT_HTTP_ENCODING		= IOTools.ENCODING;
-	private static final String				HTTP_HEADER_CHARSET_PREFIX	= "charset=";
-	public static final String				LINE_SEPARATOR				= System.getProperty("line.separator");
+	public static final String	ENCODING					= Charset.defaultCharset().name();
+	private static final String	DEFAULT_HTTP_ENCODING		= IOTools.ENCODING;
+	private static final String	HTTP_HEADER_CHARSET_PREFIX	= "charset=";
+	public static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
 
 	private IOTools() {
 		// prevent instantiation

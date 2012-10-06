@@ -13,9 +13,9 @@ import com.twister.cineworld.log.*;
  */
 public abstract class CineworldGUITask<R> extends LoggedRunnable {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.SYSTEM);
+	private static final Log	LOG	= LogFactory.getLog(Tag.SYSTEM);
 
-	protected final Activity				activity;
+	protected final Activity	activity;
 
 	public CineworldGUITask(final Activity activity) {
 		this.activity = activity;

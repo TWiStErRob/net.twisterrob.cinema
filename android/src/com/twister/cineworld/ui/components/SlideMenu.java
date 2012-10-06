@@ -12,13 +12,13 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.log.*;
 
 public class SlideMenu {
-	private static final CineworldLogger	LOG			= LogFactory.getLog(Tag.UI);
-	private static boolean					s_menuShown	= false;
-	private static View						s_menu;
-	private static LinearLayout				s_content;
-	private static FrameLayout				s_parent;
-	private static int						s_menuSize;
-	private Activity						m_activity;
+	private static final Log	LOG			= LogFactory.getLog(Tag.UI);
+	private static boolean		s_menuShown	= false;
+	private static View			s_menu;
+	private static LinearLayout	s_content;
+	private static FrameLayout	s_parent;
+	private static int			s_menuSize;
+	private Activity			m_activity;
 
 	public SlideMenu(final Activity activity) {
 		this.m_activity = activity;

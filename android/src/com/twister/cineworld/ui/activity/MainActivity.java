@@ -14,7 +14,7 @@ import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class MainActivity extends BaseListActivity<MainMenuItem> {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.UI);
+	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	public MainActivity() {
 		super(R.layout.activity_main);

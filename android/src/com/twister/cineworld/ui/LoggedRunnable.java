@@ -11,11 +11,11 @@ import com.twister.cineworld.log.*;
  */
 public abstract class LoggedRunnable implements Runnable {
 
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.SYSTEM);
+	private static final Log		LOG	= LogFactory.getLog(Tag.SYSTEM);
 
-	private static final AtomicLong			SEQ	= new AtomicLong(System.currentTimeMillis());
+	private static final AtomicLong	SEQ	= new AtomicLong(System.currentTimeMillis());
 
-	protected final String					taskId;
+	protected final String			taskId;
 
 	public LoggedRunnable() {
 		this.taskId = Long.toHexString(LoggedRunnable.SEQ.getAndIncrement());

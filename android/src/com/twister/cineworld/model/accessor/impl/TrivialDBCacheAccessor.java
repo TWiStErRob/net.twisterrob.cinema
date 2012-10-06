@@ -10,10 +10,10 @@ import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.Cinema;
 
 public class TrivialDBCacheAccessor extends DelegatingAccessor {
-	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.ACCESS);
-	private DataBaseHelper					m_dbh;
-	private Accessor						m_dbAccessor;
-	private Accessor						m_otherAccessor;
+	private static final Log	LOG	= LogFactory.getLog(Tag.ACCESS);
+	private DataBaseHelper		m_dbh;
+	private Accessor			m_dbAccessor;
+	private Accessor			m_otherAccessor;
 
 	public TrivialDBCacheAccessor(final Accessor dbAccessor, final Accessor otherAccessor) {
 		super(otherAccessor);

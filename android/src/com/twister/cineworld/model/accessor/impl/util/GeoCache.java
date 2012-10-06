@@ -11,7 +11,7 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.PostCodeLocation;
 
 public class GeoCache {
-	private static final CineworldLogger		LOG			= LogFactory.getLog(Tag.GEO);
+	private static final Log					LOG			= LogFactory.getLog(Tag.GEO);
 	private static final Map<String, GeoPoint>	s_locations	= new HashMap<String, GeoPoint>(79, 1f);
 	static {
 		List<PostCodeLocation> locations = App.getInstance().getDataBaseHelper().getGeoCacheLocations();
