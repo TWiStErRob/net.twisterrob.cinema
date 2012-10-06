@@ -1,14 +1,28 @@
-CREATE TABLE IF NOT EXISTS Cinema (
+CREATE TABLE IF NOT EXISTS CinemaCompany (
 	_id                 INTEGER,
 	name                NVARCHAR           NOT NULL UNIQUE,
-	detailsUrl          NVARCHAR           NULL,
+	website_url         NVARCHAR           NULL,	
+	facebook_profile    NVARCHAR           NULL,
+	twitter_name        NVARCHAR           NULL,
+	youtube_user        NVARCHAR           NULL,
+	PRIMARY KEY(_id)
+	--SECONDARY KEY(name)
+);
+
+CREATE TABLE IF NOT EXISTS Cinema (
+	_company            INTEGER            NOT NULL DEFAULT 1
+	                                       CONSTRAINT "fk-Cinema-CinemaCompany" REFERENCES CinemaCompany(_id)
+	,
+	_id                 INTEGER            NOT NULL,
+	name                NVARCHAR           NOT NULL UNIQUE,
+	details_url         NVARCHAR           NULL,
 	territory           CHAR(2)            NOT NULL,
 	address             NVARCHAR           NULL,
 	postcode            CHAR(7)            NOT NULL,
 	telephone           NVARCHAR           NULL,
 	latitude            REAL               NULL,
 	longitude           REAL               NULL,
-	PRIMARY KEY(_id)
+	PRIMARY KEY(_company, _id)
 	--SECONDARY KEY(name)
 );
 

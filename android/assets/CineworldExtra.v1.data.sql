@@ -1,3 +1,6 @@
+INSERT INTO CinemaCompany (_id, name, website_url, facebook_profile, twitter_name, youtube_user)
+	VALUES(1, 'Cineworld Cinemas', 'http://www.cineworld.co.uk/', 'Cineworld', 'cineworld', 'CineworldCinemas');
+
 INSERT INTO FilmType (code, name) VALUES('2d', '2D');
 INSERT INTO FilmType (code, name) VALUES('3d', '3D');
 INSERT INTO FilmType (code, name) VALUES('imax3d', 'IMAX 2D');

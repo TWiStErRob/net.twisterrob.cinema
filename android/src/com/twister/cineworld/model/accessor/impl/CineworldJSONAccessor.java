@@ -14,6 +14,8 @@ import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.model.json.response.BaseListResponse;
 
 public class CineworldJSONAccessor implements Accessor {
+	private static final String	GENERIC_SOURCE			= "CineworldJSON";
+	private static final int	CINEWORLD_COMPANY_ID	= 1;
 	private final JsonClient	m_jsonClient;
 
 	public CineworldJSONAccessor() {
@@ -26,10 +28,12 @@ public class CineworldJSONAccessor implements Accessor {
 	public List<Cinema> getAllCinemas() throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
-		List<CineworldCinema> responseCinemas = getList(request);
-		List<Cinema> cinemas = convert(responseCinemas);
-
-		return cinemas;
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
+		return result;
 	}
 
 	public Cinema getCinema(final int cinemaId) throws ApplicationException {
@@ -38,6 +42,7 @@ public class CineworldJSONAccessor implements Accessor {
 		request.setFull(true);
 		CineworldCinema single = getSingular(request, cinemaId);
 		Cinema result = convert(single);
+		result.setTerritory(request.getTerritory());
 		return result;
 	}
 
@@ -47,6 +52,9 @@ public class CineworldJSONAccessor implements Accessor {
 		request.setFilm(filmEdi);
 		List<CineworldCinema> list = getList(request);
 		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
 		return result;
 	}
 
@@ -82,7 +90,7 @@ public class CineworldJSONAccessor implements Accessor {
 		request.setCinema(cinemaId);
 		if (span == TimeSpan.Tomorrow) {
 			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, 1);
+			now.add(Calendar.DAY_OF_MONTH, 1); // 1 day later
 			request.setDate(now);
 		}
 		List<CineworldFilm> list = getList(request);
@@ -174,6 +182,7 @@ public class CineworldJSONAccessor implements Accessor {
 		if (cineworldObject instanceof CineworldCinema) {
 			CineworldCinema cineworld = (CineworldCinema) cineworldObject;
 			Cinema generic = new Cinema();
+			generic.setCompanyId(CineworldJSONAccessor.CINEWORLD_COMPANY_ID);
 			generic.setId(cineworld.getId());
 			generic.setName(cineworld.getName());
 			generic.setDetailsUrl(cineworld.getCinemaUrl());
@@ -229,6 +238,9 @@ public class CineworldJSONAccessor implements Accessor {
 			generic.set3D(cineworld.is3D());
 			generic.setIMax(cineworld.isIMax());
 			result = generic;
+		}
+		if (result != null) {
+			result.setSource(CineworldJSONAccessor.GENERIC_SOURCE);
 		}
 		return (TOut) result;
 	}

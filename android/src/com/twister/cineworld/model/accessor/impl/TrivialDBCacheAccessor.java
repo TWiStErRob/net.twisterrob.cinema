@@ -9,13 +9,14 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.Cinema;
 
-public class TrivialDBCacheAccessor extends EmptyAccessor {
+public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.ACCESS);
 	private DataBaseHelper					m_dbh;
-	private Accessor				m_dbAccessor;
-	private Accessor				m_otherAccessor;
+	private Accessor						m_dbAccessor;
+	private Accessor						m_otherAccessor;
 
 	public TrivialDBCacheAccessor(final Accessor dbAccessor, final Accessor otherAccessor) {
+		super(otherAccessor);
 		m_dbh = App.getInstance().getDataBaseHelper();
 		m_dbAccessor = dbAccessor;
 		m_otherAccessor = otherAccessor;
@@ -49,5 +50,20 @@ public class TrivialDBCacheAccessor extends EmptyAccessor {
 			TrivialDBCacheAccessor.LOG.debug("Returning from DB: " + cinema);
 		}
 		return cinema;
+	}
+
+	@Override
+	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
+		List<Cinema> cinemas = m_dbAccessor.getCinemas(filmEdi);
+		if (cinemas.isEmpty()) {
+			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
+			cinemas = m_otherAccessor.getCinemas(filmEdi);
+			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting " + cinemas.size() + " cinemas...");
+			m_dbh.addCinemas(cinemas);
+			TrivialDBCacheAccessor.LOG.debug("Returning from other source: " + cinemas.size() + " cinemas...");
+		} else {
+			TrivialDBCacheAccessor.LOG.debug("Returning from DB: " + cinemas.size() + " cinemas...");
+		}
+		return cinemas;
 	}
 }

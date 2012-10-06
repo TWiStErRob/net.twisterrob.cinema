@@ -10,20 +10,18 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.Cinema;
 
 class DataBaseWriter {
-	private static final CineworldLogger	LOG					= LogFactory.getLog(Tag.DB);
+	private static final CineworldLogger	LOG	= LogFactory.getLog(Tag.DB);
 
-	private static final String				SQL_INSERT_CINEMA	= "INSERT INTO "
-																		+ "Cinema(_id, name, postcode, latitude, longitude) "
-																		+ "VALUES(?, ?, ?, ?, ?);";
+	/* Queries at the end */
 
 	private final DataBaseHelper			m_dataBaseHelper;
+	private SQLiteDatabase					m_database;
 
 	public DataBaseWriter(final DataBaseHelper dataBaseHelper) {
 		m_dataBaseHelper = dataBaseHelper;
 	}
 
-	private SQLiteDatabase	m_database;
-
+	/* Statements */
 	private SQLiteStatement	m_insertCinema;
 
 	private void prepareStatements(final SQLiteDatabase database) {
@@ -44,37 +42,52 @@ class DataBaseWriter {
 
 	public void insertCinema(final Cinema cinema) {
 		try {
+			DataBaseWriter.LOG.debug(String.format("Inserting cinema: %d, %d, %s, %s",
+					cinema.getCompanyId(), cinema.getId(), cinema.getName(), cinema.getPostcode()));
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
 			database.beginTransaction();
-			DatabaseUtils.bindObjectToProgram(m_insertCinema, 1, cinema.getId());
-			DatabaseUtils.bindObjectToProgram(m_insertCinema, 2, cinema.getName());
-			DatabaseUtils.bindObjectToProgram(m_insertCinema, 3, cinema.getPostcode());
+			int column = 0;
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getCompanyId());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getId());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getName());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getDetailsUrl());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getTerritory());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getAddress());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getPostcode());
+			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getTelephone());
 			GeoPoint location = cinema.getLocation();
 			if (location != null) {
-				DatabaseUtils.bindObjectToProgram(m_insertCinema, 4, location.getLatitudeE6());
-				DatabaseUtils.bindObjectToProgram(m_insertCinema, 5, location.getLongitudeE6());
+				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLatitudeE6());
+				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLongitudeE6());
 			} else {
-				m_insertCinema.bindNull(4);
-				m_insertCinema.bindNull(5);
+				m_insertCinema.bindNull(++column);
+				m_insertCinema.bindNull(++column);
 			}
 			long cinemaID;
 			try {
 				cinemaID = m_insertCinema.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn(ex, "Cannot insert cinema, getting existing");
-				cinemaID = getCinemaID(cinema.getName());
+				DataBaseWriter.LOG.warn(ex, "Cannot insert cinema, getting existing (%d, %s)",
+						cinema.getCompanyId(), cinema.getName());
+				cinemaID = getCinemaID(cinema.getCompanyId(), cinema.getName());
 			}
 			cinema.setId((int) cinemaID);
-			// Log.debug(String.format("Inserting route %s -> %d", route.name, routeID));
 			database.setTransactionSuccessful();
 		} finally {
 			m_database.endTransaction();
 		}
 	}
 
-	private long getCinemaID(final String name) {
+	private long getCinemaID(final int companyId, final String cinemaName) {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		return DatabaseUtils.longForQuery(database, "SELECT _id FROM Cinema WHERE name = ?", new String[] { name });
+		return DatabaseUtils.longForQuery(database, "SELECT _id FROM Cinema WHERE _company = ? AND name = ?",
+				new String[] { String.valueOf(companyId), cinemaName });
 	}
+
+	// @formatter:off
+	private static final String	 SQL_INSERT_CINEMA	= "INSERT INTO "
+			+ "Cinema(_company, _id, name, details_url, territory, address, postcode, telephone, latitude, longitude) "
+			+ "VALUES(       ?,   ?,    ?,           ?,         ?,       ?,        ?,         ?,        ?,         ?);";
+	// @formatter:on
 }

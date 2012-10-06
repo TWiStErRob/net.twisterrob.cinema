@@ -2,7 +2,7 @@ package com.twister.cineworld;
 
 import com.twister.cineworld.db.DataBaseHelper;
 import com.twister.cineworld.model.accessor.Accessor;
-import com.twister.cineworld.model.accessor.impl.CineworldJSONAccessor;
+import com.twister.cineworld.model.accessor.impl.*;
 
 public class App extends android.app.Application {
 	private static/* final */App	s_instance;
@@ -26,7 +26,7 @@ public class App extends android.app.Application {
 	}
 
 	public Accessor getCineworldAccessor() {
-		return new CineworldJSONAccessor();
-		// return new TrivialDBCacheCineworldAccessor(new DBCineworldAccessor(), new JSONCineworldAccessor());
+		// return new CineworldJSONAccessor();
+		return new TrivialDBCacheAccessor(new DBAccessor(), new CineworldJSONAccessor());
 	}
 }
