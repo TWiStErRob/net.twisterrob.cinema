@@ -11,7 +11,7 @@ import com.twister.cineworld.log.*;
  */
 public abstract class LoggedRunnable implements Runnable {
 	private static final Log		LOG			= LogFactory.getLog(Tag.SYSTEM);
-	private static final String		LOG_FORMAT	= "%3$s (#%2$d) %1$s: %4$s";
+	private static final String		LOG_FORMAT	= "%3$s (#%2$s) %1$s: %4$s";
 	private static final AtomicLong	SEQ			= new AtomicLong(System.currentTimeMillis());
 
 	protected final String			taskId;
@@ -28,7 +28,7 @@ public abstract class LoggedRunnable implements Runnable {
 		try {
 			loggedRun();
 		} catch (RuntimeException ex) {
-			LoggedRunnable.LOG.wtf("Uncaught exception in %s #%d", ex, LoggedRunnable.class.getSimpleName(), taskId);
+			LoggedRunnable.LOG.wtf("Uncaught exception in %s #%s", ex, LoggedRunnable.class.getSimpleName(), taskId);
 		} finally {
 			if (LoggedRunnable.LOG.isVerboseEnabled()) {
 				LoggedRunnable.LOG.verbose(LoggedRunnable.LOG_FORMAT, "finished", taskId,
