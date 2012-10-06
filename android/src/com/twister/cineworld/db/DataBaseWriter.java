@@ -7,7 +7,7 @@ import android.database.sqlite.*;
 
 import com.google.android.maps.GeoPoint;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.model.generic.*;
 
 class DataBaseWriter {
 	private static final Log		LOG	= LogFactory.getLog(Tag.DB);
@@ -23,14 +23,33 @@ class DataBaseWriter {
 
 	/* Statements */
 	private SQLiteStatement	m_insertCinema;
+	private SQLiteStatement	m_insertCategory;
+	private SQLiteStatement	m_insertEvent;
+	private SQLiteStatement	m_insertDistributor;
 
 	private void prepareStatements(final SQLiteDatabase database) {
 		if (this.m_database != database) {
 			this.m_database = database;
+
 			if (m_insertCinema != null) {
 				m_insertCinema.close();
 			}
 			m_insertCinema = database.compileStatement(DataBaseWriter.SQL_INSERT_CINEMA);
+
+			if (m_insertCategory != null) {
+				m_insertCategory.close();
+			}
+			m_insertCategory = database.compileStatement(DataBaseWriter.SQL_INSERT_CATEGORY);
+
+			if (m_insertEvent != null) {
+				m_insertEvent.close();
+			}
+			m_insertEvent = database.compileStatement(DataBaseWriter.SQL_INSERT_EVENT);
+
+			if (m_insertDistributor != null) {
+				m_insertDistributor.close();
+			}
+			m_insertDistributor = database.compileStatement(DataBaseWriter.SQL_INSERT_DISTRIBUTOR);
 		}
 	}
 
@@ -85,9 +104,97 @@ class DataBaseWriter {
 				new String[] { String.valueOf(companyId), cinemaName });
 	}
 
+	public void insertCategories(final List<Category> categories) {
+		for (Category category : categories) {
+			insertCategory(category);
+		}
+	}
+
+	private void insertCategory(final Category category) {
+		try {
+			DataBaseWriter.LOG.debug("Inserting category: %s, %s", category.getCode(), category.getName());
+			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
+			prepareStatements(database);
+			database.beginTransaction();
+			int column = 0;
+			DatabaseUtils.bindObjectToProgram(m_insertCategory, ++column, category.getCode());
+			DatabaseUtils.bindObjectToProgram(m_insertCategory, ++column, category.getName());
+			try {
+				m_insertCategory.executeInsert();
+			} catch (SQLiteConstraintException ex) {
+				DataBaseWriter.LOG.warn("Cannot insert category, ignoring", ex);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			m_database.endTransaction();
+		}
+	}
+
+	public void insertEvents(final List<Event> events) {
+		for (Event event : events) {
+			insertEvent(event);
+		}
+	}
+
+	private void insertEvent(final Event event) {
+		try {
+			DataBaseWriter.LOG.debug("Inserting event: %s, %s", event.getCode(), event.getName());
+			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
+			prepareStatements(database);
+			database.beginTransaction();
+			int column = 0;
+			DatabaseUtils.bindObjectToProgram(m_insertEvent, ++column, event.getCode());
+			DatabaseUtils.bindObjectToProgram(m_insertEvent, ++column, event.getName());
+			try {
+				m_insertEvent.executeInsert();
+			} catch (SQLiteConstraintException ex) {
+				DataBaseWriter.LOG.warn("Cannot insert event, ignoring", ex);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			m_database.endTransaction();
+		}
+	}
+
+	public void insertDistributors(final List<Distributor> distributors) {
+		for (Distributor distributor : distributors) {
+			insertDistributor(distributor);
+		}
+	}
+
+	private void insertDistributor(final Distributor distributor) {
+		try {
+			DataBaseWriter.LOG.debug("Inserting distributor: %d, %s", distributor.getId(), distributor.getName());
+			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
+			prepareStatements(database);
+			database.beginTransaction();
+			int column = 0;
+			DatabaseUtils.bindObjectToProgram(m_insertDistributor, ++column, distributor.getId());
+			DatabaseUtils.bindObjectToProgram(m_insertDistributor, ++column, distributor.getName());
+			try {
+				m_insertDistributor.executeInsert();
+			} catch (SQLiteConstraintException ex) {
+				DataBaseWriter.LOG.warn("Cannot insert distributor, ignoring", ex);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			m_database.endTransaction();
+		}
+	}
+
+
 	// @formatter:off
 	private static final String	 SQL_INSERT_CINEMA	= "INSERT INTO "
 			+ "Cinema(_company, _id, name, details_url, territory, address, postcode, telephone, latitude, longitude) "
 			+ "VALUES(       ?,   ?,    ?,           ?,         ?,       ?,        ?,         ?,        ?,         ?);";
+	private static final String	 SQL_INSERT_CATEGORY= "INSERT INTO "
+			+ "FilmCategory(code, name) "
+			+ "VALUES(         ?,    ?);";
+	private static final String	 SQL_INSERT_EVENT	= "INSERT INTO "
+			+ "Event(code, name) "
+			+ "VALUES(         ?,    ?);";
+	private static final String	 SQL_INSERT_DISTRIBUTOR	= "INSERT INTO "
+			+ "FilmDistributor(_id, name) "
+			+ "VALUES(           ?,    ?);";
 	// @formatter:on
 }

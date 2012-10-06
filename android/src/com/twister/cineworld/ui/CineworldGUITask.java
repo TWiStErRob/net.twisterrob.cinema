@@ -12,7 +12,6 @@ import com.twister.cineworld.log.*;
  * @param <R>
  */
 public abstract class CineworldGUITask<R> extends LoggedRunnable {
-
 	private static final Log	LOG	= LogFactory.getLog(Tag.SYSTEM);
 
 	protected final Activity	activity;
@@ -39,7 +38,7 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 	}
 
 	private void handleException(final ApplicationException ex) {
-		CineworldGUITask.LOG.error("Exception while executing task #%d", ex, this.taskId);
+		CineworldGUITask.LOG.error("Exception while executing task #%s", ex, this.taskId);
 		/*
 		 * TODO Talán itt lenne érdemes csinálni egy általános metódust valami error dialog meghívására és akkor
 		 * konzisztensen viselkedne az alkalmazás. Ekkor az exception metódusban csak az Activity specifikus dolgokat

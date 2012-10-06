@@ -13,6 +13,9 @@ class DataBaseReader {
 	// private static final CineworldLogger LOG = LogFactory.getLog(Tag.DB);
 	private static final String[]	CINEMA_DETAILS		= { "_company", "_id", "name", "details_url", "territory",
 														"address", "postcode", "telephone", "latitude", "longitude" };
+	private static final String[]	CATEGORY_DETAILS	= { "code", "name" };
+	private static final String[]	EVENT_DETAILS		= { "code", "name" };
+	private static final String[]	DISTRIBUTOR_DETAILS	= { "_id", "name" };
 	private static final String[]	GEOCACHE_DETAILS	= { "postcode", "latitude", "longitude" };
 	private final DataBaseHelper	m_dataBaseHelper;
 
@@ -75,6 +78,76 @@ class DataBaseReader {
 		}
 		cursor.close();
 		return cinema;
+	}
+
+	public List<Category> getCategories() {
+		List<Category> categories = new ArrayList<Category>();
+		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
+		Cursor cursor = database.query("FilmCategory", DataBaseReader.CATEGORY_DETAILS, null, null, null, null, "name");
+		while (cursor.moveToNext()) {
+			Category category = getCategory(cursor);
+			categories.add(category);
+		}
+		cursor.close();
+		return categories;
+	}
+
+	private Category getCategory(final Cursor cursor) {
+		String code = cursor.getString(cursor.getColumnIndex("code"));
+		String name = cursor.getString(cursor.getColumnIndex("name"));
+
+		Category category = new Category();
+		category.setSource(DataBaseReader.GENERIC_SOURCE);
+		category.setCode(code);
+		category.setName(name);
+		return category;
+	}
+
+	public List<Event> getEvents() {
+		List<Event> events = new ArrayList<Event>();
+		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
+		Cursor cursor = database.query("Event", DataBaseReader.EVENT_DETAILS, null, null, null, null, "name");
+		while (cursor.moveToNext()) {
+			Event event = getEvent(cursor);
+			events.add(event);
+		}
+		cursor.close();
+		return events;
+	}
+
+	private Event getEvent(final Cursor cursor) {
+		String code = cursor.getString(cursor.getColumnIndex("code"));
+		String name = cursor.getString(cursor.getColumnIndex("name"));
+
+		Event event = new Event();
+		event.setSource(DataBaseReader.GENERIC_SOURCE);
+		event.setCode(code);
+		event.setName(name);
+		return event;
+	}
+
+	public List<Distributor> getDistributors() {
+		List<Distributor> distributors = new ArrayList<Distributor>();
+		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
+		Cursor cursor = database.query("FilmDistributor", DataBaseReader.DISTRIBUTOR_DETAILS, null, null, null, null,
+				"name");
+		while (cursor.moveToNext()) {
+			Distributor distributor = getDistributor(cursor);
+			distributors.add(distributor);
+		}
+		cursor.close();
+		return distributors;
+	}
+
+	private Distributor getDistributor(final Cursor cursor) {
+		int id = cursor.getInt(cursor.getColumnIndex("_id"));
+		String name = cursor.getString(cursor.getColumnIndex("name"));
+
+		Distributor distributor = new Distributor();
+		distributor.setSource(DataBaseReader.GENERIC_SOURCE);
+		distributor.setId(id);
+		distributor.setName(name);
+		return distributor;
 	}
 
 	public List<PostCodeLocation> getGeoCache() {

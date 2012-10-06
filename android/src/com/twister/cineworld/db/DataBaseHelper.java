@@ -32,6 +32,14 @@ public class DataBaseHelper {
 		return m_helper.getWritableDatabase();
 	}
 
+	public void openDB() {
+		getWritableDatabase();
+	}
+
+	public List<PostCodeLocation> getGeoCacheLocations() {
+		return m_reader.getGeoCache();
+	}
+
 	public void addCinemas(final List<Cinema> cinemas) {
 		m_writer.insertCinemas(cinemas);
 	}
@@ -44,11 +52,27 @@ public class DataBaseHelper {
 		return m_reader.getCinema(cinemaId);
 	}
 
-	public void openDB() {
-		getWritableDatabase();
+	public void addCategories(final List<Category> categories) {
+		m_writer.insertCategories(categories);
 	}
 
-	public List<PostCodeLocation> getGeoCacheLocations() {
-		return m_reader.getGeoCache();
+	public List<Category> getCategories() {
+		return m_reader.getCategories();
+	}
+
+	public void addEvents(final List<Event> events) {
+		m_writer.insertEvents(events);
+	}
+
+	public List<Event> getEvents() {
+		return m_reader.getEvents();
+	}
+
+	public void addDistributors(final List<Distributor> distributors) {
+		m_writer.insertDistributors(distributors);
+	}
+
+	public List<Distributor> getDistributors() {
+		return m_reader.getDistributors();
 	}
 }
