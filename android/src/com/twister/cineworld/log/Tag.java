@@ -16,7 +16,8 @@ public enum Tag {
 	ACCESS,
 	UI,
 	GEO,
-	SYSTEM;
+	SYSTEM,
+	IO;
 
 	private static final int	TAG_MAX_LENGTH	= 23;
 

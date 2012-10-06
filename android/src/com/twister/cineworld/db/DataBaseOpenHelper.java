@@ -6,8 +6,9 @@ import android.content.Context;
 import android.database.*;
 import android.database.sqlite.*;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.os.Environment;
 
-import com.twister.cineworld.App;
+import com.twister.cineworld.*;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
@@ -37,6 +38,16 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 	public void onOpen(final SQLiteDatabase db) {
 		DataBaseOpenHelper.LOG.debug("Opening database: " + db);
 		// onCreate(db); // for DB development, always clear and initialize
+		if (BuildConfig.DEBUG) {
+			try {
+				String target = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+						+ "CineworldDB.sqlite";
+				IOTools.copyFile(db.getPath(), target);
+				DataBaseOpenHelper.LOG.info("DB backed up to " + target);
+			} catch (IOException ex) {
+				DataBaseOpenHelper.LOG.error("Cannot back up DB on open", ex);
+			}
+		}
 		super.onOpen(db);
 		DataBaseOpenHelper.LOG.info("Opened database: " + db);
 		// db.execSQL("DELETE FROM Cinema;");
