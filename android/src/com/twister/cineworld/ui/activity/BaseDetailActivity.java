@@ -2,12 +2,13 @@ package com.twister.cineworld.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.widget.*;
 
+import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
 
-public abstract class BaseDetailActivity<T> extends Activity {
+public abstract class BaseDetailActivity<T> extends Activity implements ProgressReporter {
 	private final int	m_activityLayout;
 
 	public BaseDetailActivity(final int activityCinema) {
@@ -18,6 +19,13 @@ public abstract class BaseDetailActivity<T> extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(m_activityLayout);
+		App.getInstance().setActiveStatusBar(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		App.getInstance().setActiveStatusBar(this);
 	}
 
 	protected final void startLoad() {
@@ -52,4 +60,16 @@ public abstract class BaseDetailActivity<T> extends Activity {
 	protected abstract T load() throws ApplicationException;
 
 	protected abstract void update(final T result);
+
+	public void reportStatus(final String message) {
+		// TODO make this more sophisticated
+		this.runOnUiThread(new Runnable() {
+			public void run() {
+				final TextView view = (TextView) findViewById(R.id.log_last_message);
+				if (view != null) {
+					view.setText(message);
+				}
+			}
+		});
+	}
 }
