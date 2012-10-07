@@ -27,7 +27,7 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	private UIRequest			m_request;
 
 	public CinemasActivity() {
-		super(R.layout.activity_cinemas, R.menu.context_item_cinema, false);
+		super(R.layout.activity_list, R.menu.context_item_cinema, false);
 	}
 
 	@Override

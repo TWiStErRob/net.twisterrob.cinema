@@ -16,7 +16,7 @@ public class DatesActivity extends BaseListActivity<Date> {
 	private Integer				m_edi;
 
 	public DatesActivity() {
-		super(R.layout.activity_dates, R.menu.context_item_date);
+		super(R.layout.activity_list, R.menu.context_item_date);
 	}
 
 	@Override

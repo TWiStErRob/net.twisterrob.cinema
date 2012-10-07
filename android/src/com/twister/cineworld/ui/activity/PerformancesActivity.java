@@ -12,7 +12,7 @@ import com.twister.cineworld.ui.adapter.PeformanceAdapter;
 
 public class PerformancesActivity extends BaseListActivity<Performance> {
 	public PerformancesActivity() {
-		super(R.layout.activity_performances, R.menu.context_item_performance);
+		super(R.layout.activity_list, R.menu.context_item_performance);
 	}
 
 	@Override

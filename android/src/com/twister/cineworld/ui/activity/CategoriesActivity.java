@@ -12,7 +12,7 @@ import com.twister.cineworld.ui.adapter.CategoryAdapter;
 
 public class CategoriesActivity extends BaseListActivity<Category> {
 	public CategoriesActivity() {
-		super(R.layout.activity_categories, R.menu.context_item_category);
+		super(R.layout.activity_list, R.menu.context_item_category);
 	}
 
 	@Override

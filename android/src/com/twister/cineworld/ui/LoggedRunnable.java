@@ -2,6 +2,7 @@ package com.twister.cineworld.ui;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.twister.cineworld.App;
 import com.twister.cineworld.log.*;
 
 /**
@@ -23,12 +24,15 @@ public abstract class LoggedRunnable implements Runnable {
 
 	public final void run() {
 		LOG.verbose(LOG_FORMAT, "started", taskId, SIMPLE_NAME, getClass().getName(), whatAmIDoing());
+		App.reportStatus("%s: %s", "started", whatAmIDoing());
 		try {
 			loggedRun();
 		} catch (RuntimeException ex) {
 			LOG.wtf(LOG_FORMAT, ex, "errored", taskId, SIMPLE_NAME, getClass().getName(), whatAmIDoing());
+			App.reportStatus("%s: %s", "errored: " + ex.getMessage(), whatAmIDoing());
 		} finally {
 			LOG.verbose(LOG_FORMAT, "finished", taskId, SIMPLE_NAME, getClass().getName(), whatAmIDoing());
+			App.reportStatus("%s: %s", "finished", whatAmIDoing());
 		}
 	}
 

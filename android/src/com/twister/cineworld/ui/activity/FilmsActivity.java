@@ -28,7 +28,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	private Integer				m_distributorId;
 
 	public FilmsActivity() {
-		super(R.layout.activity_films, R.menu.context_item_film);
+		super(R.layout.activity_list, R.menu.context_item_film);
 	}
 
 	@Override

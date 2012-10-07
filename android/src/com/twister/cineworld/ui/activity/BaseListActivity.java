@@ -9,7 +9,7 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.twister.cineworld.R;
+import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
 import com.twister.cineworld.ui.components.*;
@@ -20,7 +20,7 @@ import com.twister.cineworld.ui.components.*;
  * @author papp.robert.s
  * @param <UIItem> The type of items handled on the UI
  */
-public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener {
+public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener, ProgressReporter {
 
 	private AbsListView		m_listView;
 	private int				m_contentViewId;
@@ -73,6 +73,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(m_contentViewId);
+		App.getInstance().setActiveStatusBar(this);
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 		registerForContextMenu(m_listView);
@@ -113,6 +114,12 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 				return "loading list data in background";
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		App.getInstance().setActiveStatusBar(this);
 	}
 
 	/**
@@ -286,4 +293,15 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		BaseListActivity.this.exception(e);
 	}
 
+	public void reportStatus(final String message) {
+		// TODO make this more sophisticated
+		this.runOnUiThread(new Runnable() {
+			public void run() {
+				final TextView view = (TextView) findViewById(R.id.log_last_message);
+				if (view != null) {
+					view.setText(message);
+				}
+			}
+		});
+	}
 }

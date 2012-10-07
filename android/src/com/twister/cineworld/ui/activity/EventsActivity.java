@@ -12,7 +12,7 @@ import com.twister.cineworld.ui.adapter.EventAdapter;
 
 public class EventsActivity extends BaseListActivity<Event> {
 	public EventsActivity() {
-		super(R.layout.activity_events, R.menu.context_item_event);
+		super(R.layout.activity_list, R.menu.context_item_event);
 	}
 
 	@Override
