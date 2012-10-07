@@ -23,10 +23,12 @@ class DataBaseReader {
 		m_dataBaseHelper = dataBaseHelper;
 	}
 
+	// #region Model::Cinemas
+
 	public List<Cinema> getCinemas() {
 		List<Cinema> cinemas = new ArrayList<Cinema>();
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database.query("Cinema", DataBaseReader.CINEMA_DETAILS, null, null, null, null, null);
+		Cursor cursor = database.query("Cinema", CINEMA_DETAILS, null, null, null, null, null);
 		while (cursor.moveToNext()) {
 			Cinema cinema = getCinema(cursor);
 			cinemas.add(cinema);
@@ -48,7 +50,7 @@ class DataBaseReader {
 		int longitude = cursor.getInt(cursor.getColumnIndex("longitude"));
 
 		Cinema cinema = new Cinema();
-		cinema.setSource(DataBaseReader.GENERIC_SOURCE);
+		cinema.setSource(GENERIC_SOURCE);
 		cinema.setCompanyId(companyId);
 		cinema.setId(id);
 		cinema.setName(name);
@@ -69,9 +71,8 @@ class DataBaseReader {
 
 	public Cinema getCinema(final int cinemaId) {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database.query("Cinema", DataBaseReader.CINEMA_DETAILS, "_id = ?",
-				new String[] { String.valueOf(cinemaId) }, null, null,
-				null);
+		Cursor cursor = database.query("Cinema", CINEMA_DETAILS, "_id = ?", new String[] { String.valueOf(cinemaId) },
+				null, null, null);
 		Cinema cinema = null;
 		if (cursor.moveToNext()) {
 			cinema = getCinema(cursor);
@@ -80,10 +81,14 @@ class DataBaseReader {
 		return cinema;
 	}
 
+	// #endregion
+
+	// #region Model::Satellite (Category, Event, Distributor)
+
 	public List<Category> getCategories() {
 		List<Category> categories = new ArrayList<Category>();
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database.query("FilmCategory", DataBaseReader.CATEGORY_DETAILS, null, null, null, null, "name");
+		Cursor cursor = database.query("FilmCategory", CATEGORY_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
 			Category category = getCategory(cursor);
 			categories.add(category);
@@ -97,7 +102,7 @@ class DataBaseReader {
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Category category = new Category();
-		category.setSource(DataBaseReader.GENERIC_SOURCE);
+		category.setSource(GENERIC_SOURCE);
 		category.setCode(code);
 		category.setName(name);
 		return category;
@@ -106,7 +111,7 @@ class DataBaseReader {
 	public List<Event> getEvents() {
 		List<Event> events = new ArrayList<Event>();
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database.query("Event", DataBaseReader.EVENT_DETAILS, null, null, null, null, "name");
+		Cursor cursor = database.query("Event", EVENT_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
 			Event event = getEvent(cursor);
 			events.add(event);
@@ -120,7 +125,7 @@ class DataBaseReader {
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Event event = new Event();
-		event.setSource(DataBaseReader.GENERIC_SOURCE);
+		event.setSource(GENERIC_SOURCE);
 		event.setCode(code);
 		event.setName(name);
 		return event;
@@ -129,8 +134,7 @@ class DataBaseReader {
 	public List<Distributor> getDistributors() {
 		List<Distributor> distributors = new ArrayList<Distributor>();
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database.query("FilmDistributor", DataBaseReader.DISTRIBUTOR_DETAILS, null, null, null, null,
-				"name");
+		Cursor cursor = database.query("FilmDistributor", DISTRIBUTOR_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
 			Distributor distributor = getDistributor(cursor);
 			distributors.add(distributor);
@@ -144,17 +148,20 @@ class DataBaseReader {
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Distributor distributor = new Distributor();
-		distributor.setSource(DataBaseReader.GENERIC_SOURCE);
+		distributor.setSource(GENERIC_SOURCE);
 		distributor.setId(id);
 		distributor.setName(name);
 		return distributor;
 	}
 
+	// #endregion
+
+	// #region internal
+
 	public List<PostCodeLocation> getGeoCache() {
 		List<PostCodeLocation> locations = new ArrayList<PostCodeLocation>();
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
-		Cursor cursor = database
-				.query("\"Helper:GeoCache\"", DataBaseReader.GEOCACHE_DETAILS, null, null, null, null, null);
+		Cursor cursor = database.query("\"Helper:GeoCache\"", GEOCACHE_DETAILS, null, null, null, null, null);
 		while (cursor.moveToNext()) {
 			PostCodeLocation loc = getGeoCache(cursor);
 			locations.add(loc);
@@ -173,4 +180,6 @@ class DataBaseReader {
 		PostCodeLocation loc = new PostCodeLocation(postcode, geoLoc);
 		return loc;
 	}
+
+	// #endregion
 }

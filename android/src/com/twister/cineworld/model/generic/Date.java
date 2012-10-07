@@ -33,10 +33,10 @@ public class Date extends GenericBase {
 				calendar.clear(Calendar.SECOND); // not affected by time zone
 				calendar.clear(Calendar.MILLISECOND); // not affected by time zone
 			} else {
-				Date.LOG.warn("Invalid date: %s", m_date);
+				LOG.warn("Invalid date: %s", m_date);
 			}
 		} else {
-			Date.LOG.warn("Empty date");
+			LOG.warn("Empty date");
 		}
 		return calendar;
 	}

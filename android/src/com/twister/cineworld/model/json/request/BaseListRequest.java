@@ -20,7 +20,7 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 	private static final URL		BASE_URL;
 	static {
 		try {
-			BASE_URL = new URL(BaseListRequest.BASE_URL_STRING);
+			BASE_URL = new URL(BASE_URL_STRING);
 		} catch (MalformedURLException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
@@ -37,9 +37,9 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 	protected static final String	KEY_EVENT				= "event";
 	protected static final String	KEY_DISTRIBUTOR			= "distributor";
 
-	private String					m_key					= BaseListRequest.DEFAULT_DEVELOPER_KEY;
-	private String					m_territory				= BaseListRequest.DEFAULT_TERRITORY;
-	private String					m_callback				= BaseListRequest.DEFAULT_CALLBACK;
+	private String					m_key					= DEFAULT_DEVELOPER_KEY;
+	private String					m_territory				= DEFAULT_TERRITORY;
+	private String					m_callback				= DEFAULT_CALLBACK;
 
 	public BaseListRequest() {
 	}
@@ -166,12 +166,12 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 		}
 		String spec = requestType;
 		try {
-			spec = String.format("%s?key=%s%s", spec, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
-			return new URL(BaseListRequest.BASE_URL, spec);
+			spec = String.format("%s?key=%s%s", spec, DEFAULT_DEVELOPER_KEY, filterString);
+			return new URL(BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			BaseListRequest.LOG.error("Cannot initialize urls: %s (%s -> %s)", ex,
+			LOG.error("Cannot initialize urls: %s (%s -> %s)", ex,
 					requestType, Arrays.toString(filters), spec);
-			return BaseListRequest.BASE_URL; // TODO throw
+			return BASE_URL; // TODO throw
 		}
 	}
 
@@ -182,13 +182,12 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 		}
 
 		try {
-			String spec = String
-					.format("%s?key=%s%s", requestType, BaseListRequest.DEFAULT_DEVELOPER_KEY, filterString);
-			return new URL(BaseListRequest.BASE_URL, spec);
+			String spec = String.format("%s?key=%s%s", requestType, DEFAULT_DEVELOPER_KEY, filterString);
+			return new URL(BASE_URL, spec);
 		} catch (MalformedURLException ex) {
-			BaseListRequest.LOG.error("Cannot initialize urls: %s (%s)", ex,
+			LOG.error("Cannot initialize urls: %s (%s)", ex,
 					requestType, Arrays.toString(filters));
-			return BaseListRequest.BASE_URL; // TODO throw
+			return BASE_URL; // TODO throw
 		}
 	}
 }

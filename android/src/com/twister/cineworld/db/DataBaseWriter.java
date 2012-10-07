@@ -21,7 +21,7 @@ class DataBaseWriter {
 		m_dataBaseHelper = dataBaseHelper;
 	}
 
-	/* Statements */
+	// #region Prepared statements
 	private SQLiteStatement	m_insertCinema;
 	private SQLiteStatement	m_insertCategory;
 	private SQLiteStatement	m_insertEvent;
@@ -34,25 +34,28 @@ class DataBaseWriter {
 			if (m_insertCinema != null) {
 				m_insertCinema.close();
 			}
-			m_insertCinema = database.compileStatement(DataBaseWriter.SQL_INSERT_CINEMA);
+			m_insertCinema = database.compileStatement(SQL_INSERT_CINEMA);
 
 			if (m_insertCategory != null) {
 				m_insertCategory.close();
 			}
-			m_insertCategory = database.compileStatement(DataBaseWriter.SQL_INSERT_CATEGORY);
+			m_insertCategory = database.compileStatement(SQL_INSERT_CATEGORY);
 
 			if (m_insertEvent != null) {
 				m_insertEvent.close();
 			}
-			m_insertEvent = database.compileStatement(DataBaseWriter.SQL_INSERT_EVENT);
+			m_insertEvent = database.compileStatement(SQL_INSERT_EVENT);
 
 			if (m_insertDistributor != null) {
 				m_insertDistributor.close();
 			}
-			m_insertDistributor = database.compileStatement(DataBaseWriter.SQL_INSERT_DISTRIBUTOR);
+			m_insertDistributor = database.compileStatement(SQL_INSERT_DISTRIBUTOR);
 		}
 	}
 
+	// #endregion
+
+	// #region insert*
 	public void insertCinemas(final List<Cinema> cinemas) {
 		for (Cinema cinema : cinemas) {
 			insertCinema(cinema);
@@ -61,7 +64,7 @@ class DataBaseWriter {
 
 	public void insertCinema(final Cinema cinema) {
 		try {
-			DataBaseWriter.LOG.debug("Inserting cinema: %d, %d, %s, %s",
+			LOG.debug("Inserting cinema: %d, %d, %s, %s",
 					cinema.getCompanyId(), cinema.getId(), cinema.getName(), cinema.getPostcode());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
@@ -87,7 +90,7 @@ class DataBaseWriter {
 			try {
 				cinemaID = m_insertCinema.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn("Cannot insert cinema, getting existing (%d, %s)", ex,
+				LOG.warn("Cannot insert cinema, getting existing (%d, %s)", ex,
 						cinema.getCompanyId(), cinema.getName());
 				cinemaID = getCinemaID(cinema.getCompanyId(), cinema.getName());
 			}
@@ -112,7 +115,7 @@ class DataBaseWriter {
 
 	private void insertCategory(final Category category) {
 		try {
-			DataBaseWriter.LOG.debug("Inserting category: %s, %s", category.getCode(), category.getName());
+			LOG.debug("Inserting category: %s, %s", category.getCode(), category.getName());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
 			database.beginTransaction();
@@ -122,7 +125,7 @@ class DataBaseWriter {
 			try {
 				m_insertCategory.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn("Cannot insert category, ignoring", ex);
+				LOG.warn("Cannot insert category, ignoring", ex);
 			}
 			database.setTransactionSuccessful();
 		} finally {
@@ -138,7 +141,7 @@ class DataBaseWriter {
 
 	private void insertEvent(final Event event) {
 		try {
-			DataBaseWriter.LOG.debug("Inserting event: %s, %s", event.getCode(), event.getName());
+			LOG.debug("Inserting event: %s, %s", event.getCode(), event.getName());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
 			database.beginTransaction();
@@ -148,7 +151,7 @@ class DataBaseWriter {
 			try {
 				m_insertEvent.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn("Cannot insert event, ignoring", ex);
+				LOG.warn("Cannot insert event, ignoring", ex);
 			}
 			database.setTransactionSuccessful();
 		} finally {
@@ -164,7 +167,7 @@ class DataBaseWriter {
 
 	private void insertDistributor(final Distributor distributor) {
 		try {
-			DataBaseWriter.LOG.debug("Inserting distributor: %d, %s", distributor.getId(), distributor.getName());
+			LOG.debug("Inserting distributor: %d, %s", distributor.getId(), distributor.getName());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
 			database.beginTransaction();
@@ -174,7 +177,7 @@ class DataBaseWriter {
 			try {
 				m_insertDistributor.executeInsert();
 			} catch (SQLiteConstraintException ex) {
-				DataBaseWriter.LOG.warn("Cannot insert distributor, ignoring", ex);
+				LOG.warn("Cannot insert distributor, ignoring", ex);
 			}
 			database.setTransactionSuccessful();
 		} finally {
@@ -183,7 +186,12 @@ class DataBaseWriter {
 	}
 
 
-	// @formatter:off
+
+	// #endregion
+
+	// #region Queries
+
+	// #noformat
 	private static final String	 SQL_INSERT_CINEMA	= "INSERT INTO "
 			+ "Cinema(_company, _id, name, details_url, territory, address, postcode, telephone, latitude, longitude) "
 			+ "VALUES(       ?,   ?,    ?,           ?,         ?,       ?,        ?,         ?,        ?,         ?);";
@@ -196,5 +204,7 @@ class DataBaseWriter {
 	private static final String	 SQL_INSERT_DISTRIBUTOR	= "INSERT INTO "
 			+ "FilmDistributor(_id, name) "
 			+ "VALUES(           ?,    ?);";
-	// @formatter:on
+	// #endnoformat
+
+	// #endregion
 }

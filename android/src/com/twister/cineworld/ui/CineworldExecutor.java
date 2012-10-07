@@ -8,8 +8,7 @@ import java.util.concurrent.*;
  * @author Zoltán Kiss
  */
 public class CineworldExecutor {
-
-	private static ExecutorService	EXEC	= Executors.newCachedThreadPool();
+	private static final ExecutorService	s_executor	= Executors.newCachedThreadPool();
 
 	private CineworldExecutor() {
 		// utility class
@@ -22,7 +21,6 @@ public class CineworldExecutor {
 	 * @see ExecutorService#execute(Runnable)
 	 */
 	public static void execute(final LoggedRunnable task) {
-		CineworldExecutor.EXEC.execute(task);
+		s_executor.execute(task);
 	}
-
 }

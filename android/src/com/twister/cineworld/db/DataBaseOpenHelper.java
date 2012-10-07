@@ -3,7 +3,7 @@ package com.twister.cineworld.db;
 import java.io.*;
 
 import android.content.Context;
-import android.database.*;
+import android.database.SQLException;
 import android.database.sqlite.*;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.os.Environment;
@@ -13,65 +13,48 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.tools.IOTools;
 
 class DataBaseOpenHelper extends SQLiteOpenHelper {
-
-
-
-
-
-
-
-
-	private static final String				DB_SCHEMA_FILE	= "CineworldExtra.v1.schema.sql";
-	private static final String				DB_DATA_FILE	= "CineworldExtra.v1.data.sql";
-	private static final String				DB_CLEAN_FILE	= "CineworldExtra.v1.clean.sql";
-	private static final String				DB_NAME			= "CineworldExtra";
-	private static final int				DB_VERSION		= 12;
-	private static final Log	LOG				= LogFactory.getLog(Tag.DB);
-	// @formatter:off
-	private static CursorFactory			m_factory		= new CursorFactory() {
-		public Cursor newCursor(final SQLiteDatabase db,
-				final SQLiteCursorDriver masterQuery,
-				final String editTable, final SQLiteQuery query) {
-			DataBaseOpenHelper.LOG.verbose(query.toString());
-			return new SQLiteCursor(db, masterQuery, editTable, query);
-		}
-	};
-	// @formatter:on
+	private static final String			DB_SCHEMA_FILE	= "CineworldExtra.v1.schema.sql";
+	private static final String			DB_DATA_FILE	= "CineworldExtra.v1.data.sql";
+	private static final String			DB_CLEAN_FILE	= "CineworldExtra.v1.clean.sql";
+	private static final String			DB_NAME			= "CineworldExtra";
+	private static final int			DB_VERSION		= 12;
+	private static final Log			LOG				= LogFactory.getLog(Tag.DB);
+	private static final CursorFactory	s_factory		= new LoggingCursorFactory();
 
 	public DataBaseOpenHelper(final Context context) {
-		super(context, DataBaseOpenHelper.DB_NAME, DataBaseOpenHelper.m_factory, DataBaseOpenHelper.DB_VERSION);
+		super(context, DB_NAME, s_factory, DB_VERSION);
 	}
 
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
-		DataBaseOpenHelper.LOG.debug("Opening database: %s", db);
+		LOG.debug("Opening database: %s", db);
 		// onCreate(db); // for DB development, always clear and initialize
 		if (BuildConfig.DEBUG) {
 			try {
 				String target = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
 						+ "CineworldDB.sqlite";
 				IOTools.copyFile(db.getPath(), target);
-				DataBaseOpenHelper.LOG.info("DB backed up to %s", target);
+				LOG.info("DB backed up to %s", target);
 			} catch (IOException ex) {
-				DataBaseOpenHelper.LOG.error("Cannot back up DB on open", ex);
+				LOG.error("Cannot back up DB on open", ex);
 			}
 		}
 		super.onOpen(db);
-		DataBaseOpenHelper.LOG.info("Opened database: %s", db);
+		LOG.info("Opened database: %s", db);
 		// db.execSQL("DELETE FROM Cinema;");
 	}
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		DataBaseOpenHelper.LOG.debug("Creating database: %s", db);
-		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_CLEAN_FILE);
-		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_SCHEMA_FILE);
-		DataBaseOpenHelper.execFile(db, DataBaseOpenHelper.DB_DATA_FILE);
-		DataBaseOpenHelper.LOG.info("Created database: %s", db);
+		LOG.debug("Creating database: %s", db);
+		DataBaseOpenHelper.execFile(db, DB_CLEAN_FILE);
+		DataBaseOpenHelper.execFile(db, DB_SCHEMA_FILE);
+		DataBaseOpenHelper.execFile(db, DB_DATA_FILE);
+		LOG.info("Created database: %s", db);
 	}
 
 	private static void execFile(final SQLiteDatabase db, final String dbSchemaFile) {
-		DataBaseOpenHelper.LOG.debug("Executing file %s into database: %s", dbSchemaFile, db);
+		LOG.debug("Executing file %s into database: %s", dbSchemaFile, db);
 		InputStream s;
 		String statement = null;
 		try {
@@ -81,10 +64,10 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 				db.execSQL(statement);
 			}
 		} catch (SQLException ex) {
-			DataBaseOpenHelper.LOG.error("Error creating database from file: %s  while executing\n%s", ex,
+			LOG.error("Error creating database from file: %s  while executing\n%s", ex,
 					dbSchemaFile, statement);
 		} catch (IOException ex) {
-			DataBaseOpenHelper.LOG.error("Error creating database from file: ", ex, dbSchemaFile);
+			LOG.error("Error creating database from file: ", ex, dbSchemaFile);
 		}
 	}
 

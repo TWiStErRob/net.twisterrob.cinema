@@ -8,7 +8,6 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class SliderMenuMainMenuListener implements OnItemClickListener {
-
 	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	private SlideMenu			m_slider;
@@ -18,7 +17,7 @@ public class SliderMenuMainMenuListener implements OnItemClickListener {
 	}
 
 	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-		SliderMenuMainMenuListener.LOG.verbose("onItemClick");
+		LOG.verbose("onItemClick");
 		MainMenuItem item = (MainMenuItem) parent.getItemAtPosition(position);
 		m_slider.hide(false);
 		m_slider.getCurrentActivity().startActivity(item.getIntent());

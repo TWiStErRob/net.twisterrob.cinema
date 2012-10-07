@@ -181,7 +181,7 @@ public class CineworldJSONAccessor implements Accessor {
 		if (cineworldObject instanceof CineworldCinema) {
 			CineworldCinema cineworld = (CineworldCinema) cineworldObject;
 			Cinema generic = new Cinema();
-			generic.setCompanyId(CineworldJSONAccessor.CINEWORLD_COMPANY_ID);
+			generic.setCompanyId(CINEWORLD_COMPANY_ID);
 			generic.setId(cineworld.getId());
 			generic.setName(cineworld.getName());
 			generic.setDetailsUrl(cineworld.getCinemaUrl());
@@ -239,7 +239,7 @@ public class CineworldJSONAccessor implements Accessor {
 			result = generic;
 		}
 		if (result != null) {
-			result.setSource(CineworldJSONAccessor.GENERIC_SOURCE);
+			result.setSource(GENERIC_SOURCE);
 		}
 		return (TOut) result;
 	}

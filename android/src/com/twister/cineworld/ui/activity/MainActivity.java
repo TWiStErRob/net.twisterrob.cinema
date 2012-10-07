@@ -13,7 +13,6 @@ import com.twister.cineworld.ui.adapter.*;
 import com.twister.cineworld.ui.model.MainMenuItem;
 
 public class MainActivity extends BaseListActivity<MainMenuItem> {
-
 	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	public MainActivity() {
@@ -24,7 +23,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MainActivity.LOG.info("Main activity created");
+		LOG.info("Main activity created");
 	}
 
 	@Override

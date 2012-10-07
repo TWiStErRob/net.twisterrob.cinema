@@ -28,8 +28,8 @@ public enum Tag {
 		 * Check tag string lengths
 		 */
 		for (Tag tag : Tag.values()) {
-			if (tag.getTag().length() > Tag.TAG_MAX_LENGTH) {
-				Log.w(null, "Tag value is longer than 23 chars: " + tag.name() + "=" + tag.getTag());
+			if (tag.getTag().length() > TAG_MAX_LENGTH) {
+				Log.w(null, String.format("Tag value is longer than 23 chars: %s=%s", tag.name(), tag.getTag()));
 			}
 		}
 	}
@@ -41,7 +41,7 @@ public enum Tag {
 	}
 
 	private Tag(final String tag) {
-		m_tag = Tag.TAG_PREFIX + (tag == null? name() : tag);
+		m_tag = TAG_PREFIX + (tag == null? name() : tag);
 	}
 
 	public String getTag() {

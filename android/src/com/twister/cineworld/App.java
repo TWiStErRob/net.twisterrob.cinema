@@ -8,11 +8,11 @@ public class App extends android.app.Application {
 	private static/* final */App	s_instance;
 
 	public App() {
-		App.s_instance = this;
+		s_instance = this;
 	}
 
 	public static App getInstance() {
-		return App.s_instance;
+		return s_instance;
 	}
 
 	private DataBaseHelper	m_dataBaseHelper	= new DataBaseHelper(this);

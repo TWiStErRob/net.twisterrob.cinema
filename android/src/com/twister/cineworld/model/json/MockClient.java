@@ -8,15 +8,15 @@ import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.*;
 
 public class MockClient implements JsonClient {
-	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>	RESPONSE_MAPPING	= new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
+	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>	s_responseMapping	= new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
 	static {
-		MockClient.RESPONSE_MAPPING.put(CinemasResponse.class, MockClient.createCinemasResponse());
-		MockClient.RESPONSE_MAPPING.put(FilmsResponse.class, MockClient.createFilmsResponse());
-		MockClient.RESPONSE_MAPPING.put(DatesResponse.class, MockClient.createDatesResponse());
-		MockClient.RESPONSE_MAPPING.put(PerformancesResponse.class, MockClient.createPerformancesResponse());
-		MockClient.RESPONSE_MAPPING.put(CategoriesResponse.class, MockClient.createCategoriesResponse());
-		MockClient.RESPONSE_MAPPING.put(EventsResponse.class, MockClient.createEventsResponse());
-		MockClient.RESPONSE_MAPPING.put(DistributorsResponse.class, MockClient.createDistributorsResponse());
+		s_responseMapping.put(CinemasResponse.class, MockClient.createCinemasResponse());
+		s_responseMapping.put(FilmsResponse.class, MockClient.createFilmsResponse());
+		s_responseMapping.put(DatesResponse.class, MockClient.createDatesResponse());
+		s_responseMapping.put(PerformancesResponse.class, MockClient.createPerformancesResponse());
+		s_responseMapping.put(CategoriesResponse.class, MockClient.createCategoriesResponse());
+		s_responseMapping.put(EventsResponse.class, MockClient.createEventsResponse());
+		s_responseMapping.put(DistributorsResponse.class, MockClient.createDistributorsResponse());
 	}
 
 	public <T> T get(final URL url, final Class<T> responseType) throws ApplicationException {
@@ -33,7 +33,7 @@ public class MockClient implements JsonClient {
 	 */
 	protected <T> T any(final Class<T> responseType) throws ApplicationException {
 		@SuppressWarnings("unchecked")
-		T response = (T) MockClient.RESPONSE_MAPPING.get(responseType);
+		T response = (T) s_responseMapping.get(responseType);
 		return response;
 	}
 

@@ -8,7 +8,6 @@ import com.twister.cineworld.R;
  * @author Zoltán Kiss
  */
 public interface Translated {
-
 	/**
 	 * Returns the resource id for the text. Must be a valid id from {@link R.string}
 	 * 
@@ -23,5 +22,4 @@ public interface Translated {
 	 * @return <code>null</code>, if there are no parameters
 	 */
 	public Object[] getParams();
-
 }

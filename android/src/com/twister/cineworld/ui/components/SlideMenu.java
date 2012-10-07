@@ -26,25 +26,25 @@ public class SlideMenu {
 	}
 
 	private void init() {
-		SlideMenu.LOG.verbose("init()- menuShown: %s", SlideMenu.s_menuShown);
-		SlideMenu.s_menuSize = (int) (m_activity.getResources().getDisplayMetrics().widthPixels * 0.80f);
-		SlideMenu.s_content = ((LinearLayout) m_activity.findViewById(android.R.id.content).getParent());
-		setParent(SlideMenu.s_content.getParent());
-		if (SlideMenu.s_menu == null) {
+		LOG.verbose("init()- menuShown: %s", s_menuShown);
+		s_menuSize = (int) (m_activity.getResources().getDisplayMetrics().widthPixels * 0.80f);
+		s_content = ((LinearLayout) m_activity.findViewById(android.R.id.content).getParent());
+		setParent(s_content.getParent());
+		if (s_menu == null) {
 			LayoutInflater inflater = (LayoutInflater) m_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			SlideMenu.s_menu = inflater.inflate(R.layout.common_home_menu, null);
+			s_menu = inflater.inflate(R.layout.common_home_menu, null);
 		}
 	}
 
 	private void setParent(final ViewParent viewParent) {
-		if (SlideMenu.s_parent != null) {
+		if (s_parent != null) {
 			removeView();
 		}
-		SlideMenu.s_parent = (FrameLayout) viewParent;
+		s_parent = (FrameLayout) viewParent;
 	}
 
 	public ListView getList() {
-		return (ListView) SlideMenu.s_menu.findViewById(R.id.menu_listview);
+		return (ListView) s_menu.findViewById(R.id.menu_listview);
 	}
 
 	public Activity getCurrentActivity() {
@@ -53,40 +53,39 @@ public class SlideMenu {
 
 	// call this in your onCreate() for screen rotation
 	public void checkEnabled() {
-		SlideMenu.LOG.verbose("checkEnabled()- menuShown: %s", SlideMenu.s_menuShown);
-		if (SlideMenu.s_menuShown) {
+		LOG.verbose("checkEnabled()- menuShown: %s", s_menuShown);
+		if (s_menuShown) {
 			this.hide(false);
 			this.show(false);
 		}
 	}
 
 	public void show() {
-		SlideMenu.LOG.verbose("show()- menuShown: %s", SlideMenu.s_menuShown);
+		LOG.verbose("show()- menuShown: %s", s_menuShown);
 		this.show(true);
 	}
 
 	public void show(final boolean animate) {
-		SlideMenu.LOG
-				.verbose("show(%s)- menuShown: %s, parent: %s", animate, SlideMenu.s_menuShown, SlideMenu.s_parent);
+		LOG.verbose("show(%s)- menuShown: %s, parent: %s", animate, s_menuShown, s_parent);
 		checkStatusBar();
-		if (SlideMenu.s_menuShown) {
+		if (s_menuShown) {
 			return;
 		}
-		SlideMenu.s_menuShown = true;
+		s_menuShown = true;
 		addView();
-		FrameLayout.LayoutParams parm = (FrameLayout.LayoutParams) SlideMenu.s_content.getLayoutParams();
-		parm.setMargins(SlideMenu.s_menuSize, 0, -SlideMenu.s_menuSize, 0);
-		SlideMenu.s_content.setLayoutParams(parm);
+		FrameLayout.LayoutParams parm = (FrameLayout.LayoutParams) s_content.getLayoutParams();
+		parm.setMargins(s_menuSize, 0, -s_menuSize, 0);
+		s_content.setLayoutParams(parm);
 		// animation for smooth slide-out
 		if (animate) {
-			TranslateAnimation ta = new TranslateAnimation(-SlideMenu.s_menuSize, 0, 0, 0);
+			TranslateAnimation ta = new TranslateAnimation(-s_menuSize, 0, 0, 0);
 			ta.setDuration(200);
-			SlideMenu.s_content.startAnimation(ta);
-			SlideMenu.s_menu.startAnimation(ta);
+			s_content.startAnimation(ta);
+			s_menu.startAnimation(ta);
 		}
-		SlideMenu.s_menu.findViewById(R.id.overlay).setOnClickListener(new OnClickListener() {
+		s_menu.findViewById(R.id.overlay).setOnClickListener(new OnClickListener() {
 			public void onClick(final View v) {
-				SlideMenu.this.hide();
+				hide();
 			}
 		});
 	}
@@ -98,43 +97,42 @@ public class SlideMenu {
 		int statusHeight = rect.top;
 		FrameLayout.LayoutParams lays = new FrameLayout.LayoutParams(-1, -1, 3);
 		lays.setMargins(0, statusHeight, 0, 0);
-		SlideMenu.s_menu.setLayoutParams(lays);
+		s_menu.setLayoutParams(lays);
 	}
 
 	public void hide() {
-		SlideMenu.LOG.verbose("hide()- menuShown: %s", SlideMenu.s_menuShown);
+		LOG.verbose("hide()- menuShown: %s", s_menuShown);
 		this.hide(true);
 	}
 
 	public void hide(final boolean animate) {
-		SlideMenu.LOG
-				.verbose("hide(%s)- menuShown: %s, parent: %s", animate, SlideMenu.s_menuShown, SlideMenu.s_parent);
-		if (!SlideMenu.s_menuShown) {
+		LOG.verbose("hide(%s)- menuShown: %s, parent: %s", animate, s_menuShown, s_parent);
+		if (!s_menuShown) {
 			return;
 		}
-		SlideMenu.s_menuShown = false;
+		s_menuShown = false;
 		if (animate) {
-			TranslateAnimation ta = new TranslateAnimation(0, -SlideMenu.s_menuSize, 0, 0);
+			TranslateAnimation ta = new TranslateAnimation(0, -s_menuSize, 0, 0);
 			ta.setDuration(200);
-			SlideMenu.s_menu.startAnimation(ta);
+			s_menu.startAnimation(ta);
 
-			TranslateAnimation tra = new TranslateAnimation(SlideMenu.s_menuSize, 0, 0, 0);
+			TranslateAnimation tra = new TranslateAnimation(s_menuSize, 0, 0, 0);
 			tra.setDuration(200);
-			SlideMenu.s_content.startAnimation(tra);
+			s_content.startAnimation(tra);
 		}
-		FrameLayout.LayoutParams parm = (FrameLayout.LayoutParams) SlideMenu.s_content.getLayoutParams();
+		FrameLayout.LayoutParams parm = (FrameLayout.LayoutParams) s_content.getLayoutParams();
 		parm.setMargins(0, 0, 0, 0);
-		SlideMenu.s_content.setLayoutParams(parm);
+		s_content.setLayoutParams(parm);
 		removeView();
 	}
 
 	private void addView() {
-		SlideMenu.LOG.verbose("addView()");
-		SlideMenu.s_parent.addView(SlideMenu.s_menu);
+		LOG.verbose("addView()");
+		s_parent.addView(s_menu);
 	}
 
 	private void removeView() {
-		SlideMenu.LOG.verbose("removeView()");
-		SlideMenu.s_parent.removeView(SlideMenu.s_menu);
+		LOG.verbose("removeView()");
+		s_parent.removeView(s_menu);
 	}
 }

@@ -12,28 +12,23 @@ import com.twister.cineworld.log.*;
 public abstract class LoggedRunnable implements Runnable {
 	private static final Log		LOG			= LogFactory.getLog(Tag.SYSTEM);
 	private static final String		LOG_FORMAT	= "%3$s (#%2$s) %1$s: %4$s";
-	private static final AtomicLong	SEQ			= new AtomicLong(System.currentTimeMillis());
+	private static final String		SIMPLE_NAME	= LoggedRunnable.class.getSimpleName();
+	private static final AtomicLong	s_seq		= new AtomicLong(System.currentTimeMillis());
 
 	protected final String			taskId;
 
 	public LoggedRunnable() {
-		this.taskId = Long.toHexString(LoggedRunnable.SEQ.getAndIncrement());
+		this.taskId = Long.toHexString(s_seq.getAndIncrement());
 	}
 
 	public final void run() {
-		if (LoggedRunnable.LOG.isVerboseEnabled()) {
-			LoggedRunnable.LOG.verbose(LoggedRunnable.LOG_FORMAT, "started", taskId,
-					LoggedRunnable.class.getSimpleName(), getClass().getName());
-		}
+		LOG.verbose(LOG_FORMAT, "started", taskId, SIMPLE_NAME, getClass().getName());
 		try {
 			loggedRun();
 		} catch (RuntimeException ex) {
-			LoggedRunnable.LOG.wtf("Uncaught exception in %s #%s", ex, LoggedRunnable.class.getSimpleName(), taskId);
+			LOG.wtf("Uncaught exception in %s #%s", ex, SIMPLE_NAME, taskId);
 		} finally {
-			if (LoggedRunnable.LOG.isVerboseEnabled()) {
-				LoggedRunnable.LOG.verbose(LoggedRunnable.LOG_FORMAT, "finished", taskId,
-						LoggedRunnable.class.getSimpleName(), getClass().getName());
-			}
+			LOG.verbose(LOG_FORMAT, "finished", taskId, SIMPLE_NAME, getClass().getName());
 		}
 	}
 
@@ -42,5 +37,4 @@ public abstract class LoggedRunnable implements Runnable {
 	 * into a try-catch block and catches and logs out escaping {@link RuntimeException}s
 	 */
 	protected abstract void loggedRun();
-
 }

@@ -76,10 +76,10 @@ public class PerformancesRequest extends BaseListRequest<CineworldPerformance> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(PerformancesRequest.REQUEST_URI,
-				BaseListRequest.KEY_CINEMA, m_cinema,
-				BaseListRequest.KEY_FILM, m_film,
-				BaseListRequest.KEY_DATE, m_date);
+		return BaseListRequest.makeUrl(REQUEST_URI,
+				KEY_CINEMA, m_cinema,
+				KEY_FILM, m_film,
+				KEY_DATE, m_date);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class PerformancesRequest extends BaseListRequest<CineworldPerformance> {
 	 */
 	@Override
 	public String getRequestType() {
-		return PerformancesRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**

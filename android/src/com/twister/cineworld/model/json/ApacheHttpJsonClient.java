@@ -49,8 +49,8 @@ public class ApacheHttpJsonClient implements JsonClient {
 		} catch (URISyntaxException ex) {
 			throw new InternalException("Illegal URI syntax: " + url, ex);
 		}
-		request.setHeader(ApacheHttpJsonClient.HEADER_ACCEPT, ApacheHttpJsonClient.CONTENT_TYPE_JSON);
-		request.setHeader(ApacheHttpJsonClient.HEADER_CONTENT_TYPE, ApacheHttpJsonClient.CONTENT_TYPE_JSON);
+		request.setHeader(HEADER_ACCEPT, CONTENT_TYPE_JSON);
+		request.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 
 		return any(responseType, request);
 	}
@@ -70,8 +70,8 @@ public class ApacheHttpJsonClient implements JsonClient {
 			throws ExternalException, NetworkException, InternalException {
 		// standard post request with json content
 		HttpPost request = new HttpPost(url);
-		request.setHeader(ApacheHttpJsonClient.HEADER_ACCEPT, ApacheHttpJsonClient.CONTENT_TYPE_JSON);
-		request.setHeader(ApacheHttpJsonClient.HEADER_CONTENT_TYPE, ApacheHttpJsonClient.CONTENT_TYPE_JSON);
+		request.setHeader(HEADER_ACCEPT, CONTENT_TYPE_JSON);
+		request.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 
 		// converting post data to json
 		String json = m_gson.toJson(requestObject);
@@ -87,8 +87,8 @@ public class ApacheHttpJsonClient implements JsonClient {
 
 	protected <T> T any(final Class<T> responseType, final HttpUriRequest request) throws ExternalException,
 			NetworkException {
-		if (ApacheHttpJsonClient.LOG.isDebugEnabled()) {
-			ApacheHttpJsonClient.LOG.debug("Getting (%s): '%s'", responseType, request.getURI());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Getting (%s): '%s'", responseType, request.getURI());
 		}
 		// executing request
 		AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
@@ -118,7 +118,7 @@ public class ApacheHttpJsonClient implements JsonClient {
 				try {
 					is.close();
 				} catch (IOException ex) {
-					ApacheHttpJsonClient.LOG.warn("Could not close InputStream", ex);
+					LOG.warn("Could not close InputStream", ex);
 				}
 			}
 			httpClient.close();
@@ -138,8 +138,7 @@ public class ApacheHttpJsonClient implements JsonClient {
 		StatusLine status = httpResponse.getStatusLine();
 		int statusCode = status.getStatusCode();
 		if (statusCode != HttpStatus.SC_OK) {
-			throw new NetworkException("HTTP status code is not OK: " + statusCode +
-					" (" + status.getReasonPhrase() + ")");
+			throw new NetworkException("HTTP status code is not OK: %d (%s)", statusCode, status.getReasonPhrase());
 		}
 
 		if (entity == null) {

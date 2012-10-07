@@ -105,12 +105,12 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(DatesRequest.REQUEST_URI,
-				BaseListRequest.KEY_CINEMA, m_cinema,
-				BaseListRequest.KEY_FILM, m_film,
-				BaseListRequest.KEY_CATEGORY, m_category,
-				BaseListRequest.KEY_EVENT, m_event,
-				BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
+		return BaseListRequest.makeUrl(REQUEST_URI,
+				KEY_CINEMA, m_cinema,
+				KEY_FILM, m_film,
+				KEY_CATEGORY, m_category,
+				KEY_EVENT, m_event,
+				KEY_DISTRIBUTOR, m_distributor);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class DatesRequest extends BaseListRequest<CineworldDate> {
 	 */
 	@Override
 	public String getRequestType() {
-		return DatesRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**

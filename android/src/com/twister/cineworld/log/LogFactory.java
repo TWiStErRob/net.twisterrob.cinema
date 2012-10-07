@@ -10,13 +10,13 @@ public final class LogFactory {
 	}
 
 	public static Log getLog(final Tag tag) {
-		Log ret = LogFactory.LOGS.get(tag.ordinal());
+		Log ret = LOGS.get(tag.ordinal());
 		if (ret == null) {
-			synchronized (LogFactory.LOGS) {
-				ret = LogFactory.LOGS.get(tag.ordinal());
+			synchronized (LOGS) {
+				ret = LOGS.get(tag.ordinal());
 				if (ret == null) {
 					ret = new Log(tag);
-					LogFactory.LOGS.set(tag.ordinal(), ret);
+					LOGS.set(tag.ordinal(), ret);
 				}
 			}
 		}

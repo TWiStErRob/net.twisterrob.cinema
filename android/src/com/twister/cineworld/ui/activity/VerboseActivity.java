@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.twister.cineworld.log.*;
 
 public class VerboseActivity extends Activity {
-
 	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	public VerboseActivity() {
@@ -57,8 +56,6 @@ public class VerboseActivity extends Activity {
 	}
 
 	private void log(final String method) {
-		if (VerboseActivity.LOG.isVerboseEnabled()) {
-			VerboseActivity.LOG.verbose("%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode());
-		}
+		LOG.verbose("%1$s@%3$08X.%2$s", getClass().getSimpleName(), method, hashCode());
 	}
 }

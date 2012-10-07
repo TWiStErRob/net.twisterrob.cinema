@@ -53,7 +53,7 @@ public class CategoriesRequest extends BaseListRequest<CineworldCategory> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(CategoriesRequest.REQUEST_URI);
+		return BaseListRequest.makeUrl(REQUEST_URI);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class CategoriesRequest extends BaseListRequest<CineworldCategory> {
 	 */
 	@Override
 	public String getRequestType() {
-		return CategoriesRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package com.twister.cineworld.model.generic;
 
 public abstract class MovieBase extends GenericBase {
-
 	private String	m_title;
 	private String	m_classification;
 	private String	m_advisory;

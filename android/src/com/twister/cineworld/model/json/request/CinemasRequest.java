@@ -117,14 +117,14 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(CinemasRequest.REQUEST_URI,
-				BaseListRequest.KEY_FULL, m_full,
-				BaseListRequest.KEY_FILM, m_film,
-				BaseListRequest.KEY_DATE, m_date,
-				BaseListRequest.KEY_CINEMA, m_cinema,
-				BaseListRequest.KEY_CATEGORY, m_category,
-				BaseListRequest.KEY_EVENT, m_event,
-				BaseListRequest.KEY_DISTRIBUTOR, m_distributor);
+		return BaseListRequest.makeUrl(REQUEST_URI,
+				KEY_FULL, m_full,
+				KEY_FILM, m_film,
+				KEY_DATE, m_date,
+				KEY_CINEMA, m_cinema,
+				KEY_CATEGORY, m_category,
+				KEY_EVENT, m_event,
+				KEY_DISTRIBUTOR, m_distributor);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class CinemasRequest extends BaseListRequest<CineworldCinema> {
 	 */
 	@Override
 	public String getRequestType() {
-		return CinemasRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**

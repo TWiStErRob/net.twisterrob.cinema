@@ -15,7 +15,7 @@ public class IOTools {
 	private static final Log	LOG							= LogFactory.getLog(Tag.IO);
 	// TODO check if UTF-8 is used by cineworld
 	public static final String	ENCODING					= Charset.defaultCharset().name();
-	private static final String	DEFAULT_HTTP_ENCODING		= IOTools.ENCODING;
+	private static final String	DEFAULT_HTTP_ENCODING		= ENCODING;
 	private static final String	HTTP_HEADER_CHARSET_PREFIX	= "charset=";
 	public static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
 
@@ -58,7 +58,7 @@ public class IOTools {
 	}
 
 	public static String getEncoding(final HttpEntity entity) {
-		String encoding = IOTools.DEFAULT_HTTP_ENCODING;
+		String encoding = DEFAULT_HTTP_ENCODING;
 		Header header = entity.getContentEncoding();
 		if (header != null) {
 			return header.getValue();
@@ -67,9 +67,9 @@ public class IOTools {
 		header = entity.getContentType();
 		if (header != null) {
 			String value = header.getValue();
-			int startIndex = value.indexOf(IOTools.HTTP_HEADER_CHARSET_PREFIX);
+			int startIndex = value.indexOf(HTTP_HEADER_CHARSET_PREFIX);
 			if (startIndex != -1) {
-				startIndex += IOTools.HTTP_HEADER_CHARSET_PREFIX.length();
+				startIndex += HTTP_HEADER_CHARSET_PREFIX.length();
 				int endIndex = value.indexOf(';', startIndex);
 				if (endIndex == -1) {
 					endIndex = value.length();

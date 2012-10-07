@@ -26,13 +26,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public List<Cinema> getAllCinemas() throws ApplicationException {
 		List<Cinema> cinemas = m_dbAccessor.getAllCinemas();
 		if (cinemas.isEmpty()) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
+			LOG.debug("No data in DB, requesting cinemas...");
 			cinemas = m_otherAccessor.getAllCinemas();
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
+			LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
 			m_dbh.addCinemas(cinemas);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
+			LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
+			LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
 		}
 		return cinemas;
 	}
@@ -41,13 +41,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public Cinema getCinema(final int cinemaId) throws ApplicationException {
 		Cinema cinema = m_dbAccessor.getCinema(cinemaId);
 		if (cinema == null) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
+			LOG.debug("No data in DB, requesting cinemas...");
 			cinema = m_otherAccessor.getCinema(cinemaId);
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting a new cinema: %d", cinema);
+			LOG.debug("No data in DB, inserting a new cinema: %d", cinema);
 			m_dbh.addCinemas(Collections.singletonList(cinema));
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d", cinema);
+			LOG.debug("Returning from other source: %d", cinema);
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d", cinema);
+			LOG.debug("Returning from DB: %d", cinema);
 		}
 		return cinema;
 	}
@@ -56,13 +56,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
 		List<Cinema> cinemas = m_dbAccessor.getCinemas(filmEdi);
 		if (cinemas.isEmpty()) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting cinemas...");
+			LOG.debug("No data in DB, requesting cinemas...");
 			cinemas = m_otherAccessor.getCinemas(filmEdi);
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
+			LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
 			m_dbh.addCinemas(cinemas);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
+			LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
+			LOG.debug("Returning from DB: %d cinemas...", cinemas.size());
 		}
 		return cinemas;
 	}
@@ -71,13 +71,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public List<Category> getAllCategories() throws ApplicationException {
 		List<Category> categories = m_dbAccessor.getAllCategories();
 		if (categories.isEmpty()) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting categories...");
+			LOG.debug("No data in DB, requesting categories...");
 			categories = m_otherAccessor.getAllCategories();
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d categories...", categories.size());
+			LOG.debug("No data in DB, inserting %d categories...", categories.size());
 			m_dbh.addCategories(categories);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d categories...", categories.size());
+			LOG.debug("Returning from other source: %d categories...", categories.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d categories...", categories.size());
+			LOG.debug("Returning from DB: %d categories...", categories.size());
 		}
 		return categories;
 	}
@@ -86,13 +86,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public List<Event> getAllEvents() throws ApplicationException {
 		List<Event> events = m_dbAccessor.getAllEvents();
 		if (events.isEmpty()) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting events...");
+			LOG.debug("No data in DB, requesting events...");
 			events = m_otherAccessor.getAllEvents();
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d events...", events.size());
+			LOG.debug("No data in DB, inserting %d events...", events.size());
 			m_dbh.addEvents(events);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d events...", events.size());
+			LOG.debug("Returning from other source: %d events...", events.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d events...", events.size());
+			LOG.debug("Returning from DB: %d events...", events.size());
 		}
 		return events;
 	}
@@ -101,13 +101,13 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 	public List<Distributor> getAllDistributors() throws ApplicationException {
 		List<Distributor> distributors = m_dbAccessor.getAllDistributors();
 		if (distributors.isEmpty()) {
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, requesting distributors...");
+			LOG.debug("No data in DB, requesting distributors...");
 			distributors = m_otherAccessor.getAllDistributors();
-			TrivialDBCacheAccessor.LOG.debug("No data in DB, inserting %d distributors...", distributors.size());
+			LOG.debug("No data in DB, inserting %d distributors...", distributors.size());
 			m_dbh.addDistributors(distributors);
-			TrivialDBCacheAccessor.LOG.debug("Returning from other source: %d distributors...", distributors.size());
+			LOG.debug("Returning from other source: %d distributors...", distributors.size());
 		} else {
-			TrivialDBCacheAccessor.LOG.debug("Returning from DB: %d distributors...", distributors.size());
+			LOG.debug("Returning from DB: %d distributors...", distributors.size());
 		}
 		return distributors;
 	}

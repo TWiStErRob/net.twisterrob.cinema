@@ -8,7 +8,6 @@ import android.content.Context;
  * @author Zoltán Kiss
  */
 public class Translator {
-
 	private static final Object[]	EMPTY	= new Object[0];
 
 	private Translator() {

@@ -17,7 +17,7 @@ public class GeoCache {
 		List<PostCodeLocation> locations = App.getInstance().getDataBaseHelper().getGeoCacheLocations();
 		for (PostCodeLocation location : locations) {
 			String postCode = GeoCache.fixPostCode(location.getPostCode());
-			GeoCache.s_locations.put(postCode, location.getLocation());
+			s_locations.put(postCode, location.getLocation());
 		}
 	}
 
@@ -40,7 +40,7 @@ public class GeoCache {
 			return null;
 		}
 		postCode = GeoCache.fixPostCode(postCode);
-		GeoPoint loc = GeoCache.s_locations.get(postCode);
+		GeoPoint loc = s_locations.get(postCode);
 		if (loc == null) {
 			loc = GeoCache.geoCode(postCode);
 		}
@@ -59,9 +59,9 @@ public class GeoCache {
 			}
 		} catch (IOException ex) {
 			if ("Service not Available".equals(ex.getMessage())) {
-				GeoCache.LOG.warn("Cannot locate postcode: %s; %s", postCode, ex.getMessage());
+				LOG.warn("Cannot locate postcode: %s; %s", postCode, ex.getMessage());
 			} else {
-				GeoCache.LOG.warn("Cannot locate postcode: %s", ex, postCode);
+				LOG.warn("Cannot locate postcode: %s", ex, postCode);
 			}
 		}
 		return loc;

@@ -16,7 +16,6 @@ import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.*;
 
 public class CinemaActivity extends Activity {
-
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer

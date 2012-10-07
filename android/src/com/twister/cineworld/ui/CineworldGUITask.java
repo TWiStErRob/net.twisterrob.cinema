@@ -38,7 +38,7 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 	}
 
 	private void handleException(final ApplicationException ex) {
-		CineworldGUITask.LOG.error("Exception while executing task #%s", ex, this.taskId);
+		LOG.error("Exception while executing task #%s", ex, this.taskId);
 		/*
 		 * TODO Talán itt lenne érdemes csinálni egy általános metódust valami error dialog meghívására és akkor
 		 * konzisztensen viselkedne az alkalmazás. Ekkor az exception metódusban csak az Activity specifikus dolgokat

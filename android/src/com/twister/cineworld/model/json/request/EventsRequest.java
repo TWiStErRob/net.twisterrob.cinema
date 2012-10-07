@@ -52,7 +52,7 @@ public class EventsRequest extends BaseListRequest<CineworldEvent> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(EventsRequest.REQUEST_URI);
+		return BaseListRequest.makeUrl(REQUEST_URI);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class EventsRequest extends BaseListRequest<CineworldEvent> {
 	 */
 	@Override
 	public String getRequestType() {
-		return EventsRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**

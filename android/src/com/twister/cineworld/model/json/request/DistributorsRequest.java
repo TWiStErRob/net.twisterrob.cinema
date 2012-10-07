@@ -51,7 +51,7 @@ public class DistributorsRequest extends BaseListRequest<CineworldDistributor> {
 	 */
 	@Override
 	public URL getURL() {
-		return BaseListRequest.makeUrl(DistributorsRequest.REQUEST_URI);
+		return BaseListRequest.makeUrl(REQUEST_URI);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class DistributorsRequest extends BaseListRequest<CineworldDistributor> {
 	 */
 	@Override
 	public String getRequestType() {
-		return DistributorsRequest.REQUEST_TYPE;
+		return REQUEST_TYPE;
 	}
 
 	/**
