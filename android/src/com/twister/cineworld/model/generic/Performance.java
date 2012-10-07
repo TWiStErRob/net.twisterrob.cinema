@@ -1,14 +1,16 @@
 package com.twister.cineworld.model.generic;
 
 public class Performance extends GenericBase {
-	private String	m_time;
-	private boolean	m_available;
-	private String	m_type;
-	private boolean	m_audioDescribed;
-	private boolean	m_subtitled;
-	private String	m_bookingUrl;
+	private static final long	serialVersionUID	= -7455562894972197071L;
+
+	private String				m_time;
+	private boolean				m_available;
+	private String				m_type;
+	private boolean				m_audioDescribed;
+	private boolean				m_subtitled;
+	private String				m_bookingUrl;
 	@SuppressWarnings("unused")
-	private String	m_ss;				// TODO what is this?
+	private String				m_ss;											// TODO what is this?
 
 	public String getTime() {
 		return m_time;

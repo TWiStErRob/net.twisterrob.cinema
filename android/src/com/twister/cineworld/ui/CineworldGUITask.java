@@ -29,6 +29,11 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 				protected void loggedRun() {
 					present(result);
 				}
+
+				@Override
+				protected String whatAmIDoing() {
+					return "presenting results from background task";
+				}
 			});
 		} catch (ApplicationException ex) {
 			handleException(ex);
@@ -48,6 +53,11 @@ public abstract class CineworldGUITask<R> extends LoggedRunnable {
 			@Override
 			protected void loggedRun() {
 				exception(ex);
+			}
+
+			@Override
+			protected String whatAmIDoing() {
+				return "presenting error from background task";
 			}
 		});
 	}

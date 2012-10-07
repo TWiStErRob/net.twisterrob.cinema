@@ -1,8 +1,10 @@
 package com.twister.cineworld.model.generic;
 
 public class Category extends GenericBase {
-	private String	m_code;
-	private String	m_name;
+	private static final long	serialVersionUID	= -4194934427901520341L;
+
+	private String				m_code;
+	private String				m_name;
 
 	public String getCode() {
 		return m_code;

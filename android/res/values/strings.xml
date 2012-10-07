@@ -4,17 +4,18 @@
     <string name="app_name">Cineworld Browser</string>
 
     <string name="title_activity_main">Cineworld Browser</string>
-    <string name="title_activity_cinemas_loading">Cineworld Browser - Cinemas (film=%d)</string>
-    <string name="title_activity_cinemas_loaded">Cineworld Browser - Cinemas for film: %s</string>
-    <string name="title_activity_cinema_loading">Cineworld Browser - Cinema (cinema=%d)</string>
-    <string name="title_activity_cinema_loaded">Cineworld Browser - Cinema: %s</string>
-    <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas</string>
-    <string name="title_activity_films_loading">Cineworld Browser - Films (cinema=%d)</string>
-    <string name="title_activity_films_loaded">Cineworld Browser - Films for cinema: %d</string>
-    <string name="title_activity_film_loading">Cineworld Browser - Film (film=%d)</string>
-    <string name="title_activity_film_loaded">Cineworld Browser - Film: %s</string>
-    <string name="title_activity_dates_loading">Cineworld Browser - Dates (film=%d)</string>
-    <string name="title_activity_dates_loaded">Cineworld Browser - Dates for film: %d</string>
+    <string name="title_activity_cinemas_all">Cineworld Browser - All Cinemas</string>
+    <string name="title_activity_cinemas_forFilm">Cinemas where %s showing</string>
+    <string name="title_activity_cinemas_forDistributor">Cinemas where films from %s showing</string>
+    <string name="title_activity_cinema_loading">Cinema (%d)</string>
+    <string name="title_activity_cinema_loaded">Cinema: %s</string>
+    <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas Map</string>
+    <string name="title_activity_films_loading">Films (cinema=%d)</string>
+    <string name="title_activity_films_loaded">Films for cinema: %d</string>
+    <string name="title_activity_film_loading">Film (%d)</string>
+    <string name="title_activity_film_loaded">Film: %s</string>
+    <string name="title_activity_dates_loading">Dates (film=%d)</string>
+    <string name="title_activity_dates_loaded"> Dates for film: %d</string>
     <string name="title_activity_performances">Cineworld Browser - Performances</string>
     <string name="title_activity_categories">Cineworld Browser - Categories</string>
     <string name="title_activity_events">Cineworld Browser - Events</string>

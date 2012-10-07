@@ -1,9 +1,11 @@
 package com.twister.cineworld.model.generic;
 
 public abstract class MovieBase extends GenericBase {
-	private String	m_title;
-	private String	m_classification;
-	private String	m_advisory;
+	private static final long	serialVersionUID	= -6688494894494224704L;
+
+	private String				m_title;
+	private String				m_classification;
+	private String				m_advisory;
 
 	public String getTitle() {
 		return m_title;

@@ -22,13 +22,14 @@ import com.twister.cineworld.ui.components.*;
  */
 public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener {
 
-	private AbsListView	m_listView;
-	private int			m_contentViewId;
+	private AbsListView		m_listView;
+	private int				m_contentViewId;
 	/**
 	 * Context menu for items in the list. <code>null</code>, if there is no context menu
 	 */
-	private Integer		m_contextMenuId;
-	private SlideMenu	m_slidemenu;
+	private Integer			m_contextMenuId;
+	private SlideMenu		m_slidemenu;
+	private final boolean	m_autoLoad;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -38,14 +39,28 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * @param contentViewId Must have an {@link AbsListView} with an id of <code>android:id="@android:id/list"</code>.
 	 * @param contextMenuId Context menu for items in the list.
 	 */
+	public BaseListActivity(final int contentViewId, final int contextMenuId, final boolean autoLoad) {
+		m_contentViewId = contentViewId;
+		m_contextMenuId = contextMenuId;
+		m_autoLoad = autoLoad;
+	}
+
 	public BaseListActivity(final int contentViewId, final int contextMenuId) {
 		m_contentViewId = contentViewId;
 		m_contextMenuId = contextMenuId;
+		m_autoLoad = true;
+	}
+
+	public BaseListActivity(final int contentViewId, final boolean autoLoad) {
+		m_contentViewId = contentViewId;
+		m_contextMenuId = null;
+		m_autoLoad = autoLoad;
 	}
 
 	public BaseListActivity(final int contentViewId) {
 		m_contentViewId = contentViewId;
 		m_contextMenuId = null;
+		m_autoLoad = true;
 	}
 
 	/**
@@ -67,7 +82,9 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		m_slidemenu.checkEnabled();
 		m_slidemenu.getList().setOnItemClickListener(new SliderMenuMainMenuListener(m_slidemenu));
 
-		startLoad();
+		if (m_autoLoad) {
+			startLoad();
+		}
 	}
 
 	/**
@@ -89,6 +106,11 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 			@Override
 			protected void exception(final ApplicationException e) {
 				exceptionInternal(e);
+			}
+
+			@Override
+			protected String whatAmIDoing() {
+				return "loading list data in background";
 			}
 		});
 	}
@@ -244,6 +266,10 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		return m_listView;
 	}
 
+	/**
+	 * @deprecated use UIRequest like CinemasActivity
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	protected <T> T getExtra(final String extraKey) {
 		T result = null;

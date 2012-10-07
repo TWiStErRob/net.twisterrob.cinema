@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE menu>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menuitem_distributor_details" android:title="Distributor details" />
+	<item android:id="@+id/menuitem_distributor_cinemas" android:title="Where can I see films from them?" />
+	<item android:id="@+id/menuitem_distributor_films" android:title="What did they make?" />
 </menu>

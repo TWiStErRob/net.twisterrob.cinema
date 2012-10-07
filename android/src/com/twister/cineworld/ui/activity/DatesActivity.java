@@ -34,7 +34,7 @@ public class DatesActivity extends BaseListActivity<Date> {
 	@Override
 	public List<Date> loadList() throws ApplicationException {
 		if (m_edi != null) {
-			return App.getInstance().getCineworldAccessor().getDates(m_edi);
+			return App.getInstance().getCineworldAccessor().getDatesForFilm(m_edi);
 		} else {
 			return App.getInstance().getCineworldAccessor().getAllDates();
 		}

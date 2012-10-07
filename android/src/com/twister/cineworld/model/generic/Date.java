@@ -6,9 +6,11 @@ import java.util.regex.*;
 import com.twister.cineworld.log.*;
 
 public class Date extends GenericBase {
-	private static final Log	LOG	= LogFactory.getLog(Tag.JSON);
+	private static final long	serialVersionUID	= 8146782722017483401L;
 
-	private String				m_date;							// TODO int or calendar or anything
+	private static final Log	LOG					= LogFactory.getLog(Tag.JSON);
+
+	private String				m_date;											// TODO int or calendar or anything
 
 	public String getDate() {
 		return m_date;

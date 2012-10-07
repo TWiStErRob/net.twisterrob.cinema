@@ -85,7 +85,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			@Override
 			protected List<Film> work() throws ApplicationException {
 				Accessor accessor = App.getInstance().getCineworldAccessor();
-				List<Film> films = accessor.getFilms(cinema.getId(), TimeSpan.Tomorrow);
+				List<Film> films = accessor.getFilmsForCinema(cinema.getId(), TimeSpan.Tomorrow);
 				for (Film film : films) {
 					try {
 						film.setPoster(IOTools.getImage(film.getPosterUrl()));
@@ -104,6 +104,11 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			@Override
 			protected void exception(final ApplicationException e) {
 				// TODO is there anything to do here?
+			}
+
+			@Override
+			protected String whatAmIDoing() {
+				return "load posters";
 			}
 
 		});

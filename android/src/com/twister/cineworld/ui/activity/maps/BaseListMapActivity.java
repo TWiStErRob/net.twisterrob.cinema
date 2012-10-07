@@ -61,7 +61,6 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	 */
 	protected final void startLoad() {
 		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
-
 			@Override
 			protected List<UIItem> work() throws ApplicationException {
 				return loadList();
@@ -77,6 +76,10 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 				exceptionInternal(exception);
 			}
 
+			@Override
+			protected String whatAmIDoing() {
+				return "load list in background";
+			}
 		});
 	}
 

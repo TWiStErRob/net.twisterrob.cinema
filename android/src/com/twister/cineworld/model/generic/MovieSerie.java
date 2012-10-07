@@ -3,7 +3,9 @@ package com.twister.cineworld.model.generic;
 import java.util.*;
 
 public class MovieSerie extends MovieBase {
-	private final List<Movie>	m_films	= new LinkedList<Movie>();
+	private static final long	serialVersionUID	= -8408653139231537313L;
+
+	private final List<Movie>	m_films				= new LinkedList<Movie>();
 
 	public void add(final Movie film) {
 		m_films.add(film);

@@ -46,10 +46,22 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
-	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
+	public List<Cinema> getCinemasForFilm(final int filmEdi) throws ApplicationException {
 		CinemasRequest request = new CinemasRequest();
 		request.setFull(true);
 		request.setFilm(filmEdi);
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
+		return result;
+	}
+
+	public List<Cinema> getCinemasForDistributor(final int distributorId) throws ApplicationException {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setDistributor(distributorId);
 		List<CineworldCinema> list = getList(request);
 		List<Cinema> result = convert(list);
 		for (Cinema cinema : result) {
@@ -75,7 +87,7 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
-	public List<Film> getFilms(final int cinemaId) throws ApplicationException {
+	public List<Film> getFilmsForCinema(final int cinemaId) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -84,7 +96,7 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
-	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws ApplicationException {
+	public List<Film> getFilmsForCinema(final int cinemaId, final TimeSpan span) throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setCinema(cinemaId);
@@ -98,6 +110,15 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
+	public List<Film> getFilmsForDistributor(final int distributorId) throws ApplicationException {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setDistributor(distributorId);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
+	}
+
 	public List<Date> getAllDates() throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		List<CineworldDate> list = getList(request);
@@ -105,7 +126,7 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
-	public List<Date> getDates(final int filmEdi) throws ApplicationException {
+	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		request.setFilm(filmEdi);
 		List<CineworldDate> list = getList(request);

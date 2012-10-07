@@ -18,8 +18,14 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
 	 */
-	public static final String	EXTRA_CINEMA_ID	= "ciname_id";
+	public static final String	EXTRA_CINEMA_ID			= "cinema_id";
+	/**
+	 * Distributor ID<br>
+	 * <b>Type</b>: Integer
+	 */
+	public static final String	EXTRA_DISTRIBUTOR_ID	= "distributor_id";
 	private Integer				m_cinemaId;
+	private Integer				m_distributorId;
 
 	public FilmsActivity() {
 		super(R.layout.activity_films, R.menu.context_item_film);
@@ -29,6 +35,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		m_cinemaId = getExtra(FilmsActivity.EXTRA_CINEMA_ID);
+		m_distributorId = getExtra(FilmsActivity.EXTRA_DISTRIBUTOR_ID);
 		setTitle(getResources().getString(R.string.title_activity_films_loading, m_cinemaId));
 	}
 
@@ -84,7 +91,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 						R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
 						R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
-				intent.putExtra(CinemasActivity.EXTRA_EDI, film.getEdi());
+				intent.putExtra(CinemasActivity.EXTRA_FILM, film);
 				this.startActivity(intent);
 				return true;
 			}
@@ -115,7 +122,9 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	public List<MovieBase> loadList() throws ApplicationException {
 		List<com.twister.cineworld.model.generic.Film> list;
 		if (m_cinemaId != null) {
-			list = App.getInstance().getCineworldAccessor().getFilms(m_cinemaId);
+			list = App.getInstance().getCineworldAccessor().getFilmsForCinema(m_cinemaId);
+		} else if (m_distributorId != null) {
+			list = App.getInstance().getCineworldAccessor().getFilmsForDistributor(m_distributorId);
 		} else {
 			list = App.getInstance().getCineworldAccessor().getAllFilms();
 		}

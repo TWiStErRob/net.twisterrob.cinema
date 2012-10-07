@@ -22,8 +22,12 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getCinema(cinemaId);
 	}
 
-	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
-		return m_other.getCinemas(filmEdi);
+	public List<Cinema> getCinemasForFilm(final int filmEdi) throws ApplicationException {
+		return m_other.getCinemasForFilm(filmEdi);
+	}
+
+	public List<Cinema> getCinemasForDistributor(final int distributorId) throws ApplicationException {
+		return m_other.getCinemasForDistributor(distributorId);
 	}
 
 	public List<Film> getAllFilms() throws ApplicationException {
@@ -34,20 +38,24 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getFilm(filmEdi);
 	}
 
-	public List<Film> getFilms(final int cinemaId) throws ApplicationException {
-		return m_other.getFilms(cinemaId);
+	public List<Film> getFilmsForCinema(final int cinemaId) throws ApplicationException {
+		return m_other.getFilmsForCinema(cinemaId);
 	}
 
-	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws ApplicationException {
-		return m_other.getFilms(cinemaId, span);
+	public List<Film> getFilmsForCinema(final int cinemaId, final TimeSpan span) throws ApplicationException {
+		return m_other.getFilmsForCinema(cinemaId, span);
+	}
+
+	public List<Film> getFilmsForDistributor(final int distributorId) throws ApplicationException {
+		return m_other.getFilmsForDistributor(distributorId);
 	}
 
 	public List<Date> getAllDates() throws ApplicationException {
 		return m_other.getAllDates();
 	}
 
-	public List<Date> getDates(final int filmEdi) throws ApplicationException {
-		return m_other.getDates(filmEdi);
+	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
+		return m_other.getDatesForFilm(filmEdi);
 	}
 
 	public List<Category> getAllCategories() throws ApplicationException {

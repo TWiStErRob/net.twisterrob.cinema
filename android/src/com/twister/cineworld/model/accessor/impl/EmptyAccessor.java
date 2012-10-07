@@ -17,7 +17,11 @@ public class EmptyAccessor implements Accessor {
 		return null;
 	}
 
-	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
+	public List<Cinema> getCinemasForFilm(final int filmEdi) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Cinema> getCinemasForDistributor(final int distributorId) throws ApplicationException {
 		return Collections.emptyList();
 	}
 
@@ -29,11 +33,15 @@ public class EmptyAccessor implements Accessor {
 		return null;
 	}
 
-	public List<Film> getFilms(final int cinemaId) throws ApplicationException {
+	public List<Film> getFilmsForCinema(final int cinemaId) throws ApplicationException {
 		return Collections.emptyList();
 	}
 
-	public List<Film> getFilms(final int cinemaId, final TimeSpan span) throws ApplicationException {
+	public List<Film> getFilmsForCinema(final int cinemaId, final TimeSpan span) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Film> getFilmsForDistributor(final int distributorId) throws ApplicationException {
 		return Collections.emptyList();
 	}
 
@@ -41,7 +49,7 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
-	public List<Date> getDates(final int filmEdi) throws ApplicationException {
+	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
 		return Collections.emptyList();
 	}
 

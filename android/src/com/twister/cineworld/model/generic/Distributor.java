@@ -1,8 +1,10 @@
 package com.twister.cineworld.model.generic;
 
 public class Distributor extends GenericBase {
-	private int		m_id;
-	private String	m_name;
+	private static final long	serialVersionUID	= 5826642215863391660L;
+
+	private int					m_id;
+	private String				m_name;
 
 	public int getId() {
 		return m_id;

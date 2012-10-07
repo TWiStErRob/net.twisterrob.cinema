@@ -2,20 +2,18 @@ package com.twister.cineworld.ui.activity;
 
 import java.net.URLEncoder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.TextView;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.ui.*;
 
-public class CinemaActivity extends Activity {
+public class CinemaActivity extends BaseDetailActivity<Cinema> {
 	/**
 	 * Cinema ID<br>
 	 * <b>Type</b>: Integer
@@ -23,37 +21,25 @@ public class CinemaActivity extends Activity {
 	public static final String	EXTRA_ID	= "extra_id";
 	private Integer				m_id;
 
+	public CinemaActivity() {
+		super(R.layout.activity_cinema);
+	}
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cinema);
 		m_id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
 		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_id));
-
-		CineworldExecutor.execute(new CineworldGUITask<Cinema>(this) {
-			@Override
-			protected Cinema work() throws ApplicationException {
-				return App.getInstance().getCineworldAccessor().getCinema(m_id);
-			}
-
-			@Override
-			protected void present(final Cinema result) {
-				update(result);
-			}
-
-			@Override
-			protected void exception(final ApplicationException e) {
-				exceptionInternal(e);
-			}
-		});
+		startLoad();
 	}
 
-	private final void exceptionInternal(final ApplicationException e) {
-		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
-		toast.show();
+	@Override
+	protected Cinema load() throws ApplicationException {
+		return App.getInstance().getCineworldAccessor().getCinema(m_id);
 	}
 
-	private void update(final Cinema result) {
+	@Override
+	protected void update(final Cinema result) {
 		setTitle(getResources().getString(R.string.title_activity_cinema_loaded, result.getName()));
 		TextView name = (TextView) findViewById(R.id.cinema_name);
 		TextView address = (TextView) findViewById(R.id.cinema_address);

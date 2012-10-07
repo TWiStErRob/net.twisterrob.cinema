@@ -1,15 +1,13 @@
 package com.twister.cineworld.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.widget.*;
+import android.widget.TextView;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Film;
-import com.twister.cineworld.ui.*;
 
-public class FilmActivity extends Activity {
+public class FilmActivity extends BaseDetailActivity<Film> {
 	/**
 	 * Film EDI<br>
 	 * <b>Type</b>: Integer
@@ -17,37 +15,25 @@ public class FilmActivity extends Activity {
 	public static final String	EXTRA_EDI	= "extra_edi";
 	private Integer				m_edi;
 
+	public FilmActivity() {
+		super(R.layout.activity_film);
+	}
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_film);
 		m_edi = (Integer) getIntent().getExtras().get(FilmActivity.EXTRA_EDI);
 		setTitle(getResources().getString(R.string.title_activity_film_loading, m_edi));
-
-		CineworldExecutor.execute(new CineworldGUITask<Film>(this) {
-			@Override
-			protected Film work() throws ApplicationException {
-				return App.getInstance().getCineworldAccessor().getFilm(m_edi);
-			}
-
-			@Override
-			protected void present(final Film result) {
-				update(result);
-			}
-
-			@Override
-			protected void exception(final ApplicationException e) {
-				exceptionInternal(e);
-			}
-		});
+		startLoad();
 	}
 
-	private final void exceptionInternal(final ApplicationException e) {
-		Toast toast = Toast.makeText(this, Translator.translate(this, e), Toast.LENGTH_SHORT);
-		toast.show();
+	@Override
+	protected Film load() throws ApplicationException {
+		return App.getInstance().getCineworldAccessor().getFilm(m_edi);
 	}
 
-	private void update(final Film result) {
+	@Override
+	protected void update(final Film result) {
 		setTitle(getResources().getString(R.string.title_activity_film_loaded, result.getTitle()));
 		TextView title = (TextView) findViewById(R.id.film_title);
 		TextView attributes = (TextView) findViewById(R.id.film_attributes);

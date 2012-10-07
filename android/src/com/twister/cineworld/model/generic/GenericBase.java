@@ -1,7 +1,11 @@
 package com.twister.cineworld.model.generic;
 
-public class GenericBase {
-	private String	source;
+import java.io.Serializable;
+
+public class GenericBase implements Serializable {
+	private static final long	serialVersionUID	= -3314136060033364263L;
+
+	private String				source;
 
 	/**
 	 * Where is this Object originated from (i.e. who created it)?

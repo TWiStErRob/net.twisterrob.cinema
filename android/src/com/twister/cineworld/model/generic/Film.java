@@ -3,6 +3,8 @@ package com.twister.cineworld.model.generic;
 import android.graphics.drawable.Drawable;
 
 public class Film extends GenericBase {
+	private static final long	serialVersionUID	= -3984762522613916227L;
+
 	private int					m_edi;
 	private String				m_title;
 	private int					m_id;

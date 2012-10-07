@@ -1,10 +1,12 @@
 package com.twister.cineworld.model.generic;
 
 public class Movie extends MovieBase {
-	private Film	m_2D;
-	private Film	m_3D;
-	private Film	m_imax2D;
-	private Film	m_imax3D;
+	private static final long	serialVersionUID	= 7235771547568393313L;
+
+	private Film				m_2D;
+	private Film				m_3D;
+	private Film				m_imax2D;
+	private Film				m_imax3D;
 
 	public void set2D(final Film normal2D) {
 		m_2D = normal2D;

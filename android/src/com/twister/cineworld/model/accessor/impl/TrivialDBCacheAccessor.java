@@ -43,21 +43,21 @@ public class TrivialDBCacheAccessor extends DelegatingAccessor {
 		if (cinema == null) {
 			LOG.debug("No data in DB, requesting cinemas...");
 			cinema = m_otherAccessor.getCinema(cinemaId);
-			LOG.debug("No data in DB, inserting a new cinema: %d", cinema);
+			LOG.debug("No data in DB, inserting a new cinema: %2$s (%1$d)", cinema.getId(), cinema.getName());
 			m_dbh.addCinemas(Collections.singletonList(cinema));
-			LOG.debug("Returning from other source: %d", cinema);
+			LOG.debug("Returning from other source: %2$s (%1$d)", cinema.getId(), cinema.getName());
 		} else {
-			LOG.debug("Returning from DB: %d", cinema);
+			LOG.debug("Returning from DB: %2$s (%1$d)", cinema.getId(), cinema.getName());
 		}
 		return cinema;
 	}
 
 	@Override
-	public List<Cinema> getCinemas(final int filmEdi) throws ApplicationException {
-		List<Cinema> cinemas = m_dbAccessor.getCinemas(filmEdi);
+	public List<Cinema> getCinemasForFilm(final int filmEdi) throws ApplicationException {
+		List<Cinema> cinemas = m_dbAccessor.getCinemasForFilm(filmEdi);
 		if (cinemas.isEmpty()) {
 			LOG.debug("No data in DB, requesting cinemas...");
-			cinemas = m_otherAccessor.getCinemas(filmEdi);
+			cinemas = m_otherAccessor.getCinemasForFilm(filmEdi);
 			LOG.debug("No data in DB, inserting %d cinemas...", cinemas.size());
 			m_dbh.addCinemas(cinemas);
 			LOG.debug("Returning from other source: %d cinemas...", cinemas.size());
