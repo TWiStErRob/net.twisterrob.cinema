@@ -16,7 +16,7 @@ public class MainActivity extends BaseListActivity<MainMenuItem> {
 	private static final Log	LOG	= LogFactory.getLog(Tag.UI);
 
 	public MainActivity() {
-		super(R.layout.activity_main);
+		super(R.layout.activity_list);
 		App.getInstance().getDataBaseHelper().openDB(); // Init DB
 	}
 

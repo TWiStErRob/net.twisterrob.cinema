@@ -21,15 +21,18 @@ import com.twister.cineworld.ui.components.*;
  * @param <UIItem> The type of items handled on the UI
  */
 public abstract class BaseListActivity<UIItem> extends VerboseActivity implements OnItemClickListener, ProgressReporter {
-
-	private AbsListView		m_listView;
-	private int				m_contentViewId;
+	private static final int	VIEW_LOADING_ID	= 0;
+	private static final int	VIEW_LIST_ID	= 1;
+	private static final int	VIEW_EMPTY_ID	= 2;
+	private AbsListView			m_listView;
+	private ViewAnimator		m_views;
+	private int					m_contentViewId;
 	/**
 	 * Context menu for items in the list. <code>null</code>, if there is no context menu
 	 */
-	private Integer			m_contextMenuId;
-	private SlideMenu		m_slidemenu;
-	private final boolean	m_autoLoad;
+	private Integer				m_contextMenuId;
+	private SlideMenu			m_slidemenu;
+	private final boolean		m_autoLoad;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -76,6 +79,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		App.getInstance().setActiveStatusBar(this);
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
+		m_views = (ViewAnimator) findViewById(android.R.id.toggle);
 		registerForContextMenu(m_listView);
 		m_listView.setOnItemClickListener(this);
 
@@ -92,6 +96,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * Initiates data loading.
 	 */
 	protected final void startLoad() {
+		m_views.setDisplayedChild(VIEW_LOADING_ID);
 		// start data loading
 		CineworldExecutor.execute(new CineworldGUITask<List<UIItem>>(this) {
 			@Override
@@ -247,8 +252,13 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * @see #createAdapter(List)
 	 */
 	protected final void displayList(final List<UIItem> result) {
-		m_listView.setAdapter(createAdapter(result));
-		updateChild(result);
+		if (result.isEmpty()) {
+			BaseListActivity.this.m_views.setDisplayedChild(VIEW_EMPTY_ID);
+		} else {
+			BaseListActivity.this.m_views.setDisplayedChild(VIEW_LIST_ID);
+			m_listView.setAdapter(createAdapter(result));
+			updateChild(result);
+		}
 	}
 
 	protected void updateChild(final List<UIItem> result) {
