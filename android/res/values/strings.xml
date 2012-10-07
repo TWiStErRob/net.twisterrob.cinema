@@ -41,4 +41,8 @@
     <string name="home_button">Home button</string>
 
     <string name="forcedextract_menu_icon">menu icon</string>
+
+    <string name="global_loading">Loading...</string>
+
+    <string name="global_results_empty">No results</string>
 </resources>

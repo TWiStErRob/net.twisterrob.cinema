@@ -5,6 +5,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.animation.AnimationUtils;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -80,6 +81,8 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 
 		m_listView = (AbsListView) findViewById(android.R.id.list);
 		m_views = (ViewAnimator) findViewById(android.R.id.toggle);
+		((ImageView) findViewById(R.id.image_loading)) // TODO do we need to stop the animation?
+				.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_loading));
 		registerForContextMenu(m_listView);
 		m_listView.setOnItemClickListener(this);
 
