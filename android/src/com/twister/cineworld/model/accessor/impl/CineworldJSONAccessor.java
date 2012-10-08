@@ -70,6 +70,30 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
+	public List<Cinema> getCinemasForEvent(final String eventCode) throws ApplicationException {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setEvent(eventCode);
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
+		return result;
+	}
+
+	public List<Cinema> getCinemasForCategory(final String categoryCode) throws ApplicationException {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setCategory(categoryCode);
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
+		return result;
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
@@ -114,6 +138,24 @@ public class CineworldJSONAccessor implements Accessor {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);
 		request.setDistributor(distributorId);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
+	}
+
+	public List<Film> getFilmsForEvent(final String eventCode) throws ApplicationException {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setEvent(eventCode);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
+	}
+
+	public List<Film> getFilmsForCategory(final String categoryCode) throws ApplicationException {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setCategory(categoryCode);
 		List<CineworldFilm> list = getList(request);
 		List<Film> result = convert(list);
 		return result;

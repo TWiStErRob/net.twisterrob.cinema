@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE menu>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menuitem_event_details" android:title="Event details" />
+	<item android:id="@+id/menuitem_event_cinemas" android:title="Where can I watch this?" />
+	<item android:id="@+id/menuitem_event_films" android:title="What's in this?" />
 </menu>

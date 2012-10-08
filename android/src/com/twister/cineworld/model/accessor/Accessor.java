@@ -15,6 +15,10 @@ public interface Accessor {
 
 	List<Cinema> getCinemasForDistributor(int distributorId) throws ApplicationException;
 
+	List<Cinema> getCinemasForEvent(String eventCode) throws ApplicationException;
+
+	List<Cinema> getCinemasForCategory(String categoryCode) throws ApplicationException;
+
 	List<Film> getAllFilms() throws ApplicationException;
 
 	Film getFilm(int filmEdi) throws ApplicationException;
@@ -24,6 +28,10 @@ public interface Accessor {
 	List<Film> getFilmsForCinema(int cinemaId, TimeSpan span) throws ApplicationException;
 
 	List<Film> getFilmsForDistributor(int distributorId) throws ApplicationException;
+
+	List<Film> getFilmsForEvent(String eventCode) throws ApplicationException;
+
+	List<Film> getFilmsForCategory(String categoryCode) throws ApplicationException;
 
 	List<Date> getAllDates() throws ApplicationException;
 

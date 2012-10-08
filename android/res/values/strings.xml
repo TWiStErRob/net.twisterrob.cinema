@@ -6,7 +6,9 @@
     <string name="title_activity_main">Cineworld Browser</string>
     <string name="title_activity_cinemas_all">Cineworld Browser - All Cinemas</string>
     <string name="title_activity_cinemas_forFilm">Cinemas where %s showing</string>
-    <string name="title_activity_cinemas_forDistributor">Cinemas where films from %s showing</string>
+    <string name="title_activity_cinemas_forDistributor">Cinemas where films from distributor %s showing</string>
+    <string name="title_activity_cinemas_forEvent">Cinemas where films from event %s showing</string>
+    <string name="title_activity_cinemas_forCategory">Cinemas where films from category %s showing</string>
     <string name="title_activity_cinema_loading">Cinema (%d)</string>
     <string name="title_activity_cinema_loaded">Cinema: %s</string>
     <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas Map</string>

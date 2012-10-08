@@ -25,6 +25,14 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
+	public List<Cinema> getCinemasForEvent(final String eventCode) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Cinema> getCinemasForCategory(final String categoryCode) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		return Collections.emptyList();
 	}
@@ -42,6 +50,14 @@ public class EmptyAccessor implements Accessor {
 	}
 
 	public List<Film> getFilmsForDistributor(final int distributorId) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Film> getFilmsForEvent(final String eventCode) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Film> getFilmsForCategory(final String categoryCode) throws ApplicationException {
 		return Collections.emptyList();
 	}
 

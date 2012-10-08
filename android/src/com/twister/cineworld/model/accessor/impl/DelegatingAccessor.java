@@ -30,6 +30,14 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getCinemasForDistributor(distributorId);
 	}
 
+	public List<Cinema> getCinemasForEvent(final String eventCode) throws ApplicationException {
+		return m_other.getCinemasForEvent(eventCode);
+	}
+
+	public List<Cinema> getCinemasForCategory(final String categoryCode) throws ApplicationException {
+		return m_other.getCinemasForCategory(categoryCode);
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		return m_other.getAllFilms();
 	}
@@ -48,6 +56,14 @@ public class DelegatingAccessor implements Accessor {
 
 	public List<Film> getFilmsForDistributor(final int distributorId) throws ApplicationException {
 		return m_other.getFilmsForDistributor(distributorId);
+	}
+
+	public List<Film> getFilmsForEvent(final String eventCode) throws ApplicationException {
+		return m_other.getFilmsForEvent(eventCode);
+	}
+
+	public List<Film> getFilmsForCategory(final String categoryCode) throws ApplicationException {
+		return m_other.getFilmsForCategory(categoryCode);
 	}
 
 	public List<Date> getAllDates() throws ApplicationException {

@@ -24,6 +24,16 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	 * <b>Type</b>: {@link Distributor}
 	 */
 	public static final String	EXTRA_DISTRIBUTOR	= "distributor";
+	/**
+	 * Event<br>
+	 * <b>Type</b>: {@link Event}
+	 */
+	public static final String	EXTRA_EVENT			= "event";
+	/**
+	 * Category<br>
+	 * <b>Type</b>: {@link Category}
+	 */
+	public static final String	EXTRA_CATEGORY		= "category";
 	private UIRequest			m_request;
 
 	public CinemasActivity() {
@@ -78,11 +88,15 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 		private final Intent		m_intent;
 		private final Film			m_film;
 		private final Distributor	m_distributor;
+		private final Event			m_event;
+		private final Category		m_category;
 
 		public UIRequest(final Intent intent) {
 			m_intent = intent;
 			m_film = getExtra(CinemasActivity.EXTRA_FILM);
 			m_distributor = getExtra(CinemasActivity.EXTRA_DISTRIBUTOR);
+			m_event = getExtra(CinemasActivity.EXTRA_EVENT);
+			m_category = getExtra(CinemasActivity.EXTRA_CATEGORY);
 		}
 
 		public String getTitle(final Resources resources) {
@@ -90,6 +104,10 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 				return resources.getString(R.string.title_activity_cinemas_forFilm, m_film.getTitle());
 			} else if (m_distributor != null) {
 				return resources.getString(R.string.title_activity_cinemas_forDistributor, m_distributor.getName());
+			} else if (m_event != null) {
+				return resources.getString(R.string.title_activity_cinemas_forEvent, m_event.getName());
+			} else if (m_category != null) {
+				return resources.getString(R.string.title_activity_cinemas_forCategory, m_category.getName());
 			} else {
 				return resources.getString(R.string.title_activity_cinemas_all, m_film);
 			}
@@ -100,6 +118,10 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 				return App.getInstance().getCineworldAccessor().getCinemasForFilm(m_film.getEdi());
 			} else if (m_distributor != null) {
 				return App.getInstance().getCineworldAccessor().getCinemasForDistributor(m_distributor.getId());
+			} else if (m_event != null) {
+				return App.getInstance().getCineworldAccessor().getCinemasForEvent(m_event.getCode());
+			} else if (m_category != null) {
+				return App.getInstance().getCineworldAccessor().getCinemasForCategory(m_category.getCode());
 			} else {
 				return App.getInstance().getCineworldAccessor().getAllCinemas();
 			}

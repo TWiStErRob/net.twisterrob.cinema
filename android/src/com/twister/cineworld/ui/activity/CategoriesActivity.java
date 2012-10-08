@@ -2,9 +2,10 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.widget.ListAdapter;
+import android.view.*;
+import android.widget.*;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
@@ -37,4 +38,21 @@ public class CategoriesActivity extends BaseListActivity<Category> {
 		return App.getInstance().getCineworldAccessor().getAllCategories();
 	}
 
+	@Override
+	protected boolean onContextItemSelected(final MenuItem menu, final Category item) {
+		switch (menu.getItemId()) {
+			case R.id.menuitem_category_cinemas: {
+				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
+				intent.putExtra(CinemasActivity.EXTRA_CATEGORY, item);
+				this.startActivity(intent);
+				return true;
+			}
+			case R.id.menuitem_category_films: {
+				Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
+				return true;
+			}
+			default:
+				return super.onContextItemSelected(menu, item);
+		}
+	}
 }

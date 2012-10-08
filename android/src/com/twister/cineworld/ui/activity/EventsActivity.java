@@ -2,8 +2,9 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.view.*;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
@@ -32,12 +33,28 @@ public class EventsActivity extends BaseListActivity<Event> {
 		return App.getInstance().getCineworldAccessor().getAllEvents();
 	}
 
-	public List<Event> process(final List<Event> list) {
-		return list;
-	}
-
 	@Override
 	protected ListAdapter createAdapter(final List<Event> result) {
 		return new EventAdapter(EventsActivity.this, result);
+	}
+
+	@Override
+	protected boolean onContextItemSelected(final MenuItem menu, final Event item) {
+		switch (menu.getItemId()) {
+			case R.id.menuitem_event_cinemas: {
+				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
+				intent.putExtra(CinemasActivity.EXTRA_EVENT, item);
+				this.startActivity(intent);
+				return true;
+			}
+			case R.id.menuitem_event_films: {
+				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
+				intent.putExtra(FilmsActivity.EXTRA_EVENT_CODE, item.getCode());
+				this.startActivity(intent);
+				return true;
+			}
+			default:
+				return super.onContextItemSelected(menu, item);
+		}
 	}
 }
