@@ -3,6 +3,7 @@ package com.twister.cineworld.ui.activity;
 import java.util.List;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.*;
 import android.widget.ListAdapter;
 
@@ -14,6 +15,12 @@ import com.twister.cineworld.ui.adapter.DistributorAdapter;
 public class DistributorsActivity extends BaseListActivity<Distributor> {
 	public DistributorsActivity() {
 		super(R.layout.activity_list, R.menu.context_item_distributor);
+	}
+
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setTitle(getResources().getString(R.string.title_activity_distributors));
 	}
 
 	@Override

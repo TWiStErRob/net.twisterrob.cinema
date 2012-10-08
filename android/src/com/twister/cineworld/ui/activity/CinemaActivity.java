@@ -9,17 +9,17 @@ import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.twister.cineworld.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
 
 public class CinemaActivity extends BaseDetailActivity<Cinema> {
 	/**
-	 * Cinema ID<br>
-	 * <b>Type</b>: Integer
+	 * Cinema<br>
+	 * <b>Type</b>: {@link Cinema}
 	 */
-	public static final String	EXTRA_ID	= "extra_id";
-	private Integer				m_id;
+	public static final String	EXTRA_CINEMA	= "cinema";
+	private Cinema				m_cinema;
 
 	public CinemaActivity() {
 		super(R.layout.activity_cinema);
@@ -28,14 +28,15 @@ public class CinemaActivity extends BaseDetailActivity<Cinema> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		m_id = (Integer) getIntent().getExtras().get(CinemaActivity.EXTRA_ID);
-		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_id));
+		m_cinema = (Cinema) getIntent().getExtras().get(CinemaActivity.EXTRA_CINEMA);
+		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_cinema));
 		startLoad();
 	}
 
 	@Override
 	protected Cinema load() throws ApplicationException {
-		return App.getInstance().getCineworldAccessor().getCinema(m_id);
+		// placeholder for further loading (e.g. how many films active and stuff)
+		return m_cinema;
 	}
 
 	@Override

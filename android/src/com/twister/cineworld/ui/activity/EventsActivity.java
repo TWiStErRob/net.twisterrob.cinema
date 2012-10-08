@@ -2,6 +2,7 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
+import android.os.Bundle;
 import android.view.ContextMenu;
 import android.widget.ListAdapter;
 
@@ -13,6 +14,12 @@ import com.twister.cineworld.ui.adapter.EventAdapter;
 public class EventsActivity extends BaseListActivity<Event> {
 	public EventsActivity() {
 		super(R.layout.activity_list, R.menu.context_item_event);
+	}
+
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setTitle(getResources().getString(R.string.title_activity_events));
 	}
 
 	@Override

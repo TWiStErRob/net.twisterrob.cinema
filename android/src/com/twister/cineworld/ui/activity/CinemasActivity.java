@@ -48,7 +48,7 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_cinema_details: {
 				Intent intent = new Intent(getApplicationContext(), CinemaActivity.class);
-				intent.putExtra(CinemaActivity.EXTRA_ID, item.getId());
+				intent.putExtra(CinemaActivity.EXTRA_CINEMA, item);
 				this.startActivity(intent);
 				return true;
 			}
