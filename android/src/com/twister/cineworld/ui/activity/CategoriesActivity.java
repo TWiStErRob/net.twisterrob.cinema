@@ -5,7 +5,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.*;
+import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
@@ -48,7 +48,9 @@ public class CategoriesActivity extends BaseListActivity<Category> {
 				return true;
 			}
 			case R.id.menuitem_category_films: {
-				Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
+				intent.putExtra(FilmsActivity.EXTRA_CATEGORY_CODE, item.getCode());
+				this.startActivity(intent);
 				return true;
 			}
 			default:

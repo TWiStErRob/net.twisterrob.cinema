@@ -226,6 +226,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * @see #onContextItemSelected(MenuItem)
 	 */
 	protected boolean onContextItemSelected(final MenuItem menu, final UIItem item) {
+		Toast.makeText(this, String.format("Not implemented: %s", menu.getTitle()), Toast.LENGTH_SHORT).show();
 		return super.onContextItemSelected(menu);
 	}
 

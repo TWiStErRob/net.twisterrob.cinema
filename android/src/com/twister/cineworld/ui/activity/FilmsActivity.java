@@ -29,9 +29,15 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	 * <b>Type</b>: Integer
 	 */
 	public static final String	EXTRA_EVENT_CODE		= "event_code";
+	/**
+	 * Category Code<br>
+	 * <b>Type</b>: Integer
+	 */
+	public static final String	EXTRA_CATEGORY_CODE		= "category_code";
 	private Integer				m_cinemaId;
 	private Integer				m_distributorId;
 	private String				m_eventCode;
+	private String				m_categoryCode;
 
 	public FilmsActivity() {
 		super(R.layout.activity_list, R.menu.context_item_film, false);
@@ -43,6 +49,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 		m_cinemaId = getExtra(FilmsActivity.EXTRA_CINEMA_ID);
 		m_distributorId = getExtra(FilmsActivity.EXTRA_DISTRIBUTOR_ID);
 		m_eventCode = getExtra(FilmsActivity.EXTRA_EVENT_CODE);
+		m_categoryCode = getExtra(FilmsActivity.EXTRA_CATEGORY_CODE);
 		startLoad();
 		setTitle(getResources().getString(R.string.title_activity_films_loading, m_cinemaId));
 	}
@@ -135,6 +142,8 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 			list = App.getInstance().getCineworldAccessor().getFilmsForDistributor(m_distributorId);
 		} else if (m_eventCode != null) {
 			list = App.getInstance().getCineworldAccessor().getFilmsForEvent(m_eventCode);
+		} else if (m_categoryCode != null) {
+			list = App.getInstance().getCineworldAccessor().getFilmsForCategory(m_categoryCode);
 		} else {
 			list = App.getInstance().getCineworldAccessor().getAllFilms();
 		}
