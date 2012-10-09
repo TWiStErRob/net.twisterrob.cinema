@@ -2,8 +2,9 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.view.*;
 import android.widget.ListAdapter;
 
 import com.twister.cineworld.R;
@@ -40,5 +41,19 @@ public class DatesActivity extends BaseListActivity<Date> {
 	@Override
 	protected ListAdapter createAdapter(final List<Date> result) {
 		return new DateAdapter(DatesActivity.this, result);
+	}
+
+	@Override
+	protected boolean onContextItemSelected(final MenuItem menu, final Date item) {
+		switch (menu.getItemId()) {
+			case R.id.menuitem_date_film: {
+				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
+				intent.putExtra(UIRequestExtras.EXTRA_DATE, item);
+				this.startActivity(intent);
+				return true;
+			}
+			default:
+				return super.onContextItemSelected(menu, item);
+		}
 	}
 }

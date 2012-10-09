@@ -14,6 +14,7 @@ final class FilmsUIRequest extends BaseUIRequest<Film> {
 	private final Distributor	m_distributor;
 	private final Event			m_event;
 	private final Category		m_category;
+	private final Date			m_date;
 
 	FilmsUIRequest(final Intent intent) {
 		super(intent);
@@ -21,12 +22,21 @@ final class FilmsUIRequest extends BaseUIRequest<Film> {
 		m_distributor = getExtra(EXTRA_DISTRIBUTOR);
 		m_event = getExtra(EXTRA_EVENT);
 		m_category = getExtra(EXTRA_CATEGORY);
+		m_date = getExtra(EXTRA_DATE);
 	}
 
 	@Override
 	public String getTitle(final Resources resources) {
 		if (m_cinema != null) {
 			return resources.getString(R.string.title_activity_films_forCinema, m_cinema.getName());
+		} else if (m_distributor != null) {
+			return resources.getString(R.string.title_activity_films_forDistributor, m_distributor.getName());
+		} else if (m_event != null) {
+			return resources.getString(R.string.title_activity_films_forEvent, m_event.getName());
+		} else if (m_category != null) {
+			return resources.getString(R.string.title_activity_films_forCategory, m_category.getName());
+		} else if (m_date != null) {
+			return resources.getString(R.string.title_activity_films_forDate, m_date.getDate());
 		} else {
 			return resources.getString(R.string.title_activity_films_all);
 		}
@@ -43,6 +53,8 @@ final class FilmsUIRequest extends BaseUIRequest<Film> {
 			list = App.getInstance().getCineworldAccessor().getFilmsForEvent(m_event.getCode());
 		} else if (m_category != null) {
 			list = App.getInstance().getCineworldAccessor().getFilmsForCategory(m_category.getCode());
+		} else if (m_date != null) {
+			list = App.getInstance().getCineworldAccessor().getFilmsForDate(m_date.getCalendar());
 		} else {
 			list = App.getInstance().getCineworldAccessor().getAllFilms();
 		}

@@ -13,9 +13,14 @@
     <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas Map</string>
     <string name="title_activity_films_all">Cineworld Browser - All Films</string>
     <string name="title_activity_films_forCinema">Films showing at %s</string>
+    <string name="title_activity_films_forCategory">Films in category %s</string>
+    <string name="title_activity_films_forEvent">Films part of event %s</string>
+    <string name="title_activity_films_forDistributor">Films made by %s</string>
+    <string name="title_activity_films_forDate">Films showing at %s</string>
     <string name="title_activity_film">Film: %s</string>
     <string name="title_activity_dates_all"> Cineworld Browser - All Dates</string>
     <string name="title_activity_dates_forFilm"> Dates for film: %s</string>
+    <string name="title_activity_dates_forCinema"> Dates for cinema: %s</string>
     <string name="title_activity_performances_all">Cineworld Browser - All Performances</string>
     <string name="title_activity_categories_all">Cineworld Browser - All Categories</string>
     <string name="title_activity_events_all">Cineworld Browser - All Events</string>

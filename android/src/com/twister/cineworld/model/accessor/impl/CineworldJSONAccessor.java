@@ -161,6 +161,15 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
+	public List<Film> getFilmsForDate(final Calendar date) throws ApplicationException {
+		FilmsRequest request = new FilmsRequest();
+		request.setFull(true);
+		request.setDate(date);
+		List<CineworldFilm> list = getList(request);
+		List<Film> result = convert(list);
+		return result;
+	}
+
 	public List<Date> getAllDates() throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		List<CineworldDate> list = getList(request);
@@ -171,6 +180,14 @@ public class CineworldJSONAccessor implements Accessor {
 	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
 		DatesRequest request = new DatesRequest();
 		request.setFilm(filmEdi);
+		List<CineworldDate> list = getList(request);
+		List<Date> result = convert(list);
+		return result;
+	}
+
+	public List<Date> getDatesForCinema(final int cinemaId) throws ApplicationException {
+		DatesRequest request = new DatesRequest();
+		request.setCinema(cinemaId);
 		List<CineworldDate> list = getList(request);
 		List<Date> result = convert(list);
 		return result;

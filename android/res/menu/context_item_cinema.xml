@@ -3,4 +3,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menuitem_cinema_details" android:title="Cinema details" />
 	<item android:id="@+id/menuitem_cinema_films" android:title="What can I see here?" />
+	<item android:id="@+id/menuitem_cinema_dates" android:title="When can I go there?" />
 </menu>

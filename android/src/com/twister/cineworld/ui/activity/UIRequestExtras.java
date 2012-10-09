@@ -29,4 +29,9 @@ public interface UIRequestExtras {
 	 * <b>Type</b>: {@link Category}
 	 */
 	public static final String	EXTRA_CATEGORY		= EXTRA_PREFIX + "category";
+	/**
+	 * Date<br>
+	 * <b>Type</b>: {@link Date}
+	 */
+	public static final String	EXTRA_DATE			= EXTRA_PREFIX + "date";
 }

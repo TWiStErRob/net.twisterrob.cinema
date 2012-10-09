@@ -61,11 +61,19 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
+	public List<Film> getFilmsForDate(final Calendar calendar) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
 	public List<Date> getAllDates() throws ApplicationException {
 		return Collections.emptyList();
 	}
 
 	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
+	public List<Date> getDatesForCinema(final int cinemaId) throws ApplicationException {
 		return Collections.emptyList();
 	}
 

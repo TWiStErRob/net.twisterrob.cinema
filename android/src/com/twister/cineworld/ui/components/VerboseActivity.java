@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui.activity;
+package com.twister.cineworld.ui.components;
 
 import android.app.Activity;
 import android.os.Bundle;

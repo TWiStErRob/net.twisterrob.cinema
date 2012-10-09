@@ -1,10 +1,11 @@
 package com.twister.cineworld.model.accessor.impl;
 
-import java.util.List;
+import java.util.*;
 
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.TimeSpan;
 
 public class DelegatingAccessor implements Accessor {
@@ -66,12 +67,20 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getFilmsForCategory(categoryCode);
 	}
 
+	public List<Film> getFilmsForDate(final Calendar calendar) throws ApplicationException {
+		return m_other.getFilmsForDate(calendar);
+	}
+
 	public List<Date> getAllDates() throws ApplicationException {
 		return m_other.getAllDates();
 	}
 
 	public List<Date> getDatesForFilm(final int filmEdi) throws ApplicationException {
 		return m_other.getDatesForFilm(filmEdi);
+	}
+
+	public List<Date> getDatesForCinema(final int cinemaId) throws ApplicationException {
+		return m_other.getDatesForCinema(cinemaId);
 	}
 
 	public List<Category> getAllCategories() throws ApplicationException {

@@ -1,9 +1,10 @@
 package com.twister.cineworld.model.accessor;
 
-import java.util.List;
+import java.util.*;
 
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.TimeSpan;
 
 public interface Accessor {
@@ -33,9 +34,13 @@ public interface Accessor {
 
 	List<Film> getFilmsForCategory(String categoryCode) throws ApplicationException;
 
+	List<Film> getFilmsForDate(Calendar calendar) throws ApplicationException;
+
 	List<Date> getAllDates() throws ApplicationException;
 
 	List<Date> getDatesForFilm(int filmEdi) throws ApplicationException;
+
+	List<Date> getDatesForCinema(int cinemaId) throws ApplicationException;
 
 	List<Category> getAllCategories() throws ApplicationException;
 
