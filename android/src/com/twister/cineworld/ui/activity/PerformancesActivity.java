@@ -19,7 +19,7 @@ public class PerformancesActivity extends BaseListActivity<Performance> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle(getResources().getString(R.string.title_activity_performances));
+		setTitle(getResources().getString(R.string.title_activity_performances_all));
 	}
 
 	@Override

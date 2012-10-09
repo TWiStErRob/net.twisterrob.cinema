@@ -3,17 +3,12 @@ package com.twister.cineworld.ui.activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.twister.cineworld.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Film;
 
 public class FilmActivity extends BaseDetailActivity<Film> {
-	/**
-	 * Film EDI<br>
-	 * <b>Type</b>: Integer
-	 */
-	public static final String	EXTRA_EDI	= "extra_edi";
-	private Integer				m_edi;
+	private FilmUIRequest	m_request;
 
 	public FilmActivity() {
 		super(R.layout.activity_film);
@@ -22,19 +17,18 @@ public class FilmActivity extends BaseDetailActivity<Film> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		m_edi = (Integer) getIntent().getExtras().get(FilmActivity.EXTRA_EDI);
-		setTitle(getResources().getString(R.string.title_activity_film_loading, m_edi));
+		m_request = new FilmUIRequest(getIntent());
 		startLoad();
+		setTitle(m_request.getTitle(getResources()));
 	}
 
 	@Override
 	protected Film load() throws ApplicationException {
-		return App.getInstance().getCineworldAccessor().getFilm(m_edi);
+		return m_request.getFilm();
 	}
 
 	@Override
 	protected void update(final Film result) {
-		setTitle(getResources().getString(R.string.title_activity_film_loaded, result.getTitle()));
 		TextView title = (TextView) findViewById(R.id.film_title);
 		TextView attributes = (TextView) findViewById(R.id.film_attributes);
 		TextView classification = (TextView) findViewById(R.id.film_classification);

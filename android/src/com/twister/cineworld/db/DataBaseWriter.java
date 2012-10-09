@@ -5,7 +5,6 @@ import java.util.List;
 import android.database.DatabaseUtils;
 import android.database.sqlite.*;
 
-import com.google.android.maps.GeoPoint;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.*;
 
@@ -78,10 +77,10 @@ class DataBaseWriter {
 			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getAddress());
 			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getPostcode());
 			DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, cinema.getTelephone());
-			GeoPoint location = cinema.getLocation();
+			Location location = cinema.getLocation();
 			if (location != null) {
-				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLatitudeE6());
-				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLongitudeE6());
+				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLatitude());
+				DatabaseUtils.bindObjectToProgram(m_insertCinema, ++column, location.getLongitude());
 			} else {
 				m_insertCinema.bindNull(++column);
 				m_insertCinema.bindNull(++column);
@@ -184,6 +183,7 @@ class DataBaseWriter {
 			m_database.endTransaction();
 		}
 	}
+
 
 
 

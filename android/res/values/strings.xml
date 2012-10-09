@@ -9,19 +9,17 @@
     <string name="title_activity_cinemas_forDistributor">Cinemas where films from distributor %s showing</string>
     <string name="title_activity_cinemas_forEvent">Cinemas where films from event %s showing</string>
     <string name="title_activity_cinemas_forCategory">Cinemas where films from category %s showing</string>
-    <string name="title_activity_cinema_loading">Cinema (%d)</string>
-    <string name="title_activity_cinema_loaded">Cinema: %s</string>
+    <string name="title_activity_cinema">Cinema: %s</string>
     <string name="title_activity_cinemas_map">Cineworld Browser - Cinemas Map</string>
-    <string name="title_activity_films_loading">Films (cinema=%d)</string>
-    <string name="title_activity_films_loaded">Films for cinema: %d</string>
-    <string name="title_activity_film_loading">Film (%d)</string>
-    <string name="title_activity_film_loaded">Film: %s</string>
-    <string name="title_activity_dates_loading">Dates (film=%d)</string>
-    <string name="title_activity_dates_loaded"> Dates for film: %d</string>
-    <string name="title_activity_performances">Cineworld Browser - Performances</string>
-    <string name="title_activity_categories">Cineworld Browser - Categories</string>
-    <string name="title_activity_events">Cineworld Browser - Events</string>
-    <string name="title_activity_distributors">Cineworld Browser - Distributors</string>
+    <string name="title_activity_films_all">Cineworld Browser - All Films</string>
+    <string name="title_activity_films_forCinema">Films showing at %s</string>
+    <string name="title_activity_film">Film: %s</string>
+    <string name="title_activity_dates_all"> Cineworld Browser - All Dates</string>
+    <string name="title_activity_dates_forFilm"> Dates for film: %s</string>
+    <string name="title_activity_performances_all">Cineworld Browser - All Performances</string>
+    <string name="title_activity_categories_all">Cineworld Browser - All Categories</string>
+    <string name="title_activity_events_all">Cineworld Browser - All Events</string>
+    <string name="title_activity_distributors_all">Cineworld Browser - All Distributors</string>
 
     <string name="test">Test</string>
 
@@ -44,7 +42,7 @@
 
     <string name="forcedextract_menu_icon">menu icon</string>
 
-    <string name="global_loading">Loading...</string>
+    <string name="global_loading">Loading…</string>
 
     <string name="global_results_empty">No results</string>
 </resources>

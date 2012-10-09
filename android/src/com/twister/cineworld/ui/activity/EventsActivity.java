@@ -20,7 +20,7 @@ public class EventsActivity extends BaseListActivity<Event> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle(getResources().getString(R.string.title_activity_events));
+		setTitle(getResources().getString(R.string.title_activity_events_all));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class EventsActivity extends BaseListActivity<Event> {
 			}
 			case R.id.menuitem_event_films: {
 				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
-				intent.putExtra(FilmsActivity.EXTRA_EVENT_CODE, item.getCode());
+				intent.putExtra(UIRequestExtras.EXTRA_EVENT, item);
 				this.startActivity(intent);
 				return true;
 			}

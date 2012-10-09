@@ -57,22 +57,18 @@
         </activity>
         <activity
             android:name=".ui.activity.PerformancesActivity"
-            android:label="@string/title_activity_performances"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.activity.CategoriesActivity"
-            android:label="@string/title_activity_categories"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.activity.EventsActivity"
-            android:label="@string/title_activity_events"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.activity.DistributorsActivity"
-            android:label="@string/title_activity_distributors"
             android:screenOrientation="portrait" >
         </activity>
     </application>

@@ -15,7 +15,7 @@ import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
 import com.twister.cineworld.*;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.ui.activity.CinemaActivity;
+import com.twister.cineworld.ui.activity.*;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
@@ -99,7 +99,7 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		switch (menu.getItemId()) {
 			case R.id.menuitem_cinema_details:
 				Intent intent = new Intent(getApplicationContext(), CinemaActivity.class);
-				intent.putExtra(CinemaActivity.EXTRA_CINEMA, item);
+				intent.putExtra(UIRequestExtras.EXTRA_CINEMA, item);
 				this.startActivity(intent);
 				return true;
 			default:
@@ -134,7 +134,7 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		if (newFocus != null) {
 			int i = 0;
 			for (Cinema cinema : adapter.getItems()) {
-				if (cinema.getLocation() == newFocus.getPoint()) {
+				if (cinema.getLocation().near(newFocus.getPoint())) {
 					break;
 				}
 				i++;

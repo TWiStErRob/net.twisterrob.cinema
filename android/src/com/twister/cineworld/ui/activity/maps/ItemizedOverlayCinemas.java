@@ -49,7 +49,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		OverlayItem item = m_itemCache.get(i);
 		if (item == null) {
 			Cinema cinema = m_items.get(i);
-			item = new OverlayItem(cinema.getLocation(), cinema.getName(),
+			item = new OverlayItem(cinema.getLocation().toGeoPoint(), cinema.getName(),
 					String.format("%s, %s", cinema.getAddress(), cinema.getPostcode())) {
 				@Override
 				public Drawable getMarker(final int stateBitset) {
@@ -112,7 +112,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 			}
 
 		});
-		m_map.getController().animateTo(cinema.getLocation());
+		m_map.getController().animateTo(cinema.getLocation().toGeoPoint());
 		m_map.getOverlays().add(m_filmsOverlay);
 		// m_map.removeView(m_popup);
 		// View popUp = getLayoutInflater().inflate(R.layout.map_popup, map, false);

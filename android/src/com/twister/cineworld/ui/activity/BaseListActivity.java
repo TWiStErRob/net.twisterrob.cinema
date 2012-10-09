@@ -33,7 +33,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 */
 	private Integer				m_contextMenuId;
 	private SlideMenu			m_slidemenu;
-	private final boolean		m_autoLoad;
+	private boolean				m_autoLoad		= true;
 
 	/**
 	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -43,28 +43,14 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * @param contentViewId Must have an {@link AbsListView} with an id of <code>android:id="@android:id/list"</code>.
 	 * @param contextMenuId Context menu for items in the list.
 	 */
-	public BaseListActivity(final int contentViewId, final int contextMenuId, final boolean autoLoad) {
-		m_contentViewId = contentViewId;
-		m_contextMenuId = contextMenuId;
-		m_autoLoad = autoLoad;
-	}
-
 	public BaseListActivity(final int contentViewId, final int contextMenuId) {
 		m_contentViewId = contentViewId;
 		m_contextMenuId = contextMenuId;
-		m_autoLoad = true;
-	}
-
-	public BaseListActivity(final int contentViewId, final boolean autoLoad) {
-		m_contentViewId = contentViewId;
-		m_contextMenuId = null;
-		m_autoLoad = autoLoad;
 	}
 
 	public BaseListActivity(final int contentViewId) {
 		m_contentViewId = contentViewId;
 		m_contextMenuId = null;
-		m_autoLoad = true;
 	}
 
 	/**
@@ -93,6 +79,14 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		if (m_autoLoad) {
 			startLoad();
 		}
+	}
+
+	public void setAutoLoad(final boolean autoLoad) {
+		m_autoLoad = autoLoad;
+	}
+
+	public boolean isAutoLoad() {
+		return m_autoLoad;
 	}
 
 	/**

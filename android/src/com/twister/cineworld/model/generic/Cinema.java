@@ -1,6 +1,5 @@
 package com.twister.cineworld.model.generic;
 
-import com.google.android.maps.GeoPoint;
 
 public class Cinema extends GenericBase {
 	private static final long	serialVersionUID	= 6544996686705019485L;
@@ -12,7 +11,7 @@ public class Cinema extends GenericBase {
 	private String				m_address;
 	private String				m_postcode;
 	private String				m_telephone;
-	private GeoPoint			m_location;
+	private Location			m_location;
 
 	public int getCompanyId() {
 		return m_companyId;
@@ -78,11 +77,11 @@ public class Cinema extends GenericBase {
 		m_telephone = telephone;
 	}
 
-	public GeoPoint getLocation() {
+	public Location getLocation() {
 		return m_location;
 	}
 
-	public void setLocation(final GeoPoint location) {
+	public void setLocation(final Location location) {
 		m_location = location;
 	}
 }

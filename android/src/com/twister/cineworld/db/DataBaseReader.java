@@ -5,7 +5,6 @@ import java.util.*;
 import android.database.*;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.android.maps.GeoPoint;
 import com.twister.cineworld.model.generic.*;
 
 class DataBaseReader {
@@ -46,8 +45,8 @@ class DataBaseReader {
 		String territory = cursor.getString(cursor.getColumnIndex("territory"));
 		String address = cursor.getString(cursor.getColumnIndex("address"));
 		String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
-		int latitude = cursor.getInt(cursor.getColumnIndex("latitude"));
-		int longitude = cursor.getInt(cursor.getColumnIndex("longitude"));
+		double latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
+		double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
 		Cinema cinema = new Cinema();
 		cinema.setSource(GENERIC_SOURCE);
@@ -59,7 +58,7 @@ class DataBaseReader {
 		cinema.setAddress(address);
 		cinema.setPostcode(postcode);
 		cinema.setTelephone(telephone);
-		cinema.setLocation(new GeoPoint(latitude, longitude));
+		cinema.setLocation(new Location(latitude, longitude));
 		return cinema;
 	}
 
@@ -175,10 +174,10 @@ class DataBaseReader {
 		double latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
 		double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
-		GeoPoint geoLoc = new GeoPoint((int) (latitude * 1E6), (int) (longitude * 1E6));
+		Location geoLoc = new Location(latitude, longitude);
 
-		PostCodeLocation loc = new PostCodeLocation(postcode, geoLoc);
-		return loc;
+		PostCodeLocation postLoc = new PostCodeLocation(postcode, geoLoc);
+		return postLoc;
 	}
 
 	// #endregion

@@ -16,7 +16,8 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	private CinemasUIRequest	m_request;
 
 	public CinemasActivity() {
-		super(R.layout.activity_list, R.menu.context_item_cinema, false);
+		super(R.layout.activity_list, R.menu.context_item_cinema);
+		super.setAutoLoad(false);
 	}
 
 	@Override
@@ -37,13 +38,13 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_cinema_details: {
 				Intent intent = new Intent(getApplicationContext(), CinemaActivity.class);
-				intent.putExtra(CinemaActivity.EXTRA_CINEMA, item);
+				intent.putExtra(UIRequestExtras.EXTRA_CINEMA, item);
 				this.startActivity(intent);
 				return true;
 			}
 			case R.id.menuitem_cinema_films: {
 				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
-				intent.putExtra(FilmsActivity.EXTRA_CINEMA_ID, item.getId());
+				intent.putExtra(UIRequestExtras.EXTRA_CINEMA, item);
 				this.startActivity(intent);
 				return true;
 			}
@@ -59,7 +60,6 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 
 	@Override
 	protected ListAdapter createAdapter(final List<Cinema> result) {
-		setTitle(m_request.getTitle(getResources()));
 		return new CinemaAdapter(this, result);
 	}
 }

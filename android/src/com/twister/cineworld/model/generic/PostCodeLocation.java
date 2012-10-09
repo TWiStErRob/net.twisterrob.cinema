@@ -2,20 +2,18 @@ package com.twister.cineworld.model.generic;
 
 import java.io.Serializable;
 
-import com.google.android.maps.GeoPoint;
-
 public class PostCodeLocation implements Serializable {
 	private static final long	serialVersionUID	= 3949366660122437329L;
 
 	private String				m_postCode;
-	private GeoPoint			m_location;
+	private Location			m_location;
 
-	public PostCodeLocation(final String postCode, final GeoPoint location) {
+	public PostCodeLocation(final String postCode, final Location location) {
 		m_postCode = postCode;
 		m_location = location;
 	}
 
-	public GeoPoint getLocation() {
+	public Location getLocation() {
 		return m_location;
 	}
 

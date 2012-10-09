@@ -49,7 +49,7 @@ public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> 
 
 	@Override
 	public void draw(final Canvas canvas, final MapView mapView, final boolean shadow) {
-		GeoPoint center = m_cinema.getLocation();
+		GeoPoint center = m_cinema.getLocation().toGeoPoint();
 		Projection projection = m_map.getProjection();
 		Point centerPoint = projection.toPixels(center, null);
 		Point filmPoint = new Point();
@@ -75,7 +75,7 @@ public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> 
 	}
 
 	private GeoPoint getLocation(final int i) {
-		GeoPoint center = m_cinema.getLocation();
+		GeoPoint center = m_cinema.getLocation().toGeoPoint();
 		int count = size();
 		int pos = i;
 		double degree = 360 / (count);

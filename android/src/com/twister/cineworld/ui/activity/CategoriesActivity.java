@@ -20,7 +20,7 @@ public class CategoriesActivity extends BaseListActivity<Category> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle(getResources().getString(R.string.title_activity_categories));
+		setTitle(getResources().getString(R.string.title_activity_categories_all));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CategoriesActivity extends BaseListActivity<Category> {
 			}
 			case R.id.menuitem_category_films: {
 				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
-				intent.putExtra(FilmsActivity.EXTRA_CATEGORY_CODE, item.getCode());
+				intent.putExtra(UIRequestExtras.EXTRA_CATEGORY, item);
 				this.startActivity(intent);
 				return true;
 			}

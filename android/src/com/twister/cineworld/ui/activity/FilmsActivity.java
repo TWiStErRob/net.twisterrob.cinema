@@ -7,51 +7,26 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.ListAdapter;
 
-import com.twister.cineworld.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.MovieMatcher;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.ui.adapter.FilmAdapter;
 
 public class FilmsActivity extends BaseListActivity<MovieBase> {
-	/**
-	 * Cinema ID<br>
-	 * <b>Type</b>: Integer
-	 */
-	public static final String	EXTRA_CINEMA_ID			= "cinema_id";
-	/**
-	 * Distributor ID<br>
-	 * <b>Type</b>: Integer
-	 */
-	public static final String	EXTRA_DISTRIBUTOR_ID	= "distributor_id";
-	/**
-	 * Event Code<br>
-	 * <b>Type</b>: Integer
-	 */
-	public static final String	EXTRA_EVENT_CODE		= "event_code";
-	/**
-	 * Category Code<br>
-	 * <b>Type</b>: Integer
-	 */
-	public static final String	EXTRA_CATEGORY_CODE		= "category_code";
-	private Integer				m_cinemaId;
-	private Integer				m_distributorId;
-	private String				m_eventCode;
-	private String				m_categoryCode;
+	private FilmsUIRequest	m_request;
 
 	public FilmsActivity() {
-		super(R.layout.activity_list, R.menu.context_item_film, false);
+		super(R.layout.activity_list, R.menu.context_item_film);
+		super.setAutoLoad(false);
 	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		m_cinemaId = getExtra(FilmsActivity.EXTRA_CINEMA_ID);
-		m_distributorId = getExtra(FilmsActivity.EXTRA_DISTRIBUTOR_ID);
-		m_eventCode = getExtra(FilmsActivity.EXTRA_EVENT_CODE);
-		m_categoryCode = getExtra(FilmsActivity.EXTRA_CATEGORY_CODE);
+		m_request = new FilmsUIRequest(getIntent());
 		startLoad();
-		setTitle(getResources().getString(R.string.title_activity_films_loading, m_cinemaId));
+		setTitle(m_request.getTitle(getResources()));
 	}
 
 	@Override
@@ -82,7 +57,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 						R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
 						R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
-				intent.putExtra(FilmActivity.EXTRA_EDI, film.getEdi());
+				intent.putExtra(UIRequestExtras.EXTRA_FILM, film);
 				this.startActivity(intent);
 				return true;
 			}
@@ -94,7 +69,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 						R.id.menuitem_film_when_2d, R.id.menuitem_film_when_2d_imax,
 						R.id.menuitem_film_when_3d, R.id.menuitem_film_when_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), DatesActivity.class);
-				intent.putExtra(DatesActivity.EXTRA_EDI, film.getEdi());
+				intent.putExtra(UIRequestExtras.EXTRA_FILM, film);
 				this.startActivity(intent);
 				return true;
 			}
@@ -135,20 +110,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 
 	@Override
 	public List<MovieBase> loadList() throws ApplicationException {
-		List<com.twister.cineworld.model.generic.Film> list;
-		if (m_cinemaId != null) {
-			list = App.getInstance().getCineworldAccessor().getFilmsForCinema(m_cinemaId);
-		} else if (m_distributorId != null) {
-			list = App.getInstance().getCineworldAccessor().getFilmsForDistributor(m_distributorId);
-		} else if (m_eventCode != null) {
-			list = App.getInstance().getCineworldAccessor().getFilmsForEvent(m_eventCode);
-		} else if (m_categoryCode != null) {
-			list = App.getInstance().getCineworldAccessor().getFilmsForCategory(m_categoryCode);
-		} else {
-			list = App.getInstance().getCineworldAccessor().getAllFilms();
-		}
-
-		// transform
+		List<Film> list = m_request.getList();
 		MovieMatcher matcher = new MovieMatcher();
 		List<Movie> films = matcher.match(list);
 		List<MovieBase> seriesAndFilms = matcher.matchSeries(films);
@@ -157,7 +119,6 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 
 	@Override
 	protected ListAdapter createAdapter(final List<MovieBase> result) {
-		setTitle(getResources().getString(R.string.title_activity_films_loaded, m_cinemaId)); // TODO move
 		return new FilmAdapter(FilmsActivity.this, result);
 	}
 }

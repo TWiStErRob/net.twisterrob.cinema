@@ -14,12 +14,7 @@ import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
 
 public class CinemaActivity extends BaseDetailActivity<Cinema> {
-	/**
-	 * Cinema<br>
-	 * <b>Type</b>: {@link Cinema}
-	 */
-	public static final String	EXTRA_CINEMA	= "cinema";
-	private Cinema				m_cinema;
+	private CinemaUIRequest	m_request;
 
 	public CinemaActivity() {
 		super(R.layout.activity_cinema);
@@ -28,20 +23,19 @@ public class CinemaActivity extends BaseDetailActivity<Cinema> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		m_cinema = (Cinema) getIntent().getExtras().get(CinemaActivity.EXTRA_CINEMA);
-		setTitle(getResources().getString(R.string.title_activity_cinema_loading, m_cinema));
+		m_request = new CinemaUIRequest(getIntent());
 		startLoad();
+		setTitle(m_request.getTitle(getResources()));
 	}
 
 	@Override
 	protected Cinema load() throws ApplicationException {
 		// placeholder for further loading (e.g. how many films active and stuff)
-		return m_cinema;
+		return m_request.getCinema();
 	}
 
 	@Override
 	protected void update(final Cinema result) {
-		setTitle(getResources().getString(R.string.title_activity_cinema_loaded, result.getName()));
 		TextView name = (TextView) findViewById(R.id.cinema_name);
 		TextView address = (TextView) findViewById(R.id.cinema_address);
 		TextView url = (TextView) findViewById(R.id.cinema_url);

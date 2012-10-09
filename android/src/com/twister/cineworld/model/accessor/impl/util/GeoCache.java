@@ -8,11 +8,12 @@ import android.location.*;
 import com.google.android.maps.GeoPoint;
 import com.twister.cineworld.App;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.model.generic.PostCodeLocation;
+import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.model.generic.Location;
 
 public class GeoCache {
 	private static final Log					LOG			= LogFactory.getLog(Tag.GEO);
-	private static final Map<String, GeoPoint>	s_locations	= new HashMap<String, GeoPoint>(79, 1f);
+	private static final Map<String, Location>	s_locations	= new HashMap<String, Location>(79, 1f);
 	static {
 		List<PostCodeLocation> locations = App.getInstance().getDataBaseHelper().getGeoCacheLocations();
 		for (PostCodeLocation location : locations) {
@@ -35,27 +36,26 @@ public class GeoCache {
 	 * @param postCode the postcode
 	 * @return the cached {@link GeoPoint}
 	 */
-	public static GeoPoint getGeoPoint(String postCode) {
+	public static Location getGeoPoint(String postCode) {
 		if (postCode == null) {
 			return null;
 		}
 		postCode = GeoCache.fixPostCode(postCode);
-		GeoPoint loc = s_locations.get(postCode);
+		Location loc = s_locations.get(postCode);
 		if (loc == null) {
 			loc = GeoCache.geoCode(postCode);
 		}
 		return loc;
 	}
 
-	private static GeoPoint geoCode(final String postCode) {
+	private static Location geoCode(final String postCode) {
 		Geocoder coder = new Geocoder(App.getInstance());
-		GeoPoint loc = null;
+		Location loc = null;
 		try {
 			List<Address> locs = coder.getFromLocationName(postCode, 1);
 			if (!locs.isEmpty()) {
 				Address address = locs.get(0);
-				loc = new GeoPoint((int) (address.getLatitude() * 1e6),
-						(int) (locs.get(0).getLongitude() * 1e6));
+				loc = new Location(address.getLatitude(), address.getLongitude());
 			}
 		} catch (IOException ex) {
 			if ("Service not Available".equals(ex.getMessage())) {

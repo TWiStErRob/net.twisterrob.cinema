@@ -20,7 +20,7 @@ public class DistributorsActivity extends BaseListActivity<Distributor> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle(getResources().getString(R.string.title_activity_distributors));
+		setTitle(getResources().getString(R.string.title_activity_distributors_all));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class DistributorsActivity extends BaseListActivity<Distributor> {
 			}
 			case R.id.menuitem_distributor_films: {
 				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
-				intent.putExtra(FilmsActivity.EXTRA_DISTRIBUTOR_ID, item.getId());
+				intent.putExtra(UIRequestExtras.EXTRA_DISTRIBUTOR, item);
 				this.startActivity(intent);
 				return true;
 			}
