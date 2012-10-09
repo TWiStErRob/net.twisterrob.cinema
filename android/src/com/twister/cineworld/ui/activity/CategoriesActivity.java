@@ -43,7 +43,7 @@ public class CategoriesActivity extends BaseListActivity<Category> {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_category_cinemas: {
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
-				intent.putExtra(CinemasActivity.EXTRA_CATEGORY, item);
+				intent.putExtra(UIRequestExtras.EXTRA_CATEGORY, item);
 				this.startActivity(intent);
 				return true;
 			}

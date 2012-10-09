@@ -43,7 +43,7 @@ public class DistributorsActivity extends BaseListActivity<Distributor> {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_distributor_cinemas: {
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
-				intent.putExtra(CinemasActivity.EXTRA_DISTRIBUTOR, item);
+				intent.putExtra(UIRequestExtras.EXTRA_DISTRIBUTOR, item);
 				this.startActivity(intent);
 				return true;
 			}

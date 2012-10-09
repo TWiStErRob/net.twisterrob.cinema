@@ -3,38 +3,17 @@ package com.twister.cineworld.ui.activity;
 import java.util.List;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ListAdapter;
 
-import com.twister.cineworld.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
-import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.model.generic.Cinema;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasActivity extends BaseListActivity<Cinema> {
-	/**
-	 * Film<br>
-	 * <b>Type</b>: {@link Film}
-	 */
-	public static final String	EXTRA_FILM			= "film";
-	/**
-	 * Distributor<br>
-	 * <b>Type</b>: {@link Distributor}
-	 */
-	public static final String	EXTRA_DISTRIBUTOR	= "distributor";
-	/**
-	 * Event<br>
-	 * <b>Type</b>: {@link Event}
-	 */
-	public static final String	EXTRA_EVENT			= "event";
-	/**
-	 * Category<br>
-	 * <b>Type</b>: {@link Category}
-	 */
-	public static final String	EXTRA_CATEGORY		= "category";
-	private UIRequest			m_request;
+	private CinemasUIRequest	m_request;
 
 	public CinemasActivity() {
 		super(R.layout.activity_list, R.menu.context_item_cinema, false);
@@ -43,7 +22,7 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		m_request = new UIRequest(this.getIntent());
+		m_request = new CinemasUIRequest(this.getIntent());
 		startLoad();
 		setTitle(m_request.getTitle(getResources()));
 	}
@@ -82,59 +61,5 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	protected ListAdapter createAdapter(final List<Cinema> result) {
 		setTitle(m_request.getTitle(getResources()));
 		return new CinemaAdapter(this, result);
-	}
-
-	private static final class UIRequest {
-		private final Intent		m_intent;
-		private final Film			m_film;
-		private final Distributor	m_distributor;
-		private final Event			m_event;
-		private final Category		m_category;
-
-		public UIRequest(final Intent intent) {
-			m_intent = intent;
-			m_film = getExtra(CinemasActivity.EXTRA_FILM);
-			m_distributor = getExtra(CinemasActivity.EXTRA_DISTRIBUTOR);
-			m_event = getExtra(CinemasActivity.EXTRA_EVENT);
-			m_category = getExtra(CinemasActivity.EXTRA_CATEGORY);
-		}
-
-		public String getTitle(final Resources resources) {
-			if (m_film != null) {
-				return resources.getString(R.string.title_activity_cinemas_forFilm, m_film.getTitle());
-			} else if (m_distributor != null) {
-				return resources.getString(R.string.title_activity_cinemas_forDistributor, m_distributor.getName());
-			} else if (m_event != null) {
-				return resources.getString(R.string.title_activity_cinemas_forEvent, m_event.getName());
-			} else if (m_category != null) {
-				return resources.getString(R.string.title_activity_cinemas_forCategory, m_category.getName());
-			} else {
-				return resources.getString(R.string.title_activity_cinemas_all, m_film);
-			}
-		}
-
-		public List<Cinema> getList() throws ApplicationException {
-			if (m_film != null) {
-				return App.getInstance().getCineworldAccessor().getCinemasForFilm(m_film.getEdi());
-			} else if (m_distributor != null) {
-				return App.getInstance().getCineworldAccessor().getCinemasForDistributor(m_distributor.getId());
-			} else if (m_event != null) {
-				return App.getInstance().getCineworldAccessor().getCinemasForEvent(m_event.getCode());
-			} else if (m_category != null) {
-				return App.getInstance().getCineworldAccessor().getCinemasForCategory(m_category.getCode());
-			} else {
-				return App.getInstance().getCineworldAccessor().getAllCinemas();
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-		public <T> T getExtra(final String extraKey) {
-			T result = null;
-			if (m_intent.hasExtra(extraKey)) {
-				Object object = m_intent.getExtras().get(extraKey);
-				result = (T) object;
-			}
-			return result;
-		}
 	}
 }

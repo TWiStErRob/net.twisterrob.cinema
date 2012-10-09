@@ -43,7 +43,7 @@ public class EventsActivity extends BaseListActivity<Event> {
 		switch (menu.getItemId()) {
 			case R.id.menuitem_event_cinemas: {
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
-				intent.putExtra(CinemasActivity.EXTRA_EVENT, item);
+				intent.putExtra(UIRequestExtras.EXTRA_EVENT, item);
 				this.startActivity(intent);
 				return true;
 			}

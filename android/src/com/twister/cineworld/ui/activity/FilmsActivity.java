@@ -106,7 +106,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 						R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
 						R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
-				intent.putExtra(CinemasActivity.EXTRA_FILM, film);
+				intent.putExtra(UIRequestExtras.EXTRA_FILM, film);
 				this.startActivity(intent);
 				return true;
 			}
