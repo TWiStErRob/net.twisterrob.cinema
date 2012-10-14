@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import org.apache.http.*;
 
 import android.graphics.*;
-import android.graphics.drawable.*;
 
 import com.twister.cineworld.log.*;
 
@@ -80,16 +79,21 @@ public class IOTools {
 		return encoding;
 	}
 
-	public static Drawable getImage(final String url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+	public static Bitmap getImage(final URL url) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		try {
 			connection.connect();
 			InputStream input = connection.getInputStream();
 
 			Bitmap bitmap = BitmapFactory.decodeStream(input);
-			return new BitmapDrawable(bitmap);
+			return bitmap;
 		} finally {
 			connection.disconnect();
 		}
+	}
+
+	public static Bitmap getImage(final String urlString) throws IOException {
+		URL url = new URL(urlString);
+		return IOTools.getImage(url);
 	}
 }

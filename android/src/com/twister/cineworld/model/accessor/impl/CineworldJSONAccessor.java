@@ -1,19 +1,24 @@
 package com.twister.cineworld.model.accessor.impl;
 
+import java.net.URL;
 import java.util.*;
 
 import com.google.gson.*;
+import com.twister.cineworld.App;
 import com.twister.cineworld.exception.*;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.Accessor;
-import com.twister.cineworld.model.accessor.impl.util.GeoCache;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.generic.Date;
 import com.twister.cineworld.model.json.*;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.request.*;
 import com.twister.cineworld.model.json.response.BaseListResponse;
+import com.twister.cineworld.tools.StringTools;
 
 public class CineworldJSONAccessor implements Accessor {
+	private static final Log	LOG						= LogFactory.getLog(Tag.ACCESS);
+
 	private static final String	GENERIC_SOURCE			= "CineworldJSON";
 	private static final int	CINEWORLD_COMPANY_ID	= 1;
 	private final JsonClient	m_jsonClient;
@@ -264,11 +269,15 @@ public class CineworldJSONAccessor implements Accessor {
 			generic.setCompanyId(CINEWORLD_COMPANY_ID);
 			generic.setId(cineworld.getId());
 			generic.setName(cineworld.getName());
-			generic.setDetailsUrl(cineworld.getCinemaUrl());
+			generic.setDetailsUrl(createUrl("cinemaDetails", cineworld.getCinemaUrl()));
 			generic.setAddress(cineworld.getAddress());
 			generic.setPostcode(cineworld.getPostcode());
 			generic.setTelephone(cineworld.getTelephone());
-			generic.setLocation(GeoCache.getGeoPoint(cineworld.getPostcode()));
+			try {
+				generic.setLocation(App.getInstance().getGeoCache().get(cineworld.getPostcode()));
+			} catch (ApplicationException ex) {
+				LOG.warn("Cannot get location for %s", ex, cineworld.getPostcode());
+			}
 			result = generic;
 		} else if (cineworldObject instanceof CineworldCategory) {
 			CineworldCategory cineworld = (CineworldCategory) cineworldObject;
@@ -293,7 +302,7 @@ public class CineworldJSONAccessor implements Accessor {
 			Performance generic = new Performance();
 			generic.setTime(cineworld.getTime());
 			generic.setType(cineworld.getType());
-			generic.setBookingUrl(cineworld.getBookingUrl());
+			generic.setBookingUrl(createUrl("performanceBooking", cineworld.getBookingUrl()));
 			generic.setAvailable(cineworld.isAvailable());
 			generic.setSubtitled(cineworld.isSubtitled());
 			generic.setAudioDescribed(cineworld.isAudioDescribed());
@@ -311,9 +320,12 @@ public class CineworldJSONAccessor implements Accessor {
 			generic.setTitle(cineworld.getTitle());
 			generic.setClassification(cineworld.getClassification());
 			generic.setAdvisory(cineworld.getAdvisory());
-			generic.setPosterUrl(cineworld.getPosterUrl());
-			generic.setStillUrl(cineworld.getStillUrl());
-			generic.setFilmUrl(cineworld.getFilmUrl());
+			generic.setPosterUrl(createUrl("filmPoster", cineworld.getPosterUrl(),
+					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
+			generic.setStillUrl(createUrl("filmStill", cineworld.getStillUrl(),
+					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
+			generic.setFilmUrl(createUrl("filmDetails", cineworld.getFilmUrl(),
+					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
 			generic.set3D(cineworld.is3D());
 			generic.setIMax(cineworld.isIMax());
 			result = generic;
@@ -322,5 +334,14 @@ public class CineworldJSONAccessor implements Accessor {
 			result.setSource(GENERIC_SOURCE);
 		}
 		return (TOut) result;
+	}
+
+	private URL createUrl(final String type, final String... urls) {
+		try {
+			return StringTools.createUrl(type, urls);
+		} catch (NetworkException ex) {
+			LOG.warn("Cannot create Url from Cineworld", ex);
+			return null;
+		}
 	}
 }

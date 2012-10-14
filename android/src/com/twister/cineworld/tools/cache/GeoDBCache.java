@@ -1,49 +1,46 @@
-package com.twister.cineworld.model.accessor.impl.util;
+package com.twister.cineworld.tools.cache;
 
 import java.io.IOException;
 import java.util.*;
 
 import android.location.*;
 
-import com.google.android.maps.GeoPoint;
 import com.twister.cineworld.App;
 import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.generic.Location;
 
-public class GeoCache {
-	private static final Log					LOG			= LogFactory.getLog(Tag.GEO);
-	private static final Map<String, Location>	s_locations	= new HashMap<String, Location>(79, 1f);
-	static {
+public class GeoDBCache implements Cache<String, Location> {
+	private static final Log			LOG			= LogFactory.getLog(Tag.GEO);
+	private final Map<String, Location>	m_locations	= new HashMap<String, Location>(79, 1f);
+
+	public GeoDBCache() {
 		List<PostCodeLocation> locations = App.getInstance().getDataBaseHelper().getGeoCacheLocations();
 		for (PostCodeLocation location : locations) {
-			String postCode = GeoCache.fixPostCode(location.getPostCode());
-			s_locations.put(postCode, location.getLocation());
+			String postCode = GeoDBCache.fixPostCode(location.getPostCode());
+			m_locations.put(postCode, location.getLocation());
 		}
 	}
 
-	private GeoCache() {
-		// prevent instantiation
+	public Location get(final String key) {
+		return getGeoPoint(key);
 	}
 
-	private static String fixPostCode(final String postCode) {
-		return postCode.replaceAll("\\s+", "").toUpperCase();
+	public void put(String key, final Location value) {
+		key = GeoDBCache.fixPostCode(key);
+		PostCodeLocation loc = new PostCodeLocation(key, value);
+		App.getInstance().getDataBaseHelper().putGeoLocations(Collections.singleton(loc));
 	}
 
-	/**
-	 * Get a {@link GeoPoint} object from cache.
-	 * 
-	 * @param postCode the postcode
-	 * @return the cached {@link GeoPoint}
-	 */
-	public static Location getGeoPoint(String postCode) {
+	public Location getGeoPoint(String postCode) {
 		if (postCode == null) {
 			return null;
 		}
-		postCode = GeoCache.fixPostCode(postCode);
-		Location loc = s_locations.get(postCode);
+		postCode = GeoDBCache.fixPostCode(postCode);
+		Location loc = m_locations.get(postCode);
 		if (loc == null) {
-			loc = GeoCache.geoCode(postCode);
+			loc = GeoDBCache.geoCode(postCode);
+			put(postCode, loc);
 		}
 		return loc;
 	}
@@ -65,5 +62,9 @@ public class GeoCache {
 			}
 		}
 		return loc;
+	}
+
+	private static String fixPostCode(final String postCode) {
+		return postCode.replaceAll("\\s+", "").toUpperCase();
 	}
 }

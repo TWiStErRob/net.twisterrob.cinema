@@ -1,10 +1,11 @@
-package com.twister.cineworld.ui.activity.maps;
+package com.twister.cineworld.ui.activity;
 
-import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.drawable.*;
 
 import com.google.android.maps.*;
 import com.twister.cineworld.App;
@@ -13,21 +14,22 @@ import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.accessor.Accessor;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.model.json.TimeSpan;
-import com.twister.cineworld.tools.*;
+import com.twister.cineworld.tools.CollectionTools;
+import com.twister.cineworld.tools.cache.Cache;
 import com.twister.cineworld.ui.*;
 
-public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
-	private static final Log				LOG			= LogFactory.getLog(Tag.UI);
+public class CinemasItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+	private static final Log			LOG			= LogFactory.getLog(Tag.UI);
 
-	private ArrayList<Cinema>				m_items		= new ArrayList<Cinema>();
-	private Drawable						m_markerSelected;
-	private MapView							m_map;
-	private ItemizedOverlayFilmsForCinema	m_filmsOverlay;
-	private ArrayList<OverlayItem>			m_itemCache	= new ArrayList<OverlayItem>();
-	private Drawable						m_filmMarker;
-	private Activity						m_activity;
+	private ArrayList<Cinema>			m_items		= new ArrayList<Cinema>();
+	private Drawable					m_markerSelected;
+	private MapView						m_map;
+	private CinemaFilmsItemizedOverlay	m_filmsOverlay;
+	private ArrayList<OverlayItem>		m_itemCache	= new ArrayList<OverlayItem>();
+	private Drawable					m_filmMarker;
+	private Activity					m_activity;
 
-	public ItemizedOverlayCinemas(final Activity activity, final MapView map, final Drawable marker,
+	public CinemasItemizedOverlay(final Activity activity, final MapView map, final Drawable marker,
 			final Drawable markerSelected,
 			final Drawable filmMarker) {
 		super(marker);
@@ -79,7 +81,7 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 		OverlayItem item = getItem(index);
 		final Cinema cinema = m_items.get(index);
 		item.setMarker(null);
-		final ItemizedOverlayFilmsForCinema overlay = new ItemizedOverlayFilmsForCinema(m_map, cinema, m_filmMarker);
+		final CinemaFilmsItemizedOverlay overlay = new CinemaFilmsItemizedOverlay(m_map, cinema, m_filmMarker);
 		m_filmsOverlay = overlay;
 		CineworldExecutor.execute(new CineworldGUITask<List<Film>>(m_activity) {
 			@Override
@@ -88,12 +90,21 @@ public class ItemizedOverlayCinemas extends ItemizedOverlay<OverlayItem> {
 				List<Film> films = accessor.getFilmsForCinema(cinema.getId(), TimeSpan.Tomorrow);
 				for (Film film : films) {
 					try {
-						film.setPoster(IOTools.getImage(film.getPosterUrl()));
-					} catch (IOException ex) {
+						Cache<URL, Bitmap> cache = App.getInstance().getPosterCache();
+						Bitmap bitmap = cache.get(film.getPosterUrl());
+						film.setPoster(createDrawable(bitmap));
+					} catch (ApplicationException ex) {
 						LOG.warn("Could not download film poster: %s", ex, film.getPosterUrl());
 					}
 				}
 				return films;
+			}
+
+			private Drawable createDrawable(final Bitmap bitmap) {
+				if (bitmap == null) {
+					return null;
+				}
+				return new BitmapDrawable(bitmap);
 			}
 
 			@Override

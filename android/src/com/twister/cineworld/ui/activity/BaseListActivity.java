@@ -36,7 +36,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	private boolean				m_autoLoad		= true;
 
 	/**
-	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
+	 * Creates an instance of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
 	 * and <code>contextMenuId</code> will be inflated in
 	 * {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
 	 * 

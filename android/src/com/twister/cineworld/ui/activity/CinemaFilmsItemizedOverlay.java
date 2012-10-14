@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui.activity.maps;
+package com.twister.cineworld.ui.activity;
 
 import java.util.*;
 
@@ -9,13 +9,13 @@ import com.google.android.maps.*;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.tools.CollectionTools;
 
-public class ItemizedOverlayFilmsForCinema extends ItemizedOverlay<OverlayItem> {
+public class CinemaFilmsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private final ArrayList<Film>			m_items		= new ArrayList<Film>();
 	private final ArrayList<OverlayItem>	m_itemCache	= new ArrayList<OverlayItem>();
 	private Cinema							m_cinema;
 	private MapView							m_map;
 
-	public ItemizedOverlayFilmsForCinema(final MapView map, final Cinema cinema,
+	public CinemaFilmsItemizedOverlay(final MapView map, final Cinema cinema,
 			final Drawable defaultMarker) {
 		super(defaultMarker);
 		m_map = map;

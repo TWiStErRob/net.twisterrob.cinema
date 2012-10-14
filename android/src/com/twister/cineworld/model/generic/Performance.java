@@ -1,5 +1,7 @@
 package com.twister.cineworld.model.generic;
 
+import java.net.URL;
+
 public class Performance extends GenericBase {
 	private static final long	serialVersionUID	= -7455562894972197071L;
 
@@ -8,7 +10,7 @@ public class Performance extends GenericBase {
 	private String				m_type;
 	private boolean				m_audioDescribed;
 	private boolean				m_subtitled;
-	private String				m_bookingUrl;
+	private URL					m_bookingUrl;
 	@SuppressWarnings("unused")
 	private String				m_ss;											// TODO what is this?
 
@@ -52,11 +54,11 @@ public class Performance extends GenericBase {
 		m_subtitled = subtitled;
 	}
 
-	public String getBookingUrl() {
+	public URL getBookingUrl() {
 		return m_bookingUrl;
 	}
 
-	public void setBookingUrl(final String bookingUrl) {
+	public void setBookingUrl(final URL bookingUrl) {
 		m_bookingUrl = bookingUrl;
 	}
 }

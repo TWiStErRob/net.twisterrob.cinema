@@ -1,6 +1,9 @@
 package com.twister.cineworld.tools;
 
+import java.net.*;
 import java.util.Iterator;
+
+import com.twister.cineworld.exception.NetworkException;
 
 public final class StringTools {
 	private StringTools() {
@@ -25,5 +28,25 @@ public final class StringTools {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static URL createUrl(final String type, final String... urls) throws NetworkException {
+		String url = CollectionTools.coalesce(urls);
+		if (url != null) {
+			try {
+				return new URL(url);
+			} catch (MalformedURLException ex) {
+				throw new NetworkException("Cannot associate %s Url: %s", ex, type, url);
+			}
+		}
+		return null;
+	}
+
+	public static String toNullString(final Object o, final String nullString) {
+		if (nullString == null) {
+			return String.valueOf(o);
+		} else {
+			return o != null? o.toString() : nullString;
+		}
 	}
 }

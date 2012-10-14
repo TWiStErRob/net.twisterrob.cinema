@@ -1,12 +1,13 @@
 package com.twister.cineworld.model.generic;
 
+import java.net.URL;
 
 public class Cinema extends GenericBase {
 	private static final long	serialVersionUID	= 6544996686705019485L;
 	private int					m_companyId;
 	private int					m_id;
 	private String				m_name;
-	private String				m_detailsUrl;
+	private URL					m_detailsUrl;
 	private String				m_territory;
 	private String				m_address;
 	private String				m_postcode;
@@ -37,11 +38,11 @@ public class Cinema extends GenericBase {
 		m_name = name;
 	}
 
-	public String getDetailsUrl() {
+	public URL getDetailsUrl() {
 		return m_detailsUrl;
 	}
 
-	public void setDetailsUrl(final String detailsUrl) {
+	public void setDetailsUrl(final URL detailsUrl) {
 		m_detailsUrl = detailsUrl;
 	}
 

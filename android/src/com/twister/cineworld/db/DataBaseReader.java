@@ -1,13 +1,19 @@
 package com.twister.cineworld.db;
 
+import java.net.URL;
 import java.util.*;
 
 import android.database.*;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.twister.cineworld.exception.NetworkException;
+import com.twister.cineworld.log.*;
 import com.twister.cineworld.model.generic.*;
+import com.twister.cineworld.tools.StringTools;
 
 class DataBaseReader {
+	private static final Log		LOG					= LogFactory.getLog(Tag.DB);
+
 	private static final String		GENERIC_SOURCE		= "DB";
 	// private static final CineworldLogger LOG = LogFactory.getLog(Tag.DB);
 	private static final String[]	CINEMA_DETAILS		= { "_company", "_id", "name", "details_url", "territory",
@@ -53,7 +59,7 @@ class DataBaseReader {
 		cinema.setCompanyId(companyId);
 		cinema.setId(id);
 		cinema.setName(name);
-		cinema.setDetailsUrl(detailsUrl);
+		cinema.setDetailsUrl(createUrl("cinemaDetails", detailsUrl));
 		cinema.setTerritory(territory);
 		cinema.setAddress(address);
 		cinema.setPostcode(postcode);
@@ -180,5 +186,16 @@ class DataBaseReader {
 		return postLoc;
 	}
 
+	// #endregion
+
+	// #region Helpers
+	private URL createUrl(final String type, final String... urls) {
+		try {
+			return StringTools.createUrl(type, urls);
+		} catch (NetworkException ex) {
+			LOG.warn("Cannot create Url from DB", ex);
+			return null;
+		}
+	}
 	// #endregion
 }

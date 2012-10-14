@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui.activity.maps;
+package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
@@ -12,25 +12,29 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.google.android.maps.*;
 import com.google.android.maps.ItemizedOverlay.OnFocusChangeListener;
-import com.twister.cineworld.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
-import com.twister.cineworld.ui.activity.*;
 import com.twister.cineworld.ui.adapter.CinemaAdapter;
 
 public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		OnFocusChangeListener, OnItemSelectedListener {
 	private MapView					m_map;
 	private MyLocationOverlay		m_location;
-	private ItemizedOverlayCinemas	m_overlay;
+	private CinemasItemizedOverlay	m_overlay;
+	private CinemasUIRequest		m_request;
 
 	public CinemasMapActivity() {
 		super(R.layout.activity_cinemas_map, R.menu.context_item_cinema);
+		setAutoLoad(false);
 	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		m_request = new CinemasUIRequest(getIntent());
+		setTitle(m_request.getTitle(getResources()));
+
 		m_map = (MapView) findViewById(R.id.mapview);
 		m_map.displayZoomControls(true);
 		m_map.setBuiltInZoomControls(true);
@@ -51,7 +55,7 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		int markerWidth3 = marker3.getIntrinsicWidth() / 3;
 		int markerHeight3 = marker3.getIntrinsicHeight() / 3;
 		marker3.setBounds(0, -markerHeight3 / 2, markerWidth3 / 2, 0);
-		m_overlay = new ItemizedOverlayCinemas(this, m_map, marker, marker2, marker3);
+		m_overlay = new CinemasItemizedOverlay(this, m_map, marker, marker2, marker3);
 		m_map.getOverlays().add(m_overlay);
 		m_overlay.setOnFocusChangeListener(this);
 
@@ -73,6 +77,8 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		m_map.postInvalidate();
 
 		getSpinner().setOnItemSelectedListener(this);
+
+		startLoad();
 	}
 
 	@Override
@@ -84,9 +90,9 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 
 	@Override
 	protected void onPause() {
-		super.onPause();
 		m_location.disableMyLocation();
 		m_location.disableCompass();
+		super.onPause();
 	}
 
 	@Override
@@ -167,11 +173,7 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 
 	@Override
 	protected List<Cinema> loadList() throws ApplicationException {
-		List<Cinema> cinemas = App.getInstance().getCineworldAccessor().getAllCinemas();
-		for (Cinema cinema : cinemas) {
-			cinema.getLocation();
-		}
-		return cinemas;
+		return m_request.getList();
 	}
 
 }

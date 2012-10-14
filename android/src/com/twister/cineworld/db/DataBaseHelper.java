@@ -40,6 +40,10 @@ public class DataBaseHelper {
 		return m_reader.getGeoCache();
 	}
 
+	public void putGeoLocations(final Iterable<PostCodeLocation> locations) {
+		m_writer.updateGeoCache(locations);
+	}
+
 	public void addCinemas(final List<Cinema> cinemas) {
 		m_writer.insertCinemas(cinemas);
 	}

@@ -1,4 +1,4 @@
-package com.twister.cineworld.ui.activity.maps;
+package com.twister.cineworld.ui.activity;
 
 import java.util.List;
 
@@ -22,9 +22,10 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	private AdapterView<? extends Adapter>	m_adapterView;
 	private int								m_contentViewId;
 	private int								m_contextMenuId;
+	private boolean							m_autoLoad;
 
 	/**
-	 * Creates an instace of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
+	 * Creates an instance of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
 	 * and <code>contextMenuId</code> will be inflated in
 	 * {@link #onCreateContextMenu(ContextMenu, View, ContextMenuInfo)}
 	 * 
@@ -48,12 +49,18 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 
 		m_adapterView = (AdapterView<?>) findViewById(android.R.id.list);
 		registerForContextMenu(m_adapterView);
+
+		if (m_autoLoad) {
+			startLoad();
+		}
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		startLoad();
+	public void setAutoLoad(final boolean autoLoad) {
+		m_autoLoad = autoLoad;
+	}
+
+	public boolean isAutoLoad() {
+		return m_autoLoad;
 	}
 
 	/**

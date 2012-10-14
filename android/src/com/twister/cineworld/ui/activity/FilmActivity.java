@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Film;
+import com.twister.cineworld.tools.StringTools;
 
 public class FilmActivity extends BaseDetailActivity<Film> {
 	private FilmUIRequest	m_request;
@@ -41,8 +42,8 @@ public class FilmActivity extends BaseDetailActivity<Film> {
 		attributes.setText(String.format("%s %s", result.isIMax()? "IMAX" : "regular", result.is3D()? "3D" : "2D"));
 		classification.setText(result.getClassification());
 		advisory.setText(result.getAdvisory());
-		url_details.setText(result.getFilmUrl());
-		url_still.setText(result.getStillUrl());
-		url_poster.setText(result.getPosterUrl());
+		url_details.setText(StringTools.toNullString(result.getFilmUrl(), "<no details url>"));
+		url_still.setText(StringTools.toNullString(result.getStillUrl(), "<no strill url>"));
+		url_poster.setText(StringTools.toNullString(result.getPosterUrl(), "<no poster url>"));
 	}
 }

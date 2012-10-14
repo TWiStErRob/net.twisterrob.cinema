@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.generic.Cinema;
+import com.twister.cineworld.tools.StringTools;
 
 public class CinemaActivity extends BaseDetailActivity<Cinema> {
 	private CinemaUIRequest	m_request;
@@ -53,7 +54,7 @@ public class CinemaActivity extends BaseDetailActivity<Cinema> {
 				startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
 			}
 		});
-		url.setText(result.getDetailsUrl());
+		url.setText(StringTools.toNullString(result.getDetailsUrl(), "<no details url>"));
 		phone.setText(result.getTelephone());
 	}
 }

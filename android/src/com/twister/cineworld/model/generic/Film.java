@@ -1,5 +1,7 @@
 package com.twister.cineworld.model.generic;
 
+import java.net.URL;
+
 import android.graphics.drawable.Drawable;
 
 public class Film extends GenericBase {
@@ -10,9 +12,9 @@ public class Film extends GenericBase {
 	private int					m_id;
 	private String				m_classification;
 	private String				m_advisory;
-	private String				m_posterUrl;
-	private String				m_stillUrl;
-	private String				m_filmUrl;
+	private URL					m_posterUrl;
+	private URL					m_stillUrl;
+	private URL					m_filmUrl;
 	private boolean				m_3D;
 	private boolean				m_iMax;
 
@@ -58,27 +60,27 @@ public class Film extends GenericBase {
 		m_advisory = advisory;
 	}
 
-	public String getPosterUrl() {
+	public URL getPosterUrl() {
 		return m_posterUrl;
 	}
 
-	public void setPosterUrl(final String posterUrl) {
+	public void setPosterUrl(final URL posterUrl) {
 		m_posterUrl = posterUrl;
 	}
 
-	public String getStillUrl() {
+	public URL getStillUrl() {
 		return m_stillUrl;
 	}
 
-	public void setStillUrl(final String stillUrl) {
+	public void setStillUrl(final URL stillUrl) {
 		m_stillUrl = stillUrl;
 	}
 
-	public String getFilmUrl() {
+	public URL getFilmUrl() {
 		return m_filmUrl;
 	}
 
-	public void setFilmUrl(final String filmUrl) {
+	public void setFilmUrl(final URL filmUrl) {
 		m_filmUrl = filmUrl;
 	}
 

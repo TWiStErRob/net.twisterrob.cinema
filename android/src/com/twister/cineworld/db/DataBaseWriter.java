@@ -25,6 +25,8 @@ class DataBaseWriter {
 	private SQLiteStatement	m_insertCategory;
 	private SQLiteStatement	m_insertEvent;
 	private SQLiteStatement	m_insertDistributor;
+	private SQLiteStatement	m_insertGeoCache;
+	private SQLiteStatement	m_updateGeoCache;
 
 	private void prepareStatements(final SQLiteDatabase database) {
 		if (this.m_database != database) {
@@ -49,6 +51,16 @@ class DataBaseWriter {
 				m_insertDistributor.close();
 			}
 			m_insertDistributor = database.compileStatement(SQL_INSERT_DISTRIBUTOR);
+
+			if (m_insertGeoCache != null) {
+				m_insertGeoCache.close();
+			}
+			m_insertGeoCache = database.compileStatement(SQL_INSERT_GEOCACHE);
+
+			if (m_updateGeoCache != null) {
+				m_updateGeoCache.close();
+			}
+			m_updateGeoCache = database.compileStatement(SQL_UPDATE_GEOCACHE);
 		}
 	}
 
@@ -184,6 +196,55 @@ class DataBaseWriter {
 		}
 	}
 
+	public void updateGeoCache(final Iterable<PostCodeLocation> locations) {
+		for (PostCodeLocation location : locations) {
+			updateGeoCache(location);
+		}
+	}
+
+	public void updateGeoCache(final PostCodeLocation location) {
+		try {
+			LOG.debug("Updating location: %s to %s", location.getPostCode(), location.getLocation());
+			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
+			prepareStatements(database);
+			int column = 0;
+			DatabaseUtils.bindObjectToProgram(m_updateGeoCache, ++column, location.getLocation().getLatitude());
+			DatabaseUtils.bindObjectToProgram(m_updateGeoCache, ++column, location.getLocation().getLongitude());
+			DatabaseUtils.bindObjectToProgram(m_updateGeoCache, ++column, location.getPostCode());
+			try {
+				int rows = database.update("\"Helper:GeoCache\"", null, SQL_INSERT_CATEGORY, null);
+				if (rows == 0) {
+					insertGeoCache(location);
+				}
+			} catch (SQLiteConstraintException ex) {
+				LOG.warn("Cannot update location, ignoring", ex);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			m_database.endTransaction();
+		}
+	}
+
+	public void insertGeoCache(final PostCodeLocation location) {
+		LOG.debug("Inserting location: %s, %s", location.getPostCode(), location.getLocation());
+		SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
+		prepareStatements(database);
+		int column = 0;
+		DatabaseUtils.bindObjectToProgram(m_insertGeoCache, ++column, location.getPostCode());
+		DatabaseUtils.bindObjectToProgram(m_insertGeoCache, ++column, location.getLocation().getLatitude());
+		DatabaseUtils.bindObjectToProgram(m_insertGeoCache, ++column, location.getLocation().getLongitude());
+		try {
+			m_insertGeoCache.executeInsert();
+		} catch (SQLiteConstraintException ex) {
+			LOG.warn("Cannot insert location, ignoring", ex);
+		}
+	}
+
+
+
+
+
+
 
 
 
@@ -204,6 +265,14 @@ class DataBaseWriter {
 	private static final String	 SQL_INSERT_DISTRIBUTOR	= "INSERT INTO "
 			+ "FilmDistributor(_id, name) "
 			+ "VALUES(           ?,    ?);";
+	private static final String	 SQL_INSERT_GEOCACHE = "INSERT INTO "
+			+ "\"Helper:GeoCache\"(postcode, latitude, longitude) "
+			+ "VALUES(                    ?,        ?,         ?);";
+	private static final String	 SQL_UPDATE_GEOCACHE = "UPDATE "
+			+ "\"Helper:GeoCache\""
+			+ "SET latitude = ?, longitude = ?"
+			+ "WHERE postcode = ?;";
+	
 	// #endnoformat
 
 	// #endregion

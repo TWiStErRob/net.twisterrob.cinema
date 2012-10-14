@@ -9,4 +9,13 @@ public class CollectionTools {
 			list.add(null);
 		}
 	}
+
+	public static <T> T coalesce(final T... objects) {
+		for (T t : objects) {
+			if (t != null) {
+				return t;
+			}
+		}
+		return null;
+	}
 }

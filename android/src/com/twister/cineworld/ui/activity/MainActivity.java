@@ -8,7 +8,6 @@ import android.widget.ListAdapter;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.ui.activity.maps.CinemasMapActivity;
 import com.twister.cineworld.ui.adapter.*;
 import com.twister.cineworld.ui.model.MainMenuItem;
 
