@@ -24,7 +24,11 @@ public class ImageSDNetCache implements Cache<URL, Bitmap> {
 	}
 
 	public Bitmap get(final URL key) throws ApplicationException {
-		Bitmap bitmap = m_cache.getBitmapFromDiskCache(key.toString());
+		if (key == null) {
+			return null;
+		}
+		Bitmap bitmap = null;
+		bitmap = m_cache.getBitmapFromDiskCache(key.toString());
 		if (bitmap == null) {
 			bitmap = getImage(key);
 			put(key, bitmap);
@@ -44,6 +48,8 @@ public class ImageSDNetCache implements Cache<URL, Bitmap> {
 	}
 
 	public void put(final URL url, final Bitmap image) {
-		m_cache.addBitmapToCache(url.toString(), image);
+		if (url != null && image != null) {
+			m_cache.addBitmapToCache(url.toString(), image);
+		}
 	}
 }

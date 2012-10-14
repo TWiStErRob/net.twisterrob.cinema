@@ -52,11 +52,7 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		int markerWidth2 = marker2.getIntrinsicWidth();
 		int markerHeight2 = marker2.getIntrinsicHeight();
 		marker2.setBounds(0, -markerHeight2, markerWidth2, 0);
-		Drawable marker3 = getResources().getDrawable(R.drawable.cineworld_logo);
-		int markerWidth3 = marker3.getIntrinsicWidth() / 3;
-		int markerHeight3 = marker3.getIntrinsicHeight() / 3;
-		marker3.setBounds(0, -markerHeight3 / 2, markerWidth3 / 2, 0);
-		m_overlay = new CinemasItemizedOverlay(this, m_map, marker, marker2, marker3);
+		m_overlay = new CinemasItemizedOverlay(this, m_map, marker, marker2);
 		m_map.getOverlays().add(m_overlay);
 		m_overlay.setOnFocusChangeListener(this);
 

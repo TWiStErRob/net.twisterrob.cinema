@@ -2,24 +2,33 @@ package com.twister.cineworld.ui.activity;
 
 import java.util.*;
 
+import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.*;
+import com.twister.cineworld.R;
 import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.tools.CollectionTools;
 
 public class CinemaFilmsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
-	private final ArrayList<Film>			m_items		= new ArrayList<Film>();
-	private final ArrayList<OverlayItem>	m_itemCache	= new ArrayList<OverlayItem>();
+	private static final int				POSTER_HEIGHT	= 150;
+	private static final int				POSTER_WIDTH	= 100;
+	private final ArrayList<Film>			m_items			= new ArrayList<Film>();
+	private final ArrayList<OverlayItem>	m_itemCache		= new ArrayList<OverlayItem>();
 	private Cinema							m_cinema;
 	private MapView							m_map;
 
-	public CinemaFilmsItemizedOverlay(final MapView map, final Cinema cinema,
-			final Drawable defaultMarker) {
-		super(defaultMarker);
+	public CinemaFilmsItemizedOverlay(final Resources resources, final MapView map, final Cinema cinema) {
+		super(CinemaFilmsItemizedOverlay.getDefaultMarker(resources));
 		m_map = map;
 		m_cinema = cinema;
+	}
+
+	private static Drawable getDefaultMarker(final Resources resources) {
+		Drawable marker = resources.getDrawable(R.drawable.cineworld_logo);
+		marker.setBounds(0, -CinemaFilmsItemizedOverlay.POSTER_HEIGHT, CinemaFilmsItemizedOverlay.POSTER_WIDTH, 0);
+		return marker;
 	}
 
 	@Override
@@ -33,9 +42,7 @@ public class CinemaFilmsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				public Drawable getMarker(final int stateBitset) {
 					Drawable marker = film.getPoster();
 					if (marker != null) {
-						int markerWidth = marker.getIntrinsicWidth() * 2;
-						int markerHeight = marker.getIntrinsicHeight() * 2;
-						marker.setBounds(0, -markerHeight, markerWidth, 0);
+						marker.setBounds(0, -POSTER_HEIGHT, POSTER_WIDTH, 0);
 					} else {
 						marker = super.getMarker(stateBitset);
 					}

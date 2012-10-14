@@ -18,17 +18,14 @@ public class CinemasItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private final Drawable					m_markerSelected;
 	private final MapView					m_map;
 	private final ArrayList<OverlayItem>	m_itemCache	= new ArrayList<OverlayItem>();
-	private final Drawable					m_filmMarker;
 	private final Activity					m_activity;
 
-	public CinemasItemizedOverlay(final Activity activity, final MapView map, final Drawable marker,
-			final Drawable markerSelected,
-			final Drawable filmMarker) {
+	public CinemasItemizedOverlay(final Activity activity, final MapView map,
+			final Drawable marker, final Drawable markerSelected) {
 		super(marker);
 		m_activity = activity;
 		m_map = map;
 		m_markerSelected = markerSelected;
-		m_filmMarker = filmMarker;
 		populate();
 	}
 
@@ -73,7 +70,7 @@ public class CinemasItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		OverlayItem item = getItem(index);
 		final Cinema cinema = m_items.get(index);
 		item.setMarker(null);
-		CineworldExecutor.execute(new CinemaFilmsItemizedOverlayLoader(m_activity, m_map, cinema, m_filmMarker));
+		CineworldExecutor.execute(new CinemaFilmsItemizedOverlayLoader(m_activity, m_map, cinema));
 		m_map.getController().animateTo(cinema.getLocation().toGeoPoint());
 		// m_map.removeView(m_popup);
 		// View popUp = getLayoutInflater().inflate(R.layout.map_popup, map, false);

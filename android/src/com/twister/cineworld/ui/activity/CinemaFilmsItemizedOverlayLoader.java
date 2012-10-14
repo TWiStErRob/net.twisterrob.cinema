@@ -22,16 +22,13 @@ public class CinemaFilmsItemizedOverlayLoader extends CineworldGUITask<List<Film
 
 	private final Cinema						m_cinema;
 	private final MapView						m_map;
-	private final Drawable						m_marker;
 	private final CinemaFilmsItemizedOverlay	overlay;
 
-	public CinemaFilmsItemizedOverlayLoader(final Activity activity, final MapView map, final Cinema cinema,
-			final Drawable marker) {
+	public CinemaFilmsItemizedOverlayLoader(final Activity activity, final MapView map, final Cinema cinema) {
 		super(activity);
 		m_map = map;
 		m_cinema = cinema;
-		m_marker = marker;
-		overlay = new CinemaFilmsItemizedOverlay(m_map, m_cinema, m_marker);
+		overlay = new CinemaFilmsItemizedOverlay(activity.getResources(), m_map, m_cinema);
 	}
 
 	@Override
