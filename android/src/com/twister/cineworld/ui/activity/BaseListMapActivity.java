@@ -9,6 +9,7 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.maps.MapActivity;
+import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
 
@@ -46,6 +47,7 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(m_contentViewId);
 
 		m_adapterView = (AdapterView<?>) findViewById(android.R.id.list);
@@ -191,6 +193,28 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 		} else {
 			((AbsSpinner) m_adapterView).setAdapter((SpinnerAdapter) createAdapter(result));
 		}
+	}
+
+	@Override
+	public void setTitle(final int titleId) {
+		super.setTitle(titleId);
+		TextView header = getHeaderTitle();
+		if (header != null) {
+			header.setText(titleId);
+		}
+	}
+
+	@Override
+	public void setTitle(final CharSequence title) {
+		super.setTitle(title);
+		TextView header = getHeaderTitle();
+		if (header != null) {
+			header.setText(title);
+		}
+	}
+
+	private TextView getHeaderTitle() {
+		return (TextView) this.findViewById(R.id.activity_title);
 	}
 
 	/**

@@ -8,10 +8,11 @@
     <ImageButton
         android:id="@+id/button_home"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dip"
         android:contentDescription="@string/home_button"
         android:onClick="buttonHome_Click"
-        android:src="@drawable/ic_launcher" >
+        android:src="@drawable/ic_launcher"
+        android:scaleType="fitCenter" >
     </ImageButton>
 
     <TextView
