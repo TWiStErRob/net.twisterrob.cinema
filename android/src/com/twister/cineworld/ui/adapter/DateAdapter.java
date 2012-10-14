@@ -35,7 +35,7 @@ public class DateAdapter extends BaseListAdapter<Date, DateAdapter.ViewHolder> {
 	@Override
 	protected void bindView(final ViewHolder holder, final Date currentItem, final View convertView) {
 		String title = currentItem.getDate();
-		String description = String.format("%tc", currentItem.getCalendar());
+		String description = String.format("%1$tF %1$tT %1$tp %1$tZ %1$tA", currentItem.getCalendar());
 
 		holder.title.setText(title);
 		holder.description.setText(description);

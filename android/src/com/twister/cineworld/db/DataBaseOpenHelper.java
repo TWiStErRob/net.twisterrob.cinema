@@ -10,14 +10,14 @@ import android.os.Environment;
 
 import com.twister.cineworld.*;
 import com.twister.cineworld.log.*;
-import com.twister.cineworld.tools.IOTools;
+import com.twister.cineworld.tools.*;
 
 class DataBaseOpenHelper extends SQLiteOpenHelper {
 	private static final String			DB_SCHEMA_FILE	= "CineworldExtra.v1.schema.sql";
 	private static final String			DB_DATA_FILE	= "CineworldExtra.v1.data.sql";
 	private static final String			DB_CLEAN_FILE	= "CineworldExtra.v1.clean.sql";
 	private static final String			DB_NAME			= "CineworldExtra";
-	private static final int			DB_VERSION		= 12;
+	private static final int			DB_VERSION		= 1;
 	private static final Log			LOG				= LogFactory.getLog(Tag.DB);
 	private static final CursorFactory	s_factory		= new LoggingCursorFactory();
 
@@ -27,34 +27,50 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
-		LOG.debug("Opening database: %s", db);
-		// onCreate(db); // for DB development, always clear and initialize
+		LOG.debug("Opening database: %s", DBTools.toString(db));
+		backupDB(db, "CineworldDB.onOpen.sqlite");
+		onCreate(db); // FIXME for DB development, always clear and initialize
+		super.onOpen(db);
+		LOG.info("Opened database: %s", DBTools.toString(db));
+		// db.execSQL("DELETE FROM Cinema;");
+	}
+
+	private void backupDB(final SQLiteDatabase db, final String fileName) {
 		if (BuildConfig.DEBUG) {
 			try {
-				String target = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-						+ "CineworldDB.sqlite";
+				String target = Environment.getExternalStorageDirectory().getAbsolutePath()
+						+ File.separator + fileName;
 				IOTools.copyFile(db.getPath(), target);
 				LOG.info("DB backed up to %s", target);
 			} catch (IOException ex) {
 				LOG.error("Cannot back up DB on open", ex);
 			}
 		}
-		super.onOpen(db);
-		LOG.info("Opened database: %s", db);
-		// db.execSQL("DELETE FROM Cinema;");
 	}
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		LOG.debug("Creating database: %s", db);
+		backupDB(db, "CineworldDB.onCreate.sqlite");
+		LOG.debug("Creating database: %s", DBTools.toString(db));
 		DataBaseOpenHelper.execFile(db, DB_CLEAN_FILE);
 		DataBaseOpenHelper.execFile(db, DB_SCHEMA_FILE);
 		DataBaseOpenHelper.execFile(db, DB_DATA_FILE);
-		LOG.info("Created database: %s", db);
+		LOG.info("Created database: %s", DBTools.toString(db));
 	}
 
 	private static void execFile(final SQLiteDatabase db, final String dbSchemaFile) {
-		LOG.debug("Executing file %s into database: %s", dbSchemaFile, db);
+		LOG.debug("Executing file %s into database: %s",
+				dbSchemaFile, DBTools.toString(db));
+		long time = System.nanoTime();
+
+		DataBaseOpenHelper.realExecuteFile(db, dbSchemaFile);
+
+		long end = System.nanoTime();
+		LOG.debug("Finished (%3$d ms) executed file %1$s into database: %2$s",
+				dbSchemaFile, DBTools.toString(db), (end - time) / 1000 / 1000);
+	}
+
+	private static void realExecuteFile(final SQLiteDatabase db, final String dbSchemaFile) {
 		InputStream s;
 		String statement = null;
 		try {
@@ -64,7 +80,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 				db.execSQL(statement);
 			}
 		} catch (SQLException ex) {
-			LOG.error("Error creating database from file: %s  while executing\n%s", ex,
+			LOG.error("Error creating database from file: %s while executing\n%s", ex,
 					dbSchemaFile, statement);
 		} catch (IOException ex) {
 			LOG.error("Error creating database from file: ", ex, dbSchemaFile);
@@ -89,6 +105,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+		backupDB(db, "CineworldDB.onUpgrade.sqlite");
 		onCreate(db);
 	}
 }

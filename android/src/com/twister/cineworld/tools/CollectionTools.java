@@ -2,7 +2,11 @@ package com.twister.cineworld.tools;
 
 import java.util.*;
 
-public class CollectionTools {
+public final class CollectionTools {
+	private CollectionTools() {
+		// prevent instantiation
+	}
+
 	public static void ensureIndexValid(final List<? extends Object> list, int i) {
 		i -= list.size();
 		while (i-- >= 0) {

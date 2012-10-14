@@ -35,7 +35,8 @@ public class CategoryAdapter extends BaseListAdapter<Category, CategoryAdapter.V
 	@Override
 	protected void bindView(final ViewHolder holder, final Category currentItem, final View convertView) {
 		String title = currentItem.getName();
-		String description = String.format("%s", currentItem.getCode());
+		String description = String.format("%1$s\n - last updated: %2$tF %2$tT",
+				currentItem.getCode(), currentItem.getLastUpdate());
 
 		holder.title.setText(title);
 		holder.description.setText(description);

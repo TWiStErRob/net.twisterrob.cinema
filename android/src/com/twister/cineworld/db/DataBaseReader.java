@@ -12,16 +12,19 @@ import com.twister.cineworld.model.generic.*;
 import com.twister.cineworld.tools.StringTools;
 
 class DataBaseReader {
+	private static final String		LAST_UPDATE			= "strftime('%s', __last_update) * 1000";
+
 	private static final Log		LOG					= LogFactory.getLog(Tag.DB);
 
 	private static final String		GENERIC_SOURCE		= "DB";
 	// private static final CineworldLogger LOG = LogFactory.getLog(Tag.DB);
-	private static final String[]	CINEMA_DETAILS		= { "_company", "_id", "name", "details_url", "territory",
-														"address", "postcode", "telephone", "latitude", "longitude" };
-	private static final String[]	CATEGORY_DETAILS	= { "code", "name" };
-	private static final String[]	EVENT_DETAILS		= { "code", "name" };
-	private static final String[]	DISTRIBUTOR_DETAILS	= { "_id", "name" };
-	private static final String[]	GEOCACHE_DETAILS	= { "postcode", "latitude", "longitude" };
+	private static final String[]	CINEMA_DETAILS		= { LAST_UPDATE, "_company", "_id", "name", "details_url",
+														"territory", "address", "postcode", "telephone", "latitude",
+														"longitude" };
+	private static final String[]	CATEGORY_DETAILS	= { LAST_UPDATE, "code", "name" };
+	private static final String[]	EVENT_DETAILS		= { LAST_UPDATE, "code", "name" };
+	private static final String[]	DISTRIBUTOR_DETAILS	= { LAST_UPDATE, "_id", "name" };
+	private static final String[]	GEOCACHE_DETAILS	= { LAST_UPDATE, "_postcode", "latitude", "longitude" };
 	private final DataBaseHelper	m_dataBaseHelper;
 
 	DataBaseReader(final DataBaseHelper dataBaseHelper) {
@@ -35,14 +38,14 @@ class DataBaseReader {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
 		Cursor cursor = database.query("Cinema", CINEMA_DETAILS, null, null, null, null, null);
 		while (cursor.moveToNext()) {
-			Cinema cinema = getCinema(cursor);
+			Cinema cinema = readCinema(cursor);
 			cinemas.add(cinema);
 		}
 		cursor.close();
 		return cinemas;
 	}
 
-	private Cinema getCinema(final Cursor cursor) {
+	private Cinema readCinema(final Cursor cursor) {
 		int companyId = cursor.getInt(cursor.getColumnIndex("_company"));
 		int id = cursor.getInt(cursor.getColumnIndex("_id"));
 		String name = cursor.getString(cursor.getColumnIndex("name"));
@@ -55,7 +58,7 @@ class DataBaseReader {
 		double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
 		Cinema cinema = new Cinema();
-		cinema.setSource(GENERIC_SOURCE);
+		common(cinema, cursor);
 		cinema.setCompanyId(companyId);
 		cinema.setId(id);
 		cinema.setName(name);
@@ -80,7 +83,7 @@ class DataBaseReader {
 				null, null, null);
 		Cinema cinema = null;
 		if (cursor.moveToNext()) {
-			cinema = getCinema(cursor);
+			cinema = readCinema(cursor);
 		}
 		cursor.close();
 		return cinema;
@@ -95,19 +98,19 @@ class DataBaseReader {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
 		Cursor cursor = database.query("FilmCategory", CATEGORY_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
-			Category category = getCategory(cursor);
+			Category category = readCategory(cursor);
 			categories.add(category);
 		}
 		cursor.close();
 		return categories;
 	}
 
-	private Category getCategory(final Cursor cursor) {
+	private Category readCategory(final Cursor cursor) {
 		String code = cursor.getString(cursor.getColumnIndex("code"));
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Category category = new Category();
-		category.setSource(GENERIC_SOURCE);
+		common(category, cursor);
 		category.setCode(code);
 		category.setName(name);
 		return category;
@@ -118,19 +121,19 @@ class DataBaseReader {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
 		Cursor cursor = database.query("Event", EVENT_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
-			Event event = getEvent(cursor);
+			Event event = readEvent(cursor);
 			events.add(event);
 		}
 		cursor.close();
 		return events;
 	}
 
-	private Event getEvent(final Cursor cursor) {
+	private Event readEvent(final Cursor cursor) {
 		String code = cursor.getString(cursor.getColumnIndex("code"));
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Event event = new Event();
-		event.setSource(GENERIC_SOURCE);
+		common(event, cursor);
 		event.setCode(code);
 		event.setName(name);
 		return event;
@@ -141,19 +144,19 @@ class DataBaseReader {
 		SQLiteDatabase database = m_dataBaseHelper.getReadableDatabase();
 		Cursor cursor = database.query("FilmDistributor", DISTRIBUTOR_DETAILS, null, null, null, null, "name");
 		while (cursor.moveToNext()) {
-			Distributor distributor = getDistributor(cursor);
+			Distributor distributor = readDistributor(cursor);
 			distributors.add(distributor);
 		}
 		cursor.close();
 		return distributors;
 	}
 
-	private Distributor getDistributor(final Cursor cursor) {
+	private Distributor readDistributor(final Cursor cursor) {
 		int id = cursor.getInt(cursor.getColumnIndex("_id"));
 		String name = cursor.getString(cursor.getColumnIndex("name"));
 
 		Distributor distributor = new Distributor();
-		distributor.setSource(GENERIC_SOURCE);
+		common(distributor, cursor);
 		distributor.setId(id);
 		distributor.setName(name);
 		return distributor;
@@ -162,6 +165,23 @@ class DataBaseReader {
 	// #endregion
 
 	// #region internal
+	private void common(final GenericBase generic, final Cursor cursor) {
+		// set Source
+		{
+			generic.setSource(GENERIC_SOURCE);
+		}
+
+		// set UpDate
+		{
+			long lastUpdateMillies = cursor.getLong(cursor.getColumnIndex(LAST_UPDATE));
+			// lastUpdateMillies += TimeZone.getDefault().getOffset(lastUpdateMillies);
+
+			Calendar lastUpdate = Calendar.getInstance();
+			lastUpdate.setTimeInMillis(lastUpdateMillies);
+
+			generic.setLastUpdate(lastUpdate);
+		}
+	}
 
 	public List<PostCodeLocation> getGeoCache() {
 		List<PostCodeLocation> locations = new ArrayList<PostCodeLocation>();
@@ -176,13 +196,14 @@ class DataBaseReader {
 	}
 
 	private PostCodeLocation getGeoCache(final Cursor cursor) {
-		String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
+		String postcode = cursor.getString(cursor.getColumnIndex("_postcode"));
 		double latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
 		double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
 		Location geoLoc = new Location(latitude, longitude);
 
 		PostCodeLocation postLoc = new PostCodeLocation(postcode, geoLoc);
+		common(postLoc, cursor);
 		return postLoc;
 	}
 

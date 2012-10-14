@@ -45,4 +45,9 @@ public class Location implements Serializable {
 				&&
 				Math.abs(other.m_longitude - this.m_longitude) < DELTA;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%.6f, %.6f", m_latitude, m_longitude);
+	}
 }

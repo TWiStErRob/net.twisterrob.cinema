@@ -35,7 +35,8 @@ public class EventAdapter extends BaseListAdapter<Event, EventAdapter.ViewHolder
 	@Override
 	protected void bindView(final ViewHolder holder, final Event currentItem, final View convertView) {
 		String title = currentItem.getName();
-		String description = String.format("%s", currentItem.getCode());
+		String description = String.format("%s\n - last updated: %2$tF %2$tT",
+				currentItem.getCode(), currentItem.getLastUpdate());
 
 		holder.title.setText(title);
 		holder.description.setText(description);

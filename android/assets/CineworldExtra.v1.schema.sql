@@ -1,4 +1,7 @@
+BEGIN TRANSACTION;
+
 CREATE TABLE IF NOT EXISTS CinemaCompany (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	name                NVARCHAR           NOT NULL UNIQUE,
 	website_url         NVARCHAR           NULL,	
@@ -10,6 +13,7 @@ CREATE TABLE IF NOT EXISTS CinemaCompany (
 );
 
 CREATE TABLE IF NOT EXISTS Cinema (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_company            INTEGER            NOT NULL DEFAULT 1
 	                                       CONSTRAINT "fk-Cinema-CinemaCompany" REFERENCES CinemaCompany(_id)
 	,
@@ -28,6 +32,7 @@ CREATE TABLE IF NOT EXISTS Cinema (
 
 -- TODO Film can be in multiple categories (Lion King "edi":42157: family, junior)
 CREATE TABLE IF NOT EXISTS FilmCategory (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -36,6 +41,7 @@ CREATE TABLE IF NOT EXISTS FilmCategory (
 );
 
 CREATE TABLE IF NOT EXISTS FilmClassification (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -44,6 +50,7 @@ CREATE TABLE IF NOT EXISTS FilmClassification (
 );
 
 CREATE TABLE IF NOT EXISTS FilmAdvisory (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -52,6 +59,7 @@ CREATE TABLE IF NOT EXISTS FilmAdvisory (
 );
 
 CREATE TABLE IF NOT EXISTS FilmDistributor (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	name                NVARCHAR           NOT NULL UNIQUE,
 	PRIMARY KEY(_id)
@@ -59,6 +67,7 @@ CREATE TABLE IF NOT EXISTS FilmDistributor (
 );
 
 CREATE TABLE IF NOT EXISTS FilmType (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -67,6 +76,7 @@ CREATE TABLE IF NOT EXISTS FilmType (
 );
 
 CREATE TABLE IF NOT EXISTS Film (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	edi                 INTEGER            NULL UNIQUE,
 	title               NVARCHAR           NOT NULL,
@@ -88,6 +98,7 @@ CREATE TABLE IF NOT EXISTS Film (
 );
 
 CREATE TABLE IF NOT EXISTS Event (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -96,6 +107,7 @@ CREATE TABLE IF NOT EXISTS Event (
 );
 
 CREATE TABLE IF NOT EXISTS PerformanceType (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_id                 INTEGER,
 	code                NVARCHAR           NOT NULL UNIQUE,
 	name                NVARCHAR           NOT NULL,
@@ -104,6 +116,7 @@ CREATE TABLE IF NOT EXISTS PerformanceType (
 );
 
 CREATE TABLE IF NOT EXISTS Performance (
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	_cinema             INTEGER
 	                                       CONSTRAINT "fk-Peformance-Cinema" REFERENCES Cinema(_id)
 	,
@@ -137,8 +150,11 @@ CREATE TABLE IF NOT EXISTS Event_Film (
 
 -- Helper tables
 CREATE TABLE IF NOT EXISTS "Helper:GeoCache" (
-	postcode            CHAR(7)            NOT NULL,
+	__last_update       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	_postcode           CHAR(7)            NOT NULL,
 	latitude            REAL               NOT NULL,
 	longitude           REAL               NOT NULL,
-	PRIMARY KEY(postcode)
+	PRIMARY KEY(_postcode)
 );
+
+END TRANSACTION;

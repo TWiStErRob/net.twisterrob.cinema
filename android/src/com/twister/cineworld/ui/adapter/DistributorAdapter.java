@@ -35,7 +35,8 @@ public class DistributorAdapter extends BaseListAdapter<Distributor, Distributor
 	@Override
 	protected void bindView(final ViewHolder holder, final Distributor currentItem, final View convertView) {
 		String title = currentItem.getName();
-		String description = String.format("%s", currentItem.getId());
+		String description = String.format("%s\n - last updated: %2$tF %2$tT",
+				currentItem.getId(), currentItem.getLastUpdate());
 
 		holder.title.setText(title);
 		holder.description.setText(description);

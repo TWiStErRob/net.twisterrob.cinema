@@ -1,8 +1,6 @@
 package com.twister.cineworld.model.generic;
 
-import java.io.Serializable;
-
-public class PostCodeLocation implements Serializable {
+public class PostCodeLocation extends GenericBase {
 	private static final long	serialVersionUID	= 3949366660122437329L;
 
 	private String				m_postCode;

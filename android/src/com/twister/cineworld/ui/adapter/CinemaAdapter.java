@@ -35,7 +35,8 @@ public class CinemaAdapter extends BaseListAdapter<Cinema, CinemaAdapter.ViewHol
 	@Override
 	protected void bindView(final ViewHolder holder, final Cinema currentItem, final View convertView) {
 		String title = currentItem.getName();
-		String description = String.format("%s, %s", currentItem.getAddress(), currentItem.getPostcode());
+		String description = String.format("%s, %s\n - last updated: %3$tF %3$tT",
+				currentItem.getAddress(), currentItem.getPostcode(), currentItem.getLastUpdate());
 
 		holder.title.setText(title);
 		holder.description.setText(description);
