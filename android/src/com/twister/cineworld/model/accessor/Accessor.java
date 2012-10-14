@@ -20,6 +20,8 @@ public interface Accessor {
 
 	List<Cinema> getCinemasForCategory(String categoryCode) throws ApplicationException;
 
+	List<Cinema> getCinemasForDate(Calendar calendar) throws ApplicationException;
+
 	List<Film> getAllFilms() throws ApplicationException;
 
 	Film getFilm(int filmEdi) throws ApplicationException;

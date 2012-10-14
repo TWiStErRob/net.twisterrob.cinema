@@ -33,6 +33,10 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
+	public List<Cinema> getCinemasForDate(final Calendar calendar) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		return Collections.emptyList();
 	}

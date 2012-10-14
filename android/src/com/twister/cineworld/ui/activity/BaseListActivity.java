@@ -32,6 +32,7 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * Context menu for items in the list. <code>null</code>, if there is no context menu
 	 */
 	private Integer				m_contextMenuId;
+	private Integer				m_optionsMenuId;
 	private SlideMenu			m_slidemenu;
 	private boolean				m_autoLoad		= true;
 
@@ -43,14 +44,8 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 * @param contentViewId Must have an {@link AbsListView} with an id of <code>android:id="@android:id/list"</code>.
 	 * @param contextMenuId Context menu for items in the list.
 	 */
-	public BaseListActivity(final int contentViewId, final int contextMenuId) {
-		m_contentViewId = contentViewId;
-		m_contextMenuId = contextMenuId;
-	}
-
 	public BaseListActivity(final int contentViewId) {
 		m_contentViewId = contentViewId;
-		m_contextMenuId = null;
 	}
 
 	/**
@@ -79,6 +74,30 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		if (m_autoLoad) {
 			startLoad();
 		}
+	}
+
+	public void setContextMenu(final int contextMenuId) {
+		m_contextMenuId = contextMenuId;
+	}
+
+	public Integer getContextMenu() {
+		return m_contextMenuId;
+	}
+
+	public void clearContextMenu() {
+		m_contextMenuId = null;
+	}
+
+	public void setOptionsMenu(final int optionsMenuId) {
+		m_optionsMenuId = optionsMenuId;
+	}
+
+	public Integer getOptionsMenu() {
+		return m_optionsMenuId;
+	}
+
+	public void clearOptionsMenu() {
+		m_optionsMenuId = null;
 	}
 
 	public void setAutoLoad(final boolean autoLoad) {
@@ -142,6 +161,14 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	 */
 	protected abstract List<UIItem> loadList() throws ApplicationException;
 
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		if (m_optionsMenuId != null) {
+			getMenuInflater().inflate(m_optionsMenuId, menu);
+		}
+		return true;
+	}
+
 	/**
 	 * Creates the context menu based on the <code>contextMenuId</code> given in the constructor. Extenders must use
 	 * {@link #onCreateContextMenu(ContextMenu, Object)} to customize the menu based on the selected item.
@@ -153,9 +180,8 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 	@Override
 	public final void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
 		if (m_contextMenuId != null) {
-			inflater.inflate(m_contextMenuId, menu);
+			getMenuInflater().inflate(m_contextMenuId, menu);
 
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 			assert v == m_listView;
@@ -186,6 +212,12 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 
 	private TextView getHeaderTitle() {
 		return (TextView) this.findViewById(R.id.activity_title);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		Toast.makeText(this, String.format("Not implemented: %s", item.getTitle()), Toast.LENGTH_SHORT).show();
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**

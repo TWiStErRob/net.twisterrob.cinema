@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".ui.activity.CinemasMapActivity"
-            android:label="@string/title_activity_cinemas_map"
             android:screenOrientation="portrait" >
         </activity>
         <activity

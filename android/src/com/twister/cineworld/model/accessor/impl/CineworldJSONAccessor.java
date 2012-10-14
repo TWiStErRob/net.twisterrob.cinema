@@ -99,6 +99,18 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
+	public List<Cinema> getCinemasForDate(final Calendar calendar) throws ApplicationException {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		request.setDate(calendar);
+		List<CineworldCinema> list = getList(request);
+		List<Cinema> result = convert(list);
+		for (Cinema cinema : result) {
+			cinema.setTerritory(request.getTerritory());
+		}
+		return result;
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		FilmsRequest request = new FilmsRequest();
 		request.setFull(true);

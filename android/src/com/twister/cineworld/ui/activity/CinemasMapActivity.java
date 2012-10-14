@@ -26,7 +26,8 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 
 	public CinemasMapActivity() {
 		super(R.layout.activity_cinemas_map, R.menu.context_item_cinema);
-		setAutoLoad(false);
+		super.setAutoLoad(false);
+		super.setOptionsMenu(R.menu.activity_cinemas_map);
 	}
 
 	@Override
@@ -93,6 +94,19 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		m_location.disableMyLocation();
 		m_location.disableCompass();
 		super.onPause();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menuitem_cinemas_asList:
+				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
+				intent.putExtras(getIntent());
+				this.startActivity(intent);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override

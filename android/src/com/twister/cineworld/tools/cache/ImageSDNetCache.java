@@ -17,7 +17,7 @@ public class ImageSDNetCache implements Cache<URL, Bitmap> {
 	private final ImageCache	m_cache;
 
 	public ImageSDNetCache() {
-		ImageCacheParams params = new ImageCache.ImageCacheParams(App.getInstance(), "posters");
+		ImageCacheParams params = new ImageCache.ImageCacheParams(App.getInstance(), "");
 		params.initDiskCacheOnCreate = true;
 		params.memoryCacheEnabled = false;
 		m_cache = new ImageCache(params);

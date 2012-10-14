@@ -14,6 +14,7 @@ final class CinemasUIRequest extends BaseUIRequest<Cinema> {
 	private final Distributor	m_distributor;
 	private final Event			m_event;
 	private final Category		m_category;
+	private final Date			m_date;
 
 	CinemasUIRequest(final Intent intent) {
 		super(intent);
@@ -21,6 +22,7 @@ final class CinemasUIRequest extends BaseUIRequest<Cinema> {
 		m_distributor = getExtra(EXTRA_DISTRIBUTOR);
 		m_event = getExtra(EXTRA_EVENT);
 		m_category = getExtra(EXTRA_CATEGORY);
+		m_date = getExtra(EXTRA_DATE);
 	}
 
 	@Override
@@ -33,6 +35,8 @@ final class CinemasUIRequest extends BaseUIRequest<Cinema> {
 			return resources.getString(R.string.title_activity_cinemas_forEvent, m_event.getName());
 		} else if (m_category != null) {
 			return resources.getString(R.string.title_activity_cinemas_forCategory, m_category.getName());
+		} else if (m_date != null) {
+			return resources.getString(R.string.title_activity_cinemas_forDate, m_date.getDate());
 		} else {
 			return resources.getString(R.string.title_activity_cinemas_all, m_film);
 		}
@@ -40,16 +44,20 @@ final class CinemasUIRequest extends BaseUIRequest<Cinema> {
 
 	@Override
 	public List<Cinema> getList() throws ApplicationException {
+		List<Cinema> list = null;
 		if (m_film != null) {
-			return App.getInstance().getCineworldAccessor().getCinemasForFilm(m_film.getEdi());
+			list = App.getInstance().getCineworldAccessor().getCinemasForFilm(m_film.getEdi());
 		} else if (m_distributor != null) {
-			return App.getInstance().getCineworldAccessor().getCinemasForDistributor(m_distributor.getId());
+			list = App.getInstance().getCineworldAccessor().getCinemasForDistributor(m_distributor.getId());
 		} else if (m_event != null) {
-			return App.getInstance().getCineworldAccessor().getCinemasForEvent(m_event.getCode());
+			list = App.getInstance().getCineworldAccessor().getCinemasForEvent(m_event.getCode());
 		} else if (m_category != null) {
-			return App.getInstance().getCineworldAccessor().getCinemasForCategory(m_category.getCode());
+			list = App.getInstance().getCineworldAccessor().getCinemasForCategory(m_category.getCode());
+		} else if (m_date != null) {
+			list = App.getInstance().getCineworldAccessor().getCinemasForDate(m_date.getCalendar());
 		} else {
-			return App.getInstance().getCineworldAccessor().getAllCinemas();
+			list = App.getInstance().getCineworldAccessor().getAllCinemas();
 		}
+		return list;
 	}
 }

@@ -39,6 +39,10 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getCinemasForCategory(categoryCode);
 	}
 
+	public List<Cinema> getCinemasForDate(final Calendar calendar) throws ApplicationException {
+		return m_other.getCinemasForDate(calendar);
+	}
+
 	public List<Film> getAllFilms() throws ApplicationException {
 		return m_other.getAllFilms();
 	}

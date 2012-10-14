@@ -14,7 +14,8 @@ import com.twister.cineworld.ui.adapter.DistributorAdapter;
 
 public class DistributorsActivity extends BaseListActivity<Distributor> {
 	public DistributorsActivity() {
-		super(R.layout.activity_list, R.menu.context_item_distributor);
+		super(R.layout.activity_list);
+		super.setContextMenu(R.menu.context_item_distributor);
 	}
 
 	@Override

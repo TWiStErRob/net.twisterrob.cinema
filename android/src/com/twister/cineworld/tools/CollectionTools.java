@@ -1,6 +1,6 @@
 package com.twister.cineworld.tools;
 
-import java.util.List;
+import java.util.*;
 
 public class CollectionTools {
 	public static void ensureIndexValid(final List<? extends Object> list, int i) {
@@ -17,5 +17,18 @@ public class CollectionTools {
 			}
 		}
 		return null;
+	}
+
+	public static <T> List<T> remove(final List<T> list, final Class<? extends T> clazz) {
+		List<T> removed = new LinkedList<T>();
+		Iterator<T> it = list.listIterator();
+		while (it.hasNext()) {
+			T item = it.next();
+			if (clazz.isAssignableFrom(item.getClass())) {
+				it.remove();
+				removed.add(item);
+			}
+		}
+		return removed;
 	}
 }

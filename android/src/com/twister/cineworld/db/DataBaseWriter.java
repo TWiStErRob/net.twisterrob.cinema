@@ -207,6 +207,7 @@ class DataBaseWriter {
 			LOG.debug("Updating location: %s to %s", location.getPostCode(), location.getLocation());
 			SQLiteDatabase database = m_dataBaseHelper.getWritableDatabase();
 			prepareStatements(database);
+			database.beginTransaction();
 			int column = 0;
 			DatabaseUtils.bindObjectToProgram(m_updateGeoCache, ++column, location.getLocation().getLatitude());
 			DatabaseUtils.bindObjectToProgram(m_updateGeoCache, ++column, location.getLocation().getLongitude());
@@ -239,6 +240,7 @@ class DataBaseWriter {
 			LOG.warn("Cannot insert location, ignoring", ex);
 		}
 	}
+
 
 
 

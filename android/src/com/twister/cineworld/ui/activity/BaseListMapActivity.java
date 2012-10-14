@@ -23,6 +23,7 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	private int								m_contentViewId;
 	private int								m_contextMenuId;
 	private boolean							m_autoLoad;
+	private Integer							m_optionsMenuId;
 
 	/**
 	 * Creates an instance of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -53,6 +54,26 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 		if (m_autoLoad) {
 			startLoad();
 		}
+	}
+
+	public void setContextMenu(final int contextMenuId) {
+		m_contextMenuId = contextMenuId;
+	}
+
+	public int getContextMenu() {
+		return m_contextMenuId;
+	}
+
+	public void setOptionsMenu(final int optionsMenuId) {
+		m_optionsMenuId = optionsMenuId;
+	}
+
+	public Integer getOptionsMenu() {
+		return m_optionsMenuId;
+	}
+
+	public void clearOptionsMenu() {
+		m_optionsMenuId = null;
 	}
 
 	public void setAutoLoad(final boolean autoLoad) {
@@ -96,6 +117,14 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 		toast.show();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		if (m_optionsMenuId != null) {
+			getMenuInflater().inflate(m_optionsMenuId, menu);
+		}
+		return true;
+	}
+
 	/**
 	 * Creates the context menu based on the <code>contextMenuId</code> given in the constructor. Extenders must use
 	 * {@link #onCreateContextMenu(ContextMenu, Object)} to customize the menu based on the selected item.
@@ -107,8 +136,7 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	@Override
 	public final void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(m_contextMenuId, menu);
+		getMenuInflater().inflate(m_contextMenuId, menu);
 
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		assert v == m_adapterView;

@@ -16,7 +16,8 @@ public class DatesActivity extends BaseListActivity<Date> {
 	private DatesUIRequest	m_request;
 
 	public DatesActivity() {
-		super(R.layout.activity_list, R.menu.context_item_date);
+		super(R.layout.activity_list);
+		super.setContextMenu(R.menu.context_item_date);
 		super.setAutoLoad(false);
 	}
 
@@ -46,8 +47,14 @@ public class DatesActivity extends BaseListActivity<Date> {
 	@Override
 	protected boolean onContextItemSelected(final MenuItem menu, final Date item) {
 		switch (menu.getItemId()) {
-			case R.id.menuitem_date_film: {
+			case R.id.menuitem_date_films: {
 				Intent intent = new Intent(getApplicationContext(), FilmsActivity.class);
+				intent.putExtra(UIRequestExtras.EXTRA_DATE, item);
+				this.startActivity(intent);
+				return true;
+			}
+			case R.id.menuitem_date_cinemas: {
+				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
 				intent.putExtra(UIRequestExtras.EXTRA_DATE, item);
 				this.startActivity(intent);
 				return true;

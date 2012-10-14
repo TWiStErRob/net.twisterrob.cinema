@@ -40,7 +40,9 @@ public class GeoDBCache implements Cache<String, Location> {
 		Location loc = m_locations.get(postCode);
 		if (loc == null) {
 			loc = GeoDBCache.geoCode(postCode);
-			put(postCode, loc);
+			if (loc != null) {
+				put(postCode, loc);
+			}
 		}
 		return loc;
 	}

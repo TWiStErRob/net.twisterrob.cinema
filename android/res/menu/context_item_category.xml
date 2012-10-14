@@ -3,4 +3,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menuitem_category_cinemas" android:title="Where can I watch films in this category?" />
 	<item android:id="@+id/menuitem_category_films" android:title="What's in this category?" />
+	<item android:id="@+id/menuitem_category_cinemas_map" android:title="Where can I watch films in this category? (map)" />
 </menu>

@@ -13,4 +13,8 @@
 	<item android:id="@+id/menuitem_film_when_3d" android:title="When can I see this in 3D?" />
 	<item android:id="@+id/menuitem_film_when_2d_imax" android:title="When can I see this in IMAX?" />
 	<item android:id="@+id/menuitem_film_when_3d_imax" android:title="When can I see this in IMAX 3D?" />
+	<item android:id="@+id/menuitem_film_where_2d_map" android:title="Where can I see this in 2D? (map)" />
+	<item android:id="@+id/menuitem_film_where_3d_map" android:title="Where can I see this in 3D? (map)" />
+	<item android:id="@+id/menuitem_film_where_2d_imax_map" android:title="Where can I see this in IMAX? (map)" />
+	<item android:id="@+id/menuitem_film_where_3d_imax_map" android:title="Where can I see this in IMAX 3D? (map)" />
 </menu>

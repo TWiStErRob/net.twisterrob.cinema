@@ -260,7 +260,8 @@ public class ImageCache {
 					final DiskLruCache.Snapshot snapshot = mDiskLruCache.get(key);
 					if (snapshot != null) {
 						if (BuildConfig.DEBUG) {
-							Log.d(TAG, String.format("Disk cache hit for %s", data));
+							Log.d(TAG, String.format("Disk cache hit for %s: %s",
+									data, snapshot.getFile(DISK_CACHE_INDEX)));
 						}
 						inputStream = snapshot.getInputStream(DISK_CACHE_INDEX);
 						if (inputStream != null) {
@@ -408,10 +409,10 @@ public class ImageCache {
 	public static File getDiskCacheDir(final Context context, final String uniqueName) {
 		// Check if media is mounted or storage is built-in, if so, try and use external cache dir
 		// otherwise use internal cache dir
+		boolean externalOK = Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
+				!ImageCache.isExternalStorageRemovable();
 		final String cachePath =
-				Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
-						!ImageCache.isExternalStorageRemovable()? ImageCache.getExternalCacheDir(context).getPath() :
-						context.getCacheDir().getPath();
+				externalOK? ImageCache.getExternalCacheDir(context).getPath() : context.getCacheDir().getPath();
 
 		return new File(cachePath + File.separator + uniqueName);
 	}

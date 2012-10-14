@@ -441,9 +441,11 @@ public final class DiskLruCache implements Closeable {
 		 * then the streams could come from different edits.
 		 */
 		InputStream[] ins = new InputStream[valueCount];
+		File[] files = new File[valueCount];
 		try {
 			for (int i = 0; i < valueCount; i++) {
-				ins[i] = new FileInputStream(entry.getCleanFile(i));
+				files[i] = entry.getCleanFile(i);
+				ins[i] = new FileInputStream(files[i]);
 			}
 		} catch (FileNotFoundException e) {
 			// a file must have been deleted manually!
@@ -456,7 +458,7 @@ public final class DiskLruCache implements Closeable {
 			executorService.submit(cleanupCallable);
 		}
 
-		return new Snapshot(key, entry.sequenceNumber, ins);
+		return new Snapshot(key, entry.sequenceNumber, files, ins);
 	}
 
 	/**
@@ -678,10 +680,12 @@ public final class DiskLruCache implements Closeable {
 		private final String		key;
 		private final long			sequenceNumber;
 		private final InputStream[]	ins;
+		private final File[]		files;
 
-		private Snapshot(final String key, final long sequenceNumber, final InputStream[] ins) {
+		private Snapshot(final String key, final long sequenceNumber, final File[] files, final InputStream[] ins) {
 			this.key = key;
 			this.sequenceNumber = sequenceNumber;
+			this.files = files;
 			this.ins = ins;
 		}
 
@@ -701,6 +705,13 @@ public final class DiskLruCache implements Closeable {
 		}
 
 		/**
+		 * Returns the underlying file for {@code index}.
+		 */
+		public File getFile(final int index) {
+			return files[index];
+		}
+
+		/**
 		 * Returns the string value for {@code index}.
 		 */
 		public String getString(final int index) throws IOException {
@@ -711,6 +722,10 @@ public final class DiskLruCache implements Closeable {
 			for (InputStream in : ins) {
 				DiskLruCache.closeQuietly(in);
 			}
+		}
+
+		public String getKey() {
+			return key;
 		}
 	}
 

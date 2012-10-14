@@ -16,8 +16,10 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 	private CinemasUIRequest	m_request;
 
 	public CinemasActivity() {
-		super(R.layout.activity_list, R.menu.context_item_cinema);
+		super(R.layout.activity_list);
 		super.setAutoLoad(false);
+		super.setContextMenu(R.menu.context_item_cinema);
+		super.setOptionsMenu(R.menu.activity_cinemas);
 	}
 
 	@Override
@@ -26,6 +28,19 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 		m_request = new CinemasUIRequest(this.getIntent());
 		startLoad();
 		setTitle(m_request.getTitle(getResources()));
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menuitem_cinemas_asMap:
+				Intent intent = new Intent(getApplicationContext(), CinemasMapActivity.class);
+				intent.putExtras(getIntent());
+				this.startActivity(intent);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
