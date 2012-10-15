@@ -12,6 +12,7 @@ import com.google.android.maps.MapActivity;
 import com.twister.cineworld.R;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.ui.*;
+import com.twister.cineworld.ui.components.*;
 
 /**
  * Base class for listing related activities on a map, handling common UI stuff generic to all of them.<br>
@@ -25,6 +26,7 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	private int								m_contextMenuId;
 	private boolean							m_autoLoad;
 	private Integer							m_optionsMenuId;
+	private SlideMenu						m_slidemenu;
 
 	/**
 	 * Creates an instance of the base class. <code>contentViewId</code> will be set with {@link #setContentView(int)}
@@ -52,6 +54,10 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 
 		m_adapterView = (AdapterView<?>) findViewById(android.R.id.list);
 		registerForContextMenu(m_adapterView);
+
+		m_slidemenu = new SlideMenu(this);
+		m_slidemenu.checkEnabled();
+		m_slidemenu.getList().setOnItemClickListener(new SliderMenuMainMenuListener(m_slidemenu));
 
 		if (m_autoLoad) {
 			startLoad();
@@ -252,4 +258,14 @@ public abstract class BaseListMapActivity<UIItem> extends MapActivity {
 	 */
 	protected abstract List<UIItem> loadList() throws ApplicationException;
 
+	/**
+	 * R.layout.common_header/R.id.button_home handler
+	 */
+	public void buttonHome_Click(final View v) {
+		m_slidemenu.show(true);
+	}
+
+	public SlideMenu getSlider() {
+		return m_slidemenu;
+	}
 }

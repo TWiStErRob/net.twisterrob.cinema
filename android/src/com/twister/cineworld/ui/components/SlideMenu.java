@@ -12,6 +12,7 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.log.*;
 
 public class SlideMenu {
+	private static final int	DURATION	= 200;
 	private static final Log	LOG			= LogFactory.getLog(Tag.UI);
 	private static boolean		s_menuShown	= false;
 	private static View			s_menu;
@@ -78,10 +79,13 @@ public class SlideMenu {
 		s_content.setLayoutParams(parm);
 		// animation for smooth slide-out
 		if (animate) {
-			TranslateAnimation ta = new TranslateAnimation(-s_menuSize, 0, 0, 0);
-			ta.setDuration(200);
-			s_content.startAnimation(ta);
-			s_menu.startAnimation(ta);
+			TranslateAnimation taContent = new TranslateAnimation(-s_menuSize, 0, 0, 0);
+			taContent.setDuration(DURATION);
+			s_content.startAnimation(taContent);
+
+			TranslateAnimation taMenu = new TranslateAnimation(-s_menuSize, 0, 0, 0);
+			taMenu.setDuration(DURATION);
+			s_menu.startAnimation(taMenu);
 		}
 		s_menu.findViewById(R.id.overlay).setOnClickListener(new OnClickListener() {
 			public void onClick(final View v) {
@@ -112,13 +116,13 @@ public class SlideMenu {
 		}
 		s_menuShown = false;
 		if (animate) {
-			TranslateAnimation ta = new TranslateAnimation(0, -s_menuSize, 0, 0);
-			ta.setDuration(200);
-			s_menu.startAnimation(ta);
+			TranslateAnimation taMenu = new TranslateAnimation(0, -s_menuSize, 0, 0);
+			taMenu.setDuration(DURATION);
+			s_menu.startAnimation(taMenu);
 
-			TranslateAnimation tra = new TranslateAnimation(s_menuSize, 0, 0, 0);
-			tra.setDuration(200);
-			s_content.startAnimation(tra);
+			TranslateAnimation taContent = new TranslateAnimation(s_menuSize, 0, 0, 0);
+			taContent.setDuration(DURATION);
+			s_content.startAnimation(taContent);
 		}
 		FrameLayout.LayoutParams parm = (FrameLayout.LayoutParams) s_content.getLayoutParams();
 		parm.setMargins(0, 0, 0, 0);
