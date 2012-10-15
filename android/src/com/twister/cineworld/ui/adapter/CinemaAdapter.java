@@ -10,8 +10,11 @@ import com.twister.cineworld.R;
 import com.twister.cineworld.model.generic.Cinema;
 
 public class CinemaAdapter extends BaseListAdapter<Cinema, CinemaAdapter.ViewHolder> {
-	public CinemaAdapter(final Context context, final Collection<Cinema> items) {
-		super(context, items);
+	private String	m_emptyText;
+
+	public CinemaAdapter(final Context context, final Collection<Cinema> items, final String emptyText) {
+		super(context, items, emptyText != null);
+		m_emptyText = emptyText;
 	}
 
 	protected class ViewHolder {
@@ -40,5 +43,11 @@ public class CinemaAdapter extends BaseListAdapter<Cinema, CinemaAdapter.ViewHol
 
 		holder.title.setText(title);
 		holder.description.setText(description);
+	}
+
+	@Override
+	protected void bindEmptyView(final ViewHolder holder, final View convertView) {
+		holder.title.setText(m_emptyText);
+		holder.description.setText(null);
 	}
 }

@@ -63,8 +63,8 @@ public class CinemaFilmsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
 		if (shadow) {
-			paint.setAlpha(96);
-			paint.setStrokeWidth(2f);
+			paint.setAlpha(80);
+			paint.setStrokeWidth(1.5f);
 		} else {
 			paint.setAlpha(192);
 			paint.setStrokeWidth(2.5f);

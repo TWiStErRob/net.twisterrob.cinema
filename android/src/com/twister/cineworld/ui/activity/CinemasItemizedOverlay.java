@@ -1,6 +1,6 @@
 package com.twister.cineworld.ui.activity;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -55,10 +55,6 @@ public class CinemasItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	public int size() {
 		return m_items.size();
-	}
-
-	public List<Cinema> getItems() {
-		return Collections.unmodifiableList(m_items);
 	}
 
 	@Override

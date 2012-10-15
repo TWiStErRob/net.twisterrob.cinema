@@ -66,7 +66,7 @@ INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('PE297EG',
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('IG1 1BP', +51.557634, +  0.074113);
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('IP1 1AX', +52.053221, +  1.151000);
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('PO302TA', +50.698962, -  1.289230);
-INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('JE2 4HE', +54.617791, -107.384442);
+INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('JE2 4HE', +49.183150, -  2.114440);
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('WN7 4PE', +53.494022, -  2.515212);
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('L13 1EW', +53.408399, -  2.922888);
 INSERT INTO "Helper:GeoCache" (_postcode, latitude, longitude) VALUES('LL319XX', +53.282271, -  3.808416);

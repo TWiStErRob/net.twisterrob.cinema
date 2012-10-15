@@ -124,11 +124,6 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 	}
 
 	@Override
-	protected ListAdapter createAdapter(final List<Cinema> result) {
-		return new CinemaAdapter(this, result);
-	}
-
-	@Override
 	public void update(final List<Cinema> result) {
 		super.update(result);
 		for (Cinema cinema : result) {
@@ -138,38 +133,37 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		}
 	}
 
-	boolean	skipEvent	= false;
-
+	/**
+	 * m_overlay.setOnFocusChangeListener(this);
+	 */
 	public void onFocusChanged(@SuppressWarnings("rawtypes") final ItemizedOverlay overlay, final OverlayItem newFocus) {
-		if (skipEvent) {
-			skipEvent = false;
-			return;
-		}
 		CinemaAdapter adapter = (CinemaAdapter) getSpinner().getAdapter();
-		skipEvent = true;
+		int i = 0;
 		if (newFocus != null) {
-			int i = 0;
 			for (Cinema cinema : adapter.getItems()) {
-				if (cinema.getLocation().near(newFocus.getPoint())) {
+				if (cinema != null && cinema.getLocation().near(newFocus.getPoint())) {
 					break;
 				}
 				i++;
 			}
-			getSpinner().setSelection(i);
-		} else {
-			m_overlay.onTap(-1);
-			getSpinner().setSelection(0); // TODO
 		}
+		getSpinner().setSelection(i);
+		m_overlay.onTap(i - 1); // compensate the "please select" item
 		m_map.postInvalidate();
 	}
 
+	/**
+	 * getSpinner().setOnItemSelectedListener(this);
+	 */
 	public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-		if (skipEvent) {
-			skipEvent = false;
-			return;
+		if (position == 0) {
+			// position 0 is the "please select"
+			onNothingSelected(parent);
+		} else {
+			// - 1 to compensate the fake item in the spinner
+			OverlayItem item = position < m_overlay.size()? m_overlay.getItem(position - 1) : null;
+			m_overlay.setFocus(item);
 		}
-		OverlayItem item = position < m_overlay.size()? m_overlay.getItem(position) : null;
-		m_overlay.setFocus(item);
 	}
 
 	public void onNothingSelected(final AdapterView<?> parent) {
@@ -186,4 +180,8 @@ public class CinemasMapActivity extends BaseListMapActivity<Cinema> implements
 		return m_request.getList();
 	}
 
+	@Override
+	protected ListAdapter createAdapter(final List<Cinema> result) {
+		return new CinemaAdapter(this, result, "Please select a cinema");
+	}
 }

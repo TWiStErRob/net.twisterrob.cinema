@@ -81,6 +81,6 @@ public class CinemasActivity extends BaseListActivity<Cinema> {
 
 	@Override
 	protected ListAdapter createAdapter(final List<Cinema> result) {
-		return new CinemaAdapter(this, result);
+		return new CinemaAdapter(this, result, null);
 	}
 }

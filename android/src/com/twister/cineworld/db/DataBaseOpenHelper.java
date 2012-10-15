@@ -29,7 +29,7 @@ class DataBaseOpenHelper extends SQLiteOpenHelper {
 	public void onOpen(final SQLiteDatabase db) {
 		LOG.debug("Opening database: %s", DBTools.toString(db));
 		backupDB(db, "CineworldDB.onOpen.sqlite");
-		onCreate(db); // FIXME for DB development, always clear and initialize
+		// onCreate(db); // FIXME for DB development, always clear and initialize
 		super.onOpen(db);
 		LOG.info("Opened database: %s", DBTools.toString(db));
 		// db.execSQL("DELETE FROM Cinema;");
