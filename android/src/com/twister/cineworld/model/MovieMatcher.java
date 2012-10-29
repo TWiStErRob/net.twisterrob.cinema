@@ -12,7 +12,13 @@ public class MovieMatcher {
 			if (title != null) {
 				String[] parts = title.split("\\s*-\\s*", 2);
 				// Log.d("MATCH", Arrays.toString(parts));
-				title = parts.length == 1? parts[0] : parts[1];
+				if (parts.length == 2 && parts[1].matches("\\d{2}/\\d{2}/\\d{4}")) {
+					title = parts[0];
+				} else if (parts.length == 1) {
+					title = parts[1];
+				} else {
+					title = parts[0];
+				}
 			}
 			Movie film = find(films, title);
 			if (film == null) {

@@ -87,6 +87,10 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getDatesForCinema(cinemaId);
 	}
 
+	public List<Date> getDatesForFilmAtCinema(int filmEdi, int cinemaId) throws ApplicationException {
+		return m_other.getDatesForFilmAtCinema(filmEdi, cinemaId);
+	}
+
 	public List<Category> getAllCategories() throws ApplicationException {
 		return m_other.getAllCategories();
 	}
@@ -99,7 +103,7 @@ public class DelegatingAccessor implements Accessor {
 		return m_other.getAllDistributors();
 	}
 
-	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final String date)
 			throws ApplicationException {
 		return m_other.getPeformances(cinemaId, filmEdi, date);
 	}

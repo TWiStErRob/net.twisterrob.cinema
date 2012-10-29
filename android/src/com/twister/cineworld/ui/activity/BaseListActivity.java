@@ -192,6 +192,18 @@ public abstract class BaseListActivity<UIItem> extends VerboseActivity implement
 		}
 	}
 
+	protected final void formatMenuAndVisible(final Menu menu, final int menuItemId, boolean visible,
+			final Object... formatArgs) {
+		MenuItem item = menu.findItem(menuItemId);
+		visible &= item.isVisible();
+		item.setVisible(visible);
+		if (visible) {
+			String title = item.getTitle().toString();
+			title = String.format(title, formatArgs);
+			item.setTitle(title);
+		}
+	}
+
 	@Override
 	public void setTitle(final int titleId) {
 		super.setTitle(titleId);

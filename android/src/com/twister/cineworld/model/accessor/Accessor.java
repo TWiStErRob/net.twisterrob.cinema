@@ -44,12 +44,13 @@ public interface Accessor {
 
 	List<Date> getDatesForCinema(int cinemaId) throws ApplicationException;
 
+	List<Date> getDatesForFilmAtCinema(int filmEdi, int cinemaId) throws ApplicationException;
+
 	List<Category> getAllCategories() throws ApplicationException;
 
 	List<Event> getAllEvents() throws ApplicationException;
 
 	List<Distributor> getAllDistributors() throws ApplicationException;
 
-	List<Performance> getPeformances(int cinemaId, int filmEdi, int date) throws ApplicationException;
-
+	List<Performance> getPeformances(int cinemaId, int filmEdi, String date) throws ApplicationException;
 }

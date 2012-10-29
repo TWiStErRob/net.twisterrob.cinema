@@ -60,4 +60,8 @@ final class FilmsUIRequest extends BaseUIRequest<Film> {
 		}
 		return list;
 	}
+
+	public Cinema getCinema() {
+		return m_cinema;
+	}
 }

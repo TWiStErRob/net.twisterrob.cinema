@@ -210,6 +210,15 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
+	public List<Date> getDatesForFilmAtCinema(int filmEdi, int cinemaId) throws ApplicationException {
+		DatesRequest request = new DatesRequest();
+		request.setCinema(cinemaId);
+		request.setFilm(filmEdi);
+		List<CineworldDate> list = getList(request);
+		List<Date> result = convert(list);
+		return result;
+	}
+
 	public List<Category> getAllCategories() throws ApplicationException {
 		CategoriesRequest request = new CategoriesRequest();
 		List<CineworldCategory> list = getList(request);
@@ -231,7 +240,7 @@ public class CineworldJSONAccessor implements Accessor {
 		return result;
 	}
 
-	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final String date)
 			throws ApplicationException {
 		PerformancesRequest request = new PerformancesRequest();
 		request.setCinema(cinemaId);
@@ -244,22 +253,20 @@ public class CineworldJSONAccessor implements Accessor {
 
 	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws ApplicationException {
 		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
-		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+		if (response.getErrors() != null && !response.getErrors().isEmpty())
 			throw new InternalException("Errors in JSON response: %s", response.getErrors());
-		}
 		return response.getList();
 	}
 
 	private <T extends CineworldBase> T getSingular(final BaseListRequest<T> request, final Object parameter)
 			throws ApplicationException {
 		List<T> list = getList(request);
-		if (list.isEmpty()) {
+		if (list.isEmpty())
 			throw new InternalException("No results for request");
-		} else if (list.size() == 1) {
+		else if (list.size() == 1)
 			return list.get(0);
-		} else {
+		else
 			throw new InternalException("Multiple %s returned for parameter=%s", request.getRequestType(), parameter);
-		}
 	}
 
 	private <TOut extends GenericBase, TIn extends CineworldBase> List<TOut> convert(final List<TIn> responseItems) {

@@ -59,6 +59,14 @@ public class DatesActivity extends BaseListActivity<Date> {
 				this.startActivity(intent);
 				return true;
 			}
+			case R.id.menuitem_date_films_cinemas: {
+				Intent intent = new Intent(getApplicationContext(), PerformancesActivity.class);
+				intent.putExtra(UIRequestExtras.EXTRA_DATE, item);
+				intent.putExtra(UIRequestExtras.EXTRA_CINEMA, m_request.getCinema());
+				intent.putExtra(UIRequestExtras.EXTRA_FILM, m_request.getFilm());
+				this.startActivity(intent);
+				return true;
+			}
 			default:
 				return super.onContextItemSelected(menu, item);
 		}

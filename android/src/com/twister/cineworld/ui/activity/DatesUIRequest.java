@@ -21,7 +21,10 @@ final class DatesUIRequest extends BaseUIRequest<Date> {
 
 	@Override
 	public String getTitle(final Resources resources) {
-		if (m_film != null) {
+		if (m_cinema != null && m_film != null) {
+			return resources.getString(R.string.title_activity_dates_forCinemaFilm,
+					m_cinema.getName(), m_film.getTitle());
+		} else if (m_film != null) {
 			return resources.getString(R.string.title_activity_dates_forFilm, m_film.getTitle());
 		} else if (m_cinema != null) {
 			return resources.getString(R.string.title_activity_dates_forCinema, m_cinema.getName());
@@ -32,7 +35,9 @@ final class DatesUIRequest extends BaseUIRequest<Date> {
 
 	@Override
 	public List<Date> getList() throws ApplicationException {
-		if (m_film != null) {
+		if (m_cinema != null && m_film != null) {
+			return App.getInstance().getCineworldAccessor().getDatesForFilmAtCinema(m_film.getEdi(), m_cinema.getId());
+		} else if (m_film != null) {
 			return App.getInstance().getCineworldAccessor().getDatesForFilm(m_film.getEdi());
 		} else if (m_cinema != null) {
 			return App.getInstance().getCineworldAccessor().getDatesForCinema(m_cinema.getId());
@@ -40,4 +45,13 @@ final class DatesUIRequest extends BaseUIRequest<Date> {
 			return App.getInstance().getCineworldAccessor().getAllDates();
 		}
 	}
+
+	public Cinema getCinema() {
+		return m_cinema;
+	}
+
+	public Film getFilm() {
+		return m_film;
+	}
+
 }

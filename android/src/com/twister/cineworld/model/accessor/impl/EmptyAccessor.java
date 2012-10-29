@@ -81,6 +81,10 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
+	public List<Date> getDatesForFilmAtCinema(int filmEdi, int cinemaId) throws ApplicationException {
+		return Collections.emptyList();
+	}
+
 	public List<Category> getAllCategories() throws ApplicationException {
 		return Collections.emptyList();
 	}
@@ -93,7 +97,7 @@ public class EmptyAccessor implements Accessor {
 		return Collections.emptyList();
 	}
 
-	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final int date)
+	public List<Performance> getPeformances(final int cinemaId, final int filmEdi, final String date)
 			throws ApplicationException {
 		return Collections.emptyList();
 	}

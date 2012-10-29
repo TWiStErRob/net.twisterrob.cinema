@@ -33,32 +33,29 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 	@Override
 	protected void onCreateContextMenu(final ContextMenu menu, final MovieBase item) {
 		menu.setHeaderTitle(item.getTitle());
-		menu.findItem(R.id.menuitem_film_details_2d).setVisible(item.has2D());
-		menu.findItem(R.id.menuitem_film_when_2d).setVisible(item.has2D());
-		menu.findItem(R.id.menuitem_film_where_2d).setVisible(item.has2D());
-		menu.findItem(R.id.menuitem_film_where_2d_map).setVisible(item.has2D());
-		menu.findItem(R.id.menuitem_film_details_3d).setVisible(item.has3D());
-		menu.findItem(R.id.menuitem_film_when_3d).setVisible(item.has3D());
-		menu.findItem(R.id.menuitem_film_where_3d).setVisible(item.has3D());
-		menu.findItem(R.id.menuitem_film_where_3d_map).setVisible(item.has3D());
-		menu.findItem(R.id.menuitem_film_details_2d_imax).setVisible(item.hasIMax2D());
-		menu.findItem(R.id.menuitem_film_when_2d_imax).setVisible(item.hasIMax2D());
-		menu.findItem(R.id.menuitem_film_where_2d_imax).setVisible(item.hasIMax2D());
-		menu.findItem(R.id.menuitem_film_where_2d_imax_map).setVisible(item.hasIMax2D());
-		menu.findItem(R.id.menuitem_film_details_3d_imax).setVisible(item.hasIMax3D());
-		menu.findItem(R.id.menuitem_film_when_3d_imax).setVisible(item.hasIMax3D());
-		menu.findItem(R.id.menuitem_film_where_3d_imax).setVisible(item.hasIMax3D());
-		menu.findItem(R.id.menuitem_film_where_3d_imax_map).setVisible(item.hasIMax3D());
+
+		menu.setGroupVisible(R.id.menuitemgroup_film_2d, item.has2D());
+		menu.setGroupVisible(R.id.menuitemgroup_film_3d, item.has3D());
+		menu.setGroupVisible(R.id.menuitemgroup_film_2d_imax, item.hasIMax2D());
+		menu.setGroupVisible(R.id.menuitemgroup_film_3d_imax, item.hasIMax3D());
+
+		boolean hasCinema = m_request.getCinema() != null;
+		Object[] args = !hasCinema? null : new Object[] { m_request.getCinema().getName() };
+		formatMenuAndVisible(menu, R.id.menuitem_film_when_cinema_2d, hasCinema, args);
+		formatMenuAndVisible(menu, R.id.menuitem_film_when_cinema_3d, hasCinema, args);
+		formatMenuAndVisible(menu, R.id.menuitem_film_when_cinema_2d_imax, hasCinema, args);
+		formatMenuAndVisible(menu, R.id.menuitem_film_when_cinema_3d_imax, hasCinema, args);
 	}
 
 	@Override
 	protected boolean onContextItemSelected(final MenuItem menu, final MovieBase item) {
-		switch (menu.getItemId()) {
+		int itemId = menu.getItemId();
+		switch (itemId) {
 			case R.id.menuitem_film_details_2d:
 			case R.id.menuitem_film_details_3d:
 			case R.id.menuitem_film_details_2d_imax:
 			case R.id.menuitem_film_details_3d_imax: {
-				Film film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, itemId,
 						R.id.menuitem_film_details_2d, R.id.menuitem_film_details_2d_imax,
 						R.id.menuitem_film_details_3d, R.id.menuitem_film_details_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), FilmActivity.class);
@@ -70,10 +67,23 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 			case R.id.menuitem_film_when_3d:
 			case R.id.menuitem_film_when_2d_imax:
 			case R.id.menuitem_film_when_3d_imax: {
-				Film film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, itemId,
 						R.id.menuitem_film_when_2d, R.id.menuitem_film_when_2d_imax,
 						R.id.menuitem_film_when_3d, R.id.menuitem_film_when_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), DatesActivity.class);
+				intent.putExtra(UIRequestExtras.EXTRA_FILM, film);
+				this.startActivity(intent);
+				return true;
+			}
+			case R.id.menuitem_film_when_cinema_2d:
+			case R.id.menuitem_film_when_cinema_3d:
+			case R.id.menuitem_film_when_cinema_2d_imax:
+			case R.id.menuitem_film_when_cinema_3d_imax: {
+				Film film = getFilm(item, itemId,
+						R.id.menuitem_film_when_cinema_2d, R.id.menuitem_film_when_cinema_2d_imax,
+						R.id.menuitem_film_when_cinema_3d, R.id.menuitem_film_when_cinema_3d_imax);
+				Intent intent = new Intent(getApplicationContext(), DatesActivity.class);
+				intent.putExtra(UIRequestExtras.EXTRA_CINEMA, m_request.getCinema());
 				intent.putExtra(UIRequestExtras.EXTRA_FILM, film);
 				this.startActivity(intent);
 				return true;
@@ -82,7 +92,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 			case R.id.menuitem_film_where_3d:
 			case R.id.menuitem_film_where_2d_imax:
 			case R.id.menuitem_film_where_3d_imax: {
-				Film film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, itemId,
 						R.id.menuitem_film_where_2d, R.id.menuitem_film_where_2d_imax,
 						R.id.menuitem_film_where_3d, R.id.menuitem_film_where_3d_imax);
 				Intent intent = new Intent(getApplicationContext(), CinemasActivity.class);
@@ -94,7 +104,7 @@ public class FilmsActivity extends BaseListActivity<MovieBase> {
 			case R.id.menuitem_film_where_3d_map:
 			case R.id.menuitem_film_where_2d_imax_map:
 			case R.id.menuitem_film_where_3d_imax_map: {
-				Film film = getFilm(item, menu.getItemId(),
+				Film film = getFilm(item, itemId,
 						R.id.menuitem_film_where_2d_map, R.id.menuitem_film_where_2d_imax_map,
 						R.id.menuitem_film_where_3d_map, R.id.menuitem_film_where_3d_imax_map);
 				Intent intent = new Intent(getApplicationContext(), CinemasMapActivity.class);
