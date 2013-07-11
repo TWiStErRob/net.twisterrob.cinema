@@ -1,0 +1,90 @@
+table.highlight {
+	border-collapse: separate;
+	border-spacing: 1px;
+	background-color: aquamarine;
+}
+table.highlight > thead > tr > th {
+	border: 1px solid gray;
+	background-color: lightgray
+}
+
+table.highlight > tbody > tr > td {
+	border: 1px solid green;
+	background-color: lightgreen;
+}
+
+table.highlight > tbody > tr:nth-of-type(odd) > td { 
+	background-color: lime; 
+}
+
+table.highlight > tbody > tr:hover {
+	outline: 2px solid lightblue;
+}
+
+table.highlight > tbody > tr:hover > td {
+	border: 1px solid blue;
+	background-color: lightblue;
+}
+
+table.highlight > tbody > tr:hover > td:hover {
+	border: 1px solid red;
+	outline: 2px solid lightpink;
+	background-color: lightpink;
+}
+
+table.highlight > tbody > tr > td:first-child {
+	background-color: transparent;
+}
+
+
+
+
+#dates-by-films-in-cinemas-container {
+	width: 1300px;
+}
+
+table#dates-by-films-in-cinemas {
+	width: 100%;
+	table-layout: fixed;
+}
+table#dates-by-films-in-cinemas > tbody > tr > td {
+	width: 125px;
+}
+table#dates-by-films-in-cinemas > tbody > tr > td:first-child {
+	width: 250px;
+}
+
+table.scroll, table.scroll .rest > table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width:1200px;
+    display: block;
+}
+table.scroll .first {
+    width:200px;
+    white-space: nowrap;
+}
+table.scroll .rest {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background: silver;
+    width:1000px;
+}
+table.scroll td {
+	overflow: hidden;
+	border: 1px solid black;
+}
+
+table#dates-by-films-then-cinemas > thead > tr > th:first-child {
+	width: 200px;
+}
+table#dates-by-films-then-cinemas > tbody > tr.film > td:first-child {
+	font-weight: bold;
+}
+table#dates-by-films-then-cinemas tr.cinema td:first-child {
+/* 	font-size: xx-small; */
+}
+.film, .cinema {
+	height: 30px;
+}
