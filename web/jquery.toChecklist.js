@@ -326,6 +326,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			checkboxId = checkboxId.replace(/(\.|\/|\,|\%|\<|\>)/g, '\\$1');
 			
 			var labelText = $(this).html();
+			var title = ' title="' + $(this).attr('title').replace(/"/g, '&quot;') + '"';
 			var selected = '';
 			if ($(this).attr('disabled')) {
 				var disabled = ' disabled="disabled"';
@@ -350,8 +351,8 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			checkboxName = checkboxName.replace(/\[\]\[\]$/, '[]');
 
 			$(this).replaceWith('<li tabindex="0"><input type="checkbox" value="'+checkboxValue
- 				+'" name="'+checkboxName+'" id="'+checkboxId+'" ' + selected + disabled
-				+' /><label for="'+checkboxId+'"'+disabledClass+'>'+labelText+'</label></li>');
+ 				+'" name="'+checkboxName+'" id="'+checkboxId+'" ' + selected + disabled + title
+				+' /><label for="'+checkboxId+'"'+disabledClass+title+'>'+labelText+'</label></li>');
 			// Hide the checkboxes.
 			if (o.showCheckboxes === false) {
 				// We could use display:none here, but IE can't handle it. Better
