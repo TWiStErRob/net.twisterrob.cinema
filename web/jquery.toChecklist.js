@@ -120,6 +120,9 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			alert('You cannot select more than '+this.maxNumOfSelections+' items in this list.');
 		},
 
+		"onItemSelected": undefined,
+		"onItemUnSelected": undefined,
+		"onItemChanged": undefined,
 
 		// In case of name conflicts, you can change the class names to whatever you want to use.
 		"cssChecklist" : 'checklist',
@@ -498,16 +501,17 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 				if (event.keyCode != 32) return;
 			}
 
+			var this_input = $('input',this);
 
 			// If we go over the maxNumOfSelections limit, trigger our custom
 			// event onMaxNumExceeded.
 			var numOfItemsChecked = $('input:checked', checklistDivId).length;
 			if (o.maxNumOfSelections != -1 && numOfItemsChecked > o.maxNumOfSelections
-				&& !$('input',this).attr('checked')) {
+				&& !this_input.attr('checked')) {
 
 					o.onMaxNumExceeded();
 
-					event.preventDefault();				
+					event.preventDefault();
 					return;
 			}
 
@@ -517,13 +521,32 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			// from actually checking the box) if clicking directly on checkbox or label.
 			// Note: the && is not a mistake here. It should not be ||
 			if (event.target.tagName.toLowerCase() != 'input' && event.target.tagName.toLowerCase() != 'label') {
-				$('input',this).trigger('click');
+				this_input.trigger('click');
+			}
+
+			var checkbox = this_input.get(0);
+
+			if (event.target.tagName.toLowerCase() === 'input') {
+				if(typeof o.onItemSelected === "function" && checkbox.checked) {
+					if(o.onItemSelected(checkbox) === false) {
+						event.preventDefault();
+						return;
+					}
+				}
+				if(typeof o.onItemUnSelected === "function" && !checkbox.checked) {
+					if(o.onItemUnSelected(checkbox) === false) {
+						event.preventDefault();
+						return;
+					}
+				}
+				if(typeof o.onItemChanged === "function") {
+					o.onItemChanged(checkbox);
+				}
 			}
 
 			// Change the styling of the row to be checked or unchecked.
-			var checkbox = $('input',this).get(0);
 			updateLIStyleToMatchCheckedStatus(checkbox);
-			
+
 			// The showSelectedItems setting can change after the initial conversion to
 			// a checklist, so rather than checking o.showSelectedItems, we check the
 			// value of the custom HTML attribute on the main containing div.
