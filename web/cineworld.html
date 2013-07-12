@@ -5,16 +5,22 @@
 <head>
 	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 	<title>Print a Google Calendar</title>
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="http://layout.jquery-dev.net/lib/css/layout-default-latest.css" />
+	<link rel="stylesheet" type="text/css" href="jquery.toChecklist.css" />
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
 	<script type="text/javascript" src="https://rawgithub.com/cowboy/jquery-hashchange/master/jquery.ba-hashchange.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.min.js"></script>
 	<script type="text/javascript" src="https://rawgithub.com/timrwood/moment/1.7.2/moment.js"></script>
 	<script type="text/javascript" src="https://rawgithub.com/timrwood/moment/1.7.2/lang/hu.js"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
-	<link type="text/css" rel="stylesheet" media="screen" href="jquery.toChecklist.css" />
+
 	<script type="text/javascript" src="jquery.toChecklist.js"></script>
+
 	<script>
 		if (!String.prototype.format) {
 			String.prototype.format = function() {
@@ -116,8 +122,8 @@
 		});
 		twister.calendar = $.extend(twister.calendar || {}, {
 			init: function(params) {
-				moment.lang(params.lang);
-				$.datepicker.setDefaults($.datepicker.regional[params.lang]);
+				moment.lang("en");
+				$.datepicker.setDefaults($.datepicker.regional[""]);
 				//timezoneJS.timezone.zoneFileBasePath = 'tz'; // needs --allow-file-access-from-files
 			},
 
@@ -183,7 +189,6 @@
 				writeUI: writeUI,
 				get date() { return date; },
 				set date(value) { date = value; },
-				get lang() { return "hu"; }
 			}
 		};
 
@@ -232,8 +237,9 @@
 						cinemasList.append(option);
 					});
 					cinemasList.toChecklist( {
-						showSelectedItems: true,
-						addSearchBox: true,
+						showSelectedItems: false,
+						addSearchBox: false,
+						addScrollBar : false,
 						preferIdOverName: false,
 						itemWidth: 200,
 						searchBoxText: 'Filter by cinema name here...',
@@ -305,7 +311,8 @@
 						filmsList.append(option);
 					});
 					filmsList.toChecklist( {
-						showSelectedItems: true,
+						showSelectedItems: false,
+						addScrollBar : false,
 						addSearchBox: true,
 						preferIdOverName: false,
 						searchBoxText: 'Filter by film title here...',
@@ -399,6 +406,20 @@
 		});
 
 		$(document).ready(function document_ready() {
+			twister.ui = {};
+			twister.ui.layout = $('body').layout({
+				center: {
+					childOptions: {
+						west: {
+							size: 250
+						}
+					}
+				},
+				south: {
+					initClosed: true
+				}
+			});
+
 			var status = twister.calendar.current = new CurrentState(); status.updateFromHash();
 			twister.calendar.init(status);
 			$(twister.calendar.renderCalendars);
@@ -420,22 +441,10 @@
 			text-shadow: 2px 1px 3px darkgray;
 		}
 		#cinemas {
-			width: 80%;
-			height: 150px;
-			float: left;
+			width: 100%;
 		}
-		#cinemas_selectedItems {
-			float: left;
-			margin-left: 8px;
-		}
-		#films {
-			width: 400px;
-			height: 300px;
-			float: left;
-		}
-		#films_selectedItems {
-			float: left;
-			margin-left: 8px;
+		#cinemas_listing {
+			overflow: overlay;
 		}
 		#status {
 			color: red;
@@ -459,61 +468,70 @@
 	</style>
 </head>
 <body>
-	<h1 id="title">
-		<span id="calendarDisplay">Cineworld planner</span>
-		(<span id="dateDisplay">date</span>)
-	</h1>
-	<div id="status">&nbsp;</div>
-	<form>
+	<div  class="ui-layout-north">
+		<h1 id="title">
+			<span id="calendarDisplay">Cineworld planner</span>
+			(<span id="dateDisplay">date</span>)
+		</h1>
 		<div id="params">
 			<label for="date">date</label>
 			<input type="text" id="date" />
+			<div id="status">&nbsp;</div>
 		</div>
-		<div id="cinemas_listing">
+	</div>
+	<div id="main_area" class="ui-layout-center">
+		<div id="cinemas_listing" class="ui-layout-north">
 			<div id="cinemas_controls">
 				<input type="button" id="cinemas_checkAll" onclick="$('#cinemas').toChecklist('checkAll');" value="Check all" />
 				<input type="button" id="cinemas_checkNone" onclick="$('#cinemas').toChecklist('clearAll');" value="Uncheck All" />
 				<input type="button" id="cinemas_checkInvert" onclick="$('#cinemas').toChecklist('invert');" value="Invert" />
 				<input type="button" id="cinemas_checkLondon" onclick="$('#cinemas').toChecklist('clearAll'); $('#cinemas li:contains(London)').click();" value="London" />
 			</div>
-			<select id="cinemas" name="cinemas" multiple="multiple">
-				<option>Cinema 1</option>
-				<option>Cinema 2</option>
-				<option>Cinema 3</option>
-			</select>
-			<ul id="cinemas_selectedItems" />
+			<div id="cinemas-container">
+				<select id="cinemas" name="cinemas" multiple="multiple">
+					<option>Cinema 1</option>
+					<option>Cinema 2</option>
+					<option>Cinema 3</option>
+				</select>
+			</div>
 		</div>
-		<br clear="all" />
-		<div id="films_listing">
-			<select id="films" name="films" multiple="multiple">
-				<option>Film 1</option>
-				<option>Film 2</option>
-				<option>Film 3</option>
-			</select>
+		<div id="films_listing" class="ui-layout-west">
+			<div id="films-container">
+				<select id="films" name="films" multiple="multiple">
+					<option>Film 1</option>
+					<option>Film 2</option>
+					<option>Film 3</option>
+				</select>
+			</div>
+		</div>
+		<div id="performances_listing" class="ui-layout-center">
+		</div>
+	</div>
+	<div class="ui-layout-south">
+		<div id="debug">
+			<ul id="cinemas_selectedItems" />
 			<ul id="films_selectedItems" />
 		</div>
-		<div id="performances_listing">
-		</div>
-	</form>
-	<pre style="display:none">
-		Today's dev: http://google.twisterrob.net/calendar.html
+		<pre style="display:none">
+			Today's dev: http://google.twisterrob.net/calendar.html
 
-		Cineworld Unlimited planner
+			Cineworld Unlimited planner
 
-		Features:
-		 * 
+			Features:
+			 * 
 
-		Used:
-		http://www.scotthorlbeck.com/code/tochecklist/
-		xhttps://developers.google.com/gdata/javadoc/com/google/gdata/data/calendar/CalendarEntry
-		xhttp://momentjs.com/docs/#/manipulating/start-of/
-		xhttp://documentcloud.github.com/underscore/#sortBy
-		xhttps://developers.google.com/google-apps/calendar/v2/reference
+			Used:
+			http://www.scotthorlbeck.com/code/tochecklist/
+			xhttps://developers.google.com/gdata/javadoc/com/google/gdata/data/calendar/CalendarEntry
+			xhttp://momentjs.com/docs/#/manipulating/start-of/
+			xhttp://documentcloud.github.com/underscore/#sortBy
+			xhttps://developers.google.com/google-apps/calendar/v2/reference
 
-		Next:
-			* auth
-			* valid http://ajax.aspnetcdn.com/ajax/jQuery.Validate/1.6/jQuery.Validate.pack.js
-	</pre>
+			Next:
+				* auth
+				* valid http://ajax.aspnetcdn.com/ajax/jQuery.Validate/1.6/jQuery.Validate.pack.js
+		</pre>
+	</div>
 	<script type="text/javascript" src="/global/analyticstracking.js"></script>
 </body>
 <script>
