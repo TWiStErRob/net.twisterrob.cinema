@@ -40,46 +40,6 @@
 			}
 		}
 
-		(function($, undefined) {
-			var oldPlugins = {};
-
-			$.each([ "min", "max" ], function(_, name) {
-
-			    $.each([ "Width", "Height" ], function(_, dimension) {
-
-			        var type = name + dimension,
-			            cssProperty = [name, dimension.toLowerCase()].join('-');
-
-			        oldPlugins[ type ] = $.fn[ type ];
-
-			        $.fn[ type ] = function(size) {
-			            var elem = this[0];
-			            if (!elem) {
-			                return !size ? null : this;
-			            }
-
-			            if ($.isFunction(size)) {
-			                return this.each(function(i) {
-			                    var $self = $(this);
-			                    $self[ type ](size.call(this, i, $self[ type ]()));
-			                });
-			            }
-
-			            if (size === undefined) {
-			                var orig = $.css(elem, cssProperty),
-			                    ret = parseFloat(orig);
-
-			                return jQuery.isNaN(ret) ? orig : ret;
-			            } else {
-			                return this.css(cssProperty, typeof size === "string" ? size : size + "px");
-			            }
-			        };
-
-			    });
-
-			});
-		})(jQuery);
-
 		twister = window.twister || {};
 		twister.utils = $.extend(twister.utils || {}, {});
 		twister.utils.url = $.extend(twister.utils.url || {}, {
@@ -197,7 +157,9 @@
 
 		twister.cineworld = $.extend(twister.cineworld || {}, {
 			const: {
-				apiKey: "9qfgpF7B"
+				apiKey: "9qfgpF7B",
+				getFilmsTimeout: 500,
+				getPerformancesTimeout: 500
 			},
 			cinemas: {
 				// all: [ retrieved from cineworld API ],
@@ -211,8 +173,7 @@
 			performances: {
 				// [index by date][index by cinema][index by id]
 			},
-			getCinemas: function cineworld_getCinemas(done) {
-				done = typeof done === "function"? done : function() {};
+			getCinemas: function cineworld_getCinemas() {
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
 					type: 'GET',
@@ -223,10 +184,9 @@
 					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						twister.cineworld.parseCinemas(response, status, xhr);
-						done();
 					}
 				});
-			},	
+			},
 			clearCinemas: function cineworld_clearCinemas() {
 				twister.cineworld.cinemas.all = {};
 				return $('#cinemas').replaceWith('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
@@ -270,18 +230,16 @@
 
 							if ( twister.cineworld.cinemas.getFilmsTimer === undefined) {
 								twister.cineworld.cinemas.getFilmsTimer = setTimeout(function cinemasList_onItemChanged_getFilmsTimer_onTimeout() {
-									twister.cineworld.getFilms(function cinemasList_onItemChanged_getFilms_onDone() {
-										twister.cineworld.cinemas.getFilmsTimer = undefined;
-									});
-								}, 500);
+									twister.cineworld.cinemas.getFilmsTimer = undefined;
+									twister.cineworld.getFilms();
+								}, twister.cineworld.const.getFilmsTimeout);
 							}
 						}
 					} );
 					$('#cinemas_checkLondon').click();
 				}
 			},
-			getFilms: function cineworld_getFilms(done) {
-				done = typeof done === "function"? done : function() {};
+			getFilms: function cineworld_getFilms() {
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
 					type: 'GET',
@@ -294,7 +252,6 @@
 					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						twister.cineworld.parseFilms(response, status, xhr);
-						done();
 					}
 				});
 			},
@@ -354,31 +311,33 @@
 							var checkedFilms = $("li :checkbox:checked", "#films");
 							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
 							twister.cineworld.films.selectedIds = checkedFilmEdis;
-							
+
 							if ( twister.cineworld.films.getPerformancesTimer === undefined) {
 								twister.cineworld.films.getPerformancesTimer = setTimeout(function filmsList_onItemChanged_getPerformancesTimer_onTimeout() {
-									twister.cineworld.getPerformances(function filmsList_onItemChanged_getPerformances_onDone() {
-										twister.cineworld.films.getPerformancesTimer = undefined;
-									});
-								}, 500);
+									twister.cineworld.films.getPerformancesTimer = undefined;
+									twister.cineworld.getPerformances();
+								}, twister.cineworld.const.getPerformancesTimeout);
 							}
 						},
 					} );
 					$.each(twister.cineworld.films.selectedIds, function select_film() {
-						$('#films li:has(:checkbox[value=' + this + '])').click();
+						var filmElem = $('#films li:has(:checkbox[value=' + this + '])');
+						if(filmElem.length == 0) {
+							console.warn("Film disappeared: " + this);
+						} else {
+							filmElem.click();
+						}
 					});
 				}
 			},
-			getPerformances: function cineworld_getPerformances(done) {
-				done = typeof done === "function"? done : function() {};
+			getPerformances: function cineworld_getPerformances() {
 				twister.cineworld.rebuildPerformancesTable();
 				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
-				done();
 			},
 			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
 				var html = "";
 				html += "<table>";
-				
+
 				html += "<thead><tr>";
 				html += "<th>Cinema</th>";
 				html += $.map(twister.cineworld.films.selectedIds, function(edi) {
@@ -501,7 +460,7 @@
 	</style>
 </head>
 <body>
-	<div  class="ui-layout-north">
+	<div class="ui-layout-north">
 		<h1 id="title">
 			<span id="calendarDisplay">Cineworld planner</span>
 			(<span id="dateDisplay">date</span>)
@@ -545,7 +504,7 @@
 			Cineworld Unlimited planner
 
 			Features:
-			 * 
+			 *
 
 			Used:
 			http://www.scotthorlbeck.com/code/tochecklist/
