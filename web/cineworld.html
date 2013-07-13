@@ -340,7 +340,7 @@
 				html += "<thead><tr>";
 				html += "<th>Cinema</th>";
 				html += $.map(checkedFilmEdis, function(edi) {
-							return "<th title="+edi+"><div class=autoHeight>"+twister.cineworld.films[edi].title+"</div></th>";
+							return "<th title="+edi+">"+twister.cineworld.films[edi].title+"</th>";
 						}).join("");
 				html += "</tr></thead>";
 
@@ -358,7 +358,6 @@
 				html += "</tbody>";
 				html += "</table>";
 				$('#performances_listing').html(html);
-				twister.cineworld.fixHeader("#performances_listing > table");
 				$('#performances_listing > table td[id^=performances_]').each(function() {
 					var elem = $(this);
 					var request = {
@@ -404,15 +403,6 @@
 								+ '</a>'
 					}).join(", "));
 				}
-			},
-			fixHeader: function(tableSelector) {
-			    var header_height = 0;
-			    $(tableSelector+' > thead > tr > th > .autoHeight').each(function() {
-			    	var h = $(this).outerHeight();
-			    	var w = $(this).outerWidth();
-			    	$(this).parent().height(w);
-			    	$(this).width(h);
-			    });
 			}
 		});
 
@@ -462,19 +452,6 @@
 		}
 		table, tr, td, th {
 			border: 1px solid #000;
-		}
-
-/* fixme http://stackoverflow.com/a/15636877 */
-		th .autoHeight {
-			padding: 0 .5em;
-			overflow: visible;
-			writing-mode: tb-rl;
-			filter: flipv fliph;
-			-webkit-transform:rotate(-90deg); 
-			-webkit-transform-origin: bottom right;
-			margin-top: 68px;
-			white-space:nowrap; 
-			display:block;
 		}
 	</style>
 </head>
