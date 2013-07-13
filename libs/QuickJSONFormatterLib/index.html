@@ -7,8 +7,40 @@
 	<script type="text/javascript" src="quickjsonformatter.js"></script>
 	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
 	<script>
-		formatter = new QuickJSONFormatter();
+		formatter = new QuickJSONFormatter("RawJson", "Canvas");
 	</script>
+	<style>
+		#CollapsibleViewDetail a {
+			padding-left: 10px;
+		}
+		#ControlsRow {
+			white-space: nowrap;
+			font: 11px Georgia;
+		}
+		#TabSizeHolder {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		#HeaderTitle {
+			text-align: right;
+			font-size: 11px;
+		}
+		#HeaderSubTitle {
+			margin-bottom: 2px;
+			margin-top: 0px
+		}
+		A.OtherToolsLink {
+			color: #555;
+			text-decoration: none;
+		}
+		A.OtherToolsLink:hover {
+			text-decoration: underline;
+		}
+		#RawJson {
+			width: 99%;
+			height: 130px;
+		}
+	</style>
 </head>
 <body>
 	<div id="HeaderTitle">
@@ -25,7 +57,7 @@
 		<input type="Button" value="Format" onClick="formatter.Process()"/>
 		<span id="TabSizeHolder">
 			tab size:
-			<select id="TabSize" onChange="formatter.TabSizeChanged()">
+			<select id="TabSize" onChange="formatter.TabSize = this.options[this.selectedIndex].value; formatter.TabSizeChanged()">
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3" selected="true">3</option>

@@ -14,13 +14,19 @@
 		var _dateObj = new Date();
 		var _regexpObj = new RegExp();
 
-		function QuickJSONFormatter(start, end) {
+		function QuickJSONFormatter(sourceRawJsonId, targetCanvasId) {
+			this.RawJsonId = sourceRawJsonId;
+			this.CanvasId = targetCanvasId;
 			this.QuoteKeys = true;
 			this.ImgCollapsed = "images/Collapsed.gif";
 			this.ImgExpanded = "images/Expanded.gif";
+			this.TabSize = 3;
 			// we need tabs as spaces and not CSS magin-left
 			// in order to ratain format when coping and pasing the code
 			this.SINGLE_TAB = "  ";
+			this.OnError = function(e) {
+				alert("JSON is not well formated:\n" + e.message);
+			};
 			QuickJSONFormatter.instances[this.InstanceIndex = ++QuickJSONFormatter.instances_last] = this;
 		}
 		QuickJSONFormatter.instances = new Array();
@@ -29,16 +35,16 @@
 		QuickJSONFormatter.prototype.Process = function() {
 			this.SetTab();
 			this.IsCollapsible = $id("CollapsibleView").checked;
-			var json = $id("RawJson").value;
+			var json = $id(this.RawJsonId).value;
 			var html = "";
 			try {
 				if (json == "") json = "\"\"";
 				var obj = eval("["+json+"]");
 				html = this.ProcessObject(obj[0], 0, false, false, false);
-				$id("Canvas").innerHTML = "<PRE class='CodeContainer'>"+html+"</PRE>";
+				$id(this.CanvasId).innerHTML = "<PRE class='CodeContainer'>"+html+"</PRE>";
 			} catch(e) {
-				alert("JSON is not well formated:\n" + e.message);
-				$id("Canvas").innerHTML = "";
+				this.OnError(e);
+				$id(this.CanvasId).innerHTML = "";
 			}
 		};
 		QuickJSONFormatter.prototype.ProcessObject = function(obj, indent, addComma, isArray, isPropertyContent) {
@@ -137,7 +143,7 @@
 		QuickJSONFormatter.prototype.CollapseAllClicked = function() {
 			var that = this;
 			this.EnsureIsPopulated();
-			this.TraverseChildren($id("Canvas"), function(element) {
+			this.TraverseChildren($id(this.CanvasId), function(element) {
 				if (element.className == 'collapsible') {
 					that.MakeContentVisible(element, false);
 				}
@@ -146,7 +152,7 @@
 		QuickJSONFormatter.prototype.ExpandAllClicked = function() {
 			var that = this;
 			this.EnsureIsPopulated();
-			this.TraverseChildren($id("Canvas"), function(element) {
+			this.TraverseChildren($id(this.CanvasId), function(element) {
 				if (element.className == 'collapsible') {
 					that.MakeContentVisible(element, true);
 				}
@@ -180,7 +186,7 @@
 		QuickJSONFormatter.prototype.CollapseLevel = function(level) {
 			var that = this;
 			this.EnsureIsPopulated();
-			this.TraverseChildren($id("Canvas"), function(element, depth) {
+			this.TraverseChildren($id(this.CanvasId), function(element, depth) {
 				if (element.className == 'collapsible') {
 					if (depth >= level) {
 						that.MakeContentVisible(element, false);
@@ -194,11 +200,10 @@
 			this.Process();
 		};
 		QuickJSONFormatter.prototype.SetTab = function() {
-			var select = $id("TabSize");
-			this.TAB = this.MultiplyString(parseInt(select.options[select.selectedIndex].value), this.SINGLE_TAB);
+			this.TAB = this.MultiplyString(parseInt(this.TabSize), this.SINGLE_TAB);
 		};
 		QuickJSONFormatter.prototype.EnsureIsPopulated = function() {
-			if (!$id("Canvas").innerHTML && !!$id("RawJson").value) this.Process();
+			if (!$id(this.CanvasId).innerHTML && !!$id(this.RawJsonId).value) this.Process();
 		};
 		QuickJSONFormatter.prototype.MultiplyString = function(num, str) {
 			var sb =[];
@@ -224,17 +229,17 @@
 							: document.createRange();
 
 			if (!!range.selectNode)
-				range.selectNode($id("Canvas"));
+				range.selectNode($id(this.CanvasId));
 			else if (range.moveToElementText)
-				range.moveToElementText($id("Canvas"));
+				range.moveToElementText($id(this.CanvasId));
 
 			if (!!range.select)
-				range.select($id("Canvas"));
+				range.select($id(this.CanvasId));
 			else
 				window.getSelection().addRange(range);
 		};
 		QuickJSONFormatter.prototype.LinkToJson = function() {
-			var val = $id("RawJson").value;
+			var val = $id(this.RawJsonId).value;
 			val = escape(val.split('/n').join(' ').split('/r').join(' '));
 			$id("InvisibleLinkUrl").value = val;
 			$id("InvisibleLink").submit();
