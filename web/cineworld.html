@@ -12,7 +12,10 @@
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script type="text/javascript">jQuery.migrateMute = true;</script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
 	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
+	<!-- TODO Replace with https://github.com/andreasbernhard/history.js-->
 	<script type="text/javascript" src="https://rawgithub.com/cowboy/jquery-hashchange/master/jquery.ba-hashchange.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.min.js"></script>
 	<script type="text/javascript" src="https://rawgithub.com/timrwood/moment/1.7.2/moment.js"></script>
@@ -358,40 +361,49 @@
 				twister.cineworld.fixHeader("#performances_listing > table");
 				$('#performances_listing > table td[id^=performances_]').each(function() {
 					var elem = $(this);
-					var cid = elem.attr('cid');
-					var edi = elem.attr('edi');
-					var date = twister.calendar.current.date.replace(/-/g, '');
-					$.ajax({
-						url: 'http://www.cineworld.com/api/quickbook/performances',
-						type: 'GET',
-						data: {
-							key: twister.cineworld.const.apiKey,
-							cinema: cid,
-							film: edi,
-							date: date
-						},
-						dataType: 'jsonp',
-						success: function(response, status, xhr) {
-							/*
-							{
-							"performances":[{"time":"13:00","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976170&key=9qfgpF7B"},{"time":"15:30","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976178&key=9qfgpF7B"},{"time":"18:10","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976186&key=9qfgpF7B"},{"time":"20:40","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976194&key=9qfgpF7B"}],
-							"legends":[{"code":"reg","description":"Regular"}]
+					var request = {
+						key: twister.cineworld.const.apiKey,
+						cinema: elem.attr('cid'),
+						film: elem.attr('edi'),
+						date: twister.calendar.current.date.replace(/-/g, '')
+					}
+					var perfs = twister.cineworld.performances = twister.cineworld.performances || new Array();
+					perfs[request.date] = perfs[request.date] || new Array();
+					perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || new Array();
+					var perf = perfs[request.date][request.cinema][request.film];
+					if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache
+						twister.cineworld.parsePerformances(elem, request, {performances: perf});
+					} else {
+						$.ajax({
+							url: 'http://www.cineworld.com/api/quickbook/performances',
+							type: 'GET',
+							data: request,
+							dataType: 'jsonp',
+							success: function(response, status, xhr) {
+								$.extend(response.performances, {retrieved: new Date()});
+								twister.cineworld.parsePerformances(elem, request, response);
 							}
-							*/
-							if(response.performances) {
-								twister.cineworld.performances = twister.cineworld.performances || {}
-								twister.cineworld.performances[date] = twister.cineworld.performances[date] || {};
-								twister.cineworld.performances[date][cid] = twister.cineworld.performances[date][cid] || {};
-								twister.cineworld.performances[date][cid][edi] = response.performances;
-								elem.html($.map(response.performances, function(perf) {
-									return '<a href="' + perf.booking_url + '" title="' + JSON.stringify(perf).replace(/"/g, '&quot;') + '">'
-									+ perf.time
-									+ '</a>'
-								}).join(", "));
-							}
-						}
-					});
+						});
+					}
 				});
+			},
+			parsePerformances: function(elem, request, response) {
+				/*
+				{
+				"performances":[{"time":"13:00","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976170&key=9qfgpF7B"},{"time":"15:30","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976178&key=9qfgpF7B"},{"time":"18:10","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976186&key=9qfgpF7B"},{"time":"20:40","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976194&key=9qfgpF7B"}],
+				"legends":[{"code":"reg","description":"Regular"}]
+				}
+				*/
+				if (response.errors) {
+					elem.html(JSON.stringify(response));
+				} else {
+					twister.cineworld.performances[request.date][request.cinema][request.film] = response.performances;
+					elem.html($.map(response.performances, function(perf) {
+						return '<a href="' + perf.booking_url + '" title="' + JSON.stringify(perf).replace(/"/g, '&quot;') + '">'
+								+ perf.time
+								+ '</a>'
+					}).join(", "));
+				}
 			},
 			fixHeader: function(tableSelector) {
 			    var header_height = 0;
