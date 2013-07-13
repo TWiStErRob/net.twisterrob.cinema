@@ -504,26 +504,23 @@
 						$.each(performances, function(performanceIndex, perf) {
 							var time = moment(date + perf.time, 'YYYYMMDDHH:mm');
 							var adLength = twister.cineworld.const.default.adLength;
-							var breakLength = twister.cineworld.const.default.breakLength;
 							var plan = {
 								scheduledTime: time,
-								startTime: time.add('minutes', adLength),
-								endTime: time.add('minutes', adLength + film.length),
-								finishTime: time.add('minutes', adLength + film.length + breakLength),
+								startTime: time.clone().add('minutes', adLength),
+								endTime: time.clone().add('minutes', adLength + film.length),
 								adLength: adLength,
 								breakLength: breakLength,
 								date: date,
 								cinema: cid,
 								film: edi,
 							};
-							plan.movieRange = moment().range(plan.planstartTime, plan.endTime);
-							plan.fullRange = moment().range(plan.scheduledTime, plan.finishTime);
-							plan.planRange = moment().range(plan.startTime, plan.finishTime);
+							plan.movieRange = moment().range(plan.startTime, plan.endTime);
+							plan.fullRange = moment().range(plan.scheduledTime, plan.endTime);
 							perf.plan = plan;
 						});
 					});
 				});
-				html += '<textarea style="width: 100%; height: 200px;">' + JSON.stringify(twister.cineworld, null, ' ') + '</textarea>';
+				html += '<textarea style="width: 100%; height: 200px;">' + JSON.stringify(twister.cineworld.performances, null, ' ') + '</textarea>';
 				$('#planner_listing').html(html);
 			}
 		});
