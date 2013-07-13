@@ -1,10 +1,4 @@
 (function() {
-	// we need tabs as spaces and not CSS magin-left
-	// in order to ratain format when coping and pasing the code
-	var SINGLE_TAB = "  ";
-	var ImgCollapsed = "images/Collapsed.gif";
-	var ImgExpanded = "images/Expanded.gif";
-
 	// utility methods
 	function $id(id) {
 		return document.getElementById(id);
@@ -17,24 +11,33 @@
 	}
 
 	QuickJSONFormatter = (function() {
-		var QuoteKeys = true;
+		var _dateObj = new Date();
+		var _regexpObj = new RegExp();
+
+		function DateRange(start, end) {
+			this.QuoteKeys = true;
+			this.ImgCollapsed = "images/Collapsed.gif";
+			this.ImgExpanded = "images/Expanded.gif";
+			// we need tabs as spaces and not CSS magin-left
+			// in order to ratain format when coping and pasing the code
+			this.SINGLE_TAB = "  ";
+		}
+
 		QuickJSONFormatter.prototype.Process = function() {
-			SetTab();
-			window.IsCollapsible = $id("CollapsibleView").checked;
+			this.SetTab();
+			this.IsCollapsible = $id("CollapsibleView").checked;
 			var json = $id("RawJson").value;
 			var html = "";
 			try{
 				if (json == "") json = "\"\"";
 				var obj = eval("["+json+"]");
-				html = ProcessObject(obj[0], 0, false, false, false);
+				html = this.ProcessObject(obj[0], 0, false, false, false);
 				$id("Canvas").innerHTML = "<PRE class='CodeContainer'>"+html+"</PRE>";
 			}catch(e) {
 				alert("JSON is not well formated:\n"+e.message);
 				$id("Canvas").innerHTML = "";
 			}
 		};
-		var _dateObj = new Date();
-		var _regexpObj = new RegExp();
 		QuickJSONFormatter.prototype.ProcessObject = function(obj, indent, addComma, isArray, isPropertyContent) {
 			var html = "";
 			var comma = (addComma) ? "<span class='Comma'>,</span> " : "";
@@ -42,55 +45,55 @@
 			var clpsHtml ="";
 			if (IsArray(obj)) {
 				if (obj.length == 0) {
-					html += GetRow(indent, "<span class='ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
+					html += this.GetRow(indent, "<span class='ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
 				} else {
-					clpsHtml = window.IsCollapsible ? "<span><img src=\""+window.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
-					html += GetRow(indent, "<span class='ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
+					clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+					html += this.GetRow(indent, "<span class='ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
 					for (var i = 0; i < obj.length; i++) {
-						html += ProcessObject(obj[i], indent + 1, i < (obj.length - 1), true, false);
+						html += this.ProcessObject(obj[i], indent + 1, i < (obj.length - 1), true, false);
 					}
-					clpsHtml = window.IsCollapsible ? "</span>" : "";
-					html += GetRow(indent, clpsHtml+"<span class='ArrayBrace'>]</span>"+comma);
+					clpsHtml = this.IsCollapsible ? "</span>" : "";
+					html += this.GetRow(indent, clpsHtml+"<span class='ArrayBrace'>]</span>"+comma);
 				}
 			} else if (type == 'object') {
 				if (obj == null) {
-						html += FormatLiteral("null", "", comma, indent, isArray, "Null");
-				} else if (obj.constructor == window._dateObj.constructor) {
-						html += FormatLiteral("new Date(" + obj.getTime() + ") /*" + obj.toLocaleString()+"*/", "", comma, indent, isArray, "Date");
-				} else if (obj.constructor == window._regexpObj.constructor) {
-						html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
+						html += this.FormatLiteral("null", "", comma, indent, isArray, "Null");
+				} else if (obj.constructor == this._dateObj.constructor) {
+						html += this.FormatLiteral("new Date(" + obj.getTime() + ") /*" + obj.toLocaleString()+"*/", "", comma, indent, isArray, "Date");
+				} else if (obj.constructor == this._regexpObj.constructor) {
+						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
 				} else {
 					var numProps = 0;
 					for (var prop in obj) numProps++;
 					if (numProps == 0) {
-						html += GetRow(indent, "<span class='ObjectBrace'>{ }</span>"+comma, isPropertyContent);
+						html += this.GetRow(indent, "<span class='ObjectBrace'>{ }</span>"+comma, isPropertyContent);
 					} else {
-						clpsHtml = window.IsCollapsible ? "<span><img src=\""+window.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
-						html += GetRow(indent, "<span class='ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
+						clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+						html += this.GetRow(indent, "<span class='ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
 						var j = 0;
 						for (var prop in obj) {
-							var quote = window.QuoteKeys ? "\"" : "";
-							html += GetRow(indent + 1, "<span class='PropertyName'>"+quote+prop+quote+"</span>: "+ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
+							var quote = this.QuoteKeys ? "\"" : "";
+							html += GetRow(indent + 1, "<span class='PropertyName'>"+quote+prop+quote+"</span>: "+this.ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
 						}
-						clpsHtml = window.IsCollapsible ? "</span>" : "";
-						html += GetRow(indent, clpsHtml+"<span class='ObjectBrace'>}</span>"+comma);
+						clpsHtml = this.IsCollapsible ? "</span>" : "";
+						html += this.GetRow(indent, clpsHtml+"<span class='ObjectBrace'>}</span>"+comma);
 					}
 				}
 			} else if (type == 'number') {
-				html += FormatLiteral(obj, "", comma, indent, isArray, "Number");
+				html += this.FormatLiteral(obj, "", comma, indent, isArray, "Number");
 			} else if (type == 'boolean') {
-				html += FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
+				html += this.FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
 			} else if (type == 'function') {
-				if (obj.constructor == window._regexpObj.constructor) {
-						html += FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
+				if (obj.constructor == this._regexpObj.constructor) {
+						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
 				} else {
 						obj = FormatFunction(indent, obj);
-						html += FormatLiteral(obj, "", comma, indent, isArray, "Function");
+						html += this.FormatLiteral(obj, "", comma, indent, isArray, "Function");
 				}
 			} else if (type == 'undefined') {
-				html += FormatLiteral("undefined", "", comma, indent, isArray, "Null");
+				html += this.FormatLiteral("undefined", "", comma, indent, isArray, "Null");
 			} else {
-				html += FormatLiteral(obj.toString().split("\\").join("\\\\").split('"').join('\\"'), "\"", comma, indent, isArray, "String");
+				html += this.FormatLiteral(obj.toString().split("\\").join("\\\\").split('"').join('\\"'), "\"", comma, indent, isArray, "String");
 			}
 			return html;
 		};
@@ -103,7 +106,7 @@
 		};
 		QuickJSONFormatter.prototype.FormatFunction = function(indent, obj) {
 			var tabs = "";
-			for (var i = 0; i < indent; i++) tabs += window.TAB;
+			for (var i = 0; i < indent; i++) tabs += this.TAB;
 			var funcStrArray = obj.toString().split("\n");
 			var str = "";
 			for (var i = 0; i < funcStrArray.length; i++) {
@@ -113,34 +116,34 @@
 		};
 		QuickJSONFormatter.prototype.GetRow = function(indent, data, isPropertyContent) {
 			var tabs = "";
-			for (var i = 0; i < indent && !isPropertyContent; i++) tabs += window.TAB;
+			for (var i = 0; i < indent && !isPropertyContent; i++) tabs += this.TAB;
 			if (data != null && data.length > 0 && data.charAt(data.length-1) != "\n")
 				data = data+"\n";
 			return tabs+data;
 		};
 		QuickJSONFormatter.prototype.CollapsibleViewClicked = function() {
 			$id("CollapsibleViewDetail").style.visibility = $id("CollapsibleView").checked ? "visible" : "hidden";
-			Process();
+			this.Process();
 		};
 
 		QuickJSONFormatter.prototype.QuoteKeysClicked = function() {
-			window.QuoteKeys = $id("QuoteKeys").checked;
-			Process();
+			this.QuoteKeys = $id("QuoteKeys").checked;
+			this.Process();
 		};
 
 		QuickJSONFormatter.prototype.CollapseAllClicked = function() {
-			EnsureIsPopulated();
-			TraverseChildren($id("Canvas"), function(element) {
+			this.EnsureIsPopulated();
+			this.TraverseChildren($id("Canvas"), function(element) {
 				if (element.className == 'collapsible') {
-					MakeContentVisible(element, false);
+					this.MakeContentVisible(element, false);
 				}
 			}, 0);
 		};
 		QuickJSONFormatter.prototype.ExpandAllClicked = function() {
-			EnsureIsPopulated();
-			TraverseChildren($id("Canvas"), function(element) {
+			this.EnsureIsPopulated();
+			this.TraverseChildren($id("Canvas"), function(element) {
 				if (element.className == 'collapsible') {
-					MakeContentVisible(element, true);
+					this.MakeContentVisible(element, true);
 				}
 			}, 0);
 		};
@@ -148,12 +151,12 @@
 			var img = element.previousSibling.firstChild;
 			if (!!img.tagName && img.tagName.toLowerCase() == "img") {
 				element.style.display = visible ? 'inline' : 'none';
-				element.previousSibling.firstChild.src = visible ? window.ImgExpanded : window.ImgCollapsed;
+				element.previousSibling.firstChild.src = visible ? this.ImgExpanded : this.ImgCollapsed;
 			}
 		};
 		QuickJSONFormatter.prototype.TraverseChildren = function(element, func, depth) {
 			for (var i = 0; i < element.childNodes.length; i++) {
-				TraverseChildren(element.childNodes[i], func, depth + 1);
+				this.TraverseChildren(element.childNodes[i], func, depth + 1);
 			}
 			func(element, depth);
 		};
@@ -161,35 +164,35 @@
 			var container = img.parentNode.nextSibling;
 			if (!container) return;
 			var disp = "none";
-			var src = window.ImgCollapsed;
+			var src = this.ImgCollapsed;
 			if (container.style.display == "none") {
 					disp = "inline";
-					src = window.ImgExpanded;
+					src = this.ImgExpanded;
 			}
 			container.style.display = disp;
 			img.src = src;
 		};
 		QuickJSONFormatter.prototype.CollapseLevel = function(level) {
-			EnsureIsPopulated();
-			TraverseChildren($id("Canvas"), function(element, depth) {
+			this.EnsureIsPopulated();
+			this.TraverseChildren($id("Canvas"), function(element, depth) {
 				if (element.className == 'collapsible') {
 					if (depth >= level) {
-						MakeContentVisible(element, false);
+						this.MakeContentVisible(element, false);
 					} else {
-						MakeContentVisible(element, true);
+						this.MakeContentVisible(element, true);
 					}
 				}
 			}, 0);
 		};
 		QuickJSONFormatter.prototype.TabSizeChanged = function() {
-			Process();
+			this.Process();
 		};
 		QuickJSONFormatter.prototype.SetTab = function() {
 			var select = $id("TabSize");
-			window.TAB = MultiplyString(parseInt(select.options[select.selectedIndex].value), window.SINGLE_TAB);
+			this.TAB = this.MultiplyString(parseInt(select.options[select.selectedIndex].value), this.SINGLE_TAB);
 		};
 		QuickJSONFormatter.prototype.EnsureIsPopulated = function() {
-			if (!$id("Canvas").innerHTML && !!$id("RawJson").value) Process();
+			if (!$id("Canvas").innerHTML && !!$id("RawJson").value) this.Process();
 		};
 		QuickJSONFormatter.prototype.MultiplyString = function(num, str) {
 			var sb =[];
