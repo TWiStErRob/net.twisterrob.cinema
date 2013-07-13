@@ -5,3 +5,13 @@ descript.ion Sources
 jquery.toChecklist.js http://www.scotthorlbeck.com/code/tochecklist/index.php?action=download&version=1.5.0&min=0
 jquery.toChecklist.min.js http://www.scotthorlbeck.com/code/tochecklist/index.php?action=download&version=1.5.0&min=1
 jquery.toChecklist.LICENSE.txt http://www.scotthorlbeck.com/code/tochecklist/
+moment-hu.js http://rawgithub.com/timrwood/moment/1.7.2/lang/hu.js
+moment.js http://rawgithub.com/timrwood/moment/1.7.2/moment.js
+jquery.ba-hashchange.js http://rawgithub.com/cowboy/jquery-hashchange/master/jquery.ba-hashchange.js
+jquery-1.9.1.js http://code.jquery.com/jquery-1.9.1.js
+jquery-ui-1.10.3.js http://code.jquery.com/ui/1.10.3/jquery-ui.js
+jquery-migrate-1.2.1.js http://code.jquery.com/jquery-migrate-1.2.1.js
+jquery.layout-latest.js http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js
+jquery.layout-default-latest.css http://layout.jquery-dev.net/lib/css/layout-default-latest.css
+jquery-ui-i18n.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.js
+underscore.js http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore.js

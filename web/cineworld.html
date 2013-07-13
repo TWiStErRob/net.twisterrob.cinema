@@ -6,21 +6,21 @@
 	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 	<title>Print a Google Calendar</title>
 
-	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="http://layout.jquery-dev.net/lib/css/layout-default-latest.css" />
+	<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />-->
+	<link rel="stylesheet" type="text/css" href="jquery.layout-default-latest.css" />
 	<link rel="stylesheet" type="text/css" href="jquery.toChecklist.css" />
 
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script type="text/javascript" src="jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="jquery-ui-1.10.3.js"></script>
 	<script type="text/javascript">jQuery.migrateMute = true;</script>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
-	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
+	<script type="text/javascript" src="jquery-migrate-1.2.1.js"></script>
+	<script type="text/javascript" src="jquery.layout-latest.js"></script>
 	<!-- TODO Replace with https://github.com/andreasbernhard/history.js-->
-	<script type="text/javascript" src="https://rawgithub.com/cowboy/jquery-hashchange/master/jquery.ba-hashchange.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.min.js"></script>
-	<script type="text/javascript" src="https://rawgithub.com/timrwood/moment/1.7.2/moment.js"></script>
-	<script type="text/javascript" src="https://rawgithub.com/timrwood/moment/1.7.2/lang/hu.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+	<script type="text/javascript" src="jquery.ba-hashchange.js"></script>
+	<script type="text/javascript" src="jquery-ui-i18n.js"></script>
+	<script type="text/javascript" src="moment.js"></script>
+	<script type="text/javascript" src="moment-hu.js"></script>
+	<script type="text/javascript" src="underscore.js"></script>
 
 	<script type="text/javascript" src="jquery.toChecklist.js"></script>
 
@@ -409,7 +409,7 @@
 				html += '<th>Cinema</th>';
 				html += $.map(twister.cineworld.films.selectedIds, function(edi) {
 					var film = twister.cineworld.films.all[edi];
-					var filmDisplay = film.title + " ("  + film.length + " min)";
+					var filmDisplay = film.title + "<br/>("  + film.length + " min)";
 					var filmTitle = JSON.stringify(film, null, '  ').replace(/"/g,'&quot;');
 					return '<th title="' + filmTitle + '">' + filmDisplay + '</th>';
 				}).join('');
@@ -597,7 +597,7 @@
 				* valid http://ajax.aspnetcdn.com/ajax/jQuery.Validate/1.6/jQuery.Validate.pack.js
 		</pre>
 	</div>
-	<script type="text/javascript" src="/global/analyticstracking.js"></script>
+	<!-- TODO <script type="text/javascript" src="/global/analyticstracking.js"></script>-->
 </body>
 <script>
 twister.mock = $.extend(twister.mock || {}, {});
