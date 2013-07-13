@@ -20,6 +20,7 @@
 	<script type="text/javascript" src="jquery-ui-i18n.js"></script>
 	<script type="text/javascript" src="moment.js"></script>
 	<script type="text/javascript" src="moment-hu.js"></script>
+	<script type="text/javascript" src="moment-range.js"></script>
 	<script type="text/javascript" src="underscore.js"></script>
 
 	<script type="text/javascript" src="jquery.toChecklist.js"></script>
@@ -39,6 +40,10 @@
 				return this.clone().utc().add('hours', offset).format(format);
 			}
 		}
+
+		moment.fn.toJSON = function(start, end) {
+			return this.format();
+		};
 
 		twister = window.twister || {};
 		twister.utils = $.extend(twister.utils || {}, {});
@@ -159,7 +164,11 @@
 			const: {
 				apiKey: "9qfgpF7B",
 				getFilmsTimeout: 300,
-				getPerformancesTimeout: 300
+				getPerformancesTimeout: 300,
+				default: {
+					adLength: 15,
+					breakLength: 5
+				}
 			},
 			cinemas: {
 				// all: [ retrieved from cineworld API ]
@@ -177,6 +186,9 @@
 			},
 			performances: {
 				// [index by date][index by cinema][index by id]
+			},
+			getDate: function cineworld_getDate() {
+				return twister.calendar.current.date.replace(/-/g, '');
 			},
 			getCinemas: function cineworld_getCinemas() {
 				$.ajax({
@@ -253,7 +265,7 @@
 					key: twister.cineworld.const.apiKey,
 					full: true,
 					cinema: twister.cineworld.cinemas.selectedIds,
-					date: twister.calendar.current.date.replace(/-/g, '')
+					date: twister.cineworld.getDate()
 				};
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
@@ -400,6 +412,7 @@
 			getPerformances: function cineworld_getPerformances() {
 				twister.cineworld.rebuildPerformancesTable();
 				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
+				twister.cineworld.plan();
 			},
 			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
 				var html = '';
@@ -413,6 +426,7 @@
 					var filmTitle = JSON.stringify(film, null, '  ').replace(/"/g,'&quot;');
 					return '<th title="' + filmTitle + '">' + filmDisplay + '</th>';
 				}).join('');
+				html += '<th>Planner</th>';
 				html += '</tr></thead>';
 
 				html += '<tbody>';
@@ -426,6 +440,7 @@
 					row += $.map(twister.cineworld.films.selectedIds, function(edi) {
 								return '<td id="performances_'+cid+'_'+edi+'" cid="'+cid+'" edi="'+edi+'"><img src="ajax-loader.gif" /></td>';
 						}).join('');
+					row += '<td id="planner_'+cid+'">&nbsp;</td>';
 					row += '</tr>';
 					return row;
 				}).join('');
@@ -439,11 +454,11 @@
 					key: twister.cineworld.const.apiKey,
 					cinema: elem.attr('cid'),
 					film: elem.attr('edi'),
-					date: twister.calendar.current.date.replace(/-/g, '')
+					date: twister.cineworld.getDate()
 				}
-				var perfs = twister.cineworld.performances = twister.cineworld.performances || new Array();
-				perfs[request.date] = perfs[request.date] || new Array();
-				perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || new Array();
+				var perfs = twister.cineworld.performances = twister.cineworld.performances || {};
+				perfs[request.date] = perfs[request.date] || {};
+				perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || {};
 				var perf = perfs[request.date][request.cinema][request.film];
 				if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache
 					twister.cineworld.parsePerformances(elem, request, {performances: perf});
@@ -477,10 +492,44 @@
 								+ '</a>'
 					}).join(", "));
 				}
+			},
+			plan: function() {
+				var html = '';
+				$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
+					var cinema = twister.cineworld.cinemas.all[cid];
+					$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
+						var film = twister.cineworld.films.all[edi];
+						var date = twister.cineworld.getDate();
+						var performances = twister.cineworld.performances[date][cid][edi];
+						$.each(performances, function(performanceIndex, perf) {
+							var time = moment(date + perf.time, 'YYYYMMDDHH:mm');
+							var adLength = twister.cineworld.const.default.adLength;
+							var breakLength = twister.cineworld.const.default.breakLength;
+							var plan = {
+								scheduledTime: time,
+								startTime: time.add('minutes', adLength),
+								endTime: time.add('minutes', adLength + film.length),
+								finishTime: time.add('minutes', adLength + film.length + breakLength),
+								adLength: adLength,
+								breakLength: breakLength,
+								date: date,
+								cinema: cid,
+								film: edi,
+							};
+							plan.movieRange = moment().range(plan.planstartTime, plan.endTime);
+							plan.fullRange = moment().range(plan.scheduledTime, plan.finishTime);
+							plan.planRange = moment().range(plan.startTime, plan.finishTime);
+							perf.plan = plan;
+						});
+					});
+				});
+				html += '<textarea style="width: 100%; height: 200px;">' + JSON.stringify(twister.cineworld, null, ' ') + '</textarea>';
+				$('#planner_listing').html(html);
 			}
 		});
 
 		$(document).ready(function document_ready() {
+			console.log("------------------------------- Document ready. ----------------------------");
 			twister.ui = {};
 			twister.ui.layout = $('body').layout({
 				center: {
@@ -569,7 +618,11 @@
 				<select id="films" name="films" multiple="multiple"></select>
 			</div>
 		</div>
-		<div id="performances_listing" class="ui-layout-center">
+		<div class="ui-layout-center">
+			<div id="performances_listing">
+			</div>
+			<div id="planner_listing">
+			</div>
 		</div>
 	</div>
 	<div class="ui-layout-south">

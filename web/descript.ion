@@ -15,3 +15,4 @@ jquery.layout-latest.js http://layout.jquery-dev.net/lib/js/jquery.layout-latest
 jquery.layout-default-latest.css http://layout.jquery-dev.net/lib/css/layout-default-latest.css
 jquery-ui-i18n.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.js
 underscore.js http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore.js
+moment-range.js https://raw.github.com/gf3/moment-range/master/lib/moment-range.js
