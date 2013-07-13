@@ -158,8 +158,8 @@
 		twister.cineworld = $.extend(twister.cineworld || {}, {
 			const: {
 				apiKey: "9qfgpF7B",
-				getFilmsTimeout: 500,
-				getPerformancesTimeout: 500
+				getFilmsTimeout: 300,
+				getPerformancesTimeout: 300
 			},
 			cinemas: {
 				// all: [ retrieved from cineworld API ],
@@ -228,7 +228,11 @@
 							var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
 							twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
 
-							if ( twister.cineworld.cinemas.getFilmsTimer === undefined) {
+							if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
+								clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
+								twister.cineworld.cinemas.getFilmsTimer = undefined;
+							}
+							if (twister.cineworld.cinemas.getFilmsTimer === undefined) {
 								twister.cineworld.cinemas.getFilmsTimer = setTimeout(function cinemasList_onItemChanged_getFilmsTimer_onTimeout() {
 									twister.cineworld.cinemas.getFilmsTimer = undefined;
 									twister.cineworld.getFilms();
@@ -312,7 +316,11 @@
 							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
 							twister.cineworld.films.selectedIds = checkedFilmEdis;
 
-							if ( twister.cineworld.films.getPerformancesTimer === undefined) {
+							if (twister.cineworld.films.getPerformancesTimer !== undefined) {
+								clearTimeout(twister.cineworld.films.getPerformancesTimer);
+								twister.cineworld.films.getPerformancesTimer = undefined;
+							}
+							if (twister.cineworld.films.getPerformancesTimer === undefined) {
 								twister.cineworld.films.getPerformancesTimer = setTimeout(function filmsList_onItemChanged_getPerformancesTimer_onTimeout() {
 									twister.cineworld.films.getPerformancesTimer = undefined;
 									twister.cineworld.getPerformances();
@@ -335,29 +343,29 @@
 				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
 			},
 			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
-				var html = "";
-				html += "<table>";
+				var html = '';
+				html += '<table id="performances">';
 
-				html += "<thead><tr>";
-				html += "<th>Cinema</th>";
+				html += '<thead><tr>';
+				html += '<th>Cinema</th>';
 				html += $.map(twister.cineworld.films.selectedIds, function(edi) {
-							return "<th title="+edi+">"+twister.cineworld.films.all[edi].title+"</th>";
-						}).join("");
-				html += "</tr></thead>";
+							return '<th title="Film edi='+edi+'">'+twister.cineworld.films.all[edi].title+'</th>';
+						}).join('');
+				html += '</tr></thead>';
 
-				html += "<tbody>";
+				html += '<tbody>';
 				html += $.map(twister.cineworld.cinemas.selectedIds, function(cid) {
-					var row = "";
-					row += "<tr>";
-					row += "<td title="+cid+">"+twister.cineworld.cinemas.all[cid].name+"</td>";
+					var row = '';
+					row += '<tr>';
+					row += '<td title='+cid+'>'+twister.cineworld.cinemas.all[cid].name+'</td>';
 					row += $.map(twister.cineworld.films.selectedIds, function(edi) {
 								return '<td id="performances_'+cid+'_'+edi+'" cid="'+cid+'" edi="'+edi+'"><img src="ajax-loader.gif" /></td>';
-						}).join("");
-					row += "</tr>";
+						}).join('');
+					row += '</tr>';
 					return row;
-				}).join("");
-				html += "</tbody>";
-				html += "</table>";
+				}).join('');
+				html += '</tbody>';
+				html += '</table>';
 				$('#performances_listing').html(html);
 			},
 			updatePerformance: function cineworld_updatePerformance() {
@@ -450,6 +458,12 @@
 		}
 		#cinemas_listing {
 			overflow: overlay;
+		}
+		#performances th:first-child {
+			white-space: nowrap;
+		}
+		#performances th + th { /* th:not(:first-child) */
+			width: 200px;
 		}
 		#status {
 			color: red;
