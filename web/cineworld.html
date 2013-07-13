@@ -199,6 +199,17 @@
 			const: {
 				apiKey: "9qfgpF7B"
 			},
+			cinemas: {
+				// all: [ retrieved from cineworld API ],
+				// selectedIds: [ update when checklist checked ]
+			},
+			films: {
+				// all: [ retrieved from cineworld API ],
+				// selectedIds: [ update when checklist checked ]
+			},
+			performances: {
+				// [index by date][index by cinema][index by id]
+			},
 			getCinemas: function cineworld_getCinemas() {
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
@@ -213,7 +224,7 @@
 			},	
 			clearCinemas: function cineworld_clearCinemas() {
 				$('#cinemas').empty();
-				twister.cineworld.cinemas = {};
+				twister.cineworld.cinemas.all = {};
 			},
 			parseCinemas: function cineworld_parseCinemas(response, status) {
 				/*
@@ -233,7 +244,7 @@
 
 					var cinemasList = $('#cinemas');
 					$.each(response.cinemas, function() {
-						twister.cineworld.cinemas[this.id] = this;
+						twister.cineworld.cinemas.all[this.id] = this;
 						var option = new Option(this.name, this.id);
 						$(option)
 							.attr('title', this.address + "\n" + this.postcode + "\n" + this.telephone);
@@ -246,21 +257,24 @@
 						preferIdOverName: false,
 						itemWidth: 200,
 						searchBoxText: 'Filter by cinema name here...',
-						animateSearch: 0
+						animateSearch: 0,
+						onItemChanged: function() {
+							var checkedCinemas = $("li :checkbox:checked", "#cinemas");
+							var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
+							twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
+						}
 					} );
 					$('#cinemas_checkLondon').click();
 				}
 			},
 			getFilms: function cineworld_getFilms() {
-				var checkedCinemas = $("#cinemas li :checkbox:checked");
-				var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
 					type: 'GET',
 					data: {
 						key: twister.cineworld.const.apiKey,
 						full: true,
-						cinema: checkedCinemaIds,
+						cinema: twister.cineworld.cinemas.selectedIds,
 						date: twister.calendar.current.date.replace(/-/g, '')
 					},
 					dataType: 'jsonp',
@@ -319,7 +333,12 @@
 						preferIdOverName: false,
 						searchBoxText: 'Filter by film title here...',
 						animateSearch: 0,
-						onItemChanged: function() { twister.cineworld.getPerformances(); },
+						onItemChanged: function() {
+							var checkedFilms = $("li :checkbox:checked", "#films");
+							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
+							twister.cineworld.films.selectedIds = checkedFilmEdis;
+							twister.cineworld.getPerformances();
+						},
 					} );
 					$('#films li:has(:checkbox[value=56173])').click();
 					$('#films li:has(:checkbox[value=110953])').click();
@@ -328,28 +347,26 @@
 				}
 			},
 			getPerformances: function cineworld_getPerformances() {
-				var checkedCinemas = $("#cinemas li :checkbox:checked");
-				var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
-
-				var checkedFilms = $("#films li :checkbox:checked");
-				var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
-				
+				twister.cineworld.rebuildPerformancesTable();
+				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
+			},
+			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
 				var html = "";
 				html += "<table>";
 				
 				html += "<thead><tr>";
 				html += "<th>Cinema</th>";
-				html += $.map(checkedFilmEdis, function(edi) {
+				html += $.map(twister.cineworld.films.selectedIds, function(edi) {
 							return "<th title="+edi+">"+twister.cineworld.films[edi].title+"</th>";
 						}).join("");
 				html += "</tr></thead>";
 
 				html += "<tbody>";
-				html += $.map(checkedCinemaIds, function(cid) {
+				html += $.map(twister.cineworld.cinemas.selectedIds, function(cid) {
 					var row = "";
 					row += "<tr>";
-					row += "<td title="+cid+">"+twister.cineworld.cinemas[cid].name+"</td>";
-					row += $.map(checkedFilmEdis, function(edi) {
+					row += "<td title="+cid+">"+twister.cineworld.cinemas.all[cid].name+"</td>";
+					row += $.map(twister.cineworld.films.selectedIds, function(edi) {
 								return '<td id="performances_'+cid+'_'+edi+'" cid="'+cid+'" edi="'+edi+'"><img src="ajax-loader.gif" /></td>';
 						}).join("");
 					row += "</tr>";
@@ -358,33 +375,33 @@
 				html += "</tbody>";
 				html += "</table>";
 				$('#performances_listing').html(html);
-				$('#performances_listing > table td[id^=performances_]').each(function() {
-					var elem = $(this);
-					var request = {
-						key: twister.cineworld.const.apiKey,
-						cinema: elem.attr('cid'),
-						film: elem.attr('edi'),
-						date: twister.calendar.current.date.replace(/-/g, '')
-					}
-					var perfs = twister.cineworld.performances = twister.cineworld.performances || new Array();
-					perfs[request.date] = perfs[request.date] || new Array();
-					perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || new Array();
-					var perf = perfs[request.date][request.cinema][request.film];
-					if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache
-						twister.cineworld.parsePerformances(elem, request, {performances: perf});
-					} else {
-						$.ajax({
-							url: 'http://www.cineworld.com/api/quickbook/performances',
-							type: 'GET',
-							data: request,
-							dataType: 'jsonp',
-							success: function(response, status, xhr) {
-								$.extend(response.performances, {retrieved: new Date()});
-								twister.cineworld.parsePerformances(elem, request, response);
-							}
-						});
-					}
-				});
+			},
+			updatePerformance: function cineworld_updatePerformance() {
+				var elem = $(this);
+				var request = {
+					key: twister.cineworld.const.apiKey,
+					cinema: elem.attr('cid'),
+					film: elem.attr('edi'),
+					date: twister.calendar.current.date.replace(/-/g, '')
+				}
+				var perfs = twister.cineworld.performances = twister.cineworld.performances || new Array();
+				perfs[request.date] = perfs[request.date] || new Array();
+				perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || new Array();
+				var perf = perfs[request.date][request.cinema][request.film];
+				if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache
+					twister.cineworld.parsePerformances(elem, request, {performances: perf});
+				} else {
+					$.ajax({
+						url: 'http://www.cineworld.com/api/quickbook/performances',
+						type: 'GET',
+						data: request,
+						dataType: 'jsonp',
+						success: function(response, status, xhr) {
+							$.extend(response.performances, {retrieved: new Date()});
+							twister.cineworld.parsePerformances(elem, request, response);
+						}
+					});
+				}
 			},
 			parsePerformances: function(elem, request, response) {
 				/*
@@ -415,6 +432,9 @@
 							size: 250
 						}
 					}
+				},
+				north: {
+					initClosed: true
 				},
 				south: {
 					initClosed: true
