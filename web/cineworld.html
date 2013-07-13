@@ -206,11 +206,13 @@
 			films: {
 				// all: [ retrieved from cineworld API ],
 				// selectedIds: [ update when checklist checked ]
+				selectedIds: [56173, 110953, 63829]
 			},
 			performances: {
 				// [index by date][index by cinema][index by id]
 			},
-			getCinemas: function cineworld_getCinemas() {
+			getCinemas: function cineworld_getCinemas(done) {
+				done = typeof done === "function"? done : function() {};
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
 					type: 'GET',
@@ -219,12 +221,15 @@
 						full: true
 					},
 					dataType: 'jsonp',
-					success: twister.cineworld.parseCinemas
+					success: function(response, status, xhr) {
+						twister.cineworld.parseCinemas(response, status, xhr);
+						done();
+					}
 				});
 			},	
 			clearCinemas: function cineworld_clearCinemas() {
-				$('#cinemas').empty();
 				twister.cineworld.cinemas.all = {};
+				return $('#cinemas').replaceWith('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
 			},
 			parseCinemas: function cineworld_parseCinemas(response, status) {
 				/*
@@ -258,16 +263,25 @@
 						itemWidth: 200,
 						searchBoxText: 'Filter by cinema name here...',
 						animateSearch: 0,
-						onItemChanged: function() {
+						onItemChanged: function cinemasList_onItemChanged() {
 							var checkedCinemas = $("li :checkbox:checked", "#cinemas");
 							var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
 							twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
+
+							if ( twister.cineworld.cinemas.getFilmsTimer === undefined) {
+								twister.cineworld.cinemas.getFilmsTimer = setTimeout(function cinemasList_onItemChanged_getFilmsTimer_onTimeout() {
+									twister.cineworld.getFilms(function cinemasList_onItemChanged_getFilms_onDone() {
+										twister.cineworld.cinemas.getFilmsTimer = undefined;
+									});
+								}, 500);
+							}
 						}
 					} );
 					$('#cinemas_checkLondon').click();
 				}
 			},
-			getFilms: function cineworld_getFilms() {
+			getFilms: function cineworld_getFilms(done) {
+				done = typeof done === "function"? done : function() {};
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
 					type: 'GET',
@@ -278,12 +292,15 @@
 						date: twister.calendar.current.date.replace(/-/g, '')
 					},
 					dataType: 'jsonp',
-					success: twister.cineworld.parseFilms
+					success: function(response, status, xhr) {
+						twister.cineworld.parseFilms(response, status, xhr);
+						done();
+					}
 				});
 			},
 			clearFilms: function cineworld_clearFilms() {
-				$('#films').empty();
-				twister.cineworld.films = {};
+				twister.cineworld.films.all = {};
+				return $('#films').replaceWith('<select id="films" name="films" multiple="multiple"></select>');
 			},
 			parseFilms: function cineworld_parseFilms(response, status) {
 				/*
@@ -320,7 +337,7 @@
 
 					var filmsList = $('#films');
 					$.each(response.films, function() {
-						twister.cineworld.films[this.edi] = this;
+						twister.cineworld.films.all[this.edi] = this;
 						var option = new Option(this.title, this.edi);
 						$(option)
 							.attr('title', this.title);
@@ -337,18 +354,26 @@
 							var checkedFilms = $("li :checkbox:checked", "#films");
 							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
 							twister.cineworld.films.selectedIds = checkedFilmEdis;
-							twister.cineworld.getPerformances();
+							
+							if ( twister.cineworld.films.getPerformancesTimer === undefined) {
+								twister.cineworld.films.getPerformancesTimer = setTimeout(function filmsList_onItemChanged_getPerformancesTimer_onTimeout() {
+									twister.cineworld.getPerformances(function filmsList_onItemChanged_getPerformances_onDone() {
+										twister.cineworld.films.getPerformancesTimer = undefined;
+									});
+								}, 500);
+							}
 						},
 					} );
-					$('#films li:has(:checkbox[value=56173])').click();
-					$('#films li:has(:checkbox[value=110953])').click();
-					$('#films li:has(:checkbox[value=63829])').click();
-					//$('#films li:has(:checkbox[value=108864])').click();
+					$.each(twister.cineworld.films.selectedIds, function select_film() {
+						$('#films li:has(:checkbox[value=' + this + '])').click();
+					});
 				}
 			},
-			getPerformances: function cineworld_getPerformances() {
+			getPerformances: function cineworld_getPerformances(done) {
+				done = typeof done === "function"? done : function() {};
 				twister.cineworld.rebuildPerformancesTable();
 				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
+				done();
 			},
 			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
 				var html = "";
@@ -357,7 +382,7 @@
 				html += "<thead><tr>";
 				html += "<th>Cinema</th>";
 				html += $.map(twister.cineworld.films.selectedIds, function(edi) {
-							return "<th title="+edi+">"+twister.cineworld.films[edi].title+"</th>";
+							return "<th title="+edi+">"+twister.cineworld.films.all[edi].title+"</th>";
 						}).join("");
 				html += "</tr></thead>";
 
@@ -494,26 +519,16 @@
 				<input type="button" id="cinemas_checkNone" onclick="$('#cinemas').toChecklist('clearAll');" value="Uncheck All" />
 				<input type="button" id="cinemas_checkInvert" onclick="$('#cinemas').toChecklist('invert');" value="Invert" />
 				<input type="button" id="cinemas_checkLondon" onclick="$('#cinemas').toChecklist('clearAll'); $('#cinemas li:contains(London)').click();" value="London" />
-				<input type="button" id="cinemas_getFilms" onclick="twister.cineworld.getFilms();" value="List films" />
 			</div>
 			<div id="cinemas_container">
-				<select id="cinemas" name="cinemas" multiple="multiple">
-					<option>Cinema 1</option>
-					<option>Cinema 2</option>
-					<option>Cinema 3</option>
-				</select>
+				<select id="cinemas" name="cinemas" multiple="multiple"></select>
 			</div>
 		</div>
 		<div id="films_listing" class="ui-layout-west">
 			<div id="films_controls">
-				<input type="button" id="cinemas_getPerformances" onclick="twister.cineworld.getPerformances();" value="List performances" />
 			</div>
 			<div id="films_container">
-				<select id="films" name="films" multiple="multiple">
-					<option>Film 1</option>
-					<option>Film 2</option>
-					<option>Film 3</option>
-				</select>
+				<select id="films" name="films" multiple="multiple"></select>
 			</div>
 		</div>
 		<div id="performances_listing" class="ui-layout-center">
@@ -556,13 +571,17 @@ twister.mock.cineworld = $.extend(twister.mock.cineworld || {}, {
 		var $ajax = $.ajax;
 		$.ajax = function(params) {
 			if(/\/films$/.test(params.url)) {
+				console.debug("Returning mock films: " + JSON.stringify(params));
 				params.success(twister.mock.cineworld.films);
 			} else if (/\/cinemas$/.test(params.url)) {
+				console.debug("Returning mock cinemas: " + JSON.stringify(params));
 				params.success(twister.mock.cineworld.cinemas);
 			} else if (/\/performances$/.test(params.url)) {
-				if ( twister.mock.cineworld.performances[params.data.cinema] != undefined
-						&& twister.mock.cineworld.performances[params.data.cinema][params.data.film] != undefined ) {
-					params.success( { performances: twister.mock.cineworld.performances[params.data.cinema][params.data.film] } );
+				var perfs = twister.mock.cineworld.performances;
+				if ( perfs[params.data.cinema] != undefined
+						&& perfs[params.data.cinema][params.data.film] != undefined ) {
+					//console.debug("Returning mock performances: " + JSON.stringify(params));
+					params.success( { performances: perfs[params.data.cinema][params.data.film] } );
 				} else {
 					$ajax(params);
 				}
