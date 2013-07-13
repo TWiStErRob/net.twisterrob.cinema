@@ -21,7 +21,10 @@
 			// we need tabs as spaces and not CSS magin-left
 			// in order to ratain format when coping and pasing the code
 			this.SINGLE_TAB = "  ";
+			QuickJSONFormatter.instances[this.InstanceIndex = ++QuickJSONFormatter.instances_last] = this;
 		}
+		QuickJSONFormatter.instances = new Array();
+		QuickJSONFormatter.instances_last = -1;
 
 		QuickJSONFormatter.prototype.Process = function() {
 			this.SetTab();
@@ -47,7 +50,7 @@
 				if (obj.length == 0) {
 					html += this.GetRow(indent, "<span class='ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
 				} else {
-					clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"formatter.ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+					clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
 					html += this.GetRow(indent, "<span class='ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
 					for (var i = 0; i < obj.length; i++) {
 						html += this.ProcessObject(obj[i], indent + 1, i < (obj.length - 1), true, false);
@@ -68,7 +71,7 @@
 					if (numProps == 0) {
 						html += this.GetRow(indent, "<span class='ObjectBrace'>{ }</span>"+comma, isPropertyContent);
 					} else {
-						clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"formatter.ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+						clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
 						html += this.GetRow(indent, "<span class='ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
 						var j = 0;
 						for (var prop in obj) {
@@ -84,7 +87,7 @@
 			} else if (type == 'boolean') {
 				html += this.FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
 			} else if (type == 'function') {
-				if (obj.constructor == this._regexpObj.constructor) {
+				if (obj.constructor == _regexpObj.constructor) {
 						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
 				} else {
 						obj = FormatFunction(indent, obj);
