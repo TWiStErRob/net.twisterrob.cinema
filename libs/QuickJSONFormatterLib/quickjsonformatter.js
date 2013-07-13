@@ -14,7 +14,7 @@
 		var _dateObj = new Date();
 		var _regexpObj = new RegExp();
 
-		function DateRange(start, end) {
+		function QuickJSONFormatter(start, end) {
 			this.QuoteKeys = true;
 			this.ImgCollapsed = "images/Collapsed.gif";
 			this.ImgExpanded = "images/Expanded.gif";
@@ -28,13 +28,13 @@
 			this.IsCollapsible = $id("CollapsibleView").checked;
 			var json = $id("RawJson").value;
 			var html = "";
-			try{
+			try {
 				if (json == "") json = "\"\"";
 				var obj = eval("["+json+"]");
 				html = this.ProcessObject(obj[0], 0, false, false, false);
 				$id("Canvas").innerHTML = "<PRE class='CodeContainer'>"+html+"</PRE>";
-			}catch(e) {
-				alert("JSON is not well formated:\n"+e.message);
+			} catch(e) {
+				alert("JSON is not well formated:\n" + e.message);
 				$id("Canvas").innerHTML = "";
 			}
 		};
@@ -47,7 +47,7 @@
 				if (obj.length == 0) {
 					html += this.GetRow(indent, "<span class='ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
 				} else {
-					clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+					clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"formatter.ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
 					html += this.GetRow(indent, "<span class='ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
 					for (var i = 0; i < obj.length; i++) {
 						html += this.ProcessObject(obj[i], indent + 1, i < (obj.length - 1), true, false);
@@ -58,9 +58,9 @@
 			} else if (type == 'object') {
 				if (obj == null) {
 						html += this.FormatLiteral("null", "", comma, indent, isArray, "Null");
-				} else if (obj.constructor == this._dateObj.constructor) {
+				} else if (obj.constructor == _dateObj.constructor) {
 						html += this.FormatLiteral("new Date(" + obj.getTime() + ") /*" + obj.toLocaleString()+"*/", "", comma, indent, isArray, "Date");
-				} else if (obj.constructor == this._regexpObj.constructor) {
+				} else if (obj.constructor == _regexpObj.constructor) {
 						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
 				} else {
 					var numProps = 0;
@@ -68,12 +68,12 @@
 					if (numProps == 0) {
 						html += this.GetRow(indent, "<span class='ObjectBrace'>{ }</span>"+comma, isPropertyContent);
 					} else {
-						clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
+						clpsHtml = this.IsCollapsible ? "<span><img src=\""+this.ImgExpanded+"\" onClick=\"formatter.ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
 						html += this.GetRow(indent, "<span class='ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
 						var j = 0;
 						for (var prop in obj) {
 							var quote = this.QuoteKeys ? "\"" : "";
-							html += GetRow(indent + 1, "<span class='PropertyName'>"+quote+prop+quote+"</span>: "+this.ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
+							html += this.GetRow(indent + 1, "<span class='PropertyName'>"+quote+prop+quote+"</span>: "+this.ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
 						}
 						clpsHtml = this.IsCollapsible ? "</span>" : "";
 						html += this.GetRow(indent, clpsHtml+"<span class='ObjectBrace'>}</span>"+comma);
@@ -132,18 +132,20 @@
 		};
 
 		QuickJSONFormatter.prototype.CollapseAllClicked = function() {
+			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id("Canvas"), function(element) {
 				if (element.className == 'collapsible') {
-					this.MakeContentVisible(element, false);
+					that.MakeContentVisible(element, false);
 				}
 			}, 0);
 		};
 		QuickJSONFormatter.prototype.ExpandAllClicked = function() {
+			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id("Canvas"), function(element) {
 				if (element.className == 'collapsible') {
-					this.MakeContentVisible(element, true);
+					that.MakeContentVisible(element, true);
 				}
 			}, 0);
 		};
@@ -173,13 +175,14 @@
 			img.src = src;
 		};
 		QuickJSONFormatter.prototype.CollapseLevel = function(level) {
+			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id("Canvas"), function(element, depth) {
 				if (element.className == 'collapsible') {
 					if (depth >= level) {
-						this.MakeContentVisible(element, false);
+						that.MakeContentVisible(element, false);
 					} else {
-						this.MakeContentVisible(element, true);
+						that.MakeContentVisible(element, true);
 					}
 				}
 			}, 0);
