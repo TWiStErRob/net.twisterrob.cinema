@@ -188,6 +188,7 @@
 			performances: {
 				// [index by date][index by cinema][index by id]
 			},
+			planner: {},
 			getDate: function cineworld_getDate() {
 				return twister.calendar.current.date.replace(/-/g, '');
 			},
@@ -496,11 +497,11 @@
 			},
 			plan: function() {
 				var html = '';
+				var date = twister.cineworld.getDate();
 				$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
 					var cinema = twister.cineworld.cinemas.all[cid];
 					$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
 						var film = twister.cineworld.films.all[edi];
-						var date = twister.cineworld.getDate();
 						var performances = twister.cineworld.performances[date][cid][edi];
 						$.each(performances, function(performanceIndex, perf) {
 							var time = moment(date + perf.time, 'YYYYMMDDHH:mm');
@@ -520,22 +521,34 @@
 							perf.plan = plan;
 						});
 					});
+					twister.cineworld.planCinema(cinema, twister.cineworld.planner.graph = [{
+						watched: ["travel"],
+						performance: {
+							plan: {
+								endTime: moment(date, 'YYYYMMDDHH')
+							},
+							film: {
+								edi: -1
+							}
+						},
+						next: []
+					}]);
 				});
 				html += '<span style="font-family: monospace">JSON (twister.cineworld.performances):<br/>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseAll()">collapse</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(3)">dates</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(4)">cinemas</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(5)">films</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(6)">perf arrays</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(7)">performances</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(8)">extra details</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.ExpandAll()">expand all</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseAll()">collapse</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(3)">2+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(4)">3+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(5)">4+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(6)">5+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(7)">6+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(8)">7+</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.ExpandAll()">expand all</a>\
 				</span>\
 				<div style="width: 100%; height: 200px; overflow: scroll">\
 				<div id="plan_jsonDebug"></div>\
 				</div>';
 				$('#planner_listing').html(html);
-				twister.cineworld.plan_formatter = new QuickJSONFormatter({
+				twister.cineworld.planner.formatter = new QuickJSONFormatter({
 					CanvasId: "plan_jsonDebug",
 					SingleTab: "\t",
 					TabSize: 1,
@@ -544,7 +557,56 @@
 					ImgCollapsed: 'http://bodurov.com/JsonFormatter/images/Collapsed.gif',
 					OnError: function(e) { console.warn(e); }
 				});
-				twister.cineworld.plan_formatter.Process(JSON.stringify(twister.cineworld.performances));
+				twister.cineworld.planner.formatter.Process(JSON.stringify(twister.cineworld.performances));
+			},
+			planCinema: function cineworld_planCinema(cinema, graph) {
+				var date = twister.cineworld.getDate();
+				$.each(graph, function(nodeIndex, node) {
+					$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
+						if( $.inArray(1 * edi, node.watched) == -1) { // didn't watch it already
+							var performances = twister.cineworld.performances[date][cinema.id][edi];
+							$.each(performances, function(performanceIndex, perf) {
+								if(node.performance.plan.endTime < (perf.plan.startTime)) { // starts after the other finishes
+									node.next.push({
+										watched: node.watched.concat(perf.film.edi),
+										performance: perf,
+										next: [],
+										prev: node
+									});
+								}
+							});
+						}
+					});
+					if(node.next.length != 0) {
+						twister.cineworld.planCinema(cinema, node.next);
+					} else if (twister.cineworld.films.selectedIds.length + 1 == node.watched.length) {
+						var result = "Match:";
+						var results = [];
+						while(node.prev) {
+							results.unshift(node);
+							if(node.prev.performance.film.edi != -1
+									&& node.performance.plan.movieRange.start - node.prev.performance.plan.movieRange.end > 25 * 60 * 1000) {
+								console.log("Ruled out: break between movies too big: " + 
+									Math.floor((node.performance.plan.movieRange.start - node.prev.performance.plan.movieRange.end) / 60 / 1000));
+								return;
+							}
+							node = node.prev;
+						}
+						$.each(results, function() {
+							if(this.prev.performance.film.edi != -1) {
+								result += "\n\t" + this.prev.performance.plan.movieRange.end.format("HH:mm")
+										+ "-" +  this.performance.plan.movieRange.start.format("HH:mm")
+										+ ": (" + Math.floor((this.performance.plan.movieRange.start - this.prev.performance.plan.movieRange.end) / 60 / 1000) + " minutes break)";
+							}
+							result += "\n\t" + this.performance.plan.movieRange.start.format("HH:mm")
+									+ "-" +  this.performance.plan.movieRange.end.format("HH:mm")
+									+ ": " + this.performance.film.title;
+						});
+						console.log(result);
+					} else {
+						console.log("Ruled out: not all movies are included: " + node.watched);
+					}
+				});
 			}
 		});
 
