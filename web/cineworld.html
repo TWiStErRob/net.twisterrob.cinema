@@ -9,6 +9,7 @@
 	<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />-->
 	<link rel="stylesheet" type="text/css" href="jquery.layout-default-latest.css" />
 	<link rel="stylesheet" type="text/css" href="jquery.toChecklist.css" />
+	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
 
 	<script type="text/javascript" src="jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="jquery-ui-1.10.3.js"></script>
@@ -18,12 +19,12 @@
 	<!-- TODO Replace with https://github.com/andreasbernhard/history.js-->
 	<script type="text/javascript" src="jquery.ba-hashchange.js"></script>
 	<script type="text/javascript" src="jquery-ui-i18n.js"></script>
+	<script type="text/javascript" src="jquery.toChecklist.js"></script>
 	<script type="text/javascript" src="moment.js"></script>
 	<script type="text/javascript" src="moment-hu.js"></script>
 	<script type="text/javascript" src="moment-range.js"></script>
 	<script type="text/javascript" src="underscore.js"></script>
-
-	<script type="text/javascript" src="jquery.toChecklist.js"></script>
+	<script type="text/javascript" src="quickjsonformatter.js"></script>
 
 	<script>
 		if (!String.prototype.format) {
@@ -508,19 +509,42 @@
 								scheduledTime: time,
 								startTime: time.clone().add('minutes', adLength),
 								endTime: time.clone().add('minutes', adLength + film.length),
-								adLength: adLength,
-								date: date,
-								cinema: cid,
-								film: edi,
+								adLength: adLength
 							};
 							plan.movieRange = moment().range(plan.startTime, plan.endTime);
 							plan.fullRange = moment().range(plan.scheduledTime, plan.endTime);
+
+							perf.date = date;
+							perf.cinema = cinema;
+							perf.film = film;
 							perf.plan = plan;
 						});
 					});
 				});
-				html += '<textarea style="width: 100%; height: 200px;">' + JSON.stringify(twister.cineworld.performances, null, ' ') + '</textarea>';
+				html += '<span style="font-family: monospace">JSON (twister.cineworld.performances):<br/>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseAll()">collapse</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(3)">dates</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(4)">cinemas</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(5)">films</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(6)">perf arrays</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(7)">performances</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.CollapseLevel(8)">extra details</a>\
+					<a href="javascript:void(0);" onClick="twister.cineworld.plan_formatter.ExpandAll()">expand all</a>\
+				</span>\
+				<div style="width: 100%; height: 200px; overflow: scroll">\
+				<div id="plan_jsonDebug"></div>\
+				</div>';
 				$('#planner_listing').html(html);
+				twister.cineworld.plan_formatter = new QuickJSONFormatter({
+					CanvasId: "plan_jsonDebug",
+					SingleTab: "\t",
+					TabSize: 1,
+					IsCollapsible: true,
+					ImgExpanded: 'http://bodurov.com/JsonFormatter/images/Expanded.gif',
+					ImgCollapsed: 'http://bodurov.com/JsonFormatter/images/Collapsed.gif',
+					OnError: function(e) { console.warn(e); }
+				});
+				twister.cineworld.plan_formatter.Process(JSON.stringify(twister.cineworld.performances));
 			}
 		});
 
