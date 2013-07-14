@@ -580,7 +580,7 @@
 					if(node.next.length != 0) {
 						twister.cineworld.planCinema(cinema, node.next);
 					} else if (twister.cineworld.films.selectedIds.length + 1 == node.watched.length) {
-						var result = "Match:";
+						var result = "Match at " + cinema.name;
 						var results = [];
 						while(node.prev) {
 							results.unshift(node);
