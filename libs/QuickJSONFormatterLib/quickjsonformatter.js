@@ -39,7 +39,7 @@
 			if(this.Options.CanvasId === undefined) {
 				throw "Please specify CanvasId as the id of the target div to put the tree representation to.";
 			} else {
-				$id(this.Options.CanvasId).className += " Canvas";
+				$id(this.Options.CanvasId).className += " qjf-Canvas";
 			}
 			QuickJSONFormatter.instances[this.InstanceIndex = ++QuickJSONFormatter.instances_last] = this;
 		}
@@ -61,7 +61,7 @@
 				if (json == "") json = "\"\"";
 				var obj = eval("["+json+"]");
 				html = this.ProcessObject(obj[0], 0, false, false, false);
-				$id(this.Options.CanvasId).innerHTML = "<PRE class='CodeContainer'>"+html+"</PRE>";
+				$id(this.Options.CanvasId).innerHTML = "<PRE class='qjf-CodeContainer'>"+html+"</PRE>";
 			} catch(e) {
 				this.Options.OnError(e);
 				$id(this.Options.CanvasId).innerHTML = "";
@@ -69,60 +69,60 @@
 		};
 		QuickJSONFormatter.prototype.ProcessObject = function(obj, indent, addComma, isArray, isPropertyContent) {
 			var html = "";
-			var comma = (addComma) ? "<span class='Comma'>,</span> " : "";
+			var comma = (addComma) ? "<span class='qjf-Comma'>,</span> " : "";
 			var type = typeof obj;
 			var clpsHtml ="";
 			if (IsArray(obj)) {
 				if (obj.length == 0) {
-					html += this.GetRow(indent, "<span class='ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
+					html += this.GetRow(indent, "<span class='qjf-ArrayBrace'>[ ]</span>"+comma, isPropertyContent);
 				} else {
-					clpsHtml = this.Options.IsCollapsible ? "<span><img src=\""+this.Options.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
-					html += this.GetRow(indent, "<span class='ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
+					clpsHtml = this.Options.IsCollapsible ? "<span><img src=\""+this.Options.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='qjf-collapsible'>" : "";
+					html += this.GetRow(indent, "<span class='qjf-ArrayBrace'>[</span>"+clpsHtml, isPropertyContent);
 					for (var i = 0; i < obj.length; i++) {
 						html += this.ProcessObject(obj[i], indent + 1, i < (obj.length - 1), true, false);
 					}
 					clpsHtml = this.Options.IsCollapsible ? "</span>" : "";
-					html += this.GetRow(indent, clpsHtml+"<span class='ArrayBrace'>]</span>"+comma);
+					html += this.GetRow(indent, clpsHtml+"<span class='qjf-ArrayBrace'>]</span>"+comma);
 				}
 			} else if (type == 'object') {
 				if (obj == null) {
-						html += this.FormatLiteral("null", "", comma, indent, isArray, "Null");
+						html += this.FormatLiteral("null", "", comma, indent, isArray, "qjf-Null");
 				} else if (obj.constructor == _dateObj.constructor) {
-						html += this.FormatLiteral("new Date(" + obj.getTime() + ") /*" + obj.toLocaleString()+"*/", "", comma, indent, isArray, "Date");
+						html += this.FormatLiteral("new Date(" + obj.getTime() + ") /*" + obj.toLocaleString()+"*/", "", comma, indent, isArray, "qjf-Date");
 				} else if (obj.constructor == _regexpObj.constructor) {
-						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
+						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "qjf-RegExp");
 				} else {
 					var numProps = 0;
 					for (var prop in obj) numProps++;
 					if (numProps == 0) {
-						html += this.GetRow(indent, "<span class='ObjectBrace'>{ }</span>"+comma, isPropertyContent);
+						html += this.GetRow(indent, "<span class='qjf-ObjectBrace'>{ }</span>"+comma, isPropertyContent);
 					} else {
-						clpsHtml = this.Options.IsCollapsible ? "<span><img src=\""+this.Options.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='collapsible'>" : "";
-						html += this.GetRow(indent, "<span class='ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
+						clpsHtml = this.Options.IsCollapsible ? "<span><img src=\""+this.Options.ImgExpanded+"\" onClick=\"QuickJSONFormatter.instances["+this.InstanceIndex+"].ExpImgClicked(this)\" /></span><span class='qjf-collapsible'>" : "";
+						html += this.GetRow(indent, "<span class='qjf-ObjectBrace'>{</span>"+clpsHtml, isPropertyContent);
 						var j = 0;
 						for (var prop in obj) {
 							var quote = this.Options.QuoteKeys ? "\"" : "";
-							html += this.GetRow(indent + 1, "<span class='PropertyName'>"+quote+prop+quote+"</span>: "+this.ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
+							html += this.GetRow(indent + 1, "<span class='qjf-PropertyName'>"+quote+prop+quote+"</span>: "+this.ProcessObject(obj[prop], indent + 1, ++j < numProps, false, true));
 						}
 						clpsHtml = this.Options.IsCollapsible ? "</span>" : "";
-						html += this.GetRow(indent, clpsHtml+"<span class='ObjectBrace'>}</span>"+comma);
+						html += this.GetRow(indent, clpsHtml+"<span class='qjf-ObjectBrace'>}</span>"+comma);
 					}
 				}
 			} else if (type == 'number') {
-				html += this.FormatLiteral(obj, "", comma, indent, isArray, "Number");
+				html += this.FormatLiteral(obj, "", comma, indent, isArray, "qjf-Number");
 			} else if (type == 'boolean') {
-				html += this.FormatLiteral(obj, "", comma, indent, isArray, "Boolean");
+				html += this.FormatLiteral(obj, "", comma, indent, isArray, "qjf-Boolean");
 			} else if (type == 'function') {
 				if (obj.constructor == _regexpObj.constructor) {
-						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "RegExp");
+						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "qjf-RegExp");
 				} else {
 						obj = this.FormatFunction(indent, obj);
-						html += this.FormatLiteral(obj, "", comma, indent, isArray, "Function");
+						html += this.FormatLiteral(obj, "", comma, indent, isArray, "qjf-Function");
 				}
 			} else if (type == 'undefined') {
-				html += this.FormatLiteral("undefined", "", comma, indent, isArray, "Null");
+				html += this.FormatLiteral("undefined", "", comma, indent, isArray, "qjf-Null");
 			} else {
-				html += this.FormatLiteral(obj.toString().split("\\").join("\\\\").split('"').join('\\"'), "\"", comma, indent, isArray, "String");
+				html += this.FormatLiteral(obj.toString().split("\\").join("\\\\").split('"').join('\\"'), "\"", comma, indent, isArray, "qjf-String");
 			}
 			return html;
 		};
@@ -155,7 +155,7 @@
 			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id(this.Options.CanvasId), function(element) {
-				if (element.className == 'collapsible') {
+				if (element.className == 'qjf-collapsible') {
 					that.MakeContentVisible(element, false);
 				}
 			}, 0);
@@ -164,7 +164,7 @@
 			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id(this.Options.CanvasId), function(element) {
-				if (element.className == 'collapsible') {
+				if (element.className == 'qjf-collapsible') {
 					that.MakeContentVisible(element, true);
 				}
 			}, 0);
@@ -198,7 +198,7 @@
 			var that = this;
 			this.EnsureIsPopulated();
 			this.TraverseChildren($id(this.Options.CanvasId), function(element, depth) {
-				if (element.className == 'collapsible') {
+				if (element.className == 'qjf-collapsible') {
 					if (depth >= level) {
 						that.MakeContentVisible(element, false);
 					} else {

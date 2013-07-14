@@ -1,56 +1,56 @@
-.Canvas
+.qjf-Canvas
 {
 	font: 10pt Georgia;
 	background-color:#ECECEC;
 	color:#000000;
 	border:solid 1px #CECECE;
 }
-.Canvas .ObjectBrace
+.qjf-Canvas .qjf-ObjectBrace
 {
 	color:#00AA00;
 	font-weight:bold;
 }
-.Canvas .ArrayBrace
+.qjf-Canvas .qjf-ArrayBrace
 {
 	color:#0033FF;
 	font-weight:bold;
 }
-.Canvas .PropertyName
+.qjf-Canvas .qjf-PropertyName
 {
 	color:#CC0000;
 	font-weight:bold;
 }
-.Canvas .String
+.qjf-Canvas .qjf-String
 {
 	color:#007777;
 }
-.Canvas .Number
+.qjf-Canvas .qjf-Number
 {
 	color:#AA00AA;
 }
-.Canvas .Boolean
+.qjf-Canvas .qjf-Boolean
 {
   color:#0000FF;
 }
-.Canvas .Function
+.qjf-Canvas .qjf-Function
 {
   color:#AA6633;
   text-decoration:italic;
 }
-.Canvas .Null
+.qjf-Canvas .qjf-Null
 {
   color:#0000FF;
 }
-.Canvas .Comma
+.qjf-Canvas .qjf-Comma
 {
   color:#000000;
   font-weight:bold;
 }
-.Canvas PRE.CodeContainer{
+.qjf-Canvas PRE.qjf-CodeContainer{
   margin-top:0px;
   margin-bottom:0px;
 }
-.Canvas PRE.CodeContainer img{
+.qjf-Canvas PRE.qjf-CodeContainer img{
   cursor:pointer;
   border:none;
   margin-bottom:-1px;
