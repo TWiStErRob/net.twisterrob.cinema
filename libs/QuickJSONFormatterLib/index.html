@@ -6,9 +6,6 @@
 	<meta name="keywords" content="Json, Printer, Colorer, Format, Color, Collapsible">
 	<script type="text/javascript" src="quickjsonformatter.js"></script>
 	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
-	<script>
-		formatter = new QuickJSONFormatter("RawJson", "Canvas");
-	</script>
 	<style>
 		#CollapsibleViewDetail a {
 			padding-left: 10px;
@@ -41,8 +38,29 @@
 			height: 130px;
 		}
 	</style>
+	<script>
+		function init() {
+			window.formatter = new QuickJSONFormatter({
+				RawJsonId: "RawJson",
+				CanvasId: "Canvas"
+			});
+		}
+		function CollapsibleViewClicked(formatter, CollapsibleViewDetailId) {
+			formatter.Options.IsCollapsible = this.checked;
+			document.getElementById(CollapsibleViewDetailId).style.visibility = this.checked ? "visible" : "hidden";
+			formatter.Process();
+		};
+		function QuoteKeysClicked(formatter) {
+			formatter.Options.QuoteKeys = this.checked;
+			formatter.Process();
+		};
+		function TabSizeChanged(formatter) {
+			formatter.Options.TabSize = this.options[this.selectedIndex].value;
+			formatter.Process();
+		};
+	</script>
 </head>
-<body>
+<body onLoad="init();">
 	<div id="HeaderTitle">
 		Quick Json Formatter <span style='color:#aaa;font-weight:bold;font-style:italic'>Online</span> 1.0
 		Copyright (c) 2008-2009 Vladimir Bodurov &nbsp; <a href="http://blog.bodurov.com/Formatter-and-colorer-of-raw-JSON-code">about this tool</a>
@@ -57,31 +75,31 @@
 		<input type="Button" value="Format" onClick="formatter.Process()"/>
 		<span id="TabSizeHolder">
 			tab size:
-			<select id="TabSize" onChange="formatter.TabSize = this.options[this.selectedIndex].value; formatter.TabSizeChanged()">
+			<select id="TabSize" onChange="TabSizeChanged.call(this, formatter);">
 				<option value="1">1</option>
 				<option value="2">2</option>
-				<option value="3" selected="true">3</option>
+				<option value="3" selected="selected">3</option>
 				<option value="4">4</option>
 				<option value="5">5</option>
 				<option value="6">6</option>
 			</select>
 		</span>
 		<label for="QuoteKeys">
-			<input type="checkbox" id="QuoteKeys" onClick="formatter.QuoteKeysClicked()" checked="true" />
+			<input type="checkbox" id="QuoteKeys" onClick="QuoteKeysClicked.call(this, formatter);" checked="checked" />
 			Keys in Quotes
 		</label>
 		&nbsp;
-		<a href="javascript:void(0);" onClick="formatter.SelectAllClicked()">select all</a>
+		<a href="javascript:void(0);" onClick="formatter.SelectAll()">select all</a>
 		&nbsp;
 		<span id="CollapsibleViewHolder" >
 			<label for="CollapsibleView">
-				<input type="checkbox" id="CollapsibleView" onClick="formatter.CollapsibleViewClicked()" checked="true" />
+				<input type="checkbox" id="CollapsibleView" onClick="CollapsibleViewClicked.call(this, formatter, 'CollapsibleViewDetail');" checked="checked" />
 				Collapsible View
 			</label>
 		</span>
 		<span id="CollapsibleViewDetail">
-			<a href="javascript:void(0);" onClick="formatter.ExpandAllClicked()">expand all</a>
-			<a href="javascript:void(0);" onClick="formatter.CollapseAllClicked()">collapse all</a>
+			<a href="javascript:void(0);" onClick="formatter.ExpandAll()">expand all</a>
+			<a href="javascript:void(0);" onClick="formatter.CollapseAll()">collapse all</a>
 			<a href="javascript:void(0);" onClick="formatter.CollapseLevel(3)">level 2+</a>
 			<a href="javascript:void(0);" onClick="formatter.CollapseLevel(4)">level 3+</a>
 			<a href="javascript:void(0);" onClick="formatter.CollapseLevel(5)">level 4+</a>
@@ -91,9 +109,11 @@
 			<a href="javascript:void(0);" onClick="formatter.CollapseLevel(9)">level 8+</a>
 		</span>
 	</div>
-	<div id="Canvas" class="Canvas"></div>
+	<div id="Canvas"></div>
 
 	<div style="font-size:10px;color:grey;text-align:right;margin-top:20px">
+		<input type="button" value="link to this json" onclick="formatter.LinkToJson()" style="color:#777">
+		&nbsp;&nbsp;
 		my other tools:
 		&nbsp;
 		<a href="http://www.bodurov.com/NearestStars/" class="OtherToolsLink">Nearest Stars</a>

@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Collapsible JSON Formatter - multiple formaters on one page</title>
+	<script type="text/javascript" src="quickjsonformatter.js"></script>
+	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
+	<style>
+		.CollapsibleViewDetail a {
+			padding-left: 10px;
+		}
+		.ControlsRow {
+			white-space: nowrap;
+			font: 11px Georgia;
+		}
+		.TabSizeHolder {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		.HeaderTitle {
+			text-align: right;
+			font-size: 11px;
+		}
+		.HeaderSubTitle {
+			margin-bottom: 2px;
+			margin-top: 0px
+		}
+		A.OtherToolsLink {
+			color: #555;
+			text-decoration: none;
+		}
+		A.OtherToolsLink:hover {
+			text-decoration: underline;
+		}
+		.RawJson {
+			width: 99%;
+			height: 130px;
+		}
+	</style>
+	<script>
+		function init() {
+			window.formatter1 = new QuickJSONFormatter({
+				RawJsonId: "RawJson1",
+				CanvasId: "Canvas1"
+			});
+			window.formatter2 = new QuickJSONFormatter({
+				RawJsonId: "RawJson2",
+				CanvasId: "Canvas2",
+				QuoteKeys: false,
+				TabSize: 6,
+				OnError: function(e) {
+					document.title = "ERROR!";
+					alert(e.message + "\n" + e.stack);
+				}
+			});
+			window.formatter3 = new QuickJSONFormatter({
+				RawJsonId: "RawJson3",
+				CanvasId: "Canvas3",
+				QuoteKeys: false,
+				IsCollapsible: false,
+				TabSize: 4,
+				SingleTab: "."
+			});
+		}
+		function CollapsibleViewClicked(formatter, CollapsibleViewDetailId) {
+			formatter.Options.IsCollapsible = this.checked;
+			document.getElementById(CollapsibleViewDetailId).style.visibility = this.checked ? "visible" : "hidden";
+			formatter.Process();
+		};
+		function QuoteKeysClicked(formatter) {
+			formatter.Options.QuoteKeys = this.checked;
+			formatter.Process();
+		};
+		function TabSizeChanged(formatter) {
+			formatter.Options.TabSize = this.options[this.selectedIndex].value;
+			formatter.Process();
+		};
+	</script>
+</head>
+<body onLoad="init();">
+	<div class="HeaderTitle">
+		Quick Json Formatter <span style='color:#aaa;font-weight:bold;font-style:italic'>Online</span> 1.0
+		Copyright (c) 2008-2009 Vladimir Bodurov &nbsp; <a href="http://blog.bodurov.com/Formatter-and-colorer-of-raw-JSON-code">about this tool</a>
+	</div>
+	<h3 class="HeaderSubTitle">Collapsible JSON Formatter</h3>
+	<div>
+		Enter your JSON here:
+		<span style='color:#777;font-size:10px'>(Your code will NOT be posted to a server, the program executes on the client)</span>
+	</div>
+ 	<textarea id="RawJson1" class="RawJson">{ a: "b", "c": 3 }</textarea>
+	<div class="ControlsRow">
+		<input type="Button" value="Format" onClick="formatter1.Process()"/>
+		<input type="button" value="link to this json" onclick="formatter1.LinkToJson()" style="color:#777">
+		<span class="TabSizeHolder">
+			tab size:
+			<select class="TabSize" onChange="TabSizeChanged.call(this, formatter1);">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3" selected="selected">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+			</select>
+		</span>
+		<label for="QuoteKeys1">
+			<input type="checkbox" id="QuoteKeys1" onClick="QuoteKeysClicked.call(this, formatter1);" checked="checked" />
+			Keys in Quotes
+		</label>
+		&nbsp;
+		<a href="javascript:void(0);" onClick="formatter1.SelectAll()">select all</a>
+		&nbsp;
+		<span class="CollapsibleViewHolder" >
+			<label for="CollapsibleView1">
+				<input type="checkbox" id="CollapsibleView1" class="CollapsibleView" onClick="CollapsibleViewClicked.call(this, formatter1, 'CollapsibleViewDetail1');" checked="checked" />
+				Collapsible View
+			</label>
+		</span>
+		<span class="CollapsibleViewDetail" id="CollapsibleViewDetail1">
+			<a href="javascript:void(0);" onClick="formatter1.ExpandAll()">expand all</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseAll()">collapse all</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(3)">level 2+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(4)">level 3+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(5)">level 4+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(6)">level 5+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(7)">level 6+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(8)">level 7+</a>
+			<a href="javascript:void(0);" onClick="formatter1.CollapseLevel(9)">level 8+</a>
+		</span>
+	</div>
+	<div id="Canvas1"></div>
+
+	<div>
+		Enter your JSON here [error will be displayed with stack trace]:
+		<span style='color:#777;font-size:10px'>(Your code will NOT be posted to a server, the program executes on the client)</span>
+	</div>
+ 	<textarea id="RawJson2" class="RawJson">{ a: "b", "c": 3 </textarea>
+	<div class="ControlsRow">
+		<input type="Button" value="Format" onClick="formatter2.Process()"/>
+		<input type="button" value="link to this json" onclick="formatter2.LinkToJson()" style="color:#777">
+		<span class="TabSizeHolder">
+			tab size:
+			<select class="TabSize" onChange="TabSizeChanged.call(this, formatter2);">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6" selected="selected">6</option>
+			</select>
+		</span>
+		<label for="QuoteKeys2">
+			<input type="checkbox" id="QuoteKeys2" onClick="QuoteKeysClicked.call(this, formatter2);" />
+			Keys in Quotes
+		</label>
+		&nbsp;
+		<a href="javascript:void(0);" onClick="formatter2.SelectAll()">select all</a>
+		&nbsp;
+		<span class="CollapsibleViewHolder" >
+			<label for="CollapsibleView2">
+				<input type="checkbox" id="CollapsibleView2" class="CollapsibleView" onClick="CollapsibleViewClicked.call(this, formatter2, 'CollapsibleViewDetail2');" checked="checked" />
+				Collapsible View
+			</label>
+		</span>
+		<span class="CollapsibleViewDetail" id="CollapsibleViewDetail2">
+			<a href="javascript:void(0);" onClick="formatter2.ExpandAll()">expand all</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseAll()">collapse all</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(3)">level 2+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(4)">level 3+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(5)">level 4+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(6)">level 5+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(7)">level 6+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(8)">level 7+</a>
+			<a href="javascript:void(0);" onClick="formatter2.CollapseLevel(9)">level 8+</a>
+		</span>
+	</div>
+	<div id="Canvas2"></div>
+
+	<div>
+		Enter your JSON here:
+		<span style='color:#777;font-size:10px'>(Your code will NOT be posted to a server, the program executes on the client)</span>
+	</div>
+ 	<textarea id="RawJson3" class="RawJson">{ a: "b", "c": 3 }</textarea>
+	<div class="ControlsRow">
+		<input type="Button" value="Format" onClick="formatter3.Process()"/>
+		<input type="button" value="link to this json" onclick="formatter3.LinkToJson()" style="color:#777">
+		<span class="TabSizeHolder">
+			tab size:
+			<select class="TabSize" onChange="TabSizeChanged.call(this, formatter3);">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4" selected="selected">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+			</select>
+		</span>
+		<label for="QuoteKeys3">
+			<input type="checkbox" id="QuoteKeys3" onClick="QuoteKeysClicked.call(this, formatter3);" />
+			Keys in Quotes
+		</label>
+		&nbsp;
+		<a href="javascript:void(0);" onClick="formatter3.SelectAll()">select all</a>
+		&nbsp;
+		<span class="CollapsibleViewHolder" >
+			<label for="CollapsibleView3">
+				<input type="checkbox" id="CollapsibleView3" class="CollapsibleView" onClick="CollapsibleViewClicked.call(this, formatter3, 'CollapsibleViewDetail3');" />
+				Collapsible View
+			</label>
+		</span>
+		<span class="CollapsibleViewDetail" id="CollapsibleViewDetail3" style="visibility: hidden">
+			<a href="javascript:void(0);" onClick="formatter3.ExpandAll()">expand all</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseAll()">collapse all</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(3)">level 2+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(4)">level 3+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(5)">level 4+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(6)">level 5+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(7)">level 6+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(8)">level 7+</a>
+			<a href="javascript:void(0);" onClick="formatter3.CollapseLevel(9)">level 8+</a>
+		</span>
+	</div>
+	<div id="Canvas3"></div>
+
+	<div style="font-size:10px;color:grey;text-align:right;margin-top:20px">
+		my other tools:
+		&nbsp;
+		<a href="http://www.bodurov.com/NearestStars/" class="OtherToolsLink">Nearest Stars</a>
+		&nbsp;&nbsp;
+		<a href="http://www.bodurov.com/VectorVisualizer/" class="OtherToolsLink">Vector Visualizer</a>
+		&nbsp; &nbsp;
+		<!--a href="http://www.bodurov.com/BitmapVectorizer/" class="OtherToolsLink">Bitmap Vectorizer</a-->
+	</div>
+</body>
+</html>
