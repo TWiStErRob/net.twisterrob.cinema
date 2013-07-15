@@ -6,7 +6,7 @@
 	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 	<title>Print a Google Calendar</title>
 
-	<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />-->
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="jquery.layout-default-latest.css" />
 	<link rel="stylesheet" type="text/css" href="jquery.toChecklist.css" />
 	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="jquery-ui-i18n.js"></script>
 	<script type="text/javascript" src="jquery.toChecklist.js"></script>
 	<script type="text/javascript" src="moment.js"></script>
-	<script type="text/javascript" src="moment-hu.js"></script>
+	<!--<script type="text/javascript" src="moment-hu.js"></script>-->
 	<script type="text/javascript" src="moment-range.js"></script>
 	<script type="text/javascript" src="underscore.js"></script>
 	<script type="text/javascript" src="quickjsonformatter.js"></script>
@@ -89,77 +89,6 @@
 					return result;
 				}
 		});
-		twister.calendar = $.extend(twister.calendar || {}, {
-			init: function(params) {
-				moment.lang("en");
-				$.datepicker.setDefaults($.datepicker.regional[""]);
-				//timezoneJS.timezone.zoneFileBasePath = 'tz'; // needs --allow-file-access-from-files
-			},
-
-			renderCalendars: function() {
-				var config = {
-					changeMonth: true,
-					changeYear: true,
-					showButtonPanel: true,
-					showOtherMonths: true,
-					selectOtherMonths: true,
-					showWeek: true,
-					firstDay: 1,
-					numberOfMonths: 2,
-					constrainInput: true,
-					weekHeader: "",
-					showOn: "both",
-					dateFormat: "yy-mm-dd",
-				};
-				$("#date").datepicker($.extend({}, config, {
-					onClose: function( selectedDate ) {
-						//$( "#to" ).datepicker( "option", "minDate", selectedDate );
-					}
-				}) );
-			},
-
-			param_change: function(selector, field) {
-				return function(e) {
-					var paramValue = $(selector).val();
-					twister.calendar.current[field] = paramValue;
-					twister.calendar.current.updateToHash();
-				}
-			},
-
-			hash_change: function(e) {
-				var params = twister.calendar.current;
-				params.updateFromHash();
-				if(params.calendar && params.from && params.to) {
-					twister.calendar.retrieveCalendarEntries(params);
-				}
-			}
-		});
-		function CurrentState() {
-			var date = moment().add('days', 0).format("YYYY-MM-DD");
-			var that; // the result to be referenced from methods
-
-			function updateFromHash() {
-				date = twister.utils.url.getHashParam('date') || date;
-			}
-
-			function updateToHash() {
-				var hash = '#' + twister.utils.url.getHashAnchor() + '!';
-				hash += '&date=' + encodeURIComponent(date);
-				window.location.hash = hash;
-			}
-
-			function writeUI() {
-				$("#date").val(date).change();
-			}
-
-			return that = {
-				updateFromHash: updateFromHash,
-				updateToHash: updateToHash,
-				writeUI: writeUI,
-				get date() { return date; },
-				set date(value) { date = value; },
-			}
-		};
 
 		twister.cineworld = $.extend(twister.cineworld || {}, {
 			const: {
@@ -189,10 +118,23 @@
 				// [index by date][index by cinema][index by id]
 			},
 			planner: {},
+			date: moment().add('days', 0).format("YYYY-MM-DD"),
 			getDate: function cineworld_getDate() {
-				return twister.calendar.current.date.replace(/-/g, '');
+				return twister.cineworld.date.replace(/-/g, '');
+			},
+			updateFromHash: function updateFromHash() {
+				twister.cineworld.date = twister.utils.url.getQueryParam('date') || twister.cineworld.date;
+			},
+			writeUI: function() {
+				twister.ui.screen.date.val(twister.cineworld.date).change();
+			},
+			getHash: function updateToHash() {
+				var hash = '#' + twister.utils.url.getHashAnchor() + '!';
+				hash += '&date=' + encodeURIComponent(twister.cineworld.date);
+				return hash;
 			},
 			getCinemas: function cineworld_getCinemas() {
+				$('#cinemas').text("Loading...");
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
 					type: 'GET',
@@ -610,37 +552,70 @@
 			}
 		});
 
+		twister.ui = $.extend(twister.ui || {}, {
+			screen: {
+				layout: undefined,
+				date: undefined
+			},
+			init: function () {
+				twister.ui.initLayout();
+				twister.ui.initCalendar();
+			},
+			initLayout: function() {
+				twister.ui.screen.layout = $('body').layout({
+					center: {
+						childOptions: {
+							west: {
+								size: 250
+							}
+						}
+					},
+					north: {
+						initClosed: false
+					},
+					south: {
+						initClosed: true
+					}
+				});
+			},
+			initCalendar: function() {
+				moment.lang("en");
+				$.datepicker.setDefaults($.datepicker.regional[""]);
+				//timezoneJS.timezone.zoneFileBasePath = 'tz'; // needs --allow-file-access-from-files
+
+				var config = {
+					changeMonth: true,
+					changeYear: true,
+					showButtonPanel: true,
+					showOtherMonths: true,
+					selectOtherMonths: true,
+					showWeek: true,
+					firstDay: 1,
+					numberOfMonths: 2,
+					constrainInput: true,
+					weekHeader: "",
+					showOn: "both",
+					dateFormat: "yy-mm-dd",
+				};
+				twister.ui.screen.date = $("#date")
+					.datepicker($.extend({}, config, {
+						onClose: function( selectedDate ) {
+							//$( "#to" ).datepicker( "option", "minDate", selectedDate );
+						}
+					}))
+					.change(function(e) {
+						twister.cineworld.date = this.value;
+						$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));
+					})
+				;
+			}
+		});
+
 		$(document).ready(function document_ready() {
 			console.log("------------------------------- Document ready. ----------------------------");
-			twister.ui = {};
-			twister.ui.layout = $('body').layout({
-				center: {
-					childOptions: {
-						west: {
-							size: 250
-						}
-					}
-				},
-				north: {
-					initClosed: true
-				},
-				south: {
-					initClosed: true
-				}
-			});
-
-			var status = twister.calendar.current = new CurrentState(); status.updateFromHash();
-			twister.calendar.init(status);
-			$(twister.calendar.renderCalendars);
-			$("#date").change(twister.calendar.param_change("#date", "date"));
-			$("#date").change(function() {$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));});
-			$(status).change(function(ev) {
-				console.log(this);
-			});
-			status.writeUI();
-			$('#cinemas').text("Loading...");
-			$(window).hashchange(twister.calendar.hash_change);
-			$(window).hashchange();
+			twister.ui.init();
+			twister.cineworld.updateFromHash();
+			twister.cineworld.writeUI();
 			twister.cineworld.getCinemas();
 		});
 	</script>

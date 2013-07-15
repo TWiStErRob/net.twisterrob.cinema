@@ -2,6 +2,8 @@
 // language : hungarian (hu)
 // author : Adam Brunner : https://github.com/adambrunner
 
+(function() {
+var moment = typeof require !== "undefined" && require !== null ? require("moment") : this.moment; 
 var weekEndings = 'vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton'.split(' ');
 
 function translate(number, withoutSuffix, key, isFuture) {
@@ -40,7 +42,7 @@ function week(isFuture) {
     return (isFuture ? '' : '[múlt] ') + '[' + weekEndings[this.day()] + '] LT[-kor]';
 }
 
-require('../moment').lang('hu', {
+moment().lang('hu', {
     months : "január_február_március_április_május_június_július_augusztus_szeptember_október_november_december".split("_"),
     monthsShort : "jan_feb_márc_ápr_máj_jún_júl_aug_szept_okt_nov_dec".split("_"),
     weekdays : "vasárnap_hétfő_kedd_szerda_csütörtök_péntek_szombat".split("_"),
@@ -85,3 +87,5 @@ require('../moment').lang('hu', {
         doy : 7  // The week that contains Jan 1st is the first week of the year.
     }
 });
+
+}).call(this);
