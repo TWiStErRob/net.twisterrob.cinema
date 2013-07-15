@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
+<!-- Use: cineworld.html?date=2013-07-17&film=56173&film=39728&film=107709 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
@@ -48,7 +48,7 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: true,
+			debug: false,
 			logResponses: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {});
@@ -63,16 +63,38 @@
 			getHashParam: function(name) {
 				// #anchor!param1=value1&param2=&param3=value3
 				var start = window.location.hash.indexOf('!') + 1;
-				var match = RegExp('(?:^|&)' + name + '=([^&]*)')
+				var match = new RegExp('(?:^|&)' + name + '=([^&]*)')
 							.exec(window.location.hash.substring(start));
 				return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 			},
 
 			getQueryParam: function(name) {
 				// ?param1=value1&param2=&param3=value3
-				var match = RegExp('[?&]' + name + '=([^&]*)')
-							.exec(window.location.search);
-				return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+				return twister.utils.url.getUrlParams()[name];
+			},
+
+			// http://stackoverflow.com/a/520845/253468 + http://stackoverflow.com/a/11030951/253468
+			getUrlParams: function (url) {
+				var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g,
+					match, params = {},
+				decode = function (s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+				if (typeof url == "undefined") url = document.location.href;
+
+				while (match = re.exec(url)) {
+					var pName = decode(match[1]);
+					var pValue = decode(match[2]);
+					if (pName in params) {
+						if (params[pName] instanceof Array) {
+							params[pName].push(pValue);
+						} else {
+							params[pName] = [ params[pName], pValue ];
+						}
+					} else {
+						params[pName] = pValue;
+					}
+				}
+				return params;
 			}
 		});
 		twister.utils.time = $.extend(twister.utils.time || {}, {
@@ -105,17 +127,16 @@
 				}
 			},
 			cinemas: {
-				// all: [ retrieved from cineworld API ]
-				// selectedIds: [ update when checklist checked ]
+				all: [ /* retrieved from cineworld API */ ],
+				selectedIds: [ /* update when checklist checked */ ]
 			},
 			films: {
-				// all: [ retrieved from cineworld API ]
-				// selectedIds: [ update when checklist checked ]
-				selectedIds: [56173, 39728, 107709],
+				all: [ /* retrieved from cineworld API */ ],
+				selectedIds: [ /* update when checklist checked */ ],
 				responses: {
-					// quickbook: { response from quickbook API }
-					// internal: { response from internal API }
-					// merged: { merged previous responses }
+					// quickbook: { /* response from quickbook API */ }
+					// internal: { /* response from internal API */ }
+					// merged: { /* merged previous responses */ }
 				}
 			},
 			performances: {
@@ -126,16 +147,17 @@
 			getDate: function cineworld_getDate() {
 				return twister.cineworld.date.replace(/-/g, '');
 			},
-			updateFromHash: function updateFromHash() {
+			updateFromQuery: function updateFromQuery() {
 				twister.cineworld.date = twister.utils.url.getQueryParam('date') || twister.cineworld.date;
+				twister.cineworld.films.selectedIds = twister.utils.url.getQueryParam('film') || twister.cineworld.films.selectedIds;
 			},
 			writeUI: function() {
 				twister.ui.screen.date.val(twister.cineworld.date).change();
 			},
-			getHash: function updateToHash() {
+			getHash: function() {
 				var hash = '#' + twister.utils.url.getHashAnchor() + '!';
 				hash += '&date=' + encodeURIComponent(twister.cineworld.date);
-				return hash;
+				return location.href + hash;
 			},
 			getCinemas: function cineworld_getCinemas() {
 				$('#cinemas').text("Loading...");
@@ -363,7 +385,6 @@
 			getPerformances: function cineworld_getPerformances() {
 				twister.cineworld.rebuildPerformancesTable();
 				$('#performances_listing > table td[id^=performances_]').each(twister.cineworld.updatePerformance);
-				twister.cineworld.plan();
 			},
 			rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
 				var html = '';
@@ -391,7 +412,7 @@
 					row += $.map(twister.cineworld.films.selectedIds, function(edi) {
 								return '<td id="performances_'+cid+'_'+edi+'" cid="'+cid+'" edi="'+edi+'"><img src="ajax-loader.gif" /></td>';
 						}).join('');
-					row += '<td id="planner_'+cid+'">&nbsp;</td>';
+					row += '<td><ul id="planner_'+cid+'"></ul></td>';
 					row += '</tr>';
 					return row;
 				}).join('');
@@ -423,6 +444,9 @@
 							if(twister.config.logResponses) console.log(JSON.stringify(response));
 							$.extend(response.performances, {retrieved: new Date()});
 							twister.cineworld.parsePerformances(elem, request, response);
+							if($('#performances_listing > table td[id^=performances_] > img').length == 0) {
+								twister.cineworld.plan();
+							}
 						}
 					});
 				}
@@ -453,6 +477,7 @@
 					$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
 						var film = twister.cineworld.films.all[edi];
 						var performances = twister.cineworld.performances[date][cid][edi];
+						if (performances === undefined) return true;
 						$.each(performances, function(performanceIndex, perf) {
 							var time = moment(date + perf.time, 'YYYYMMDDHH:mm');
 							var adLength = twister.cineworld.const.default.adLength;
@@ -515,6 +540,7 @@
 					$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
 						if( $.inArray(1 * edi, node.watched) == -1) { // didn't watch it already
 							var performances = twister.cineworld.performances[date][cinema.id][edi];
+							if (performances === undefined) return true;
 							$.each(performances, function(performanceIndex, perf) {
 								if(node.performance.plan.endTime < (perf.plan.startTime)) { // starts after the other finishes
 									node.next.push({
@@ -530,7 +556,6 @@
 					if(node.next.length != 0) {
 						twister.cineworld.planCinema(cinema, node.next);
 					} else if (twister.cineworld.films.selectedIds.length + 1 == node.watched.length) {
-						var result = "Match at " + cinema.name;
 						var results = [];
 						while(node.prev) {
 							results.unshift(node);
@@ -542,17 +567,24 @@
 							}
 							node = node.prev;
 						}
+						var result = '';
+						result += results[0].performance.plan.movieRange.start.format("HH:mm");
+						result += '&nbsp;-&nbsp;';
+						result += results[results.length - 1].performance.plan.movieRange.end.format("HH:mm");
+						result += '<ul>';
 						$.each(results, function() {
 							if(this.prev.performance.film.edi != -1) {
-								result += "\n\t" + this.prev.performance.plan.movieRange.end.format("HH:mm")
+								result += '\n\t<li>' + this.prev.performance.plan.movieRange.end.format("HH:mm")
 										+ "-" +  this.performance.plan.movieRange.start.format("HH:mm")
 										+ ": (" + Math.floor((this.performance.plan.movieRange.start - this.prev.performance.plan.movieRange.end) / 60 / 1000) + " minutes break)";
 							}
-							result += "\n\t" + this.performance.plan.movieRange.start.format("HH:mm")
+							result += '\n\t<li>' + this.performance.plan.movieRange.start.format("HH:mm")
 									+ "-" +  this.performance.plan.movieRange.end.format("HH:mm")
 									+ ": " + this.performance.film.title;
 						});
+						result += '</ul>';
 						console.log(result);
+						$('#planner_' + cinema.id).append('<li>' + result + '</li>');
 					} else {
 						console.log("Ruled out: not all movies are included: " + node.watched);
 					}
@@ -573,6 +605,9 @@
 				twister.ui.screen.layout = $('body').layout({
 					center: {
 						childOptions: {
+							north: {
+								initClosed: false
+							},
 							west: {
 								size: 250
 							}
@@ -622,7 +657,7 @@
 		$(document).ready(function document_ready() {
 			console.log("------------------------------- Document ready. ----------------------------");
 			twister.ui.init();
-			twister.cineworld.updateFromHash();
+			twister.cineworld.updateFromQuery();
 			twister.cineworld.writeUI();
 			twister.cineworld.getCinemas();
 		});
