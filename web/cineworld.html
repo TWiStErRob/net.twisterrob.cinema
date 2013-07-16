@@ -147,17 +147,24 @@
 			getDate: function cineworld_getDate() {
 				return twister.cineworld.date.replace(/-/g, '');
 			},
+			rebuildUrl: function rebuildUrl() {
+				$("#url").attr("href",
+					location.protocol + '//' + location.host + location.pathname
+					+ '?' + twister.cineworld.getArgs());
+			},
 			updateFromQuery: function updateFromQuery() {
 				twister.cineworld.date = twister.utils.url.getQueryParam('date') || twister.cineworld.date;
 				twister.cineworld.films.selectedIds = twister.utils.url.getQueryParam('film') || twister.cineworld.films.selectedIds;
+				twister.cineworld.cinemas.selectedIds = twister.utils.url.getQueryParam('cinema') || twister.cineworld.cinemas.selectedIds;
 			},
 			writeUI: function() {
 				twister.ui.screen.date.val(twister.cineworld.date).change();
 			},
-			getHash: function() {
-				var hash = '#' + twister.utils.url.getHashAnchor() + '!';
-				hash += '&date=' + encodeURIComponent(twister.cineworld.date);
-				return location.href + hash;
+			getArgs: function() {
+				var args = 'date=' + encodeURIComponent(twister.cineworld.date);
+				args += '&' + $.map(twister.cineworld.cinemas.selectedIds, function(e) {return 'cinema=' + e; }).join('&');
+				args += '&' + $.map(twister.cineworld.films.selectedIds, function(e) {return 'film=' + e; }).join('&');
+				return args;
 			},
 			getCinemas: function cineworld_getCinemas() {
 				$('#cinemas').text("Loading...");
@@ -215,6 +222,7 @@
 							var checkedCinemas = $("li :checkbox:checked", "#cinemas");
 							var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
 							twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
+							twister.cineworld.rebuildUrl();
 
 							if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
 								clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
@@ -228,7 +236,18 @@
 							}
 						}
 					} );
-					$('#cinemas_checkLondon').click();
+					if(twister.cineworld.cinemas.selectedIds.length != 0) {
+						$.each(twister.cineworld.cinemas.selectedIds, function select_cinema() {
+							var cinemaElem = $('#cinemas li:has(:checkbox[value=' + this + '])');
+							if(cinemaElem.length == 0) {
+								console.warn("Cinema disappeared: " + this);
+							} else {
+								cinemaElem.click();
+							}
+						});
+					} else {
+						$('#cinemas_checkLondon').click();
+					}
 				}
 			},
 			getFilms: function cineworld_getFilms() {
@@ -359,6 +378,7 @@
 							var checkedFilms = $("li :checkbox:checked", "#films");
 							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
 							twister.cineworld.films.selectedIds = checkedFilmEdis;
+							twister.cineworld.rebuildUrl();
 
 							if (twister.cineworld.films.getPerformancesTimer !== undefined) {
 								clearTimeout(twister.cineworld.films.getPerformancesTimer);
@@ -444,9 +464,6 @@
 							if(twister.config.logResponses) console.log(JSON.stringify(response));
 							$.extend(response.performances, {retrieved: new Date()});
 							twister.cineworld.parsePerformances(elem, request, response);
-							if($('#performances_listing > table td[id^=performances_] > img').length == 0) {
-								twister.cineworld.plan();
-							}
 						}
 					});
 				}
@@ -468,8 +485,10 @@
 								+ '</a>'
 					}).join(", "));
 				}
+				twister.cineworld.plan();
 			},
 			plan: function() {
+				if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
 				var html = '';
 				var date = twister.cineworld.getDate();
 				$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
@@ -648,7 +667,9 @@
 					}))
 					.change(function(e) {
 						twister.cineworld.date = this.value;
+						twister.cineworld.rebuildUrl();
 						$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));
+						twister.cineworld.getFilms();
 					})
 				;
 			}
@@ -696,6 +717,7 @@
 		<div id="params">
 			<label for="date">date</label>
 			<input type="text" id="date" />
+			<span><a id="url" href="#">Link to this page</a></span>
 			<div id="status">&nbsp;</div>
 		</div>
 	</div>
