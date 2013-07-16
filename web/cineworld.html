@@ -257,10 +257,15 @@
 					cinema: twister.cineworld.cinemas.selectedIds,
 					date: twister.cineworld.getDate()
 				};
+				if(request.cinema.length == 0) {
+					twister.cineworld.parseFilms({films: []});
+					return;
+				}
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
 					type: 'GET',
 					data: request,
+					traditional: true,
 					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						if(twister.config.logResponses) console.log(JSON.stringify(response));
@@ -272,6 +277,7 @@
 					url: 'http://www.cineworld.com/api/film/list',
 					type: 'GET',
 					data: request,
+					traditional: true,
 					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						if(twister.config.logResponses) console.log(JSON.stringify(response));
