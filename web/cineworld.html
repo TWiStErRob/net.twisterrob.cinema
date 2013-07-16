@@ -489,7 +489,6 @@
 			},
 			plan: function() {
 				if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
-				var html = '';
 				var date = twister.cineworld.getDate();
 				$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
 					var cinema = twister.cineworld.cinemas.all[cid];
@@ -528,30 +527,32 @@
 						next: []
 					}]);
 				});
-				html += '<span style="font-family: monospace">JSON (twister.cineworld.performances):<br/>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseAll()">collapse</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(3)">2+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(4)">3+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(5)">4+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(6)">5+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(7)">6+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(8)">7+</a>\
-					<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.ExpandAll()">expand all</a>\
-				</span>\
-				<div style="width: 100%; height: 200px; overflow: scroll">\
-				<div id="plan_jsonDebug"></div>\
-				</div>';
-				$('#planner_listing').html(html);
-				twister.cineworld.planner.formatter = new QuickJSONFormatter({
-					CanvasId: "plan_jsonDebug",
-					SingleTab: "\t",
-					TabSize: 1,
-					IsCollapsible: true,
-					ImgExpanded: 'http://bodurov.com/JsonFormatter/images/Expanded.gif',
-					ImgCollapsed: 'http://bodurov.com/JsonFormatter/images/Collapsed.gif',
-					OnError: function(e) { console.warn(e); }
-				});
-				twister.cineworld.planner.formatter.Process(JSON.stringify(twister.cineworld.performances));
+				if (twister.config.debug) {
+					var html = '<span style="font-family: monospace">JSON (twister.cineworld.performances):<br/>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseAll()">collapse</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(3)">2+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(4)">3+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(5)">4+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(6)">5+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(7)">6+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.CollapseLevel(8)">7+</a>\
+						<a href="javascript:void(0);" onClick="twister.cineworld.planner.formatter.ExpandAll()">expand all</a>\
+					</span>\
+					<div style="width: 100%; height: 200px; overflow: scroll">\
+					<div id="plan_jsonDebug"></div>\
+					</div>';
+					$('#planner_listing').html(html);
+					twister.cineworld.planner.formatter = new QuickJSONFormatter({
+						CanvasId: "plan_jsonDebug",
+						SingleTab: "\t",
+						TabSize: 1,
+						IsCollapsible: true,
+						ImgExpanded: 'http://bodurov.com/JsonFormatter/images/Expanded.gif',
+						ImgCollapsed: 'http://bodurov.com/JsonFormatter/images/Collapsed.gif',
+						OnError: function(e) { console.warn(e); }
+					});
+					twister.cineworld.planner.formatter.Process(JSON.stringify(twister.cineworld.performances));
+				}
 			},
 			planCinema: function cineworld_planCinema(cinema, graph) {
 				var date = twister.cineworld.getDate();
