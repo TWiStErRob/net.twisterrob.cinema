@@ -396,7 +396,7 @@
 					var film = twister.cineworld.films.all[edi];
 					var filmDisplay = film.title + "<br/>("  + film.length + " min)";
 					var filmTitle = JSON.stringify(film, null, '  ').replace(/"/g,'&quot;');
-					return '<th title="' + filmTitle + '">' + filmDisplay + '</th>';
+					return '<th class="film" title="' + filmTitle + '">' + filmDisplay + '</th>';
 				}).join('');
 				html += '<th>Planner</th>';
 				html += '</tr></thead>';
@@ -676,7 +676,7 @@
 		#performances th:first-child {
 			white-space: nowrap;
 		}
-		#performances th + th { /* th:not(:first-child) */
+		#performances th.film {
 			width: 200px;
 		}
 		#status {
