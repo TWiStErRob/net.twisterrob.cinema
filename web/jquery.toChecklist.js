@@ -101,6 +101,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 		"animateSearch" : 'normal',
 		"searchBoxText" : 'Type here to search list...',
 		"showCheckboxes" : true,
+		"useHTMLLabels" : false,      // Parse label of <option> as html when creating checklist
 		"showSelectedItems" : false,
 		"overwriteName"     : false, // Use false when you need to use original name attribute, or use
 		                             // true if you want to overwrite original name attribute with id; Very
@@ -328,7 +329,12 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			// escape bad values for checkboxId
 			checkboxId = checkboxId.replace(/(\.|\/|\,|\%|\<|\>)/g, '\\$1');
 			
-			var labelText = $(this).html();
+			var labelText;
+			if(o.useHTMLLabels) {
+				labelText = $(this).text(); // read plain text so JS concatenation builds HTML
+			} else {
+				labelText = $(this).html(); // read html code with entities (&lt;, etc.) for plain display
+			}
 			var title = ' title="' + $(this).attr('title').replace(/"/g, '&quot;') + '"';
 			var selected = '';
 			if ($(this).attr('disabled')) {
