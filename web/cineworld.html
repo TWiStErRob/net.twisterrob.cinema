@@ -141,7 +141,8 @@
 					// quickbook: { /* response from quickbook API */ }
 					// internal: { /* response from internal API */ }
 					// merged: { /* merged previous responses */ }
-				}
+				},
+				lengths: { /* cache for film lengths */ }
 			},
 			performances: {
 				// [index by date][index by cinema][index by id]
@@ -385,7 +386,7 @@
 						preferIdOverName: false,
 						searchBoxText: 'Filter by film title here...',
 						animateSearch: 0,
-						onItemChanged: function() {
+						onItemChanged: function filmsList_onItemChanged() {
 							var checkedFilms = $("li :checkbox:checked", "#films");
 							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
 							twister.cineworld.films.selectedIds = checkedFilmEdis;
@@ -403,11 +404,7 @@
 							}
 						},
 					} );
-					$.each(response.films, function() {
-						twister.cineworld.getFilmLength(this);
-					});
-
-					$.each(twister.cineworld.films.selectedIds, function select_film() {
+					$.each(twister.cineworld.films.selectedIds, function film_select() {
 						var filmElem = $('#films li:has(:checkbox[value=' + this + '])');
 						if(filmElem.length == 0) {
 							console.warn("Film disappeared: " + this);
@@ -415,10 +412,17 @@
 							filmElem.click();
 						}
 					});
+					$.each(response.films, function film_getLength() {
+						twister.cineworld.getFilmLength(this);
+					});
 				}
 			},
 			getFilmLength: function cineworld_getFilmLength(film) {
+				if(film.edi in twister.cineworld.films.lengths) {
+					film.length = twister.cineworld.films.lengths[film.edi];
+				}
 				if(film.length !== undefined) {
+					twister.cineworld.parseFilmLength(film, {runtime: film.length});
 					return;
 				}
 				function simplify(title) {
@@ -478,6 +482,7 @@
 					response.runtime = 100;
 				}
 				film.length = parseInt(response.runtime);
+				twister.cineworld.films.lengths[film.edi] = film.length;
 				$('#films #films_' + film.edi + ' + label .runtime').text(film.length);
 				twister.cineworld.plan();
 			},
@@ -555,6 +560,7 @@
 				}
 				*/
 				if (response.errors) {
+					console.error(JSON.stringify(response));
 					elem.html(JSON.stringify(response, null, '  '));
 				} else {
 					twister.cineworld.performances[request.date][request.cinema][request.film] = response.performances;
@@ -569,6 +575,7 @@
 			plan: function() {
 				if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
 				if($('#films_checklist li label > .runtime:contains(?)').length != 0) return;
+				if(twister.cineworld.films.getPerformancesTimer !== undefined || twister.cineworld.cinemas.getFilmsTimer !== undefined) return;
 
 				var date = twister.cineworld.getDate();
 				$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
@@ -858,6 +865,7 @@
 </body>
 <script>
 if(twister.config.debug) {
+	// http://appendto.github.io/jquery-mockjax/examples/demo.html
 	twister.mock = $.extend(twister.mock || {}, {});
 	twister.mock.cineworld = $.extend(twister.mock.cineworld || {}, {
 		quickbook: {
