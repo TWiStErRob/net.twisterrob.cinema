@@ -337,14 +337,14 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			}
 			var title = ' title="' + $(this).attr('title').replace(/"/g, '&quot;') + '"';
 			var selected = '';
-			if ($(this).attr('disabled')) {
+			if ($(this).prop('disabled')) {
 				var disabled = ' disabled="disabled"';
 				var disabledClass = ' class="disabled"';
 			} else {
 				var disabled = '';
 				var disabledClass = '';
 				var selected = '';
-				if ($(this).attr('selected')) {
+				if ($(this).prop('selected')) {
 					if (o.maxNumOfSelections != -1 && numOfCheckedBoxesSoFar <= o.maxNumOfSelections) {
 						selected += 'checked="checked"';
 						numOfCheckedBoxesSoFar++;
@@ -457,7 +457,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			
 		// Highlight preselected ones.
 		items.each(function() {
-			if ($('input',this).attr('checked')) {
+			if ($('input',this).prop('checked')) {
 				$(this).addClass(o.cssChecked);	
 			}
 		});

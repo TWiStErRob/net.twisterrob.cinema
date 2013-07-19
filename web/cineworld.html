@@ -12,9 +12,9 @@
 	<link rel="stylesheet" type="text/css" href="quickjsonformatter.css" />
 
 	<script type="text/javascript" src="jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="jquery-ui-1.10.3.js"></script>
-	<script type="text/javascript">jQuery.migrateMute = true;</script>
+	<script type="text/javascript">jQuery.migrateMute = false;</script>
 	<script type="text/javascript" src="jquery-migrate-1.2.1.js"></script>
+	<script type="text/javascript" src="jquery-ui-1.10.3.js"></script>
 	<script type="text/javascript" src="jquery.layout-latest.js"></script>
 	<!-- TODO Replace with https://github.com/andreasbernhard/history.js-->
 	<script type="text/javascript" src="jquery.ba-hashchange.js"></script>
@@ -52,7 +52,7 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: true,
+			debug: false,
 			logResponses: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {});
