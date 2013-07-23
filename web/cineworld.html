@@ -46,13 +46,14 @@
 			return this.format();
 		};
 
+		// FIXME remove if error handling is fixed by Dean
 		function imdbapi(response) {
-			console.log("imdbapi " + JSON.stringify(response));
+			console.warn("imdbapi called, callback of http://deanclatworthy.com/imdb/ was not respected: " + JSON.stringify(response));
 		}
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: false,
+			debug: true,
 			logResponses: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {});
@@ -428,26 +429,14 @@
 				function simplify(title) {
 					return title.replace(/^\s*(IMAX)?\s*[23]D\s*-\s*/gi, "");
 				}
-				function callback(film) {
-					var fName = 'callback' + film.edi + 'imdbapi' + new Date().valueOf();
-					window[fName] = function(response) {
-						delete window[fName];
-						console.debug(fName);
-						// twister.cineworld.parseFilmLength(film, response);
-					}
-					return fName;
-				}
-				var request = {
-					q: simplify(film.title),
-					type: 'jsonp',
-					callback: callback(film)
-				};
 				$.ajax({
 					url: 'http://deanclatworthy.com/imdb/',
 					type: 'GET',
-					data: request,
+					data:  {
+						q: simplify(film.title),
+						type: 'jsonp'
+					},
 					dataType: 'jsonp',
-					jsonp: false, jsonpCallback: request.callback,
 					success: function(response, status, xhr) {
 						// http://deanclatworthy.com/imdb/?q=World%20War%20Z&type=jsonp&callback=callback
 						/* callback({
@@ -467,8 +456,12 @@
 							ukscreens: 0, 
 							cacheExpiry: 1374104898
 						}) */
+						if(twister.config.logResponses) console.log(JSON.stringify(response));
+						if(response.error) {
+							$('#status').html(JSON.stringify(response, null, '  '));
+							return;
+						}
 						twister.cineworld.parseFilmLength(film, response);
-						// console.log("success " + JSON.stringify(response));
 					},
 					error : function(xhr, status, error) {
 						console.error("error " + status + error);
@@ -915,6 +908,10 @@ if(twister.config.debug) {
 			"Fer Mamla Gadbad Gadbad":  {mocked:true,"imdbid":"tt2949246","imdburl":"http://www.imdb.com/title/tt2949246/","genres":"Comedy,Romance","languages":"Panjabi","country":"India","votes":0,"stv":0,"series":0,"rating":"n/a","runtime":"n/a","title":"Fer Mamla Gadbad Gadbad","year":"2013","usascreens":0,"ukscreens":0,"cacheExpiry":1374295964},
 			"Citadel":                  {mocked:true,"imdbid":"tt1641975","imdburl":"http://www.imdb.com/title/tt1641975/","genres":"Drama,Horror,Thriller","languages":"English","country":"Ireland,UK","votes":"2788","stv":0,"series":0,"rating":"5.3","runtime":"84min","title":"Citadel","year":"2012","usascreens":0,"ukscreens":0,"cacheExpiry":1374267645},
 			"Lootera":                  {mocked:true,"imdbid":"tt2224317","imdburl":"http://www.imdb.com/title/tt2224317/","genres":"Drama,Romance","languages":"Hindi","country":"India","votes":"1437","stv":0,"series":0,"rating":"7.6","runtime":"136min","title":"Lootera","year":"2013","usascreens":0,"ukscreens":0,"cacheExpiry":1374097200},
+			"A.C.O.D.":                 {mocked:true,"imdbid":"tt1311060","imdburl":"http://www.imdb.com/title/tt1311060/","genres":"Comedy","languages":"English","country":"USA","votes":"155","stv":0,"series":0,"rating":"6.5","runtime":"90min","title":"A.C.O.D.","year":"2013","usascreens":0,"ukscreens":0,"cacheExpiry":1374999563},
+			"Ramaiya Vastavaiya":       {mocked:true,"imdbid":"tt2357926","imdburl":"http://www.imdb.com/title/tt2357926/","genres":"Comedy,Family,Romance","languages":"Hindi","country":"India","votes":"128","stv":0,"series":0,"rating":"4.3","runtime":"148min","title":"Ramaiya Vastavaiya","year":"2013","usascreens":0,"ukscreens":0,"cacheExpiry":1374999291},
+			"The Frozen Ground":        {mocked:true,"imdbid":"tt2005374","imdburl":"http://www.imdb.com/title/tt2005374/","genres":"Crime,Thriller","languages":"English","country":"USA","votes":"241","stv":0,"series":0,"rating":"6.9","runtime":"105min","title":"The Frozen Ground","year":"2013","usascreens":0,"ukscreens":0,"cacheExpiry":1374793022},
+			"Wadjda":                   {mocked:true,"imdbid":"tt2258858","imdburl":"http://www.imdb.com/title/tt2258858/","genres":"Drama","languages":"Arabic","country":"Saudi Arabia,Germany","votes":"830","stv":0,"series":0,"rating":"7.7","runtime":"98min","title":"Wadjda","year":"2012","usascreens":0,"ukscreens":0,"cacheExpiry":1374972699},
 			error:                      {mocked:true,"code":2,"error":"Exceeded API usage limit"}
 		},
 		replaceAjax: function mock(options) {
@@ -926,7 +923,6 @@ if(twister.config.debug) {
 				if(options.mockIMDB && /deanclatworthy/.test(params.url)
 					&& twister.mock.imdb.films[params.data.q] != undefined) {
 					console.debug("Returning mock IMDB film: " + JSON.stringify(params));
-					window[params.jsonpCallback](twister.mock.imdb.films[params.data.q]);
 					params.success(twister.mock.imdb.films[params.data.q]);
 				} else {
 					$ajax(params);
@@ -941,7 +937,7 @@ if(twister.config.debug) {
 		//mockCinemas: false
 	});
 	twister.mock.imdb.replaceAjax({
-		mockIMDb: true
+		mockIMDB: true
 	});
 }
 </script>
