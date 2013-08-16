@@ -14,7 +14,7 @@
 	<div id="xxx-container">
 		<c:choose>
 			<c:when test="${user ne null}">
-				<c:set var="greeting" value="${user.nickname}: ${user.authDomain}\\${user.email} (${user.userId}/${user.federatedIdentity})" />
+				<c:set var="greeting" value="${user.nickName}: \${user.authDomain}\\${user.email} (${user.userId}/\${user.federatedIdentity})" />
 				Hello ${fn:escapeXml(greeting)}! <a href="${url}">log out</a>.
 			</c:when>
 			<c:otherwise>
@@ -22,7 +22,7 @@
 			</c:otherwise>
 		</c:choose>
 		<c:forEach var="view" items="${result}">
-			<li>Film #${view.properties.edi}: ${view.properties.seen ? "seen" : "to see" }
+			<li>Film #${view.film.edi}: ${view.seen ? "seen" : "to see" }
 		</c:forEach>
 	</div>
 

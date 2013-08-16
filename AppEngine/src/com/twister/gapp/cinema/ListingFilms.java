@@ -2,6 +2,8 @@ package com.twister.gapp.cinema;
 import java.io.IOException;
 import java.util.List;
 
+import javax.jdo.*;
+import javax.jdo.Query;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -9,19 +11,13 @@ import org.slf4j.*;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.*;
+import com.twister.gapp.PMF;
+import com.twister.gapp.cinema.model.*;
+import com.twister.gapp.cinema.model.User;
 
-@SuppressWarnings("serial") public class ListingFilms extends HttpServlet {
+@SuppressWarnings("serial")
+public class ListingFilms extends HttpServlet {
 	private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class.getName());
-
-	private static final String PROP_USER_NAME = "name";
-	private static final String PROP_USER_EMAIL = "email";
-	private static final String PROP_FILM_TITLE = "title";
-	private static final String PROP_FILM_RUNTIME = "runtime";
-	private static final String PROP_VIEW_SEEN = "seen";
-	private static final String PROP_VIEW_RELEVANT = "relevant";
-	private static final String PROP_VIEW_FILM_EDI = "edi";
-
-	private DatastoreService m_datastore = DatastoreServiceFactory.getDatastoreService();
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		new com.twister.cineworld.model.json.data.CalendarTypeConverter();
@@ -32,8 +28,8 @@ import com.google.appengine.api.users.*;
 		req.setAttribute("result", result);
 		// req.setAttribute("call", new InvokerMap());
 
+		User user = PMF.getUser();
 		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
 		if (user != null) {
 			req.setAttribute("user", user);
 			req.setAttribute("url", userService.createLogoutURL(req.getRequestURI()));
@@ -49,19 +45,34 @@ import com.google.appengine.api.users.*;
 		clear("Film");
 		clear("User");
 
-		User currentUser = UserServiceFactory.getUserService().getCurrentUser();
+		User currentUser = PMF.getUser();
+		PersistenceManager pm = PMF.getPM();
 		try {
-			addUser(currentUser);
 			addFilms();
 			addViews();
 		} catch (Exception ex) {
 			LOG.error("Cannot generate data", ex);
 		}
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key userKey = KeyFactory.createKey("User", currentUser.getUserId());
-		Query query = new Query("View", userKey);// .addSort("date", Query.SortDirection.DESCENDING);
-		List<Entity> views = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-		return views;
+		Query q = null;
+		try {
+			q = pm.newQuery(View.class);
+			// q.getFetchPlan().setMaxFetchDepth(FetchPlan.FETCH_SIZE_GREEDY);
+			// q.getFetchPlan().setFetchSize(FetchPlan.FETCH_SIZE_GREEDY);
+			q.getFetchPlan().setGroup(FetchPlan.ALL);
+			// http://www.datanucleus.org/products/datanucleus/jdo/attach_detach.html
+			// q.getFetchPlan().setDetachmentOptions(FetchPlan.DETACH_LOAD_FIELDS);
+			q.setFilter("user == userParam");
+			q.declareParameters("User userParam");
+
+			@SuppressWarnings("unchecked")
+			List<View> views = (List<View>)q.execute(currentUser);
+			return pm.detachCopyAll(views);
+		} finally {
+			if (q != null) {
+				q.closeAll();
+			}
+			pm.close();
+		}
 	}
 
 	private void addFilms() {
@@ -71,56 +82,47 @@ import com.google.appengine.api.users.*;
 	}
 
 	private void addViews() {
-		User currentUser = UserServiceFactory.getUserService().getCurrentUser();
+		User currentUser = PMF.getUser();
 		addView(currentUser, 1234L, true, 0.80f);
 		addView(currentUser, 1235L, false, 0.75f);
 		addView(currentUser, 1236L, false, 0.99f);
 	}
 
 	private void addView(User user, long edi, boolean seen, float relevant) {
-		Key parentKey = KeyFactory.createKey("User", user.getUserId());
-		Entity item = new Entity("View", parentKey);
-		item.setProperty(PROP_VIEW_FILM_EDI, edi);
-		item.setProperty(PROP_VIEW_SEEN, seen);
-		item.setProperty(PROP_VIEW_RELEVANT, relevant);
-		m_datastore.put(item);
+		PersistenceManager pm = PMF.getPM();
+		try {
+			View view = new View();
+			view.setUser(user);
+			view.setSeen(seen);
+			view.setRelevant(relevant);
+			Film film = pm.getObjectById(Film.class, String.valueOf(edi));
+			film.addView(view);
+			pm.makePersistent(film);
+		} finally {
+			pm.close();
+		}
 	}
 
 	private void addFilm(long edi, String title, int runtime) {
-		Key entityKey = KeyFactory.createKey("Film", String.valueOf(edi));
-		Entity item = new Entity(entityKey);
-		item.setProperty(PROP_FILM_TITLE, title);
-		item.setProperty(PROP_FILM_RUNTIME, runtime);
-		m_datastore.put(item);
-	}
-
-	private boolean addUser(User user) {
-		if (user == null) {
-			return false;
-		}
-		Key entityKey = KeyFactory.createKey("User", user.getUserId());
-		boolean newEntry;
-		Entity item;
+		PersistenceManager pm = PMF.getPM();
 		try {
-			item = m_datastore.get(entityKey);
-			newEntry = false;
-		} catch (EntityNotFoundException ex) {
-			item = new Entity(entityKey);
-			newEntry = true;
+			Film film = new Film(edi, title, runtime);
+			pm.makePersistent(film);
+		} finally {
+			pm.close();
 		}
-		item.setProperty(PROP_USER_NAME, new Text(user.getNickname()));
-		item.setProperty(PROP_USER_EMAIL, new Text(user.getEmail()));
-		m_datastore.put(item);
-		return newEntry;
+
 	}
 
 	public void clear(String entityName) {
-		Query cdb = new Query(entityName);
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+		com.google.appengine.api.datastore.Query cdb = new com.google.appengine.api.datastore.Query(entityName);
 		cdb.setKeysOnly();
 
-		Iterable<Entity> results = m_datastore.prepare(cdb).asIterable();
+		Iterable<Entity> results = datastore.prepare(cdb).asIterable();
 		for (Entity entity: results) {
-			m_datastore.delete(entity.getKey());
+			datastore.delete(entity.getKey());
 		}
 	}
 }
