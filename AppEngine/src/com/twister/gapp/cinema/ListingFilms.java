@@ -1,6 +1,6 @@
 package com.twister.gapp.cinema;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -61,39 +61,7 @@ import com.google.appengine.api.users.*;
 		Key userKey = KeyFactory.createKey("User", currentUser.getUserId());
 		Query query = new Query("View", userKey);// .addSort("date", Query.SortDirection.DESCENDING);
 		List<Entity> views = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-		List<View> uiViews = new ArrayList<View>(views.size());
-		if (!views.isEmpty()) {
-			for (Entity view: views) {
-				uiViews.add(View.from(view));
-			}
-		}
-		return uiViews;
-	}
-	public static class View {
-		private boolean seen;
-		private long edi;
-
-		static View from(Entity entity) {
-			View view = new View();
-			view.setEdi((Long)entity.getProperty(PROP_VIEW_FILM_EDI));
-			view.setSeen((Boolean)entity.getProperty(PROP_VIEW_SEEN));
-			return view;
-		}
-
-		public void setSeen(boolean seen) {
-			this.seen = seen;
-		}
-
-		public void setEdi(long edi) {
-			this.edi = edi;
-		}
-
-		public long getEdi() {
-			return edi;
-		}
-		public boolean isSeen() {
-			return seen;
-		}
+		return views;
 	}
 
 	private void addFilms() {

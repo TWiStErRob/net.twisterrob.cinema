@@ -22,7 +22,7 @@
 			</c:otherwise>
 		</c:choose>
 		<c:forEach var="view" items="${result}">
-			Film #${view.edi}: ${view.seen ? "seen" : "to see" }
+			<li>Film #${view.properties.edi}: ${view.properties.seen ? "seen" : "to see" }
 		</c:forEach>
 	</div>
 
