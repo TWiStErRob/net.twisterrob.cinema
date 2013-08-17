@@ -1,5 +1,7 @@
 package com.twister.gapp.cinema.model;
 
+import java.util.List;
+
 import javax.jdo.annotations.*;
 
 @PersistenceCapable
@@ -11,6 +13,10 @@ public class User {
 	private String email;
 	@Persistent
 	private String nickName;
+	@Persistent
+	// @Unowned
+	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
+	private List<View> views;
 
 	public User(String userId, String email, String nickName) {
 		this.userId = userId;
@@ -40,5 +46,14 @@ public class User {
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public void addView(View view) {
+		view.setUser(this);
+		this.views.add(view);
+	}
+
+	public List<View> getViews() {
+		return views;
 	}
 }

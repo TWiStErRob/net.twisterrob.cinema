@@ -24,6 +24,8 @@ public class ListingFilms extends HttpServlet {
 		User user = PMF.getCurrentUser();
 		Object result = getResult(user);
 		req.setAttribute("result", result);
+		// FIXME
+		// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 		// req.setAttribute("call", new InvokerMap());
 
 		UserService userService = UserServiceFactory.getUserService();
@@ -41,14 +43,22 @@ public class ListingFilms extends HttpServlet {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
-			q = pm.newQuery(View.class);
-			q.getFetchPlan().setGroup(FetchPlan.ALL);
-			q.setFilter("user == userParam");
-			q.declareParameters(User.class.getName() + " userParam");
+			FetchPlan fp = pm.getFetchPlan();
+			fp.setGroup(FetchPlan.ALL);
+			fp.setFetchSize(FetchPlan.FETCH_SIZE_GREEDY);
+			fp.setDetachmentOptions(FetchPlan.DETACH_LOAD_FIELDS);
+			fp.setMaxFetchDepth(-1);
+			// fp.setDetachmentRootClasses(User.class, View.class, Film.class);
+			q = pm.newQuery(User.class);
+			q.setFilter("userId == userParam");
+			q.declareParameters("String userParam");
 
 			@SuppressWarnings("unchecked")
-			List<View> views = (List<View>)q.execute(currentUser);
-			return pm.detachCopyAll(views);
+			List<User> users = (List<User>)q.execute(currentUser.getUserId());
+			User user = users.get(0);
+			user = pm.detachCopy(user);
+			List<View> views = user.getViews();
+			return views;
 		} finally {
 			if (q != null) {
 				q.closeAll();
@@ -83,7 +93,6 @@ public class ListingFilms extends HttpServlet {
 		// test@example.com
 		addView("18580476422013912411", 1234L, true, 0.80f);
 		addView("18580476422013912411", 1235L, false, 0.75f);
-		addView("18580476422013912411", 1236L, false, 0.99f);
 		// test2@example.com
 		addView("16717695577786171977", 1234L, false, 0.80f);
 		addView("16717695577786171977", 1235L, false, 0.75f);
@@ -97,18 +106,17 @@ public class ListingFilms extends HttpServlet {
 	private void addView(String userId, long edi, boolean seen, float relevant) {
 		PersistenceManager pm = PMF.getPM();
 		try {
-			User user = pm.getObjectById(User.class, userId);
 			Film film = pm.getObjectById(Film.class, edi);
+			User user = pm.getObjectById(User.class, userId);
 			{
 				View view = new View();
 				{
-					view.setUser(user);
+					view.setFilm(film);
 					view.setSeen(seen);
 					view.setRelevant(relevant);
 				}
-				film.addView(view);
+				user.addView(view);
 			}
-			pm.makePersistent(film);
 		} finally {
 			pm.close();
 		}

@@ -1,10 +1,6 @@
 package com.twister.gapp.cinema.model;
 
-import java.util.List;
-
 import javax.jdo.annotations.*;
-
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class Film {
@@ -15,10 +11,6 @@ public class Film {
 	private String title;
 	@Persistent
 	private int runtime;
-	@Persistent
-	@Unowned
-	@Element(dependent = "true")
-	private List<View> views;
 
 	public Film(long edi, String title, int runtime) {
 		this.edi = edi;
@@ -49,10 +41,4 @@ public class Film {
 	public void setRuntime(int runtime) {
 		this.runtime = runtime;
 	}
-
-	public void addView(View view) {
-		view.setFilm(this);
-		this.views.add(view);
-	}
-
 }

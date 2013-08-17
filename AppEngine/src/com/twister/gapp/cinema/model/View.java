@@ -6,6 +6,9 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class View {
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private com.google.appengine.api.datastore.Key key;
 	@Persistent
 	@Unowned
 	private User user;
