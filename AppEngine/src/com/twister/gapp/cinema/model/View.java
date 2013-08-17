@@ -6,16 +6,9 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class View {
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private com.google.appengine.api.datastore.Key key;
 	@Persistent
 	@Unowned
 	private User user;
-	/*
-	 * javax.jdo.JDODetachedFieldAccessException: You have just attempted to access field "film" yet this field was not
-	 * detached when you detached the object. Either dont access this field, or detach it when detaching the object.
-	 */
 	@Persistent
 	@Unowned
 	private Film film;

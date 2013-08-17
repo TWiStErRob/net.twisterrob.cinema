@@ -4,24 +4,24 @@ import java.util.List;
 
 import javax.jdo.annotations.*;
 
+import com.google.appengine.datanucleus.annotations.Unowned;
+
 @PersistenceCapable
 public class Film {
-	// @Persistent
-	// @Extension(vendorName = "datanucleus", key = "gae.pk-id", value = "true")
-	private Long edi;
 	@PrimaryKey
-	private String key;
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Long edi;
 	@Persistent
 	private String title;
 	@Persistent
 	private int runtime;
 	@Persistent
+	@Unowned
 	@Element(dependent = "true")
 	private List<View> views;
 
 	public Film(long edi, String title, int runtime) {
 		this.edi = edi;
-		this.key = String.valueOf(edi);
 		this.title = title;
 		this.runtime = runtime;
 	}

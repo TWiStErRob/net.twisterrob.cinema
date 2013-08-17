@@ -18,7 +18,7 @@ public final class PMF {
 		return get().getPersistenceManager();
 	}
 
-	public static User getUser() {
+	public static User getCurrentUser() {
 		com.google.appengine.api.users.User authUser = UserServiceFactory.getUserService().getCurrentUser();
 		if (authUser == null) {
 			return null;
@@ -29,20 +29,11 @@ public final class PMF {
 			try {
 				user = pm.getObjectById(User.class, authUser.getUserId());
 			} catch (JDOObjectNotFoundException ex) {
-				user = addUser(pm, authUser);
+				return null;
 			}
 			return pm.detachCopy(user);
 		} finally {
 			pm.close();
 		}
-	}
-
-	private static User addUser(PersistenceManager pm, com.google.appengine.api.users.User authUser) {
-		if (authUser == null) {
-			return null;
-		}
-		User user = new User(authUser);
-		pm.makePersistent(user);
-		return user;
 	}
 }
