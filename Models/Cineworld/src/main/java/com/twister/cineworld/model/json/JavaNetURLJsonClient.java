@@ -18,7 +18,7 @@ public class JavaNetURLJsonClient implements JsonClient {
 		if (gson == null) throw new NullPointerException("Gson must be supplied");
 		m_gson = gson;
 	}
-	@Override public <T> T get(URL url, Class<T> responseType) throws ApplicationException {
+	public <T> T get(URL url, Class<T> responseType) throws ApplicationException {
 		String json = null;
 		try {
 			LOG.debug("Retrieving url... {}, expecting {}", url, responseType);
@@ -41,7 +41,7 @@ public class JavaNetURLJsonClient implements JsonClient {
 		return json;
 	}
 
-	@Override public <T> T post(String url, Object requestObject, Class<T> responseType)
+	public <T> T post(String url, Object requestObject, Class<T> responseType)
 			throws ApplicationException {
 		throw new UnsupportedOperationException("Only GET is supported");
 	}

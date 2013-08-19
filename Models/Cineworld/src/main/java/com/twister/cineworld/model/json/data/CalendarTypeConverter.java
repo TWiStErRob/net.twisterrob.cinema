@@ -9,10 +9,10 @@ import com.google.gson.*;
 public class CalendarTypeConverter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
 	private static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
 
-	@Override public JsonElement serialize(Calendar src, Type typeOfSrc, JsonSerializationContext context) {
+	public JsonElement serialize(Calendar src, Type typeOfSrc, JsonSerializationContext context) {
 		return new JsonPrimitive(new SimpleDateFormat(PATTERN).format(src.getTime()));
 	}
-	@Override public Calendar deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+	public Calendar deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
 		Calendar cal = Calendar.getInstance();
 		String value = json.getAsJsonPrimitive().getAsString();
