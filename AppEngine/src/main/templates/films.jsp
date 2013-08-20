@@ -7,7 +7,7 @@
 <head>
 	<title>Film listing</title>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-	<link rel="stylesheet" type="style/css" href="/stylesheets/global.css" />
+	<link rel="stylesheet" type="style/css" href="/static/styles/global.css" />
 </head>
 <body>
 	<h1>Page title</h1>
@@ -30,14 +30,20 @@
 	<div id="gsonDebugWrapper">
 		<script>$(document).ready(function() { $("#gsonDebugToggler").click(function () {$("#gsonDebug").toggle();}).click(); });</script>
 		<button id="gsonDebugToggler">Toggle GSON debug info</button>
-		<pre id="gsonDebug"><%=new com.google.gson.GsonBuilder() //
+		<pre id="gsonDebug"><%
+			com.google.gson.GsonBuilder gsonBuilder = new com.google.gson.GsonBuilder() //
 					.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ") //
-					.registerTypeAdapter(java.util.GregorianCalendar.class,
-							new com.twister.cineworld.model.json.data.CalendarTypeConverter()) //
-					.setPrettyPrinting() //
-					.create() //
-					.toJson(request.getAttribute("result"))%>
-		</pre>
+					.registerTypeAdapter(java.util.GregorianCalendar.class, new com.twister.cineworld.model.json.data.CalendarTypeConverter()) //
+					.setPrettyPrinting();
+			new com.google.gson.graph.GraphAdapterBuilder()
+					.addType(com.twister.gapp.cinema.model.User.class)
+					.addType(com.twister.gapp.cinema.model.Film.class)
+					.addType(com.twister.gapp.cinema.model.View.class)
+					.registerOn(gsonBuilder);
+			String json = gsonBuilder.create() //
+					.toJson(request.getAttribute("result"));
+				out.println(json);
+		%></pre>
 	</div>
 </body>
 </html>

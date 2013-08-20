@@ -8,8 +8,8 @@
 
 	<!--  Servlet mappingss -->
 	<servlet-mapping>
-		<url-pattern>/films</url-pattern>
 		<servlet-name>ListingFilms</servlet-name>
+		<url-pattern>/films</url-pattern>
 	</servlet-mapping>
 	
 	<!-- Filters -->
@@ -20,8 +20,8 @@
 	
 	<!--  Filter mappings -->
 	<filter-mapping>
-		<url-pattern>/global/*</url-pattern>
 		<filter-name>GlobalFilter</filter-name>
+		<url-pattern>/global/*</url-pattern>
 	</filter-mapping>
 
 	<!-- Other stuff -->

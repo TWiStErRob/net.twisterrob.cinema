@@ -7,8 +7,6 @@ import javax.jdo.Query;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.slf4j.*;
-
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.*;
 import com.twister.gapp.PMF;
@@ -17,14 +15,14 @@ import com.twister.gapp.cinema.model.User;
 
 @SuppressWarnings("serial")
 public class ListingFilms extends HttpServlet {
-	private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class.getName());
+	// private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class.getName());
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		setup();
 		User user = PMF.getCurrentUser();
 		Object result = getResult(user);
 		req.setAttribute("result", result);
-		// FIXME
+		// FIXM
 		// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 		// req.setAttribute("call", new InvokerMap());
 
