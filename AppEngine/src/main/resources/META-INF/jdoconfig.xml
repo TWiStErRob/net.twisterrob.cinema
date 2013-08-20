@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jdoconfig xmlns="http://java.sun.com/xml/ns/jdo/jdoconfig"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/jdo/jdoconfig http://java.sun.com/xml/ns/jdo/jdoconfig_3_0.xsd">
-
-   <persistence-manager-factory name="transactions-optional">
-       <property name="javax.jdo.PersistenceManagerFactoryClass"
-           value="org.datanucleus.api.jdo.JDOPersistenceManagerFactory"/>
-       <property name="javax.jdo.option.ConnectionURL" value="appengine"/>
-       <property name="javax.jdo.option.NontransactionalRead" value="true"/>
-       <property name="javax.jdo.option.NontransactionalWrite" value="true"/>
-       <property name="javax.jdo.option.RetainValues" value="true"/>
-       <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
-       <property name="datanucleus.appengine.singletonPMFForName" value="true"/>
-       <!-- WARN  [DataNucleus.MetaData] - Meta-data warning for com.twister.gapp.cinema.model.View.user: Error in meta-data for com.twister.gapp.cinema.model.View.user : The datastore does not support joins and therefore cannot honor requests to place related objects in the default fetch group.  The field will be fetched lazily on first access.  You can modify this warning by setting the datanucleus.appengine.ignorableMetaDataBehavior property in your config.  A value of NONE will silence the warning.  A value of ERROR will turn the warning into an exception. -->
-       <property name="datanucleus.appegine.ignoreableMetaDataBehavior" value="ERROR" />
-   </persistence-manager-factory>
+<jdoconfig
+		xmlns="http://java.sun.com/xml/ns/jdo/jdoconfig"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/jdo/jdoconfig http://java.sun.com/xml/ns/jdo/jdoconfig_3_0.xsd"
+	>
+	<persistence-manager-factory name="com.twister.gapp-ds-jdo">
+		<property name="javax.jdo.PersistenceManagerFactoryClass" value="org.datanucleus.api.jdo.JDOPersistenceManagerFactory" />
+		<property name="javax.jdo.option.ConnectionURL" value="appengine" />
+		<property name="javax.jdo.option.NontransactionalRead" value="true" />
+		<property name="javax.jdo.option.NontransactionalWrite" value="true" />
+		<property name="javax.jdo.option.RetainValues" value="true" />
+		<property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true" />
+		<property name="datanucleus.appengine.singletonPMFForName" value="true" />
+		<!-- WARN  [DataNucleus.MetaData] - 
+			Meta-data warning for com.twister.gapp.cinema.model.View.user:
+			Error in meta-data for com.twister.gapp.cinema.model.View.user:
+			The datastore does not support joins and therefore cannot honor requests to place related objects in the default fetch group.
+			The field will be fetched lazily on first access.
+			You can modify this warning by setting the datanucleus.appengine.ignorableMetaDataBehavior property in your config.
+			A value of NONE will silence the warning.
+			A value of ERROR will turn the warning into an exception.
+		-->
+		<property name="datanucleus.appegine.ignoreableMetaDataBehavior" value="ERROR" />
+	</persistence-manager-factory>
 </jdoconfig>

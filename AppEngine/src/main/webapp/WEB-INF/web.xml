@@ -1,58 +1,54 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 
-	<!--  Servlets -->
+<web-app version="2.5"
+		xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	>
+
+	<!-- Servlets -->
+	<servlet-mapping>
+		<servlet-name>ListingFilms</servlet-name>
+		<url-pattern>/films</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<servlet-name>ListingFilms</servlet-name>
 		<servlet-class>com.twister.gapp.cinema.ListingFilms</servlet-class>
 	</servlet>
 
-	<!--  Servlet mappingss -->
 	<servlet-mapping>
-		<servlet-name>ListingFilms</servlet-name>
-		<url-pattern>/films</url-pattern>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
 	</servlet-mapping>
-	
+	<servlet>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+		<init-param>
+			<param-name>services</param-name>
+			<param-value />
+		</init-param>
+	</servlet>
+
 	<!-- Filters -->
-	<filter>
-		<filter-name>GlobalFilter</filter-name>
-		<filter-class>com.twister.gapp.GlobalFilter</filter-class>
-	</filter>
-	
-	<!--  Filter mappings -->
 	<filter-mapping>
 		<filter-name>GlobalFilter</filter-name>
 		<url-pattern>/global/*</url-pattern>
 	</filter-mapping>
+	<filter>
+		<filter-name>GlobalFilter</filter-name>
+		<filter-class>com.twister.gapp.GlobalFilter</filter-class>
+	</filter>
 
 	<!-- Other stuff -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-	<servlet>
-  <servlet-name>SystemServiceServlet</servlet-name>
-  <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
-  <init-param>
-   <param-name>services</param-name>
-   <param-value/>
-  </init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SystemServiceServlet</servlet-name>
-		<url-pattern>/_ah/spi/*</url-pattern>
-	</servlet-mapping>
+
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<trim-directive-whitespaces>true</trim-directive-whitespaces>
 		</jsp-property-group>
 	</jsp-config>
-	<!-- TOODs
-	http://tugdualgrall.blogspot.co.uk/2010/02/create-and-deploy-jax-rs-rest-service.html
-	https://developers.google.com/appengine/docs/java/backends/
-	http://stackoverflow.com/questions/315618/how-do-i-extract-a-tar-file-in-java
-	every day load: ftp://ftp.fu-berlin.de/pub/misc/movies/database/diffs/diffs-130705.tar.gz
-	and extract:
-	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/movie-links.list.gz
-	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/running-times.list.gz
-	-->
 </web-app>

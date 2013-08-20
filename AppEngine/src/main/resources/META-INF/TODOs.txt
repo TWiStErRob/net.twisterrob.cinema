@@ -1,0 +1,7 @@
+http://tugdualgrall.blogspot.co.uk/2010/02/create-and-deploy-jax-rs-rest-service.html
+https://developers.google.com/appengine/docs/java/backends/
+http://stackoverflow.com/questions/315618/how-do-i-extract-a-tar-file-in-java
+every day load: ftp://ftp.fu-berlin.de/pub/misc/movies/database/diffs/diffs-130705.tar.gz
+and extract:
+	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/movie-links.list.gz
+	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/running-times.list.gz

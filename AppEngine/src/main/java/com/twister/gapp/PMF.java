@@ -5,8 +5,12 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.twister.gapp.cinema.model.User;
 
 public final class PMF {
-	private static final PersistenceManagerFactory pmfInstance = JDOHelper
-			.getPersistenceManagerFactory("transactions-optional");
+	/**
+	 * Get instance from <em>jdoconfig.xml</em>.<br>
+	 * Defined as: <code>&lt;persistence-manager-factory name="{arg-to-getPersistenceManagerFactory}">...</code>
+	 */
+	private static final PersistenceManagerFactory pmfInstance = //
+	JDOHelper.getPersistenceManagerFactory("com.twister.gapp-ds-jdo");
 
 	private PMF() {}
 

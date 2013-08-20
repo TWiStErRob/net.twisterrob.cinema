@@ -15,19 +15,38 @@ import com.twister.gapp.cinema.model.User;
 
 @SuppressWarnings("serial")
 public class ListingFilms extends HttpServlet {
-	// private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class.getName());
+	// private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class);
+
+	private void log() {
+		org.slf4j.Logger slf4j = org.slf4j.LoggerFactory.getLogger(ListingFilms.class);
+		slf4j.trace("message-slf4j-trace");
+		slf4j.debug("message-slf4j-debug");
+		slf4j.info("message-slf4j-info");
+		slf4j.warn("message-slf4j-warn");
+		slf4j.error("message-slf4j-error");
+
+		java.util.logging.Logger jul = java.util.logging.Logger.getLogger(ListingFilms.class.getName());
+		jul.severe("message-jul-severe");
+		jul.warning("message-jul-warning");
+		jul.info("message-jul-info");
+		jul.config("message-jul-config");
+		jul.fine("message-jul-fine");
+		jul.finer("message-jul-finer");
+		jul.finest("message-jul-finest");
+	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		log();
 		setup();
 		User user = PMF.getCurrentUser();
-		Object result = getResult(user);
-		req.setAttribute("result", result);
-		// FIXM
-		// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 		// req.setAttribute("call", new InvokerMap());
 
 		UserService userService = UserServiceFactory.getUserService();
 		if (user != null) {
+			Object result = getResult(user);
+			req.setAttribute("result", result);
+			// FIXM
+			// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 			req.setAttribute("user", user);
 			req.setAttribute("url", userService.createLogoutURL(req.getRequestURI()));
 		} else {
@@ -36,7 +55,6 @@ public class ListingFilms extends HttpServlet {
 		RequestDispatcher view = req.getRequestDispatcher("films.jsp");
 		view.forward(req, resp);
 	}
-
 	private Object getResult(User currentUser) {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
