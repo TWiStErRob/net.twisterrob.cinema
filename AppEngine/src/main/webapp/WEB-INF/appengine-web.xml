@@ -5,7 +5,7 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://appengine.google.com/ns/1.0 https://googleappengine.googlecode.com/svn-history/r376/trunk/java/src/main/com/google/appengine/tools/development/appengine-web.xsd"
 	>
-	<application>twister-cinema-appengine</application>
+	<application>twisterrob-cinema</application>
 	<version>1</version>
 
 	<!-- Allows App Engine to send multiple requests to one instance in parallel. -->
@@ -14,7 +14,7 @@
 	<!-- Configure java.util.logging (JUL) -->
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/java.util.logging.properties" />
-		<property name="com.google.appengine.instance.id" value="twister-dev" />
+		<property name="log4j.configuration" value="file:WEB-INF/classes/log4j.properties" />
 	</system-properties>
 
 	<!-- HTTP Sessions are disabled by default. To enable HTTP sessions specify: -->
