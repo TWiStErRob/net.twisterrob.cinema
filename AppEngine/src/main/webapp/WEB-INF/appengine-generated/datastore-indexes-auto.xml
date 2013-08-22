@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <datastore-indexes autoGenerate="true"
-		xmlns="http://appengine.google.com/ns/datastore-indexes/1.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLoc="http://appengine.google.com/ns/datastore-indexes/1.0 https://googleappengine.googlecode.com/svn-history/r376/trunk/java/src/main/com/google/appengine/tools/development/datastore-indexes.xsd"
+		xsi:noNamespaceSchemaLocation="https://googleappengine.googlecode.com/svn-history/r376/trunk/java/src/main/com/google/appengine/tools/development/datastore-indexes.xsd"
 >
-
 </datastore-indexes>

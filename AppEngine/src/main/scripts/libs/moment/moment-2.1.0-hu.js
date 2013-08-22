@@ -7,8 +7,7 @@ var moment = typeof require !== "undefined" && require !== null ? require("momen
 var weekEndings = 'vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton'.split(' ');
 
 function translate(number, withoutSuffix, key, isFuture) {
-    var num = number,
-        suffix;
+    var num = number;
 
     switch (key) {
     case 's':

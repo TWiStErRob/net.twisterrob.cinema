@@ -34,7 +34,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 		// DOM a thousand times unnecessarily.
 		// (We will only do this if the list is greater than 3 items.)
 		
-		var showSelectedItemsSetting;
+		var showSelectedItemsSetting = undefined;
 		
 		var disableDynamicList = function(checklistLength) {
 			if (checklistLength > 3) {
@@ -47,23 +47,24 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			$(checklistElem).attr('showSelectedItems', showSelectedItemsSetting);
 		};
 
+		var selector;
 		switch(action) {
 
 				case 'clearAll' :
-					var selector = 'li:has(input:checked)';
+					selector = 'li:has(input:checked)';
 					break;
 
 				case 'checkAll' :
-					var selector = 'li:has(input:not(:checked,:disabled))';
+					selector = 'li:has(input:not(:checked,:disabled))';
 					break;
 
 				case 'invert' :
-					var selector = 'li:has(input)';
+					selector = 'li:has(input)';
 					break;
 
 				default :
 					alert("toChecklist Plugin says:\n\nWarning - Invalid action requested on checklist.\nThe action requested was: " + action);
-					break;
+					return;
 
 			}
 
@@ -183,7 +184,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 				if (anItemInListIsFocused)
 				  return;
 				*/
-				var t = setTimeout(showAllSelectOptions, 250);
+				setTimeout(showAllSelectOptions, 250);
 			};
 			
 			var initSearchBox = function() {
@@ -277,9 +278,6 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
       initSearchBox();
 	};
 	
-	var overflowProperty = (o.addScrollBar)? 'overflow-y: auto; overflow-x: hidden;' : '';
-	var leaveRoomForCheckbox = (o.showCheckboxes)? 'padding-left: 25px' : 'padding-left: 3px';
-
 	// Here, THIS refers to the jQuery stack object that contains all the target elements that
 	// are going to be converted to checklists. Let's loop over them and do the conversion.
 	this.each(function() {
@@ -337,13 +335,13 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			}
 			var title = ' title="' + $(this).attr('title').replace(/"/g, '&quot;') + '"';
 			var selected = '';
+			var disabled, disabledClass;
 			if ($(this).prop('disabled')) {
-				var disabled = ' disabled="disabled"';
-				var disabledClass = ' class="disabled"';
+				disabled = ' disabled="disabled"';
+				disabledClass = ' class="disabled"';
 			} else {
-				var disabled = '';
-				var disabledClass = '';
-				var selected = '';
+				disabled = '';
+				disabledClass = '';
 				if ($(this).prop('selected')) {
 					if (o.maxNumOfSelections != -1 && numOfCheckedBoxesSoFar <= o.maxNumOfSelections) {
 						selected += 'checked="checked"';
@@ -473,7 +471,7 @@ jQuery.fn.toChecklist = function(o) { // "o" stands for options
 			}
 		};
 
-		var moveToNextLi = function() {
+		var moveToNextLi = undefined; moveToNextLi = function() {
 			// Make sure that the next LI has a checkbox (some LIs don't, because
 			// they came from <optgroup> tags.
 			if ( $(this).prop('tagName').toLowerCase() != 'li' )

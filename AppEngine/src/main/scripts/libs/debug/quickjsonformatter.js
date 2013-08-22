@@ -93,7 +93,7 @@
 						html += this.FormatLiteral("new RegExp(" + obj + ")", "", comma, indent, isArray, "qjf-RegExp");
 				} else {
 					var numProps = 0;
-					for (var prop in obj) numProps++;
+					for (var prop in obj) if(Object.prototype.hasOwnProperty.call(obj, prop)) numProps++;
 					if (numProps == 0) {
 						html += this.GetRow(indent, "<span class='qjf-ObjectBrace'>{ }</span>"+comma, isPropertyContent);
 					} else {
