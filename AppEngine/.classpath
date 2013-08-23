@@ -23,7 +23,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/main/webapp"/>
-	<classpathentry kind="src" path="src/main/static" excluding="global/|global/"/>
+	<classpathentry excluding="global/" kind="src" path="src/main/static"/>
 	<classpathentry kind="src" path="src/main/static/global"/>
 	<classpathentry kind="src" path="src/main/images"/>
 	<classpathentry kind="src" path="src/main/scripts"/>
