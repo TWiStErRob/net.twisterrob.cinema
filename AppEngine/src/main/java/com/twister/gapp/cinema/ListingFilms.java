@@ -7,7 +7,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import com.google.appengine.api.users.*;
-import com.google.appengine.repackaged.com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap;
 import com.twister.gapp.PMF;
 import com.twister.gapp.cinema.model.*;
 import com.twister.gapp.cinema.model.User;
