@@ -18,6 +18,15 @@
 	</servlet>
 
 	<servlet-mapping>
+		<servlet-name>UpdateFilms</servlet-name>
+		<url-pattern>/films/update</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>UpdateFilms</servlet-name>
+		<servlet-class>com.twister.gapp.cinema.UpdateFilms</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
 		<servlet-name>SystemServiceServlet</servlet-name>
 		<url-pattern>/_ah/spi/*</url-pattern>
 	</servlet-mapping>

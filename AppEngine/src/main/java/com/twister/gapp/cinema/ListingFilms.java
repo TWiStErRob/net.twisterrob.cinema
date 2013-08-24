@@ -3,12 +3,11 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.jdo.*;
-import javax.jdo.Query;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.*;
+import com.google.appengine.repackaged.com.google.common.collect.ImmutableMap;
 import com.twister.gapp.PMF;
 import com.twister.gapp.cinema.model.*;
 import com.twister.gapp.cinema.model.User;
@@ -52,7 +51,7 @@ public class ListingFilms extends HttpServlet {
 		} else {
 			req.setAttribute("url", userService.createLoginURL(req.getRequestURI()));
 		}
-		RequestDispatcher view = req.getRequestDispatcher("films.jsp");
+		RequestDispatcher view = req.getRequestDispatcher("/films.jsp");
 		view.forward(req, resp);
 	}
 	private Object getResult(User currentUser) {
@@ -66,11 +65,12 @@ public class ListingFilms extends HttpServlet {
 			fp.setMaxFetchDepth(-1);
 			// fp.setDetachmentRootClasses(User.class, View.class, Film.class);
 			q = pm.newQuery(User.class);
-			q.setFilter("userId == userParam");
-			q.declareParameters("String userParam");
+			q.setFilter("userId == :userId");
 
 			@SuppressWarnings("unchecked")
-			List<User> users = (List<User>)q.execute(currentUser.getUserId());
+			List<User> users = (List<User>)q.executeWithMap(ImmutableMap.builder() //
+					.put("userId", currentUser.getUserId()) //
+					.build());
 			User user = users.get(0);
 			user = pm.detachCopy(user);
 			List<View> views = user.getViews();
@@ -84,9 +84,9 @@ public class ListingFilms extends HttpServlet {
 	}
 
 	private void setup() {
-		clear("View");
-		clear("Film");
-		clear("User");
+		PMF.clear("View");
+		PMF.clear("Film");
+		PMF.clear("User");
 
 		addUsers();
 		addFilms();
@@ -155,18 +155,6 @@ public class ListingFilms extends HttpServlet {
 			pm.makePersistent(user);
 		} finally {
 			pm.close();
-		}
-	}
-
-	public void clear(String entityName) {
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-		com.google.appengine.api.datastore.Query cdb = new com.google.appengine.api.datastore.Query(entityName);
-		cdb.setKeysOnly();
-
-		Iterable<Entity> results = datastore.prepare(cdb).asIterable();
-		for (Entity entity: results) {
-			datastore.delete(entity.getKey());
 		}
 	}
 }

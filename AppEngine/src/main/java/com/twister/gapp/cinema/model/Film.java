@@ -13,6 +13,9 @@ public class Film {
 	private int runtime;
 
 	public Film(long edi, String title, int runtime) {
+		if (edi <= 0) {
+			throw new IllegalArgumentException("EDI must be positive");
+		}
 		this.edi = edi;
 		this.title = title;
 		this.runtime = runtime;

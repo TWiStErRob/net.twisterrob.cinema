@@ -16,6 +16,7 @@
 		<appengine.target.version>1.8.3</appengine.target.version>
 		<datanucleus.version>3.1.1</datanucleus.version>
 		<logging.slf4j.version>1.7.5</logging.slf4j.version>
+		<powermock.version>1.5.1</powermock.version>
 	</properties>
 	<dependencies>
 		<!-- Own -->
@@ -135,6 +136,23 @@
 		</dependency>
 
 		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-easymock</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-testing</artifactId>

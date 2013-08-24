@@ -1,6 +1,7 @@
 package com.twister.gapp;
 import javax.jdo.*;
 
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.twister.gapp.cinema.model.User;
 
@@ -38,6 +39,18 @@ public final class PMF {
 			return pm.detachCopy(user);
 		} finally {
 			pm.close();
+		}
+	}
+
+	public static void clear(String entityName) {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+		com.google.appengine.api.datastore.Query cdb = new com.google.appengine.api.datastore.Query(entityName);
+		cdb.setKeysOnly();
+
+		Iterable<Entity> results = datastore.prepare(cdb).asIterable();
+		for (Entity entity: results) {
+			datastore.delete(entity.getKey());
 		}
 	}
 }
