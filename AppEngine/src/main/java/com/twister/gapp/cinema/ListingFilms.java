@@ -6,6 +6,8 @@ import javax.jdo.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.slf4j.*;
+
 import com.google.appengine.api.users.*;
 import com.google.common.collect.ImmutableMap;
 import com.twister.gapp.PMF;
@@ -14,28 +16,9 @@ import com.twister.gapp.cinema.model.User;
 
 @SuppressWarnings("serial")
 public class ListingFilms extends HttpServlet {
-	// private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class);
-
-	private void log() {
-		org.slf4j.Logger slf4j = org.slf4j.LoggerFactory.getLogger(ListingFilms.class);
-		slf4j.trace("message-slf4j-trace");
-		slf4j.debug("message-slf4j-debug");
-		slf4j.info("message-slf4j-info");
-		slf4j.warn("message-slf4j-warn");
-		slf4j.error("message-slf4j-error");
-
-		java.util.logging.Logger jul = java.util.logging.Logger.getLogger(ListingFilms.class.getName());
-		jul.severe("message-jul-severe");
-		jul.warning("message-jul-warning");
-		jul.info("message-jul-info");
-		jul.config("message-jul-config");
-		jul.fine("message-jul-fine");
-		jul.finer("message-jul-finer");
-		jul.finest("message-jul-finest");
-	}
+	private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class);
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log();
 		setup();
 		User user = PMF.getCurrentUser();
 		// req.setAttribute("call", new InvokerMap());
@@ -43,7 +26,7 @@ public class ListingFilms extends HttpServlet {
 		UserService userService = UserServiceFactory.getUserService();
 		if (user != null) {
 			Object result = getResult(user);
-			req.setAttribute("result", result);
+			req.setAttribute("views", result);
 			// FIXM
 			// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 			req.setAttribute("user", user);
@@ -55,6 +38,7 @@ public class ListingFilms extends HttpServlet {
 		view.forward(req, resp);
 	}
 	private Object getResult(User currentUser) {
+		LOG.debug("Getting views for user: {}", currentUser.getUserId());
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {

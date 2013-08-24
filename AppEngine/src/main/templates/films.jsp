@@ -6,8 +6,11 @@
 <html>
 <head>
 	<title>Film listing</title>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 	<link rel="stylesheet" type="style/css" href="/static/styles/global.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/libs/jquery/jquery.tablesorter-2.0.5b.css" />
+	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery.tablesorter-2.0.5b.js"></script>
+	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery.tablesorter-2.0.5b.pager.js"></script>
 </head>
 <body>
 	<h1>Page title</h1>
@@ -21,9 +24,37 @@
 				<a href="${url}">log in</a>
 			</c:otherwise>
 		</c:choose>
-		<c:forEach var="view" items="${result}">
-			<li>Film #${view.film.edi}: ${view.seen ? "seen" : "to see" }
-		</c:forEach>
+		<table id="viewList" class="tablesorter">
+			<thead>
+				<tr><th>Edi</th><th>Title</th><th>Seen?</th><th>Created</th><th>Last update</th></tr>
+			</thead>
+			<tbody>
+			<c:forEach var="view" items="${views}">
+				<tr><td>${view.film.edi}</td><td>${view.film.title}</td><td>${view.seen}</td><td>${film.created}</td><td>${film.lastUpdated}</td></tr>
+			</c:forEach>
+			</tbody>
+			<tfoot>
+				<tr><td colspan="5">
+					<div id="viewList-pager">
+						<form>
+							<img src="/static/images/jquery/tablesorter/first.png" class="first">
+							<img src="/static/images/jquery/tablesorter/prev.png" class="prev">
+							<input type="text" class="pagedisplay">
+							<img src="/static/images/jquery/tablesorter/next.png" class="next">
+							<img src="/static/images/jquery/tablesorter/last.png" class="last">
+							<select class="pagesize">
+								<option value="5">5</option>
+								<option value="10" selected="selected">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="${fn:length(views)}">All</option>
+							</select>
+						</form>
+					</div>
+				</td></tr>
+			</tfoot>
+		</table>
 	</div>
 
 
@@ -41,7 +72,7 @@
 					.addType(com.twister.gapp.cinema.model.View.class)
 					.registerOn(gsonBuilder);
 			String json = gsonBuilder.create() //
-					.toJson(request.getAttribute("result"));
+					.toJson(request.getAttribute("views"));
 				out.println(json);
 		%></pre>
 	</div>
