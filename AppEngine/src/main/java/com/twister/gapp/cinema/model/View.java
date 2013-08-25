@@ -2,10 +2,12 @@ package com.twister.gapp.cinema.model;
 
 import javax.jdo.annotations.*;
 
+import org.joda.time.DateTime;
+
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
-public class View {
+public class View extends BaseEntity {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private com.google.appengine.api.datastore.Key key;
@@ -19,6 +21,12 @@ public class View {
 	private boolean seen;
 	@Persistent
 	private float relevant;
+
+	// should be in BaseEntity
+	@Persistent
+	private DateTime created;
+	@Persistent
+	private DateTime lastUpdated;
 
 	public View() {}
 
@@ -45,5 +53,29 @@ public class View {
 	}
 	public void setRelevant(float relevant) {
 		this.relevant = relevant;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public DateTime getCreated() {
+		return created;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public DateTime getLastUpdated() {
+		return lastUpdated;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public void setLastUpdated(DateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 }

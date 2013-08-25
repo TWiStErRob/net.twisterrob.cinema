@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +31,7 @@
 			</thead>
 			<tbody>
 			<c:forEach var="view" items="${views}">
-				<tr><td>${view.film.edi}</td><td>${view.film.title}</td><td>${view.seen}</td><td>${film.created}</td><td>${film.lastUpdated}</td></tr>
+				<tr><td>${view.film.edi}</td><td>${view.film.title}</td><td>${view.seen}</td><td>${view.created}</td><td>${view.lastUpdated}</td></tr>
 			</c:forEach>
 			</tbody>
 			<tfoot>

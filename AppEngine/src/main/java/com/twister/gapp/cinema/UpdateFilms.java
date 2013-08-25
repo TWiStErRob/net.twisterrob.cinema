@@ -31,14 +31,26 @@ public class UpdateFilms extends HttpServlet {
 	}
 
 	protected void getFilmsFromCineworld() throws ApplicationException {
-		PMF.clear("Film");
+		// PMF.clear("Film");
 		PersistenceManager pm = PMF.getPM();
 		try {
 			List<CineworldFilm> films = new CineworldAccessor().getAllFilms();
 			for (CineworldFilm film: films) {
 				LOG.info("Processing {}: {}...", film.getEdi(), film.getTitle());
 				try {
-					Film newFilm = new Film(film.getEdi(), film.getTitle(), -1);
+					Film oldFilm;
+					try {
+						oldFilm = pm.getObjectById(Film.class, film.getEdi());
+					} catch (JDOObjectNotFoundException ex) {
+						oldFilm = null;
+					}
+					Film newFilm;
+					if (oldFilm != null) {
+						newFilm = oldFilm;
+						oldFilm.setTitle(film.getTitle());
+					} else {
+						newFilm = new Film(film.getEdi(), film.getTitle(), -1);
+					}
 					pm.makePersistent(newFilm);
 				} catch (Exception ex) {
 					LOG.error("Cannot process film: {} / {}...", film.getEdi(), film.getTitle(), ex);

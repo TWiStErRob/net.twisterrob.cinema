@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.jdo.annotations.*;
 
+import org.joda.time.DateTime;
+
 @PersistenceCapable
-public class User {
+public class User extends BaseEntity {
 	@PrimaryKey
 	@Persistent
 	private String userId;
@@ -17,6 +19,12 @@ public class User {
 	// @Unowned
 	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
 	private List<View> views;
+
+	// should be in BaseEntity
+	@Persistent
+	private DateTime created;
+	@Persistent
+	private DateTime lastUpdated;
 
 	public User(String userId, String email, String nickName) {
 		this.userId = userId;
@@ -55,5 +63,29 @@ public class User {
 
 	public List<View> getViews() {
 		return views;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public DateTime getCreated() {
+		return created;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public DateTime getLastUpdated() {
+		return lastUpdated;
+	}
+
+	@Override
+	// should be in BaseEntity
+	public void setLastUpdated(DateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 }

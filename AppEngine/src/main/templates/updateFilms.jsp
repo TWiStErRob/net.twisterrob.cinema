@@ -27,15 +27,15 @@
 	<h1>Films</h1>
 	<table id="filmList" class="tablesorter">
 		<thead>
-			<tr><th>Edi</th><th>Title</th><th>Runtime</th></tr>
+			<tr><th>Edi</th><th>Title</th><th>Runtime</th><th>Created</th><th>Last update</th></tr>
 		</thead>
 		<tbody>
 		<c:forEach var="film" items="${films}">
-			<tr><td>${film.edi}</td><td>${film.title}</td><td>${film.runtime}</td></tr>
+			<tr><td>${film.edi}</td><td>${film.title}</td><td>${film.runtime}</td><td>${film.created}</td><td>${film.lastUpdated}</td></tr>
 		</c:forEach>
 		</tbody>
 		<tfoot>
-			<tr><td colspan="3">
+			<tr><td colspan="5">
 				<div id="filmList-pager">
 					<form>
 						<img src="/static/images/jquery/tablesorter/first.png" class="first">

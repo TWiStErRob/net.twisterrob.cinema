@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<project
-		xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.twisterrob.cinema</groupId>
 	<artifactId>twister-cinema-appengine</artifactId>
@@ -14,7 +10,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<appengine.app.version>1</appengine.app.version>
 		<appengine.target.version>1.8.3</appengine.target.version>
-		<datanucleus.version>3.1.1</datanucleus.version>
 		<logging.slf4j.version>1.7.5</logging.slf4j.version>
 		<powermock.version>1.5.1</powermock.version>
 	</properties>
@@ -108,22 +103,28 @@
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-core</artifactId>
-			<version>${datanucleus.version}</version>
+			<version>3.1.5</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-api-jdo</artifactId>
-			<version>${datanucleus.version}</version>
+			<version>3.1.4</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.appengine.orm</groupId>
 			<artifactId>datanucleus-appengine</artifactId>
-			<version>2.1.1</version>
+			<version>2.1.2</version>
 			<!-- Need to exclude the enhancer since it interferes with the enhancer plugin. -->
 			<exclusions>
 				<exclusion>
 					<groupId>org.datanucleus</groupId>
 					<artifactId>datanucleus-enhancer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.datanucleus</groupId>
+					<artifactId>datanucleus-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -140,6 +141,22 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>14.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.datanucleus</groupId>
+			<artifactId>datanucleus-jodatime</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time-jsptags</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- Testing -->
@@ -193,21 +210,16 @@
 					<enableJarClasses>false</enableJarClasses>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.datanucleus</groupId>
 				<artifactId>maven-datanucleus-plugin</artifactId>
-				<version>${datanucleus.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.datanucleus</groupId>
-						<artifactId>datanucleus-core</artifactId>
-						<version>${datanucleus.version}</version>
-					</dependency>
-				</dependencies>
+				<version>3.1.3</version>
 
 				<configuration>
 					<api>JDO</api>
 					<mappingIncludes>**/com/twister/gapp/cinema/model/*.class</mappingIncludes>
+					<log4jConfiguration>${project.basedir}/src/main/resources/log4j.properties</log4jConfiguration>
 					<verbose>true</verbose>
 				</configuration>
 
@@ -280,7 +292,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.datanucleus</groupId>
 										<artifactId>maven-datanucleus-plugin</artifactId>
-										<versionRange>${datanucleus.version}</versionRange>
+										<versionRange>[3.0,)</versionRange>
 										<goals>
 											<goal>enhance</goal>
 										</goals>

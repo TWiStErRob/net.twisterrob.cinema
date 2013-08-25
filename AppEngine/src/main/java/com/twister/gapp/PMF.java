@@ -1,11 +1,15 @@
 package com.twister.gapp;
 import javax.jdo.*;
 
+import org.slf4j.*;
+
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.twister.gapp.cinema.model.User;
 
 public final class PMF {
+	private static final Logger LOG = LoggerFactory.getLogger(PMF.class);
+
 	/**
 	 * Get instance from <em>jdoconfig.xml</em>.<br>
 	 * Defined as: <code>&lt;persistence-manager-factory name="{arg-to-getPersistenceManagerFactory}">...</code>
@@ -20,7 +24,20 @@ public final class PMF {
 	}
 
 	public static PersistenceManager getPM() {
-		return get().getPersistenceManager();
+		LOG.debug("Getting a PersistenceManager");
+		PersistenceManager pm = get().getPersistenceManager();
+		// pm.addInstanceLifecycleListener(new StoreLifecycleListener() {
+		// @Override
+		// public void preStore(InstanceLifecycleEvent event) {
+		// BaseEntity entity = (BaseEntity)event.getPersistentInstance();
+		// DateTime now = DateTime.now();
+		// LOG.trace("Updating a(n) {}: {} -> {}", entity.getClass().getSimpleName(), entity.getLastUpdated(), now);
+		// entity.setLastUpdated(now);
+		// }
+		// @Override
+		// public void postStore(InstanceLifecycleEvent event) {}
+		// }, View.class, User.class, Film.class);
+		return pm;
 	}
 
 	public static User getCurrentUser() {
