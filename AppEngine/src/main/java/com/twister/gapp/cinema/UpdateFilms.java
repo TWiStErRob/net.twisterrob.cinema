@@ -7,6 +7,7 @@ import javax.jdo.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import com.twister.cineworld.exception.ApplicationException;
@@ -46,8 +47,8 @@ public class UpdateFilms extends HttpServlet {
 					}
 					Film newFilm;
 					if (oldFilm != null) {
+						oldFilm.setLastUpdated(new DateTime());
 						newFilm = oldFilm;
-						oldFilm.setTitle(film.getTitle());
 					} else {
 						newFilm = new Film(film.getEdi(), film.getTitle(), -1);
 					}
@@ -65,8 +66,9 @@ public class UpdateFilms extends HttpServlet {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
+			FetchPlan fp = pm.getFetchPlan();
+			fp.setGroup(FetchPlan.ALL);
 			q = pm.newQuery(Film.class);
-
 			@SuppressWarnings("unchecked")
 			List<Film> films = (List<Film>)q.execute();
 			return pm.detachCopyAll(films);

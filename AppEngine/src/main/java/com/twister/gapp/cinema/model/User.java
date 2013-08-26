@@ -7,7 +7,7 @@ import javax.jdo.annotations.*;
 import org.joda.time.DateTime;
 
 @PersistenceCapable
-public class User extends BaseEntity {
+public class User {
 	@PrimaryKey
 	@Persistent
 	private String userId;
@@ -65,27 +65,11 @@ public class User extends BaseEntity {
 		return views;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public DateTime getCreated() {
 		return created;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public void setCreated(DateTime created) {
 		this.created = created;
-	}
-
-	@Override
-	// should be in BaseEntity
-	public DateTime getLastUpdated() {
-		return lastUpdated;
-	}
-
-	@Override
-	// should be in BaseEntity
-	public void setLastUpdated(DateTime lastUpdated) {
-		this.lastUpdated = lastUpdated;
 	}
 }

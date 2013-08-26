@@ -27,15 +27,15 @@
 		</c:choose>
 		<table id="viewList" class="tablesorter">
 			<thead>
-				<tr><th>Edi</th><th>Title</th><th>Seen?</th><th>Created</th><th>Last update</th></tr>
+				<tr><th>Edi</th><th>Title</th><th>Seen?</th></tr>
 			</thead>
 			<tbody>
 			<c:forEach var="view" items="${views}">
-				<tr><td>${view.film.edi}</td><td>${view.film.title}</td><td>${view.seen}</td><td>${view.created}</td><td>${view.lastUpdated}</td></tr>
+				<tr><td>${view.film.edi}</td><td>${view.film.title}</td><td>${view.seen}</td></tr>
 			</c:forEach>
 			</tbody>
 			<tfoot>
-				<tr><td colspan="5">
+				<tr><td colspan="3">
 					<div id="viewList-pager">
 						<form>
 							<img src="/static/images/jquery/tablesorter/first.png" class="first">

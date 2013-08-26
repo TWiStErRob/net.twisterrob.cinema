@@ -26,17 +26,6 @@ public final class PMF {
 	public static PersistenceManager getPM() {
 		LOG.debug("Getting a PersistenceManager");
 		PersistenceManager pm = get().getPersistenceManager();
-		// pm.addInstanceLifecycleListener(new StoreLifecycleListener() {
-		// @Override
-		// public void preStore(InstanceLifecycleEvent event) {
-		// BaseEntity entity = (BaseEntity)event.getPersistentInstance();
-		// DateTime now = DateTime.now();
-		// LOG.trace("Updating a(n) {}: {} -> {}", entity.getClass().getSimpleName(), entity.getLastUpdated(), now);
-		// entity.setLastUpdated(now);
-		// }
-		// @Override
-		// public void postStore(InstanceLifecycleEvent event) {}
-		// }, View.class, User.class, Film.class);
 		return pm;
 	}
 
@@ -60,6 +49,7 @@ public final class PMF {
 	}
 
 	public static void clear(String entityName) {
+		LOG.info("Clearing all {}", entityName);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 		com.google.appengine.api.datastore.Query cdb = new com.google.appengine.api.datastore.Query(entityName);

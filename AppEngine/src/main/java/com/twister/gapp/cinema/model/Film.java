@@ -5,7 +5,7 @@ import javax.jdo.annotations.*;
 import org.joda.time.DateTime;
 
 @PersistenceCapable
-public class Film extends BaseEntity {
+public class Film {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long edi;
@@ -14,7 +14,6 @@ public class Film extends BaseEntity {
 	@Persistent
 	private int runtime;
 
-	// should be in BaseEntity
 	@Persistent
 	private DateTime created;
 	@Persistent
@@ -27,6 +26,7 @@ public class Film extends BaseEntity {
 		this.edi = edi;
 		this.title = title;
 		this.runtime = runtime;
+		this.setCreated(new DateTime());
 	}
 
 	public long getEdi() {
@@ -53,26 +53,18 @@ public class Film extends BaseEntity {
 		this.runtime = runtime;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public DateTime getCreated() {
 		return created;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public void setCreated(DateTime created) {
 		this.created = created;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public DateTime getLastUpdated() {
 		return lastUpdated;
 	}
 
-	@Override
-	// should be in BaseEntity
 	public void setLastUpdated(DateTime lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
