@@ -10,6 +10,7 @@ import javax.servlet.http.*;
 import org.joda.time.DateTime;
 import org.slf4j.*;
 
+import com.google.common.collect.ImmutableMap;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.json.data.CineworldFilm;
 import com.twister.gapp.PMF;
@@ -21,42 +22,57 @@ public class UpdateFilms extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-			getFilmsFromCineworld();
+			List<Film> newFilms = getFilmsFromCineworld();
+			Collection<Film> allFilms = getAllFilms();
+			for (Film film: newFilms) {
+				allFilms.remove(film);
+			}
+			req.setAttribute("films", ImmutableMap.<String, Collection<Film>> builder() //
+					.put("new", newFilms) //
+					.put("existing", allFilms) //
+					.build());
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
 
-		req.setAttribute("films", getAllFilms());
 		RequestDispatcher view = req.getRequestDispatcher("/updateFilms.jsp");
 		view.forward(req, resp);
 	}
 
-	protected void getFilmsFromCineworld() throws ApplicationException {
+	protected List<Film> getFilmsFromCineworld() throws ApplicationException {
 		// PMF.clear("Film");
 		PersistenceManager pm = PMF.getPM();
+		// try {
+		// pm.deletePersistent(pm.getObjectById(Film.class, 44064));
+		// } catch (JDOObjectNotFoundException ex) {}
 		try {
-			List<CineworldFilm> films = new CineworldAccessor().getAllFilms();
-			for (CineworldFilm film: films) {
-				LOG.info("Processing {}: {}...", film.getEdi(), film.getTitle());
+			List<CineworldFilm> incomingFilms = new CineworldAccessor().getAllFilms();
+			List<Film> newFilms = new LinkedList<Film>();
+			for (CineworldFilm incomingFilm: incomingFilms) {
+				// if (!incomingFilm.getTitle().startsWith("3D -")) {
+				// continue;
+				// }
+				LOG.info("Processing {}: {}...", incomingFilm.getEdi(), incomingFilm.getTitle());
 				try {
 					Film oldFilm;
 					try {
-						oldFilm = pm.getObjectById(Film.class, film.getEdi());
+						oldFilm = pm.getObjectById(Film.class, incomingFilm.getEdi());
 					} catch (JDOObjectNotFoundException ex) {
 						oldFilm = null;
 					}
 					Film newFilm;
 					if (oldFilm != null) {
 						oldFilm.setLastUpdated(new DateTime());
-						newFilm = oldFilm;
 					} else {
-						newFilm = new Film(film.getEdi(), film.getTitle(), -1);
+						newFilm = new Film(incomingFilm.getEdi(), incomingFilm.getTitle(), -1);
+						pm.makePersistent(newFilm);
+						newFilms.add(pm.detachCopy(newFilm));
 					}
-					pm.makePersistent(newFilm);
 				} catch (Exception ex) {
-					LOG.error("Cannot process film: {} / {}...", film.getEdi(), film.getTitle(), ex);
+					LOG.error("Cannot process film: {} / {}...", incomingFilm.getEdi(), incomingFilm.getTitle(), ex);
 				}
 			}
+			return newFilms;
 		} finally {
 			pm.close();
 		}
