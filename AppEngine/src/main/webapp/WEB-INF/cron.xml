@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="https://googleappengine.googlecode.com/svn-history/r376/trunk/java/src/main/com/google/appengine/tools/development/cron.xsd"
+	>
+	<cron>
+		<url>/films/update</url>
+		<description>Update films from Cineworld Performances API</description>
+		<schedule>every day 16:00</schedule>
+		<timezone>Europe/London</timezone>
+	</cron>
+</cronentries>
