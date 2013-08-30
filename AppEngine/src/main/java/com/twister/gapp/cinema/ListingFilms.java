@@ -9,7 +9,6 @@ import javax.servlet.http.*;
 import org.slf4j.*;
 
 import com.google.appengine.api.users.*;
-import com.google.common.collect.ImmutableMap;
 import com.twister.gapp.PMF;
 import com.twister.gapp.cinema.model.*;
 import com.twister.gapp.cinema.model.User;
@@ -40,40 +39,27 @@ public class ListingFilms extends HttpServlet {
 	private Object getResult(User currentUser) {
 		LOG.debug("Getting views for user: {}", currentUser.getUserId());
 		PersistenceManager pm = PMF.getPM();
-		Query q = null;
 		try {
 			FetchPlan fp = pm.getFetchPlan();
 			fp.setGroup(FetchPlan.ALL);
 			fp.setFetchSize(FetchPlan.FETCH_SIZE_GREEDY);
 			fp.setDetachmentOptions(FetchPlan.DETACH_LOAD_FIELDS);
 			fp.setMaxFetchDepth(-1);
-			// fp.setDetachmentRootClasses(User.class, View.class, Film.class);
-			q = pm.newQuery(User.class);
-			q.setFilter("userId == :userId");
 
-			@SuppressWarnings("unchecked")
-			List<User> users = (List<User>)q.executeWithMap(ImmutableMap.builder() //
-					.put("userId", currentUser.getUserId()) //
-					.build());
-			User user = users.get(0);
+			User user = pm.getObjectById(User.class, currentUser.getUserId());
 			user = pm.detachCopy(user);
 			List<View> views = user.getViews();
 			return views;
 		} finally {
-			if (q != null) {
-				q.closeAll();
-			}
 			pm.close();
 		}
 	}
 
 	private void setup() {
 		PMF.clear("View");
-		PMF.clear("Film");
 		PMF.clear("User");
 
 		addUsers();
-		addFilms();
 		addViews();
 	}
 
@@ -83,24 +69,18 @@ public class ListingFilms extends HttpServlet {
 		addUser("12542211391281671681", "test3@example.com", "test3");
 	}
 
-	private void addFilms() {
-		addFilm(1234L, "World War Z", 120);
-		addFilm(1235L, "Smurfs 2", 110);
-		addFilm(1236L, "Turbo", 105);
-	}
-
 	private void addViews() {
 		// test@example.com
-		addView("18580476422013912411", 1234L, true, 0.80f);
-		addView("18580476422013912411", 1235L, false, 0.75f);
+		addView("18580476422013912411", 148839L, true, 0.80f);
+		addView("18580476422013912411", 67754L, false, 0.75f);
 		// test2@example.com
-		addView("16717695577786171977", 1234L, false, 0.80f);
-		addView("16717695577786171977", 1235L, false, 0.75f);
-		addView("16717695577786171977", 1236L, false, 0.99f);
+		addView("16717695577786171977", 148839L, false, 0.80f);
+		addView("16717695577786171977", 67754L, false, 0.75f);
+		addView("16717695577786171977", 134988L, false, 0.99f);
 		// test3@example.com
-		addView("12542211391281671681", 1234L, true, 0.80f);
-		addView("12542211391281671681", 1235L, true, 0.75f);
-		addView("12542211391281671681", 1236L, true, 0.99f);
+		addView("12542211391281671681", 148839L, true, 0.80f);
+		addView("12542211391281671681", 67754L, true, 0.75f);
+		addView("12542211391281671681", 134988L, true, 0.99f);
 	}
 
 	private void addView(String userId, long edi, boolean seen, float relevant) {
@@ -117,16 +97,6 @@ public class ListingFilms extends HttpServlet {
 				}
 				user.addView(view);
 			}
-		} finally {
-			pm.close();
-		}
-	}
-
-	private void addFilm(long edi, String title, int runtime) {
-		PersistenceManager pm = PMF.getPM();
-		try {
-			Film film = new Film(edi, title, runtime);
-			pm.makePersistent(film);
 		} finally {
 			pm.close();
 		}

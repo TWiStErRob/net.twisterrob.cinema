@@ -7,7 +7,6 @@ import javax.jdo.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import com.google.common.collect.ImmutableMap;
@@ -62,7 +61,7 @@ public class UpdateFilms extends HttpServlet {
 					}
 					Film newFilm;
 					if (oldFilm != null) {
-						oldFilm.setLastUpdated(new DateTime());
+						oldFilm.setLastUpdated(new Date());
 					} else {
 						newFilm = new Film(incomingFilm.getEdi(), incomingFilm.getTitle(), -1);
 						pm.makePersistent(newFilm);

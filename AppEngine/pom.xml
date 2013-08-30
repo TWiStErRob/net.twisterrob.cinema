@@ -219,7 +219,7 @@
 				<configuration>
 					<api>JDO</api>
 					<mappingIncludes>**/com/twister/gapp/cinema/model/*.class</mappingIncludes>
-					<log4jConfiguration>${project.basedir}/src/main/resources/log4j.properties</log4jConfiguration>
+					<log4jConfiguration>${project.basedir}/src/main/resources/log4j_maven.properties</log4jConfiguration>
 					<verbose>true</verbose>
 				</configuration>
 

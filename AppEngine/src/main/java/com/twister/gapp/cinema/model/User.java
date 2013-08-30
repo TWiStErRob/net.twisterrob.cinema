@@ -1,49 +1,35 @@
 package com.twister.gapp.cinema.model;
 
-import java.util.List;
+import java.util.*;
 
 import javax.jdo.annotations.*;
-
-import org.joda.time.DateTime;
+import javax.jdo.listener.StoreCallback;
 
 @PersistenceCapable
-public class User {
-	@PrimaryKey
-	@Persistent
-	private String userId;
+public class User extends Dateable implements StoreCallback {
+	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+
 	@Persistent
 	private String email;
 	@Persistent
 	private String nickName;
 	@Persistent
-	// @Unowned
 	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
 	private List<View> views;
 
-	// should be in BaseEntity
-	@Persistent
-	private DateTime created;
-	@Persistent
-	private DateTime lastUpdated;
-
 	public User(String userId, String email, String nickName) {
-		this.userId = userId;
+		super(userId);
 		this.email = email;
 		this.nickName = nickName;
 	}
 
 	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
+		return getKeyName();
 	}
 
 	public String getEmail() {
 		return email;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -51,25 +37,15 @@ public class User {
 	public String getNickName() {
 		return nickName;
 	}
-
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
 
+	public List<View> getViews() {
+		return Collections.unmodifiableList(views);
+	}
 	public void addView(View view) {
 		view.setUser(this);
 		this.views.add(view);
-	}
-
-	public List<View> getViews() {
-		return views;
-	}
-
-	public DateTime getCreated() {
-		return created;
-	}
-
-	public void setCreated(DateTime created) {
-		this.created = created;
 	}
 }
