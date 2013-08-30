@@ -48,6 +48,9 @@ public final class PMF {
 		}
 	}
 
+	public static void clear(Class<?> clazz) {
+		clear(clazz.getSimpleName());
+	}
 	public static void clear(String entityName) {
 		LOG.info("Clearing all {}", entityName);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

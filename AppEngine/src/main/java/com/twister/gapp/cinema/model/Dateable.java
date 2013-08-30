@@ -1,27 +1,27 @@
 package com.twister.gapp.cinema.model;
 
-import java.util.Date;
-
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
+
+import org.joda.time.DateTime;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
 // TODO https://code.google.com/p/datanucleus-appengine-patch/
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-@Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME)
+@Discriminator(strategy = DiscriminatorStrategy.NONE)
 public abstract class Dateable implements StoreCallback {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private com.google.appengine.api.datastore.Key key;
 	@Persistent
-	private Date created;
+	private DateTime created;
 	@Persistent
-	private Date lastUpdated;
+	private DateTime lastUpdated;
 
 	public Dateable() {
-		created = new Date();
+		created = new DateTime();
 	}
 	public Dateable(long id) {
 		this();
@@ -42,22 +42,22 @@ public abstract class Dateable implements StoreCallback {
 		return key.getName();
 	}
 
-	public Date getCreated() {
+	public DateTime getCreated() {
 		return created;
 	}
-	public void setCreated(Date created) {
+	public void setCreated(DateTime created) {
 		this.created = created;
 	}
 
-	public Date getLastUpdated() {
+	public DateTime getLastUpdated() {
 		return lastUpdated;
 	}
-	public void setLastUpdated(Date lastUpdated) {
+	public void setLastUpdated(DateTime lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 
 	@Override
 	public void jdoPreStore() {
-		this.setLastUpdated(new Date());
+		this.setLastUpdated(new DateTime());
 	}
 }

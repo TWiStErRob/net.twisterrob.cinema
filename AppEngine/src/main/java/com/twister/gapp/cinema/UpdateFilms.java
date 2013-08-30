@@ -7,6 +7,7 @@ import javax.jdo.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import com.google.common.collect.ImmutableMap;
@@ -20,6 +21,9 @@ public class UpdateFilms extends HttpServlet {
 	private static final Logger LOG = LoggerFactory.getLogger(UpdateFilms.class);
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (Boolean.parseBoolean(req.getParameter("clean"))) {
+			PMF.clear(Film.class);
+		}
 		try {
 			List<Film> newFilms = getFilmsFromCineworld();
 			Collection<Film> allFilms = getAllFilms();
@@ -61,7 +65,7 @@ public class UpdateFilms extends HttpServlet {
 					}
 					Film newFilm;
 					if (oldFilm != null) {
-						oldFilm.setLastUpdated(new Date());
+						oldFilm.setLastUpdated(new DateTime());
 					} else {
 						newFilm = new Film(incomingFilm.getEdi(), incomingFilm.getTitle(), -1);
 						pm.makePersistent(newFilm);

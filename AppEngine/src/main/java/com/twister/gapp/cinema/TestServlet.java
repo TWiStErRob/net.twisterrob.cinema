@@ -102,8 +102,8 @@ public class TestServlet extends HttpServlet {
 				obj.getKey(), // id
 				String.format("%08x", obj.hashCode()), // instance id
 				obj.getName(), // name
-				obj.getCreated() != null? fmt.format(obj.getCreated()) : "not-set", // created
-				obj.getLastUpdated() != null? fmt.format(obj.getLastUpdated()) : "not-set" // last update
+				obj.getCreated() != null? fmt.format(obj.getCreated().toDate()) : "not-set", // created
+				obj.getLastUpdated() != null? fmt.format(obj.getLastUpdated().toDate()) : "not-set" // last update
 		);
 	}
 	@SuppressWarnings("unused")
