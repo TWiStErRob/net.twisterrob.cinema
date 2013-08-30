@@ -40,7 +40,9 @@ public final class PMF {
 			try {
 				user = pm.getObjectById(User.class, authUser.getUserId());
 			} catch (JDOObjectNotFoundException ex) {
-				return null;
+				// TODO register user properly
+				user = new User(authUser.getUserId(), authUser.getEmail(), authUser.getNickname());
+				pm.makePersistent(user);
 			}
 			return pm.detachCopy(user);
 		} finally {
