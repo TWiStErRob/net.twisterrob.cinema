@@ -4,7 +4,7 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
 	>
-	<persistence-unit name="com.twister.gapp-ds-jpa">
+	<persistence-unit name="net.twisterrob.cinema-ds-jpa">
 		<provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
 		<properties>
 			<property name="datanucleus.NontransactionalRead" value="true" />

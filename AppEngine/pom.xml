@@ -281,7 +281,7 @@
 						</goals>
 						<configuration>
 							<metadataDirectory>${project.build.outputDirectory}</metadataDirectory>
-							<metadataIncludes>com/twister/gapp/cinema/model/*.class</metadataIncludes>
+							<metadataIncludes>net/twisterrob/cinema/gapp/model/*.class</metadataIncludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -292,7 +292,7 @@
 						</goals>
 						<configuration>
 							<metadataDirectory>${project.build.testOutputDirectory}</metadataDirectory>
-							<metadataIncludes>com/twister/gapp/cinema/model/*.class</metadataIncludes>
+							<metadataIncludes>net/twisterrob/cinema/gapp/model/*.class</metadataIncludes>
 						</configuration>
 					</execution>
 				</executions>

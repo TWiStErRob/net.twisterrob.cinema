@@ -105,9 +105,9 @@
 					.registerTypeAdapter(java.util.GregorianCalendar.class, new com.twister.cineworld.model.json.data.CalendarTypeConverter()) //
 					.setPrettyPrinting();
 // 			new com.google.gson.graph.GraphAdapterBuilder()
-// 					.addType(com.twister.gapp.cinema.model.User.class)
-// 					.addType(com.twister.gapp.cinema.model.Film.class)
-// 					.addType(com.twister.gapp.cinema.model.View.class)
+// 					.addType(net.twisterrob.cinema.gapp.model.User.class)
+// 					.addType(net.twisterrob.cinema.gapp.model.Film.class)
+// 					.addType(net.twisterrob.cinema.gapp.model.View.class)
 // 					.registerOn(gsonBuilder);
 			String json = gsonBuilder.create() //
 					.toJson(request.getAttribute("result"));
