@@ -4,14 +4,13 @@ import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
 
 @PersistenceCapable
-@Deprecated
-public class TestDatesFields extends Dateable implements StoreCallback {
+public class DateFieldsTestObject extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent
 	private String name;
 
-	public TestDatesFields(long id, String name) {
+	public DateFieldsTestObject(long id, String name) {
 		super(id);
 		this.name = name;
 	}
@@ -22,5 +21,4 @@ public class TestDatesFields extends Dateable implements StoreCallback {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }

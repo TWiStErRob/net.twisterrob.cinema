@@ -5,6 +5,7 @@ import org.slf4j.*;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.Lists;
 import com.twister.gapp.cinema.model.User;
 
 public final class PMF {
@@ -51,7 +52,15 @@ public final class PMF {
 	}
 
 	public static void clear(Class<?> clazz) {
-		clear(clazz.getSimpleName());
+		PersistenceManager pm = PMF.getPM();
+		try {
+			Extent<?> obj = pm.getExtent(clazz);
+			pm.deletePersistentAll(Lists.newArrayList(obj.iterator()));
+		} catch (JDOObjectNotFoundException ex) {
+			// already clean
+		} finally {
+			pm.close();
+		}
 	}
 	public static void clear(String entityName) {
 		LOG.info("Clearing all {}", entityName);
