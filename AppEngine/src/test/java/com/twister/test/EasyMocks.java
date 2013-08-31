@@ -31,37 +31,37 @@ public class EasyMocks implements MethodRule {
 		return null;
 	}
 
-	public static boolean with(Matcher<Boolean> matcher) {
+	public static boolean withBoolean(Matcher<Boolean> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return false;
 	}
 
-	public static byte with(Matcher<Byte> matcher) {
+	public static byte withByte(Matcher<Byte> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0;
 	}
 
-	public static short with(Matcher<Short> matcher) {
+	public static short withShort(Matcher<Short> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0;
 	}
 
-	public static int with(Matcher<Integer> matcher) {
+	public static int withInt(Matcher<Integer> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0;
 	}
 
-	public static long with(Matcher<Long> matcher) {
+	public static long withLong(Matcher<Long> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0;
 	}
 
-	public static float with(Matcher<Float> matcher) {
+	public static float withFloat(Matcher<Float> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0.0f;
 	}
 
-	public static double with(Matcher<Double> matcher) {
+	public static double withDouble(Matcher<Double> matcher) {
 		EasyMock2Adapter.adapt(matcher);
 		return 0.0;
 	}
