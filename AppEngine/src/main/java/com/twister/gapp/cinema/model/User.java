@@ -4,17 +4,21 @@ import java.util.*;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
+import javax.xml.bind.annotation.XmlElement;
 
 @PersistenceCapable
 public class User extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent
+	@XmlElement
 	private String email;
 	@Persistent
+	@XmlElement
 	private String nickName;
 	@Persistent
 	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
+	@XmlElement
 	private List<View> views;
 
 	public User(String userId, String email, String nickName) {

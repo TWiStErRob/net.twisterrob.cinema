@@ -13,11 +13,11 @@ public class View extends Dateable implements StoreCallback {
 
 	@Persistent
 	@Unowned
-	@XmlElement
+	@XmlElement(nillable = true)
 	private User user;
 	@Persistent
 	@Unowned
-	@XmlElement
+	@XmlElement(nillable = true)
 	private Film film;
 	@Persistent
 	@XmlElement

@@ -2,14 +2,17 @@ package com.twister.gapp.cinema.model;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
+import javax.xml.bind.annotation.XmlElement;
 
 @PersistenceCapable
 public class Film extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent
+	@XmlElement
 	private String title;
 	@Persistent
+	@XmlElement
 	private int runtime;
 
 	public Film(long edi, String title, int runtime) {

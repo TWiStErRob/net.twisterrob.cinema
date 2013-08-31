@@ -11,18 +11,20 @@ import com.google.appengine.api.datastore.KeyFactory;
 // TODO https://code.google.com/p/datanucleus-appengine-patch/
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
+// Don't store the class name as a discriminator value
 @Discriminator(strategy = DiscriminatorStrategy.NONE)
+// Do not serialize properties, just what's annotated
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class Dateable implements StoreCallback {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	@XmlElement(namespace = "http://google.com")
+	@XmlElement(namespace = "http://appengine.google.com/datastore")
 	private com.google.appengine.api.datastore.Key key;
 	@Persistent
-	@XmlElement
+	@XmlElement(nillable = true)
 	private DateTime created;
 	@Persistent
-	@XmlElement
+	@XmlElement(nillable = true)
 	private DateTime lastUpdated;
 
 	public Dateable() {

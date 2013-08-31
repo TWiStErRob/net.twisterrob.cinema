@@ -1,26 +1,24 @@
 package com.twister.gapp.cinema.rest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.api.json.JSONWithPadding;
+import org.glassfish.jersey.server.JSONP;
+
 import com.twister.gapp.cinema.model.View;
-import com.twister.gapp.cinema.services.ViewService;
+import com.twister.gapp.cinema.services.*;
 
 @Path("/helloworld")
 public class JerseyHello {
-	@Context
-	private ViewService service;
+	private ViewService service = new ViewServiceImpl();
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@JSONP(callback = "callback", queryParam = "callback")
+	@Produces({
+			MediaType.APPLICATION_JSON, // json
+			"application/javascript", "application/x-javascript", "application/ecmascript", "text/javascript",
+			"text/x-javascript", "text/ecmascript", "text/jscript" // jsonp
+	})
 	public View getView() {
 		return service.getView();
-	}
-
-	@GET
-	@Path("/jsonp")
-	@Produces("application/x-javascript")
-	public JSONWithPadding getViewJSONP(@QueryParam("callback") @DefaultValue("callback") String callback) {
-		return new JSONWithPadding(getView(), callback);
 	}
 }
