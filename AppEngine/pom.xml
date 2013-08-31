@@ -12,6 +12,7 @@
 		<appengine.target.version>1.8.3</appengine.target.version>
 		<logging.slf4j.version>1.7.5</logging.slf4j.version>
 		<powermock.version>1.5.1</powermock.version>
+		<jersey.version>1.17.1</jersey.version>
 	</properties>
 	<dependencies>
 		<!-- Own -->
@@ -85,6 +86,25 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- Jersey REST -->
+		<dependency>
+			<!-- web.xml/<servlet>: com.sun.jersey.spi.container.servlet.ServletContainer -->
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+			<artifactId>jersey-test-framework-grizzly2</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Data Access: Interface -->

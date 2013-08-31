@@ -2,6 +2,7 @@ package com.twister.gapp.cinema.model;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
+import javax.xml.bind.annotation.*;
 
 import org.joda.time.DateTime;
 
@@ -11,13 +12,17 @@ import com.google.appengine.api.datastore.KeyFactory;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.NONE)
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class Dateable implements StoreCallback {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@XmlElement(namespace = "http://google.com")
 	private com.google.appengine.api.datastore.Key key;
 	@Persistent
+	@XmlElement
 	private DateTime created;
 	@Persistent
+	@XmlElement
 	private DateTime lastUpdated;
 
 	public Dateable() {
@@ -36,10 +41,10 @@ public abstract class Dateable implements StoreCallback {
 		return key;
 	}
 	public Long getKeyId() {
-		return key.getId();
+		return key == null? null : key.getId();
 	}
 	public String getKeyName() {
-		return key.getName();
+		return key == null? null : key.getName();
 	}
 
 	public DateTime getCreated() {
