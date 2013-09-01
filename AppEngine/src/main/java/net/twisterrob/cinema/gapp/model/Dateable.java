@@ -67,4 +67,34 @@ public abstract class Dateable implements StoreCallback {
 	public void jdoPreStore() {
 		this.setLastUpdated(new DateTime());
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return getKey().hashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Dateable)) {
+			return false;
+		}
+		Dateable other = (Dateable)obj;
+		return this.getKey().equals(other.getKey());
+	}
 }
