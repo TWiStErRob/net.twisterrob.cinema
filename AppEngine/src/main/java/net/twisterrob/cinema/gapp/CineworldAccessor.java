@@ -30,6 +30,12 @@ public class CineworldAccessor {
 		List<CineworldFilm> list = getList(request);
 		return list;
 	}
+	public List<CineworldCinema> getAllCinemas() throws ApplicationException {
+		CinemasRequest request = new CinemasRequest();
+		request.setFull(true);
+		List<CineworldCinema> list = getList(request);
+		return list;
+	}
 
 	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws ApplicationException {
 		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
