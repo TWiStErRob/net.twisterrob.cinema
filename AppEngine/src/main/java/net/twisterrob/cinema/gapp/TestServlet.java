@@ -2,8 +2,12 @@ package net.twisterrob.cinema.gapp;
 
 import java.io.IOException;
 
+import javax.jdo.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
+import net.twisterrob.cinema.PMF;
+import net.twisterrob.cinema.gapp.model.Film;
 
 import org.slf4j.*;
 
@@ -13,6 +17,12 @@ public class TestServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		LOG.info("Hello");
+		PersistenceManager pm = PMF.getPM();
+		try {
+			pm.deletePersistent(pm.getObjectById(Film.class, 62260));
+		} catch (JDOObjectNotFoundException ex) {
+			throw new ServletException(ex);
+		}
 	}
 
 	@SuppressWarnings("unused")

@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.gapp;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import javax.jdo.*;
 import javax.servlet.*;
@@ -9,10 +9,13 @@ import javax.servlet.http.*;
 import net.twisterrob.cinema.PMF;
 import net.twisterrob.cinema.gapp.model.*;
 import net.twisterrob.cinema.gapp.model.User;
+import net.twisterrob.cinema.gapp.services.impl.FilmServiceImpl;
 
+import org.joda.time.DateTime;
 import org.slf4j.*;
 
 import com.google.appengine.api.users.*;
+import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("serial")
 public class ListingFilms extends HttpServlet {
@@ -33,6 +36,25 @@ public class ListingFilms extends HttpServlet {
 			req.setAttribute("url", userService.createLogoutURL(req.getRequestURI()));
 		} else {
 			req.setAttribute("url", userService.createLoginURL(req.getRequestURI()));
+		}
+
+		try {
+			Collection<Film> oldFilms = new FilmServiceImpl().getAllFilms(null);
+			Collection<Film> newFilms = new ArrayList<Film>();
+			DateTime newAfter = new DateTime().minusDays(1);
+			for (Iterator<Film> it = oldFilms.iterator(); it.hasNext();) {
+				Film film = it.next();
+				if (newAfter.compareTo(film.getCreated()) <= 0) { // newAfter <= film.created
+					it.remove();
+					newFilms.add(film);
+				};
+			}
+			req.setAttribute("films", ImmutableMap.<String, Collection<Film>> builder() //
+					.put("new", newFilms) //
+					.put("existing", oldFilms) //
+					.build());
+		} catch (Exception ex) {
+			throw new ServletException(ex);
 		}
 		RequestDispatcher view = req.getRequestDispatcher("/films.jsp");
 		view.forward(req, resp);
@@ -112,4 +134,5 @@ public class ListingFilms extends HttpServlet {
 			pm.close();
 		}
 	}
+
 }

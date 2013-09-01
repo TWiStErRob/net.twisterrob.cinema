@@ -9,21 +9,12 @@
 
 	<!-- Servlets -->
 	<servlet-mapping>
-		<servlet-name>ListingFilms</servlet-name>
+		<servlet-name>Films</servlet-name>
 		<url-pattern>/films</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>ListingFilms</servlet-name>
+		<servlet-name>Films</servlet-name>
 		<servlet-class>net.twisterrob.cinema.gapp.ListingFilms</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>UpdateFilms</servlet-name>
-		<url-pattern>/films/update</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>UpdateFilms</servlet-name>
-		<servlet-class>net.twisterrob.cinema.gapp.UpdateFilms</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

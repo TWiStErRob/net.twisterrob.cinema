@@ -7,7 +7,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 
 import net.twisterrob.cinema.gapp.model.View;
-import net.twisterrob.cinema.gapp.services.ViewService;
+import net.twisterrob.cinema.gapp.services.*;
 import net.twisterrob.utils.guava.Functions;
 
 import org.easymock.*;
@@ -27,7 +27,7 @@ import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestCo
 
 public class JerseyHelloTest extends JerseyTest {
 	private IMocksControl m_control;
-	private ViewService m_viewService;
+	private FilmService m_viewService;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -35,7 +35,7 @@ public class JerseyHelloTest extends JerseyTest {
 	@Before
 	public void setUp() {
 		m_control = EasyMock.createControl();
-		m_viewService = m_control.createMock(ViewService.class);
+		m_viewService = m_control.createMock(FilmService.class);
 		MockViewServiceProvider.mockService = m_viewService;
 	}
 
@@ -57,8 +57,8 @@ public class JerseyHelloTest extends JerseyTest {
 	// until the test dependency version is updated too
 	@Ignore
 	@Test
-	public void removeTodoShouldThrowNotFoundException() {
-		EasyMock.expect(m_viewService.getView()).andThrow(new JDOObjectNotFoundException("view-not-found"));
+	public void removeTodoShouldThrowNotFoundException() throws ServiceException {
+		EasyMock.expect(m_viewService.getAllFilms(null)).andThrow(new JDOObjectNotFoundException("view-not-found"));
 		exception.expect(UniformInterfaceException.class);
 
 		m_control.replay();
@@ -74,10 +74,10 @@ public class JerseyHelloTest extends JerseyTest {
 	}
 
 	@Provider
-	public static class MockViewServiceProvider extends SingletonTypeInjectableProvider<Context, ViewService> {
-		private static ViewService mockService;
+	public static class MockViewServiceProvider extends SingletonTypeInjectableProvider<Context, FilmService> {
+		private static FilmService mockService;
 		public MockViewServiceProvider() {
-			super(ViewService.class, mockService);
+			super(FilmService.class, mockService);
 		}
 	}
 }
