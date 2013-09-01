@@ -7,7 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import net.twisterrob.cinema.PMF;
-import net.twisterrob.cinema.gapp.model.*;
+import net.twisterrob.cinema.gapp.model.Film;
 import net.twisterrob.cinema.gapp.services.FilmService;
 
 import org.glassfish.jersey.server.JSONP;
@@ -33,7 +33,7 @@ public class FilmsResource {
 			LOG.debug("Cleaning all entities: {}.", Film.class);
 			PMF.clear(Film.class);
 		}
-		Collection<Film> newFilms = service.updateFilms(Vendor.Cineworld);
+		Collection<Film> newFilms = service.updateFilms();
 		return newFilms;
 	}
 }

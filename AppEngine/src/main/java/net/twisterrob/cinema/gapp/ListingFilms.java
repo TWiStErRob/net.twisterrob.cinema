@@ -39,7 +39,7 @@ public class ListingFilms extends HttpServlet {
 		}
 
 		try {
-			Collection<Film> oldFilms = new FilmServiceImpl().getAllFilms(null);
+			Collection<Film> oldFilms = new FilmServiceImpl().getAllFilms();
 			Collection<Film> newFilms = new ArrayList<Film>();
 			DateTime newAfter = new DateTime().minusDays(1);
 			for (Iterator<Film> it = oldFilms.iterator(); it.hasNext();) {

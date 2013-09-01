@@ -6,14 +6,13 @@ import javax.jdo.*;
 
 import net.twisterrob.cinema.PMF;
 import net.twisterrob.cinema.gapp.CineworldAccessor;
-import net.twisterrob.cinema.gapp.model.*;
+import net.twisterrob.cinema.gapp.model.Film;
 import net.twisterrob.cinema.gapp.rest.FilmsResource;
 import net.twisterrob.cinema.gapp.services.*;
 
 import org.joda.time.DateTime;
 import org.slf4j.*;
 
-import com.google.common.collect.ImmutableMap;
 import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.json.data.CineworldFilm;
 
@@ -21,16 +20,11 @@ public class FilmServiceImpl implements FilmService {
 	private static final Logger LOG = LoggerFactory.getLogger(FilmsResource.class);
 
 	@Override
-	public List<Film> updateFilms(Vendor vendor) throws ServiceException {
-		switch (vendor) {
-			case Cineworld:
-				try {
-					return getFilmsFromCineworld();
-				} catch (ApplicationException ex) {
-					throw new ServiceException("There has been a problem retrieving films for %s.", ex, vendor);
-				}
-			default:
-				throw new ServiceException("Vendor %s is not supported by this service.", vendor);
+	public List<Film> updateFilms() throws ServiceException {
+		try {
+			return getFilmsFromCineworld();
+		} catch (ApplicationException ex) {
+			throw new ServiceException("There has been a problem retrieving Films for %s.", ex, "Cineworld");
 		}
 	}
 
@@ -67,11 +61,7 @@ public class FilmServiceImpl implements FilmService {
 	}
 
 	@Override
-	public Collection<Film> getAllFilms(Vendor vendor) throws ServiceException {
-		return getAllFilms();
-	}
-
-	private Collection<Film> getAllFilms() {
+	public Collection<Film> getAllFilms() throws ServiceException {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
@@ -80,29 +70,6 @@ public class FilmServiceImpl implements FilmService {
 			q = pm.newQuery(Film.class);
 			@SuppressWarnings("unchecked")
 			List<Film> films = (List<Film>)q.execute();
-			return pm.detachCopyAll(films);
-		} finally {
-			if (q != null) {
-				q.closeAll();
-			}
-			pm.close();
-		}
-	}
-
-	public Collection<Film> getNewFilms(DateTime filterDate) {
-		PersistenceManager pm = PMF.getPM();
-		Query q = null;
-		try {
-			FetchPlan fp = pm.getFetchPlan();
-			fp.setGroup(FetchPlan.ALL);
-			q = pm.newQuery(Film.class);
-			q.declareParameters(DateTime.class.getName() + " filterDate");
-			q.setFilter("this.created >= filterDate");
-
-			@SuppressWarnings("unchecked")
-			List<Film> films = (List<Film>)q.executeWithMap(ImmutableMap.builder() //
-					.put("filterDate", filterDate) //
-					.build());
 			return pm.detachCopyAll(films);
 		} finally {
 			if (q != null) {

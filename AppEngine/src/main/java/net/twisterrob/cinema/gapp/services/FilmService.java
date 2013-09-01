@@ -2,10 +2,10 @@ package net.twisterrob.cinema.gapp.services;
 
 import java.util.Collection;
 
-import net.twisterrob.cinema.gapp.model.*;
+import net.twisterrob.cinema.gapp.model.Film;
 
 public interface FilmService {
-	public Collection<Film> updateFilms(Vendor vendor) throws ServiceException;
+	public Collection<Film> updateFilms() throws ServiceException;
 
-	public Collection<Film> getAllFilms(Vendor vendor) throws ServiceException;
+	public Collection<Film> getAllFilms() throws ServiceException;
 }

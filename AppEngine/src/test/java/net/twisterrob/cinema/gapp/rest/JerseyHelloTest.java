@@ -58,7 +58,7 @@ public class JerseyHelloTest extends JerseyTest {
 	@Ignore
 	@Test
 	public void removeTodoShouldThrowNotFoundException() throws ServiceException {
-		EasyMock.expect(m_viewService.getAllFilms(null)).andThrow(new JDOObjectNotFoundException("view-not-found"));
+		EasyMock.expect(m_viewService.getAllFilms()).andThrow(new JDOObjectNotFoundException("view-not-found"));
 		exception.expect(UniformInterfaceException.class);
 
 		m_control.replay();
