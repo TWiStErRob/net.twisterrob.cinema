@@ -20,19 +20,19 @@ public class FilmServiceImpl implements FilmService {
 	private static final Logger LOG = LoggerFactory.getLogger(FilmsResource.class);
 
 	@Override
-	public List<Film> updateFilms() throws ServiceException {
+	public Collection<Film> updateFilms() throws ServiceException {
 		try {
-			return getFilmsFromCineworld();
+			return updateFilmsFromCineworld();
 		} catch (ApplicationException ex) {
 			throw new ServiceException("There has been a problem retrieving Films for %s.", ex, "Cineworld");
 		}
 	}
 
-	private List<Film> getFilmsFromCineworld() throws ApplicationException {
+	private Collection<Film> updateFilmsFromCineworld() throws ApplicationException {
 		PersistenceManager pm = PMF.getPM();
 		try {
 			List<CineworldFilm> incomingFilms = new CineworldAccessor().getAllFilms();
-			List<Film> newFilms = new LinkedList<Film>();
+			Collection<Film> newFilms = new LinkedList<Film>();
 			for (CineworldFilm incomingFilm: incomingFilms) {
 				LOG.info("Processing {}: {}...", incomingFilm.getEdi(), incomingFilm.getTitle());
 				try {
@@ -48,12 +48,13 @@ public class FilmServiceImpl implements FilmService {
 					} else {
 						newFilm = new Film(incomingFilm.getEdi(), incomingFilm.getTitle(), -1);
 						pm.makePersistent(newFilm);
-						newFilms.add(pm.detachCopy(newFilm));
+						newFilms.add(newFilm);
 					}
 				} catch (Exception ex) {
 					LOG.error("Cannot process film: {} / {}...", incomingFilm.getEdi(), incomingFilm.getTitle(), ex);
 				}
 			}
+			newFilms = pm.detachCopyAll(newFilms);
 			return newFilms;
 		} finally {
 			pm.close();
@@ -61,7 +62,7 @@ public class FilmServiceImpl implements FilmService {
 	}
 
 	@Override
-	public Collection<Film> getAllFilms() throws ServiceException {
+	public Collection<Film> getFilms() throws ServiceException {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
@@ -69,7 +70,7 @@ public class FilmServiceImpl implements FilmService {
 			fp.setGroup(FetchPlan.ALL);
 			q = pm.newQuery(Film.class);
 			@SuppressWarnings("unchecked")
-			List<Film> films = (List<Film>)q.execute();
+			Collection<Film> films = (Collection<Film>)q.execute();
 			return pm.detachCopyAll(films);
 		} finally {
 			if (q != null) {

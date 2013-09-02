@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdo version="3.0"
+		xmlns="http://xmlns.jcp.org/xml/ns/jdo/jdo"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/jdo/jdo http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd"
+	>
+	<!-- Here comes any library MetaData if needed. -->
+</jdo>

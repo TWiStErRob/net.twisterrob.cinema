@@ -36,16 +36,25 @@ public final class PMF {
 		if (authUser == null) {
 			return null;
 		}
+
+		try {
+			return getById(User.class, authUser.getUserId());
+		} catch (JDOObjectNotFoundException ex) {
+			return registerUser(authUser);
+		}
+	}
+
+	public static String getCurrentUserId() {
+		com.google.appengine.api.users.User authUser = UserServiceFactory.getUserService().getCurrentUser();
+		return authUser.getUserId();
+	}
+
+	protected static User registerUser(com.google.appengine.api.users.User authUser) {
 		PersistenceManager pm = getPM();
 		try {
-			User user;
-			try {
-				user = pm.getObjectById(User.class, authUser.getUserId());
-			} catch (JDOObjectNotFoundException ex) {
-				// TODO register user properly
-				user = new User(authUser.getUserId(), authUser.getEmail(), authUser.getNickname());
-				pm.makePersistent(user);
-			}
+			// TODO register user properly
+			User user = new User(authUser.getUserId(), authUser.getEmail(), authUser.getNickname());
+			user = pm.makePersistent(user);
 			return pm.detachCopy(user);
 		} finally {
 			pm.close();
@@ -73,6 +82,16 @@ public final class PMF {
 		Iterable<Entity> results = datastore.prepare(cdb).asIterable();
 		for (Entity entity: results) {
 			datastore.delete(entity.getKey());
+		}
+	}
+
+	public static <T> T getById(Class<T> clazz, Object key) {
+		PersistenceManager pm = getPM();
+		try {
+			T entity = pm.getObjectById(clazz, key);
+			return pm.detachCopy(entity);
+		} finally {
+			pm.close();
 		}
 	}
 }

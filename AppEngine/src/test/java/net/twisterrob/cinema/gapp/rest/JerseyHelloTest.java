@@ -42,7 +42,7 @@ public class JerseyHelloTest extends JerseyTest {
 	@Override
 	public WebAppDescriptor configure() {
 		List<Class<?>> classes = ImmutableList.of( //
-				JerseyHello.class, MockViewServiceProvider.class, NotFoundMapper.class);
+				JerseyTestResource.class, MockViewServiceProvider.class, NotFoundMapper.class);
 		String classNames = Joiner.on(';').join(Collections2.transform(classes, Functions.className()));
 		return new WebAppDescriptor.Builder()
 				.initParam(WebComponent.RESOURCE_CONFIG_CLASS, ClassNamesResourceConfig.class.getName())
@@ -58,7 +58,7 @@ public class JerseyHelloTest extends JerseyTest {
 	@Ignore
 	@Test
 	public void removeTodoShouldThrowNotFoundException() throws ServiceException {
-		EasyMock.expect(m_viewService.getAllFilms()).andThrow(new JDOObjectNotFoundException("view-not-found"));
+		EasyMock.expect(m_viewService.getFilms()).andThrow(new JDOObjectNotFoundException("view-not-found"));
 		exception.expect(UniformInterfaceException.class);
 
 		m_control.replay();
