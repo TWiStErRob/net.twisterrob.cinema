@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.*;
 
 import net.twisterrob.cinema.PMF;
-import net.twisterrob.cinema.gapp.model.Cinema;
-import net.twisterrob.cinema.gapp.services.CinemaService;
+import net.twisterrob.cinema.gapp.model.*;
+import net.twisterrob.cinema.gapp.services.*;
 
 import org.glassfish.jersey.server.JSONP;
 import org.slf4j.*;
@@ -22,18 +22,33 @@ public class CinemasResource {
 
 	@GET
 	@Path("/update")
+	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
 	@JSONP(callback = "callback", queryParam = "callback")
-	@Produces({
-			MediaType.APPLICATION_JSON, // json
-			"application/javascript", "application/x-javascript", "application/ecmascript", "text/javascript",
-			"text/x-javascript", "text/ecmascript", "text/jscript" // jsonp
-	})
-	public Collection<Cinema> updateCinemas(@QueryParam("clean") @DefaultValue("false") boolean clean) throws Exception {
+	public Collection<Cinema> updateCinemas(@QueryParam("clean") @DefaultValue("false") boolean clean)
+			throws ServiceException {
 		if (clean) {
 			LOG.debug("Cleaning all entities: {}.", Cinema.class);
 			PMF.clear(Cinema.class);
 		}
-		Collection<Cinema> newFilms = service.updateCinemas();
-		return newFilms;
+		Collection<Cinema> newCinemas = service.updateCinemas();
+		return newCinemas;
+	}
+
+	@GET
+	@Path("/favorite")
+	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
+	@JSONP(callback = "callback", queryParam = "callback")
+	public Response favoriteCinema(@QueryParam("cinema") long cinema, @QueryParam("rating") short rating,
+			@QueryParam("displayOrder") int displayOrder) throws ServiceException {
+		service.favoriteCinema(cinema, rating, displayOrder);
+		return Response.ok().build();
+	}
+
+	@GET
+	@Path("/favorites")
+	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
+	@JSONP(callback = "callback", queryParam = "callback")
+	public Collection<FavoriteCinema> getFavorites() throws ServiceException {
+		return service.getFavorites();
 	}
 }

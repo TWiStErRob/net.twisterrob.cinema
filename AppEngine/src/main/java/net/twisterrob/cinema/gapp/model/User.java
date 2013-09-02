@@ -16,15 +16,23 @@ public class User extends Dateable implements StoreCallback {
 	@Persistent
 	@XmlElement
 	private String nickName;
-	@Persistent
+	@Persistent(mappedBy = "user")
 	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
 	@XmlElement
 	private List<View> views;
+	@Persistent(mappedBy = "user")
+	@Element(dependent = "true", deleteAction = ForeignKeyAction.CASCADE)
+	@XmlElement
+	private List<FavoriteCinema> favoriteCinemas;
 
 	public User(String userId, String email, String nickName) {
 		super(userId);
 		this.email = email;
 		this.nickName = nickName;
+	}
+
+	public String getId() {
+		return getUserId();
 	}
 
 	public String getUserId() {
@@ -51,5 +59,12 @@ public class User extends Dateable implements StoreCallback {
 	public void addView(View view) {
 		view.setUser(this);
 		this.views.add(view);
+	}
+	public List<FavoriteCinema> getFavoriteCinemas() {
+		return Collections.unmodifiableList(favoriteCinemas);
+	}
+	public void addFavoriteCinema(FavoriteCinema fav) {
+		fav.setUser(this);
+		this.favoriteCinemas.add(fav);
 	}
 }

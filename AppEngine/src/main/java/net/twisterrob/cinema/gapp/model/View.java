@@ -2,17 +2,15 @@ package net.twisterrob.cinema.gapp.model;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlElement;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
-@XmlRootElement
 public class View extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
-	@Persistent
-	@Unowned
+	@Persistent(mappedBy = "views")
 	@XmlElement(nillable = true)
 	private User user;
 	@Persistent

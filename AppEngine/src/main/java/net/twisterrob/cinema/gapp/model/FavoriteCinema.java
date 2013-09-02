@@ -1,0 +1,77 @@
+package net.twisterrob.cinema.gapp.model;
+
+import javax.jdo.annotations.*;
+import javax.jdo.listener.StoreCallback;
+import javax.xml.bind.annotation.*;
+
+import com.google.appengine.datanucleus.annotations.Unowned;
+
+@PersistenceCapable
+public class FavoriteCinema extends Dateable implements StoreCallback {
+	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+
+	@Persistent(mappedBy = "favoriteCinemas")
+	// @XmlElement(nillable = true)
+	private User user;
+	@Persistent
+	@Unowned
+	@XmlElement(nillable = true)
+	private Cinema cinema;
+	@Persistent
+	@XmlAttribute
+	private int displayOrder;
+	@Persistent
+	@XmlAttribute
+	private short rating;
+
+	public FavoriteCinema(User user, Cinema cinema, int displayOrder, short rating) {
+		this.cinema = cinema;
+		this.displayOrder = displayOrder;
+		this.rating = rating;
+		user.addFavoriteCinema(this);
+	}
+
+	public FavoriteCinema() {}
+
+	@XmlAttribute
+	public long getCinemaId() {
+		return cinema.getId();
+	}
+
+	@XmlAttribute
+	public String getUserId() {
+		return user.getUserId();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Cinema getCinema() {
+		return cinema;
+	}
+
+	public void setCinema(Cinema cinema) {
+		this.cinema = cinema;
+	}
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	public short getRating() {
+		return rating;
+	}
+
+	public void setRating(short rating) {
+		this.rating = rating;
+	}
+}
