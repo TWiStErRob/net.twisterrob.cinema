@@ -15,6 +15,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/styles"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/static/global"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/templates"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <dependent-module archiveName="twister-cinema-client-cineworld-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Cineworld Performances API Java Client 1.0/Cineworld Performances API Java Client 1.0">
             <dependency-type>uses</dependency-type>
         </dependent-module>

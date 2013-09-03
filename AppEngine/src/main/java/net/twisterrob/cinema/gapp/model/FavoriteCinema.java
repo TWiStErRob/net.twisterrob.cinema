@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.*;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
+@XmlAccessorType(XmlAccessType.NONE)
 public class FavoriteCinema extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 

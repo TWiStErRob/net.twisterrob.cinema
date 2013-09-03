@@ -13,6 +13,7 @@
 		<logging.slf4j.version>1.7.5</logging.slf4j.version>
 		<powermock.version>1.5.1</powermock.version>
 		<jersey.version>2.2</jersey.version>
+		<log4j.qualifier>debug</log4j.qualifier>
 	</properties>
 	<dependencies>
 		<!-- Own -->
@@ -100,15 +101,6 @@
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-moxy</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>
-		<dependency>
-			<!-- TODO remove this dependency in favor of
-			     org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:jar:2.2
-			     org.glassfish.jersey.test-framework:jersey-test-framework-core:jar:2.2 -->
-			<groupId>com.sun.jersey.jersey-test-framework</groupId>
-			<artifactId>jersey-test-framework-grizzly2</artifactId>
-			<version>1.17.1</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Data Access: Interface -->
@@ -201,6 +193,7 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -267,7 +260,7 @@
 
 				<configuration>
 					<api>JDO</api>
-					<log4jConfiguration>${project.build.outputDirectory}/log4j_maven.properties</log4jConfiguration>
+					<log4jConfiguration>${project.build.outputDirectory}/log4j-maven.properties</log4jConfiguration>
 					<props>${project.build.outputDirectory}/datanucleus.properties </props>
 					<verbose>true</verbose>
 				</configuration>
@@ -308,10 +301,9 @@
 						<nonFilteredFileExtension>jar</nonFilteredFileExtension>
 					</nonFilteredFileExtensions>
 					<webResources>
-						<!-- in order to interpolate version from pom into appengine-web.xml -->
 						<resource>
 							<directory>src/main/webapp/WEB-INF</directory>
-							<filtering>false</filtering>
+							<filtering>true</filtering>
 							<targetPath>WEB-INF</targetPath>
 						</resource>
 						<resource>

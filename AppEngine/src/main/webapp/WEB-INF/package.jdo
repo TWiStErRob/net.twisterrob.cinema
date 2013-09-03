@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<jdo version="3.0"
-		xmlns="http://xmlns.jcp.org/xml/ns/jdo/jdo"
+<jdo
+		xmlns="http://java.sun.com/xml/ns/jdo/jdo"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/jdo/jdo http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/jdo/jdo http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd"
 	>
-	<!-- Here comes any library MetaData if needed. -->
+	<package name="net.twisterrob.cinema.gapp.model">
+		<class name="Dateable" />
+	</package>
+	<!-- Here comes any library MetaData if needed. -->	
 </jdo>
