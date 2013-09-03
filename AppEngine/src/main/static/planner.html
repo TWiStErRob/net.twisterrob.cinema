@@ -99,7 +99,7 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: false,
+			debug: true,
 			logResponses: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {});
@@ -218,6 +218,26 @@
 				args += '&' + $.map(twister.cineworld.films.selectedIds, function(e) {return 'film=' + e; }).join('&');
 				return args;
 			},
+			getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
+				console.groupStart("Favorite Cinemas");
+				$('#cinemas').text("Loading...");
+				$.ajax({
+					url: '/rest/cinemas/favorites',
+					type: 'GET',
+					dataType: 'jsonp',
+					success: function(response, status, xhr) {
+						if(twister.config.logResponses) console.log(JSON.stringify(response));
+						twister.cineworld.cinemas.selectedIds = $.map(response, function(fav) { return fav.cinemaId; });
+						twister.cineworld.getCinemas();
+						console.groupEnd(); // Favorite Cinemas
+					},
+					error : function(xhr, status, error) {
+						console.error("error " + status + " " + error);
+						twister.cineworld.getCinemas();
+						console.groupEnd(); // Favorite Cinemas
+					}
+				});
+			},
 			getCinemas: function cineworld_getCinemas() {
 				console.groupStart("Cineworld Cinemas");
 				$('#cinemas').text("Loading...");
@@ -252,7 +272,9 @@
 				// Check for errors from the server
 				if (response.errors) {
 					$('#status').html(JSON.stringify(response, null, '  '));
+					twister.ui.showStatus("Failure getting cinemas: " + JSON.stringify(response, null, '  '));
 				} else {
+					twister.ui.showStatus("Got " + response.cinemas.length + " cinemas.");
 					twister.cineworld.clearCinemas();
 
 					var cinemasList = $('#cinemas');
@@ -287,6 +309,25 @@
 									twister.cineworld.getFilms();
 								}, twister.cineworld.const.getFilmsTimeout);
 							}
+						},
+						onItemSelected: function cinemasList_onItemSelected(input) {
+							var request = {
+								cinema: input.value,
+								rating: 100,
+								displayOrder: 1
+							};
+							var cinemaName = $(arguments[0]).siblings("label").text();
+							$.ajax({
+								url: '/rest/cinemas/favorite',
+								type: 'GET',
+								data: request,
+								success: function(response, status, xhr) {
+									twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
+								},
+								error: function(xhr, status, error) {
+									twister.ui.showStatus("Cannot favorite cinema #" + input.value + ": " + cinemaName + " - " + status + ", " + error);
+								}
+							});
 						}
 					} );
 					if(twister.cineworld.cinemas.selectedIds.length != 0) {
@@ -516,7 +557,7 @@
 						twister.cineworld.parseFilmLength(film, response);
 					},
 					error : function(xhr, status, error) {
-						console.error("error " + status + error);
+						console.error("error " + status + " " + error);
 						twister.cineworld.parseFilmLength(film, {runtime: 0});
 					}
 				});
@@ -814,6 +855,12 @@
 						twister.cineworld.getFilms();
 					})
 				;
+			},
+			showStatus: function(statusText) {
+				$('#statusmessage').text(statusText).animate({'margin-bottom': 0}, 200);
+				setTimeout(function() {
+					$('#statusmessage').animate({'margin-bottom':-25}, 200);
+				}, 2000);
 			}
 		});
 
@@ -822,7 +869,7 @@
 			twister.ui.init();
 			twister.cineworld.updateFromQuery();
 			twister.cineworld.writeUI();
-			twister.cineworld.getCinemas();
+			twister.cineworld.getFavoriteCinemas();
 		});
 	</script>
 	<style type="text/css">
@@ -848,9 +895,22 @@
 		table, tr, td, th {
 			border: 1px solid #000;
 		}
+		#statusmessage {
+			position: fixed;
+			bottom: 0;
+			padding: 0 5px;
+			line-height: 25px;
+			background-color: #eeee99;
+			margin-bottom: -25px;
+			font-weight: bold;
+			left: 0;
+			right: 0;
+			z-index: 99;
+		}
 	</style>
 </head>
 <body>
+	<div id="statusmessage"></div><!-- shown at the bottom of the page -->
 	<div class="ui-layout-north">
 		<h1 id="title">
 			<span id="calendarDisplay">Cineworld planner</span>
@@ -996,7 +1056,7 @@ if(twister.config.debug) {
 	twister.mock.cineworld.replaceAjax({
 		//mockFilmQuickbook: false,
 		//mockFilmInternal: false,
-		//mockCinemas: false
+		mockCinemas: false
 	});
 	twister.mock.imdb.replaceAjax({
 		mockIMDB: true

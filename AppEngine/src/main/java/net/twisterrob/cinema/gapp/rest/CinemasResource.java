@@ -46,7 +46,7 @@ public class CinemasResource {
 
 	@GET
 	@Path("/favorites")
-	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
+	@Produces("application/javascript")
 	@JSONP(callback = "callback", queryParam = "callback")
 	public Collection<FavoriteCinema> getFavorites() throws ServiceException {
 		return service.getFavorites();
