@@ -306,32 +306,21 @@
 							<filtering>true</filtering>
 							<targetPath>WEB-INF</targetPath>
 						</resource>
-						<resource>
-							<directory>src/main/templates</directory>
-						</resource>
-						<resource>
-							<directory>src/main/styles</directory>
-							<targetPath>static/styles</targetPath>
-						</resource>
-						<resource>
-							<directory>src/main/images</directory>
-							<targetPath>static/images</targetPath>
-						</resource>
-						<resource>
-							<directory>src/main/scripts</directory>
-							<targetPath>static/scripts</targetPath>
-						</resource>
-						<resource>
-							<directory>src/main/static/global</directory>
-						</resource>
-						<resource>
-							<directory>src/main/static</directory>
-							<excludes>
-								<exclude>global/**</exclude>
-							</excludes>
-							<targetPath>static</targetPath>
-						</resource>
 					</webResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.0.5.v20130815</version>
+				<configuration><!-- Imitate the maven-war plugin build -->
+					<webAppConfig>
+						<contextPath>/</contextPath>
+						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+							<resourcesAsCSV>src/main/webapp</resourcesAsCSV>
+						</baseResource>
+					</webAppConfig>
+					<reload>manual</reload>
 				</configuration>
 			</plugin>
 		</plugins>

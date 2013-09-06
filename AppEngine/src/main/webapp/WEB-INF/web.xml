@@ -8,23 +8,23 @@
 	>
 
 	<!-- Servlets -->
-	<servlet-mapping>
-		<servlet-name>Films</servlet-name>
-		<url-pattern>/films</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>Films</servlet-name>
 		<servlet-class>net.twisterrob.cinema.gapp.ListingFilms</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>/test</url-pattern>
+		<servlet-name>Films</servlet-name>
+		<url-pattern>/films</url-pattern>
 	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>TestServlet</servlet-name>
 		<servlet-class>net.twisterrob.cinema.gapp.TestServlet</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/test</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>Jersey Web Application</servlet-name>
@@ -40,10 +40,6 @@
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>SystemServiceServlet</servlet-name>
-		<url-pattern>/_ah/spi/*</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>SystemServiceServlet</servlet-name>
 		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
@@ -52,16 +48,20 @@
 			<param-value />
 		</init-param>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
 
 	<!-- Filters -->
-	<filter-mapping>
-		<filter-name>GlobalFilter</filter-name>
-		<url-pattern>/global/*</url-pattern>
-	</filter-mapping>
 	<filter>
 		<filter-name>GlobalFilter</filter-name>
 		<filter-class>net.twisterrob.cinema.GlobalFilter</filter-class>
 	</filter>
+	<filter-mapping>
+		<filter-name>GlobalFilter</filter-name>
+		<url-pattern>/global/*</url-pattern>
+	</filter-mapping>
 
 	<!-- Other stuff -->
 	<welcome-file-list>

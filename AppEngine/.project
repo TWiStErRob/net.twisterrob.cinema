@@ -50,8 +50,8 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1377282094618</id>
-			<name>src/main/images</name>
+			<id>0</id>
+			<name>src/main/webapp/static/images</name>
 			<type>22</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
@@ -59,8 +59,8 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1377282087831</id>
-			<name>src/main/scripts</name>
+			<id>0</id>
+			<name>src/main/webapp/static/scripts</name>
 			<type>22</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
@@ -68,8 +68,8 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1377282079819</id>
-			<name>src/main/styles</name>
+			<id>0</id>
+			<name>src/main/webapp/static/styles</name>
 			<type>22</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>

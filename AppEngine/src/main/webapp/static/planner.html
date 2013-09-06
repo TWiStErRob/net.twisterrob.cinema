@@ -221,6 +221,8 @@
 			getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
 				console.groupStart("Favorite Cinemas");
 				$('#cinemas').text("Loading...");
+				twister.cineworld.getCinemas();
+				return;
 				$.ajax({
 					url: '/rest/cinemas/favorites',
 					type: 'GET',

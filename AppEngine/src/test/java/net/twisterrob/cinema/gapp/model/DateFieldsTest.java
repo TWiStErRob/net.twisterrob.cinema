@@ -9,7 +9,7 @@ import javax.jdo.PersistenceManager;
 import net.twisterrob.cinema.PMF;
 import net.twisterrob.test.mock.easymock.EasyMocks;
 
-import org.joda.time.DateTime;
+import org.joda.time.*;
 import org.junit.*;
 import org.slf4j.*;
 
@@ -43,7 +43,6 @@ public class DateFieldsTest {
 		helper.tearDown();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testDS() throws InterruptedException {
 		DateTime startDateReference = new DateTime();
@@ -64,9 +63,9 @@ public class DateFieldsTest {
 
 		assertNull(lastUpdatedBeforeFirstPersistence);
 		assertNotNull(lastUpdatedAfterFirstPersistence);
-		assertThat(createdBeforeFirstPersistence, greaterThan(startDateReference));
+		assertThat(createdBeforeFirstPersistence, greaterThan((ReadableInstant)startDateReference));
 		assertEquals(createdBeforeFirstPersistence, createdAfterFirstPersistence);
-		assertThat(createdAfterFirstPersistence, lessThan(lastUpdatedAfterFirstPersistence));
+		assertThat(createdAfterFirstPersistence, lessThan((ReadableInstant)lastUpdatedAfterFirstPersistence));
 
 		// read and modify
 		target = pm.getObjectById(DateFieldsTestObject.class, targetKey);
@@ -86,9 +85,10 @@ public class DateFieldsTest {
 		assertEquals(createdBeforeFirstPersistence, createdAfterModification);
 		assertEquals(createdBeforeFirstPersistence, createdAfterModificationPersistence);
 		assertEquals(lastUpdatedAfterFirstPersistence, lastUpdatedAfterFirstRead);
-		assertThat(lastUpdatedAfterFirstRead, lessThan(lastUpdatedAfterModificationPersistence));
-		assertThat(lastUpdatedAfterFirstRead, lessThanOrEqualTo(lastUpdatedAfterModification));
-		assertThat(lastUpdatedAfterModification, lessThanOrEqualTo(lastUpdatedAfterModificationPersistence));
+		assertThat(lastUpdatedAfterFirstRead, lessThan((ReadableInstant)lastUpdatedAfterModificationPersistence));
+		assertThat(lastUpdatedAfterFirstRead, lessThanOrEqualTo((ReadableInstant)lastUpdatedAfterModification));
+		assertThat(lastUpdatedAfterModification,
+				lessThanOrEqualTo((ReadableInstant)lastUpdatedAfterModificationPersistence));
 
 		// read again
 		target = pm.getObjectById(DateFieldsTestObject.class, targetKey);
