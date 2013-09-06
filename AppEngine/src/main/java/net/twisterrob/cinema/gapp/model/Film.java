@@ -2,7 +2,7 @@ package net.twisterrob.cinema.gapp.model;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.*;
 
 @PersistenceCapable
 public class Film extends Dateable implements StoreCallback {
@@ -24,6 +24,7 @@ public class Film extends Dateable implements StoreCallback {
 		this.runtime = runtime;
 	}
 
+	@XmlAttribute
 	public long getEdi() {
 		return getKeyId();
 	}

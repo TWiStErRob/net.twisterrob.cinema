@@ -2,7 +2,7 @@ package net.twisterrob.cinema.gapp.model;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.*;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
 
@@ -25,6 +25,16 @@ public class View extends Dateable implements StoreCallback {
 	private float relevant;
 
 	public View() {}
+
+	@XmlAttribute
+	public long getFilmEdi() {
+		return film.getEdi();
+	}
+
+	@XmlAttribute
+	public String getUserId() {
+		return user.getUserId();
+	}
 
 	public User getUser() {
 		return user;

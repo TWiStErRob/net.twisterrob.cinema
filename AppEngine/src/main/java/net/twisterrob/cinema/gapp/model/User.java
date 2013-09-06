@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.jdo.annotations.*;
 import javax.jdo.listener.StoreCallback;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.*;
 
 @PersistenceCapable
 public class User extends Dateable implements StoreCallback {
@@ -35,6 +35,7 @@ public class User extends Dateable implements StoreCallback {
 		return getUserId();
 	}
 
+	@XmlAttribute
 	public String getUserId() {
 		return getKeyName();
 	}

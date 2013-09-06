@@ -1,33 +1,18 @@
 package net.twisterrob.utils.datastore;
 
-import java.util.*;
-
+import javax.naming.OperationNotSupportedException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.google.appengine.api.datastore.Key;
 
-public class KeyAdapter extends XmlAdapter<Map<String, Object>, Key> {
+public class KeyAdapter extends XmlAdapter<String, Key> {
 	@Override
-	public Key unmarshal(Map<String, Object> v) throws Exception {
-		// TODO implement
-		return null;
+	public Key unmarshal(String v) throws Exception {
+		throw new OperationNotSupportedException("Cannot convert to " + Key.class);
 	}
+
 	@Override
-	public Map<String, Object> marshal(Key v) throws Exception {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		map.put("kind", v.getKind());
-		if (v.getId() != 0) {
-			map.put("id", v.getId());
-		}
-		if (v.getName() != null) {
-			map.put("name", v.getName());
-		}
-		if (v.getNamespace() != null) {
-			map.put("namespace", v.getNamespace());
-		}
-		if (v.getParent() != null) {
-			map.put("parent", marshal(v.getParent()));
-		}
-		return map;
+	public String marshal(Key v) throws Exception {
+		return v.toString();
 	}
 }
