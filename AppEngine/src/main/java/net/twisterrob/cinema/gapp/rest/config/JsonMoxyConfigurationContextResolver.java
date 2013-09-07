@@ -1,4 +1,6 @@
-package net.twisterrob.cinema.gapp.rest;
+package net.twisterrob.cinema.gapp.rest.config;
+
+import static org.eclipse.persistence.jaxb.MarshallerProperties.*;
 
 import java.util.*;
 
@@ -18,10 +20,14 @@ public class JsonMoxyConfigurationContextResolver implements ContextResolver<Mox
 
 		config = new MoxyJsonConfig() //
 				.setFormattedOutput(true) //
-				.setIncludeRoot(false) //
-				.setMarshalEmptyCollections(true) //
-				.setNamespacePrefixMapper(namespacePrefixMapper) //
-				.setNamespaceSeparator(':');
+				.setIncludeRoot(false) // JSON_INCLUDE_ROOT
+				.setMarshalEmptyCollections(false) // JSON_MARSHAL_EMPTY_COLLECTIONS
+				.marshallerProperty(JSON_WRAPPER_AS_ARRAY_NAME, true) //
+				.marshallerProperty(JSON_ATTRIBUTE_PREFIX, "@") //
+				.marshallerProperty(INDENT_STRING, "    ") // XXX \t doesn't work?
+				.setNamespacePrefixMapper(namespacePrefixMapper) // NAMESPACE_PREFIX_MAPPER
+				.setNamespaceSeparator(':') // JSON_NAMESPACE_SEPARATOR
+		;
 	}
 
 	@Override

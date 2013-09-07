@@ -1,4 +1,4 @@
-package net.twisterrob.cinema;
+package net.twisterrob.cinema.gapp.filters;
 
 import java.io.IOException;
 

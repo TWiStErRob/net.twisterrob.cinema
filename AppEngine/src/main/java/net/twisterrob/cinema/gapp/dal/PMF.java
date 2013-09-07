@@ -1,4 +1,4 @@
-package net.twisterrob.cinema;
+package net.twisterrob.cinema.gapp.dal;
 import javax.jdo.*;
 
 import net.twisterrob.cinema.gapp.model.User;

@@ -7,7 +7,7 @@ import javax.ws.rs.*;
 
 import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.cinema.gapp.model.*;
-import net.twisterrob.cinema.gapp.rest.model.RestResponse;
+import net.twisterrob.cinema.gapp.rest.model.*;
 import net.twisterrob.cinema.gapp.rest.model.RestResponse.ServiceStatus;
 import net.twisterrob.cinema.gapp.services.*;
 

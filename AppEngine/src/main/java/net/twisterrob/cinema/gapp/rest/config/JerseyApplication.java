@@ -1,6 +1,4 @@
-package net.twisterrob.cinema.gapp.rest;
-
-import net.twisterrob.cinema.gapp.services.ServiceBinder;
+package net.twisterrob.cinema.gapp.rest.config;
 
 import org.glassfish.jersey.server.ResourceConfig;
 

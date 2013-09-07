@@ -1,5 +1,6 @@
-package net.twisterrob.cinema.gapp.services;
+package net.twisterrob.cinema.gapp.rest.config;
 
+import net.twisterrob.cinema.gapp.services.*;
 import net.twisterrob.cinema.gapp.services.impl.*;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;

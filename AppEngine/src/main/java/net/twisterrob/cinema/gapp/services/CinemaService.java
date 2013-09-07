@@ -9,7 +9,7 @@ public interface CinemaService {
 
 	public Collection<Cinema> getCinemas() throws ServiceException;
 
-	public void favoriteCinema(long cinema, short rating, int displayOrder) throws ServiceException;
+	public FavoriteCinema favoriteCinema(long cinema, short rating, int displayOrder) throws ServiceException;
 
 	public Collection<FavoriteCinema> getFavorites() throws ServiceException;
 }

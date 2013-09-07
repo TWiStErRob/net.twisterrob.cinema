@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.gapp;
+package net.twisterrob.cinema.gapp.servlets;
 import java.io.IOException;
 import java.util.*;
 
@@ -6,7 +6,7 @@ import javax.jdo.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import net.twisterrob.cinema.PMF;
+import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.cinema.gapp.model.*;
 import net.twisterrob.cinema.gapp.model.User;
 import net.twisterrob.cinema.gapp.services.impl.FilmServiceImpl;

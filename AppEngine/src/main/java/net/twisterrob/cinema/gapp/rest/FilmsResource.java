@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import net.twisterrob.cinema.PMF;
+import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.cinema.gapp.model.Film;
 import net.twisterrob.cinema.gapp.services.FilmService;
 

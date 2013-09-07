@@ -4,8 +4,7 @@ import java.util.*;
 
 import javax.jdo.*;
 
-import net.twisterrob.cinema.PMF;
-import net.twisterrob.cinema.gapp.CineworldAccessor;
+import net.twisterrob.cinema.gapp.dal.*;
 import net.twisterrob.cinema.gapp.model.Film;
 import net.twisterrob.cinema.gapp.rest.FilmsResource;
 import net.twisterrob.cinema.gapp.services.*;

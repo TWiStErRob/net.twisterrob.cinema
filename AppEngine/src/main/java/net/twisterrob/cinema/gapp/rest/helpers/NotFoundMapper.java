@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.gapp.rest;
+package net.twisterrob.cinema.gapp.rest.helpers;
 
 import static javax.ws.rs.core.Response.*;
 import static javax.ws.rs.core.Response.Status.*;

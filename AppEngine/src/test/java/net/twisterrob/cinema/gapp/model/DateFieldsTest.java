@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 import javax.jdo.PersistenceManager;
 
-import net.twisterrob.cinema.PMF;
+import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.test.mock.easymock.EasyMocks;
 
 import org.joda.time.*;

@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.gapp;
+package net.twisterrob.cinema.gapp.dal;
 
 import java.util.List;
 
