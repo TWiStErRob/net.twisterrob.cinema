@@ -4,8 +4,7 @@ import java.util.*;
 
 import javax.jdo.*;
 
-import net.twisterrob.cinema.PMF;
-import net.twisterrob.cinema.gapp.CineworldAccessor;
+import net.twisterrob.cinema.gapp.dal.*;
 import net.twisterrob.cinema.gapp.model.*;
 import net.twisterrob.cinema.gapp.rest.CinemasResource;
 import net.twisterrob.cinema.gapp.services.*;
@@ -70,12 +69,14 @@ public class CinemaServiceImpl implements CinemaService {
 	}
 
 	@Override
-	public void favoriteCinema(long cinemaId, short rating, int displayOrder) throws ServiceException {
+	public FavoriteCinema favoriteCinema(long cinemaId, short rating, int displayOrder) throws ServiceException {
 		PersistenceManager pm = PMF.getPM();
+		Query q = null;
 		try {
 			User user = pm.getObjectById(User.class, PMF.getCurrentUserId());
 			Cinema cinema = pm.getObjectById(Cinema.class, cinemaId);
-			Query q = pm.newQuery(FavoriteCinema.class);
+			q = pm.newQuery(FavoriteCinema.class);
+			q.getFetchPlan().setGroup(FetchPlan.ALL);
 			q.setFilter("(this.user == :userId) && (this.cinema == :cinemaId)");
 			@SuppressWarnings("unchecked")
 			Collection<FavoriteCinema> favs = (Collection<FavoriteCinema>)q.executeWithMap(ImmutableMap.builder() //
@@ -97,7 +98,13 @@ public class CinemaServiceImpl implements CinemaService {
 
 			fav.setRating(rating);
 			fav.setDisplayOrder(displayOrder);
+			pm.makePersistent(fav);
+			fav = pm.detachCopy(fav);
+			return fav;
 		} finally {
+			if (q != null) {
+				q.closeAll();
+			}
 			pm.close();
 		}
 	}
@@ -107,9 +114,8 @@ public class CinemaServiceImpl implements CinemaService {
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
-			FetchPlan fp = pm.getFetchPlan();
-			fp.setGroup(FetchPlan.ALL);
 			q = pm.newQuery(FavoriteCinema.class);
+			q.getFetchPlan().setGroup(FetchPlan.ALL);
 			q.setFilter("this.user == :userId");
 			@SuppressWarnings("unchecked")
 			Collection<FavoriteCinema> favs = (Collection<FavoriteCinema>)q.executeWithMap(ImmutableMap.builder() //

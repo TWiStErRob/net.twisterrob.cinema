@@ -15,10 +15,11 @@ import com.google.appengine.api.datastore.KeyFactory;
 @Discriminator(strategy = DiscriminatorStrategy.NONE)
 // Do not serialize properties, just what's annotated
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlSeeAlso({User.class, Cinema.class, Film.class, View.class, FavoriteCinema.class})
 public abstract class Dateable implements StoreCallback {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	@XmlElement(namespace = "http://appengine.google.com/datastore")
+	@XmlAttribute(namespace = "http://appengine.google.com/datastore")
 	private com.google.appengine.api.datastore.Key key;
 	@Persistent
 	@XmlElement(nillable = true)

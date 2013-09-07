@@ -4,16 +4,18 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
 
-import net.twisterrob.cinema.PMF;
+import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.cinema.gapp.model.*;
+import net.twisterrob.cinema.gapp.rest.model.RestResponse;
+import net.twisterrob.cinema.gapp.rest.model.RestResponse.ServiceStatus;
 import net.twisterrob.cinema.gapp.services.*;
 
 import org.glassfish.jersey.server.JSONP;
 import org.slf4j.*;
 
 @Path("/cinemas")
+// TODO serve both JSON and JSONP
 public class CinemasResource {
 	private static final Logger LOG = LoggerFactory.getLogger(CinemasResource.class);
 
@@ -22,7 +24,7 @@ public class CinemasResource {
 
 	@GET
 	@Path("/update")
-	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
+	@Produces("application/javascript")
 	@JSONP(callback = "callback", queryParam = "callback")
 	public Collection<Cinema> updateCinemas(@QueryParam("clean") @DefaultValue("false") boolean clean)
 			throws ServiceException {
@@ -36,14 +38,15 @@ public class CinemasResource {
 
 	@GET
 	@Path("/favorite")
-	@Produces({MediaType.APPLICATION_JSON, "application/javascript"})
+	@Produces("application/javascript")
 	@JSONP(callback = "callback", queryParam = "callback")
-	public Response favoriteCinema(@QueryParam("cinema") long cinema, @QueryParam("rating") short rating,
+	public RestResponse favoriteCinema(@QueryParam("cinema") long cinema, @QueryParam("rating") short rating,
 			@QueryParam("displayOrder") int displayOrder) throws ServiceException {
-		service.favoriteCinema(cinema, rating, displayOrder);
-		return Response.ok().build();
+		FavoriteCinema favoriteCinema = service.favoriteCinema(cinema, rating, displayOrder);
+		RestResponse entity = new RestResponse(ServiceStatus.Success, favoriteCinema,
+				"Successfully favorited %d with rating %d%%", cinema, rating);
+		return entity;
 	}
-
 	@GET
 	@Path("/favorites")
 	@Produces("application/javascript")
