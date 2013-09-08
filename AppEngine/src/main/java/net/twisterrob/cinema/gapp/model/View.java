@@ -11,11 +11,11 @@ public class View extends Dateable implements StoreCallback {
 	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent(mappedBy = "views")
-	@XmlElement(nillable = true)
+	@XmlElement
 	private User user;
 	@Persistent
 	@Unowned
-	@XmlElement(nillable = true)
+	@XmlElement
 	private Film film;
 	@Persistent
 	@XmlElement
@@ -28,12 +28,12 @@ public class View extends Dateable implements StoreCallback {
 
 	@XmlAttribute
 	public long getFilmEdi() {
-		return film.getEdi();
+		return film != null? film.getEdi() : 0;
 	}
 
 	@XmlAttribute
 	public String getUserId() {
-		return user.getUserId();
+		return user != null? user.getUserId() : null;
 	}
 
 	public User getUser() {
@@ -62,5 +62,43 @@ public class View extends Dateable implements StoreCallback {
 	}
 	public void setRelevant(float relevant) {
 		this.relevant = relevant;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((film == null)? 0 : film.hashCode());
+		result = prime * result + ((user == null)? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof View)) {
+			return false;
+		}
+		View other = (View)obj;
+		if (film == null) {
+			if (other.film != null) {
+				return false;
+			}
+		} else if (!film.equals(other.film)) {
+			return false;
+		}
+		if (user == null) {
+			if (other.user != null) {
+				return false;
+			}
+		} else if (!user.equals(other.user)) {
+			return false;
+		}
+		return true;
 	}
 }

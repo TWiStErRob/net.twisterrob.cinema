@@ -115,7 +115,7 @@ public class CinemaServiceImpl implements CinemaService {
 		Query q = null;
 		try {
 			q = pm.newQuery(FavoriteCinema.class);
-			q.getFetchPlan().setGroup(FetchPlan.ALL);
+			q.getFetchPlan().addGroup("detailed");
 			q.setFilter("this.user == :userId");
 			@SuppressWarnings("unchecked")
 			Collection<FavoriteCinema> favs = (Collection<FavoriteCinema>)q.executeWithMap(ImmutableMap.builder() //

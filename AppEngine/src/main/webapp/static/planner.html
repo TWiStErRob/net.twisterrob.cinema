@@ -100,9 +100,29 @@
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
 			debug: true,
+			localUrlBase: 'http://localhost:8888',
 			logResponses: false
 		});
-		twister.utils = $.extend(twister.utils || {}, {});
+		twister.utils = $.extend(twister.utils || {}, {
+			/**
+			 * Remove attribute notation from JSON response.
+			 */
+			clean: function(obj) {
+				for (var prop in obj) {
+					if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+						var val = obj[prop];
+						if(typeof(val) === "object") {
+							twister.utils.clean(val);
+						}
+						if(prop.length >= 1 && prop[0] == '@') {
+							delete obj[prop];
+							obj[prop.substring(1)] = val;
+						}
+					}
+				}
+				return obj;
+			}
+		});
 		twister.utils.url = $.extend(twister.utils.url || {}, {
 			getHashAnchor: function() {
 				// #anchor!param1=value1&param2=&param3=value3
@@ -221,14 +241,14 @@
 			getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
 				console.groupStart("Favorite Cinemas");
 				$('#cinemas').text("Loading...");
-				twister.cineworld.getCinemas();
-				return;
 				$.ajax({
-					url: '/rest/cinemas/favorites',
+					url: twister.config.localUrlBase + '/rest/cinemas/favorites',
 					type: 'GET',
+					traditional: true,
 					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						if(twister.config.logResponses) console.log(JSON.stringify(response));
+						response = twister.utils.clean(response);
 						twister.cineworld.cinemas.selectedIds = $.map(response, function(fav) { return fav.cinemaId; });
 						twister.cineworld.getCinemas();
 						console.groupEnd(); // Favorite Cinemas
@@ -320,9 +340,11 @@
 							};
 							var cinemaName = $(arguments[0]).siblings("label").text();
 							$.ajax({
-								url: '/rest/cinemas/favorite',
+								url: twister.config.localUrlBase + '/rest/cinemas/favorite',
 								type: 'GET',
 								data: request,
+								traditional: true,
+								dataType: 'jsonp',
 								success: function(response, status, xhr) {
 									twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
 								},
