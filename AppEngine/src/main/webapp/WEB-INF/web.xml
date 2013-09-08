@@ -5,6 +5,7 @@
 		xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		metadata-complete="true"
 	>
 
 	<!-- Servlets -->
@@ -33,7 +34,6 @@
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>net.twisterrob.cinema.gapp.rest.config.JerseyApplication</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Jersey Web Application</servlet-name>

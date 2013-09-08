@@ -324,16 +324,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<!-- mvn jetty:run -e -Dorg.eclipse.jetty.util.log.stderr.LONG=true %c% -->
+				<!-- mvn jetty:run -e -Dorg.eclipse.jetty.LEVEL=DEBUG -Dorg.eclipse.jetty.util.log.stderr.SOURCE=true -Dorg.eclipse.jetty.util.log.stderr.LONG=true %c% -->
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.0.5.v20130815</version>
-				<configuration><!-- Imitate the maven-war plugin build -->
-					<webAppConfig>
-						<contextPath>/</contextPath>
-						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
-							<resourcesAsCSV>src/main/webapp</resourcesAsCSV>
-						</baseResource>
-					</webAppConfig>
+				<configuration>
+					<contextXml>${basedir}/src/main/webapp/WEB-INF/jetty-skipAnnotationScanning.xml</contextXml>
 					<reload>manual</reload>
 				</configuration>
 			</plugin>
