@@ -102,9 +102,9 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: false,
+			debug: true,
 			localUrlBase: 'http://localhost:8888',
-			logResponses: true
+			logResponses: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {
 			/**
@@ -864,20 +864,25 @@
 			}
 		});
 
+		$.ajaxPrefilter(/*dataTypes, */ function global_ajaxPrefilter(options, originalOptions, jqXHR) {
+			if(twister.config.logResponses) {
+				jqXHR.done(function global_ajaxSuccess(data, textStatus, jqXHR) {
+					console.groupCollapsed(options.url + (options.data ? '&' + $.param(options.data) : ''));
+					console.log("Options: " + JSON.stringify(options));
+					console.log("Data: " + JSON.stringify(data));
+					console.groupEnd();
+				});
+			}
+			jqXHR.fail(function global_ajaxError(jqXHR, textStatus, errorThrown) {
+				console.error("{0}, {1}".format(textStatus, errorThrown));
+			});
+		});
+
 		$(document).ready(function document_ready() {
 			console.log("------------------------------- Document ready. ----------------------------");
 			twister.ui.init();
 			twister.cineworld.updateFromQuery();
 			twister.cineworld.writeUI();
-			$(document).ajaxSuccess(function global_ajaxSuccess(response, status, xhr) {
-				console.log("here");
-				if(twister.config.logResponses) {
-					console.log(JSON.stringify(response));
-				}
-			}).ajaxError(function global_ajaxError(event, jqXHR, ajaxSettings, thrownError) {
-				console.log("there");
-				console.error("error " + status + " " + error);
-			});
 
 			$.ajaxSetup({
 				type: 'GET',
