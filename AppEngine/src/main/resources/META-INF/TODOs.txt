@@ -5,3 +5,6 @@ every day load: ftp://ftp.fu-berlin.de/pub/misc/movies/database/diffs/diffs-1307
 and extract:
 	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/movie-links.list.gz
 	* ftp://ftp.fu-berlin.de/pub/misc/movies/database/running-times.list.gz
+
+http://www.erichynds.com/blog/using-deferreds-in-jquery
+http://www.codeproject.com/Articles/168604/Combining-jQuery-Deferred-with-the-HTML5-Web-Worke

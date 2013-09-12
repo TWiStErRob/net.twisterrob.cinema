@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/styles/libs/debug/quickjsonformatter.css" />
 
 	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery-1.9.1.js"></script>
-	<script type="text/javascript">jQuery.migrateMute = false;</script>
+	<script type="text/javascript">jQuery.migrateMute = true;</script>
 	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery-migrate-1.2.1.js"></script>
 	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery-ui-1.10.3.js"></script>
 	<script type="text/javascript" src="/static/scripts/libs/jquery/jquery.layout-1.3.0.rc30.79.js"></script>
@@ -27,13 +27,16 @@
 	<script type="text/javascript" src="/static/scripts/libs/debug/quickjsonformatter.js"></script>
 
 	<script>
+		// trace console:
+		// search:  (?i)([a-z_]+): *function *([a-z_]+)? *\( *(([a-z_]+ *,? *)*) *\) +\{
+		// replace: $0\n\t\t\t\t/*tracer*/console.debug(String.prototype.format.apply(moment().toISOString() + " \1/\2(\3): "+(arguments.length>=1?"#1={0}":"")+(arguments.length>=2?", #2={1}":"")+(arguments.length>=3?", #3={2}":"")+(arguments.length>=4?", #4={3}":"")+(arguments.length>=5?", #5={4}":""), arguments));
 		/**
 		 * Protect window.console method calls, e.g. console is not defined on IE
 		 * unless dev tools are open, and IE doesn't define console.debug
 		 */
 		(function() {
 			var console = (window.console = window.console || {});
-			var noop = function () {};
+			var noop = console.noop = function () {};
 			var log = console.log || noop;
 			var start = function(name) { return function(param) { log("Start " + name + ": " + param); } };
 			var end = function(name) { return function(param) { log("End " + name + ": " + param); } };
@@ -86,7 +89,7 @@
 				return this.clone().utc().add('hours', offset).format(format);
 			}
 		}
-		console.groupStart = console.groupCollapsed;
+		console.groupStart = console.noop;
 
 		moment.fn.toJSON = function(start, end) {
 			return this.format();
@@ -99,9 +102,9 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: true,
+			debug: false,
 			localUrlBase: 'http://localhost:8888',
-			logResponses: false
+			logResponses: true
 		});
 		twister.utils = $.extend(twister.utils || {}, {
 			/**
@@ -241,47 +244,35 @@
 			getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
 				console.groupStart("Favorite Cinemas");
 				$('#cinemas').text("Loading...");
-				$.ajax({
-					url: twister.config.localUrlBase + '/rest/cinemas/favorites',
-					type: 'GET',
-					traditional: true,
-					dataType: 'jsonp',
-					success: function(response, status, xhr) {
-						if(twister.config.logResponses) console.log(JSON.stringify(response));
-						response = twister.utils.clean(response);
-						twister.cineworld.cinemas.selectedIds = $.map(response, function(fav) { return fav.cinemaId; });
-						twister.cineworld.getCinemas();
-						console.groupEnd(); // Favorite Cinemas
-					},
-					error : function(xhr, status, error) {
-						console.error("error " + status + " " + error);
-						twister.cineworld.getCinemas();
-						console.groupEnd(); // Favorite Cinemas
-					}
+				return $.ajax({
+					url: twister.config.localUrlBase + '/rest/cinemas/favorites'
+				}).always(function() {
+					console.groupEnd("Favorite Cinemas");
 				});
+			},
+			parseFavoriteCinemas: function cineworld_parseFavoriteCinemas(response, status, xhr) {
+				response = twister.utils.clean(response);
+				twister.cineworld.cinemas.selectedIds = $.map(response, function(fav) { return fav.cinemaId; });
 			},
 			getCinemas: function cineworld_getCinemas() {
 				console.groupStart("Cineworld Cinemas");
 				$('#cinemas').text("Loading...");
-				$.ajax({
+				twister.ui.showStatus("Loading cinemas...");
+				return $.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
-					type: 'GET',
 					data: {
 						key: twister.cineworld.const.apiKey,
 						full: true
-					},
-					dataType: 'jsonp',
-					success: function(response, status, xhr) {
-						if(twister.config.logResponses) console.log(JSON.stringify(response));
-						twister.cineworld.parseCinemas(response, status, xhr);
 					}
+				}).always(function() {
+					console.groupEnd("Favorite Cinemas");
 				});
 			},
 			clearCinemas: function cineworld_clearCinemas() {
 				twister.cineworld.cinemas.all = {};
 				return $('#cinemas').replaceWith('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
 			},
-			parseCinemas: function cineworld_parseCinemas(response, status) {
+			parseCinemas: function cineworld_parseCinemas(response) {
 				/*
 				address: "Queens Links Leisure Park, Links Road, Aberdeen"
 				cinema_url: "http://www.cineworld.co.uk/cinemas/1/information"
@@ -339,12 +330,10 @@
 								displayOrder: 1
 							};
 							var cinemaName = $(arguments[0]).siblings("label").text();
+							return; // TODO enable again
 							$.ajax({
 								url: twister.config.localUrlBase + '/rest/cinemas/favorite',
-								type: 'GET',
 								data: request,
-								traditional: true,
-								dataType: 'jsonp',
 								success: function(response, status, xhr) {
 									twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
 								},
@@ -366,7 +355,6 @@
 					} else {
 						$('#cinemas_checkLondon').click();
 					}
-					console.groupEnd(); // Cineworld Cinemas
 				}
 			},
 			getFilms: function cineworld_getFilms() {
@@ -381,26 +369,19 @@
 					twister.cineworld.parseFilms({films: []});
 					return;
 				}
+				var dfd = new jQuery.Deferred(); // TODO continue here
 				$.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
-					type: 'GET',
 					data: request,
-					traditional: true,
-					dataType: 'jsonp',
 					success: function(response, status, xhr) {
-						if(twister.config.logResponses) console.log(JSON.stringify(response));
 						twister.cineworld.films.responses.quickbook = response;
 						twister.cineworld.mergeResponses();
 					}
 				});
 				$.ajax({
 					url: 'http://www.cineworld.com/api/film/list',
-					type: 'GET',
 					data: request,
-					traditional: true,
-					dataType: 'jsonp',
 					success: function(response, status, xhr) {
-						if(twister.config.logResponses) console.log(JSON.stringify(response));
 						twister.cineworld.films.responses.internal = response;
 						twister.cineworld.mergeResponses();
 					}
@@ -548,12 +529,10 @@
 				}
 				$.ajax({
 					url: 'http://deanclatworthy.com/imdb/',
-					type: 'GET',
 					data:  {
 						q: simplify(film.title),
 						type: 'jsonp'
 					},
-					dataType: 'jsonp',
 					success: function(response, status, xhr) {
 						// http://deanclatworthy.com/imdb/?q=World%20War%20Z&type=jsonp&callback=callback
 						/* callback({
@@ -573,7 +552,6 @@
 							ukscreens: 0, 
 							cacheExpiry: 1374104898
 						}) */
-						if(twister.config.logResponses) console.log(JSON.stringify(response));
 						if(response.error) {
 							$('#status').html(JSON.stringify(response, null, '  '));
 							return;
@@ -581,7 +559,6 @@
 						twister.cineworld.parseFilmLength(film, response);
 					},
 					error : function(xhr, status, error) {
-						console.error("error " + status + " " + error);
 						twister.cineworld.parseFilmLength(film, {runtime: 0});
 					}
 				});
@@ -652,11 +629,8 @@
 				} else {
 					$.ajax({
 						url: 'http://www.cineworld.com/api/quickbook/performances',
-						type: 'GET',
 						data: request,
-						dataType: 'jsonp',
 						success: function(response, status, xhr) {
-							if(twister.config.logResponses) console.log(JSON.stringify(response));
 							$.extend(response.performances, {retrieved: new Date()});
 							twister.cineworld.parsePerformances(elem, request, response);
 						}
@@ -751,7 +725,9 @@
 						IsCollapsible: true,
 						ImgExpanded: 'http://bodurov.com/JsonFormatter/images/Expanded.gif',
 						ImgCollapsed: 'http://bodurov.com/JsonFormatter/images/Collapsed.gif',
-						OnError: function(e) { console.warn(e); }
+						OnError: function(e) {
+							console.warn(e);
+						}
 					});
 					twister.cineworld.planner.formatter.Process(JSON.stringify(twister.cineworld.performances));
 				}
@@ -893,7 +869,29 @@
 			twister.ui.init();
 			twister.cineworld.updateFromQuery();
 			twister.cineworld.writeUI();
-			twister.cineworld.getFavoriteCinemas();
+			$(document).ajaxSuccess(function global_ajaxSuccess(response, status, xhr) {
+				console.log("here");
+				if(twister.config.logResponses) {
+					console.log(JSON.stringify(response));
+				}
+			}).ajaxError(function global_ajaxError(event, jqXHR, ajaxSettings, thrownError) {
+				console.log("there");
+				console.error("error " + status + " " + error);
+			});
+
+			$.ajaxSetup({
+				type: 'GET',
+				traditional: true,
+				dataType: 'jsonp'
+			});
+
+			$.when(true)
+				.then(twister.cineworld.getFavoriteCinemas)
+					.done(twister.cineworld.parseFavoriteCinemas)
+				.then(twister.cineworld.getCinemas)
+					.done(twister.cineworld.parseCinemas)
+			;
+
 		});
 	</script>
 	<style type="text/css">
@@ -1024,23 +1022,28 @@ if(twister.config.debug) {
 			}, options);
 			var $ajax = $.ajax;
 			$.ajax = function(params) {
+				var result;
 				if(options.mockFilmQuickbook && /quickbook\/films$/.test(params.url)) {
 					console.debug("Returning mock quickbook films: " + JSON.stringify(params));
-					params.success(twister.mock.cineworld.quickbook.films);
+					result = twister.mock.cineworld.quickbook.films;
 				} else if(options.mockFilmInternal && /api\/film\/list$/.test(params.url)) {
 					console.debug("Returning mock internal films: " + JSON.stringify(params));
-					params.success(twister.mock.cineworld.internal.films);
+					result = twister.mock.cineworld.internal.films;
 				} else if (options.mockCinemas && /\/cinemas$/.test(params.url)) {
 					console.debug("Returning mock cinemas: " + JSON.stringify(params));
-					params.success(twister.mock.cineworld.quickbook.cinemas);
+					restult = twister.mock.cineworld.quickbook.cinemas;
 				} else if (options.mockPerformances && /\/performances$/.test(params.url)
 					&& twister.mock.cineworld.quickbook.performances[params.data.cinema] != undefined
 					&& twister.mock.cineworld.quickbook.performances[params.data.cinema][params.data.film] != undefined) {
 					//console.debug("Returning mock performances: " + JSON.stringify(params));
 					var perfs = twister.mock.cineworld.quickbook.performances[params.data.cinema][params.data.film];
-					params.success( { mocked: true, performances: perfs } );
+					result = { mocked: true, performances: perfs };
+				}
+				if (result != undefined) {
+					//params.success(result);
+					return result;
 				} else {
-					$ajax(params);
+					return $ajax(params);
 				}
 			}
 		}
@@ -1069,9 +1072,11 @@ if(twister.config.debug) {
 				if(options.mockIMDB && /deanclatworthy/.test(params.url)
 					&& twister.mock.imdb.films[params.data.q] != undefined) {
 					console.debug("Returning mock IMDB film: " + JSON.stringify(params));
-					params.success(twister.mock.imdb.films[params.data.q]);
+					var result = twister.mock.imdb.films[params.data.q];
+					//params.success(result);
+					return result;
 				} else {
-					$ajax(params);
+					return $ajax(params);
 				}
 			}
 		}
