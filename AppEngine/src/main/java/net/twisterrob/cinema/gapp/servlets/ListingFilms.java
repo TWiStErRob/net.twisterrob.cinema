@@ -71,8 +71,21 @@ public class ListingFilms extends HttpServlet {
 
 			User user = pm.getObjectById(User.class, currentUser.getUserId());
 			user = pm.detachCopy(user);
-			List<View> views = user.getViews();
+			Collection<View> views = user.getViews();
 			return views;
+		} finally {
+			pm.close();
+		}
+	}
+
+	private Collection<Film> getThreeFilms() {
+		PersistenceManager pm = PMF.getPM();
+		try {
+			Query q = pm.newQuery(Film.class);
+			q.setRange(0, 3);
+			@SuppressWarnings("unchecked")
+			Collection<Film> films = (Collection<Film>)q.execute();
+			return pm.detachCopyAll(films);
 		} finally {
 			pm.close();
 		}
@@ -83,7 +96,9 @@ public class ListingFilms extends HttpServlet {
 		PMF.clear("User");
 
 		addUsers();
-		addViews();
+		Collection<Film> films = getThreeFilms();
+		Iterator<Film> it = films.iterator();
+		addViews(it.next(), it.next(), it.next());
 	}
 
 	private void addUsers() {
@@ -92,18 +107,18 @@ public class ListingFilms extends HttpServlet {
 		addUser("12542211391281671681", "test3@example.com", "test3");
 	}
 
-	private void addViews() {
+	private void addViews(Film f1, Film f2, Film f3) {
 		// test@example.com
-		addView("18580476422013912411", 148839L, true, 0.80f);
-		addView("18580476422013912411", 67754L, false, 0.75f);
+		addView("18580476422013912411", f1.getEdi(), true, 0.80f);
+		addView("18580476422013912411", f2.getEdi(), false, 0.75f);
 		// test2@example.com
-		addView("16717695577786171977", 148839L, false, 0.80f);
-		addView("16717695577786171977", 67754L, false, 0.75f);
-		addView("16717695577786171977", 134988L, false, 0.99f);
+		addView("16717695577786171977", f1.getEdi(), false, 0.80f);
+		addView("16717695577786171977", f2.getEdi(), false, 0.75f);
+		addView("16717695577786171977", f3.getEdi(), false, 0.99f);
 		// test3@example.com
-		addView("12542211391281671681", 148839L, true, 0.80f);
-		addView("12542211391281671681", 67754L, true, 0.75f);
-		addView("12542211391281671681", 134988L, true, 0.99f);
+		addView("12542211391281671681", f1.getEdi(), true, 0.80f);
+		addView("12542211391281671681", f2.getEdi(), true, 0.75f);
+		addView("12542211391281671681", f3.getEdi(), true, 0.99f);
 	}
 
 	private void addView(String userId, long edi, boolean seen, float relevant) {

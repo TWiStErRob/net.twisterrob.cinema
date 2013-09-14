@@ -104,7 +104,8 @@
 		twister.config = $.extend(twister.config || {}, {
 			debug: true,
 			localUrlBase: 'http://localhost:8888',
-			logResponses: false
+			logResponses: false,
+			verboseMock: false
 		});
 		twister.utils = $.extend(twister.utils || {}, {
 			/**
@@ -149,26 +150,31 @@
 
 			getQueryParam: function(name) {
 				// ?param1=value1&param2=&param3=value3
-				return twister.utils.url.getUrlParams()[name];
+				return twister.utils.url.getUrlParams(null, true, true)[name];
 			},
 
 			// http://stackoverflow.com/a/520845/253468 + http://stackoverflow.com/a/11030951/253468
-			getUrlParams: function (url) {
+			getUrlParams: function (url, supportArrays, alwaysArray) {
 				var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g,
 					match, params = {},
 				decode = function (s) {return decodeURIComponent(s.replace(/\+/g, " "));};
 
-				if (typeof url == "undefined") url = document.location.href;
+				url = url || document.location.href; // default value is current url
+				alwaysArray = alwaysArray || false; // default is false
+				supportArrays = supportArrays || alwaysArray; // default is false, but alwaysArray forces it to be true
 
 				while (match = re.exec(url)) {
 					var pName = decode(match[1]);
 					var pValue = decode(match[2]);
-					if (pName in params) {
-						if (params[pName] instanceof Array) {
+					if (supportArrays && pName in params) { // if the value already exists
+						// if no support for arrays, don't care if it exists
+						if (params[pName] instanceof Array) { // already array
 							params[pName].push(pValue);
-						} else {
+						} else { // single elem, make it array
 							params[pName] = [ params[pName], pValue ];
 						}
+					} else if (alwaysArray) {
+						params[pName] = [ pValue ];
 					} else {
 						params[pName] = pValue;
 					}
@@ -247,21 +253,17 @@
 				return args;
 			},
 			getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
-				console.groupStart("Favorite Cinemas");
-				$('#cinemas').text("Loading...");
 				return $.ajax({
-					url: twister.config.localUrlBase + '/rest/cinemas/favorites'
-				}).always(function() {
-					console.groupEnd("Favorite Cinemas");
-				});
-			},
-			parseFavoriteCinemas: function cineworld_parseFavoriteCinemas(response, status, xhr) {
-				response = twister.utils.clean(response);
-				twister.cineworld.cinemas.selectedIds = $.map(response, function(fav) { return fav.cinemaId; });
+						url: twister.config.localUrlBase + '/rest/cinemas/favorites'
+					})
+					.then(function cineworld_parseFavoriteCinemas(response, status, xhr) {
+						response = twister.utils.clean(response);
+						return $.map(response, function(fav) { return fav.cinemaId; });
+					})
+				;
 			},
 			getCinemas: function cineworld_getCinemas() {
-				console.groupStart("Cineworld Cinemas");
-				$('#cinemas').text("Loading...");
+				$('#cinemas').empty();
 				twister.ui.showStatus("Loading cinemas...");
 				return $.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/cinemas',
@@ -269,15 +271,18 @@
 						key: twister.cineworld.const.apiKey,
 						full: true
 					}
-				}).always(function() {
-					console.groupEnd("Favorite Cinemas");
+				})
+				.then(twister.cineworld.parseCinemasResponse)
+				;
+			},
+			saveCinemas: function cineworld_saveCinemas(cinemas) {
+				var cinemasMap = {};
+				$.each(cinemas, function() {
+					cinemasMap[this.id] = this;
 				});
+				twister.cineworld.cinemas.all = cinemasMap;
 			},
-			clearCinemas: function cineworld_clearCinemas() {
-				twister.cineworld.cinemas.all = {};
-				return $('#cinemas').replaceWith('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
-			},
-			parseCinemas: function cineworld_parseCinemas(response) {
+			parseCinemasResponse: function cineworld_parseCinemasResponse(response) {
 				/*
 				address: "Queens Links Leisure Park, Links Road, Aberdeen"
 				cinema_url: "http://www.cineworld.co.uk/cinemas/1/information"
@@ -286,83 +291,72 @@
 				postcode: "AB24 5EN"
 				telephone: "0871 200 2000"
 				*/
-
+				var dfd = $.Deferred();
 				// Check for errors from the server
 				if (response.errors) {
-					$('#status').html(JSON.stringify(response, null, '  '));
-					twister.ui.showStatus("Failure getting cinemas: " + JSON.stringify(response, null, '  '));
+					dfd.reject(response);
 				} else {
-					twister.ui.showStatus("Got " + response.cinemas.length + " cinemas.");
-					twister.cineworld.clearCinemas();
+					dfd.resolve(response.cinemas);
+				}
+				return dfd;
+			},
+			displayCinemas: function cineworld_displayCinemas(cinemas) {
+				var cinemasList = $('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
+				$.each(cinemas, function() {
+					var option = new Option(this.name, this.id);
+					$(option).attr('title', JSON.stringify(this, null, '  '));
+					cinemasList.append(option);
+				});
 
-					var cinemasList = $('#cinemas');
-					$.each(response.cinemas, function() {
-						twister.cineworld.cinemas.all[this.id] = this;
-						var option = new Option(this.name, this.id);
-						$(option)
-							.attr('title', JSON.stringify(this, null, '  '));
-						cinemasList.append(option);
-					});
-					cinemasList.toChecklist( {
-						showSelectedItems: false,
-						addSearchBox: false,
-						addScrollBar : false,
-						preferIdOverName: false,
-						itemWidth: 200,
-						searchBoxText: 'Filter by cinema name here...',
-						animateSearch: 0,
-						onItemChanged: function cinemasList_onItemChanged() {
-							var checkedCinemas = $("li :checkbox:checked", "#cinemas");
-							var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
-							twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
-							twister.cineworld.rebuildUrl();
+				$('#cinemas').replaceWith(cinemasList); // toChecklist needs the <select> to be part of DOM
+				cinemasList.toChecklist( {
+					showSelectedItems: false,
+					addSearchBox: false,
+					addScrollBar : false,
+					preferIdOverName: false,
+					itemWidth: 200,
+					searchBoxText: 'Filter by cinema name here...',
+					animateSearch: 0,
+					onItemChanged: function cinemasList_onItemChanged() {
+						var checkedCinemas = $("li :checkbox:checked", "#cinemas");
+						var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
+						twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
+						twister.cineworld.rebuildUrl();
 
-							/* TODO enable
-							if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
-								clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
-								twister.cineworld.cinemas.getFilmsTimer = undefined;
-							}
-							if (twister.cineworld.cinemas.getFilmsTimer === undefined) {
-								twister.cineworld.cinemas.getFilmsTimer = setTimeout(function getFilmsTimer_onTimeout() {
-									twister.cineworld.cinemas.getFilmsTimer = undefined;
-									twister.cineworld.getFilms();
-								}, twister.cineworld.const.getFilmsTimeout);
-							}
-							*/
-						},
-						onItemSelected: function cinemasList_onItemSelected(input) {
-							var request = {
-								cinema: input.value,
-								rating: 100,
-								displayOrder: 1
-							};
-							var cinemaName = $(arguments[0]).siblings("label").text();
-							return; // TODO enable again
-							$.ajax({
-								url: twister.config.localUrlBase + '/rest/cinemas/favorite',
-								data: request,
-								success: function(response, status, xhr) {
-									twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
-								},
-								error: function(xhr, status, error) {
-									twister.ui.showStatus("Cannot favorite cinema #" + input.value + ": " + cinemaName + " - " + status + ", " + error);
-								}
-							});
+						/* TODO enable
+						if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
+							clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
+							twister.cineworld.cinemas.getFilmsTimer = undefined;
 						}
-					} );
-					if(twister.cineworld.cinemas.selectedIds.length != 0) {
-						$.each(twister.cineworld.cinemas.selectedIds, function select_cinema() {
-							var cinemaElem = $('#cinemas li:has(:checkbox[value=' + this + '])');
-							if(cinemaElem.length == 0) {
-								console.warn("Cinema disappeared: " + this);
-							} else {
-								cinemaElem.click();
+						if (twister.cineworld.cinemas.getFilmsTimer === undefined) {
+							twister.cineworld.cinemas.getFilmsTimer = setTimeout(function getFilmsTimer_onTimeout() {
+								twister.cineworld.cinemas.getFilmsTimer = undefined;
+								twister.cineworld.getFilms();
+							}, twister.cineworld.const.getFilmsTimeout);
+						}
+						*/
+					},
+					onItemSelected: function cinemasList_onItemSelected(input) {
+						var request = {
+							cinema: input.value,
+							rating: 100,
+							displayOrder: 1
+						};
+						var cinemaName = $(arguments[0]).siblings("label").text();
+						return; // TODO enable again
+						$.ajax({
+							url: twister.config.localUrlBase + '/rest/cinemas/favorite',
+							data: request,
+							success: function(response, status, xhr) {
+								twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
+							},
+							error: function(xhr, status, error) {
+								twister.ui.showStatus("Cannot favorite cinema #" + input.value + ": " + cinemaName + " - " + status + ", " + error);
 							}
 						});
-					} else {
-						$('#cinemas_checkLondon').click();
 					}
-				}
+				} );
+				return $('#cinemas');
 			},
 			getFilms: function cineworld_getFilms() {
 				var request = {
@@ -897,11 +891,35 @@
 				dataType: 'jsonp'
 			});
 
-			$.when(true)
-				.then(twister.cineworld.getFavoriteCinemas)
-					.done(twister.cineworld.parseFavoriteCinemas)
-				.then(twister.cineworld.getCinemas)
-					.done(twister.cineworld.parseCinemas)
+			var favs = twister.cineworld.getFavoriteCinemas();
+			var cinemas = twister.cineworld.getCinemas()
+				.done(twister.cineworld.saveCinemas)
+				.done(function (cinemas) {
+					twister.ui.showStatus("Got " + cinemas.length + " cinemas.");
+				})
+				.fail(function (responseWithErrors) {
+					// response.errors is not empty.
+					twister.ui.showStatus("Failure getting cinemas: " + JSON.stringify(response, null, '  '));
+				})
+				.done(twister.cineworld.displayCinemas)
+			;
+			$.when(cinemas, favs)
+				.done(function cinemasWithFavoritesDone(cinemas, favoriteCinemaIds) {
+					var preSelectIds = twister.cineworld.cinemas.selectedIds;
+					var idsToSelect = preSelectIds.length ? preSelectIds : favoriteCinemaIds;
+					if(idsToSelect.length != 0) {
+						$.each(idsToSelect, function select_cinema() {
+							var cinemaElem = $('#cinemas li:has(:checkbox[value=' + this + '])');
+							if(cinemaElem.length == 0) {
+								console.warn("Cinema disappeared: " + this);
+							} else {
+								cinemaElem.click();
+							}
+						});
+					} else {
+						$('#cinemas_checkLondon').click();
+					}
+				})
 				.then(twister.cineworld.getFilms)
 					.done(twister.cineworld.parseFilms)
 			;
@@ -1038,13 +1056,13 @@ if(twister.config.debug) {
 			$.ajax = function(params) {
 				var result;
 				if(options.mockFilmQuickbook && /quickbook\/films$/.test(params.url)) {
-					console.debug("Returning mock quickbook films: " + JSON.stringify(params));
+					if (twister.config.verboseMock) console.debug("Returning mock quickbook films: " + JSON.stringify(params));
 					result = twister.mock.cineworld.quickbook.films;
 				} else if(options.mockFilmInternal && /api\/film\/list$/.test(params.url)) {
-					console.debug("Returning mock internal films: " + JSON.stringify(params));
+					if (twister.config.verboseMock) console.debug("Returning mock internal films: " + JSON.stringify(params));
 					result = twister.mock.cineworld.internal.films;
 				} else if (options.mockCinemas && /\/cinemas$/.test(params.url)) {
-					console.debug("Returning mock cinemas: " + JSON.stringify(params));
+					if (twister.config.verboseMock) console.debug("Returning mock cinemas: " + JSON.stringify(params));
 					restult = twister.mock.cineworld.quickbook.cinemas;
 				} else if (options.mockPerformances && /\/performances$/.test(params.url)
 					&& twister.mock.cineworld.quickbook.performances[params.data.cinema] != undefined
@@ -1084,7 +1102,7 @@ if(twister.config.debug) {
 			$.ajax = function(params) {
 				if(options.mockIMDB && /deanclatworthy/.test(params.url)
 					&& twister.mock.imdb.films[params.data.q] != undefined) {
-					console.debug("Returning mock IMDB film: " + JSON.stringify(params));
+					if (twister.config.verboseMock) console.debug("Returning mock IMDB film: " + JSON.stringify(params));
 					var result = twister.mock.imdb.films[params.data.q];
 					return [result, "success", $.Deferred().resolve(result)];
 				} else {

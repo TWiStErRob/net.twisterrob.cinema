@@ -46,7 +46,7 @@ public final class PMF {
 
 	public static String getCurrentUserId() {
 		com.google.appengine.api.users.User authUser = UserServiceFactory.getUserService().getCurrentUser();
-		return authUser.getUserId();
+		return authUser != null? authUser.getUserId() : null;
 	}
 
 	protected static User registerUser(com.google.appengine.api.users.User authUser) {

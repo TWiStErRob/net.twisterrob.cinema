@@ -111,6 +111,10 @@ public class CinemaServiceImpl implements CinemaService {
 
 	@Override
 	public Collection<FavoriteCinema> getFavorites() throws ServiceException {
+		String currentUserId = PMF.getCurrentUserId();
+		if (currentUserId == null) {
+			return Collections.emptyList();
+		}
 		PersistenceManager pm = PMF.getPM();
 		Query q = null;
 		try {
@@ -119,7 +123,7 @@ public class CinemaServiceImpl implements CinemaService {
 			q.setFilter("this.user == :userId");
 			@SuppressWarnings("unchecked")
 			Collection<FavoriteCinema> favs = (Collection<FavoriteCinema>)q.executeWithMap(ImmutableMap.builder() //
-					.put("userId", KeyFactory.createKey(User.class.getSimpleName(), PMF.getCurrentUserId())) //
+					.put("userId", KeyFactory.createKey(User.class.getSimpleName(), currentUserId)) //
 					.build());
 			favs = pm.detachCopyAll(favs);
 			return favs;
