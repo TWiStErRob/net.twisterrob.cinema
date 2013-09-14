@@ -102,7 +102,7 @@
 
 		twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
-			debug: true,
+			debug: false,
 			localUrlBase: 'http://localhost:8888',
 			logResponses: false,
 			verboseMock: false
@@ -150,8 +150,14 @@
 
 			getQueryParam: function(name) {
 				// ?param1=value1&param2=&param3=value3
+				return twister.utils.url.getUrlParams(null, false, false)[name];
+			},
+
+			getQueryParams: function(name) {
+				// ?param1=value1&param2=&param3=value3
 				return twister.utils.url.getUrlParams(null, true, true)[name];
 			},
+
 
 			// http://stackoverflow.com/a/520845/253468 + http://stackoverflow.com/a/11030951/253468
 			getUrlParams: function (url, supportArrays, alwaysArray) {
@@ -161,7 +167,8 @@
 
 				url = url || document.location.href; // default value is current url
 				alwaysArray = alwaysArray || false; // default is false
-				supportArrays = supportArrays || alwaysArray; // default is false, but alwaysArray forces it to be true
+				// TODO figure it out
+				supportArrays = supportArrays === false? false : supportArrays || alwaysArray || true; // default is true
 
 				while (match = re.exec(url)) {
 					var pName = decode(match[1]);
@@ -239,9 +246,10 @@
 					+ '?' + twister.cineworld.getArgs());
 			},
 			updateFromQuery: function updateFromQuery() {
+				twister.config.debug = !!twister.utils.url.getQueryParam('debug') || twister.config.debug;
 				twister.cineworld.date = twister.utils.url.getQueryParam('date') || twister.cineworld.date;
-				twister.cineworld.films.selectedIds = twister.utils.url.getQueryParam('film') || twister.cineworld.films.selectedIds;
-				twister.cineworld.cinemas.selectedIds = twister.utils.url.getQueryParam('cinema') || twister.cineworld.cinemas.selectedIds;
+				twister.cineworld.films.selectedIds = twister.utils.url.getQueryParams('film') || twister.cineworld.films.selectedIds;
+				twister.cineworld.cinemas.selectedIds = twister.utils.url.getQueryParams('cinema') || twister.cineworld.cinemas.selectedIds;
 			},
 			writeUI: function() {
 				twister.ui.screen.date.val(twister.cineworld.date).change();
@@ -883,6 +891,7 @@
 			console.log("------------------------------- Document ready. ----------------------------");
 			twister.ui.init();
 			twister.cineworld.updateFromQuery();
+			if(twister.config.debug) setupMock();
 			twister.cineworld.writeUI();
 
 			$.ajaxSetup({
@@ -1033,7 +1042,7 @@
 	</div>
 	<!-- TODO <script type="text/javascript" src="/global/analyticstracking.js"></script>-->
 <script>
-if(twister.config.debug) {
+function setupMock() {
 	// http://appendto.github.io/jquery-mockjax/examples/demo.html
 	twister.mock = $.extend(twister.mock || {}, {});
 	twister.mock.cineworld = $.extend(twister.mock.cineworld || {}, {
@@ -1115,7 +1124,7 @@ if(twister.config.debug) {
 	twister.mock.cineworld.replaceAjax({
 		//mockFilmQuickbook: false,
 		//mockFilmInternal: false,
-		mockCinemas: false
+		mockCinemas: true
 	});
 	twister.mock.imdb.replaceAjax({
 		mockIMDB: true
