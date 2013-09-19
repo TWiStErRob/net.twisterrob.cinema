@@ -89,7 +89,7 @@
 				return this.clone().utc().add('hours', offset).format(format);
 			}
 		}
-		console.groupStart = console.noop;
+		console.groupStart = console.log;
 
 		moment.fn.toJSON = function(start, end) {
 			return this.format();
@@ -165,6 +165,50 @@
 				} else {
 					// it's a callback: (deferredThis, realDeferredFunc)
 					return bind;
+				}
+			},
+			bindThis: function(func, self) {
+				return function() {
+					return func.apply(self, arguments);
+				}
+			},
+			DelayedExecutor: function(params) {
+				var config = $.extend({
+					timeout: 1000,
+					callback: function() {},
+					verbose: false,
+					name: "DelayedExecutor",
+					logMethod: twister.utils.bindThis(console.debug, console)
+				}, params);
+				this.timer = undefined;
+				var self = this;
+				return {
+					start: function() {
+						this.stop();
+						if(config.verbose) config.logMethod("[" + config.name + "] starting");
+						if (!this.isInProgress()) {
+							self.timer = setTimeout(function DelayedExecutor_onTimeout() {
+								if(config.verbose) config.logMethod("[" + config.name + "] ontimeout");
+								self.timer = undefined;
+								config.callback();
+							}, config.timeout);
+							if(config.verbose) config.logMethod("[" + config.name + "] started");
+						}
+					},
+					stop: function() {
+						if(config.verbose) config.logMethod("[" + config.name + "] stopping");
+						if (this.isInProgress()) {
+							clearTimeout(self.timer);
+							self.timer = undefined;
+							if(config.verbose) config.logMethod("[" + config.name + "] stopped");
+						}
+					},
+					isInProgress: function() {
+						return self.timer !== undefined;
+					},
+					updateConfig: function(overrides) {
+						$.extend(config, overrides);
+					}
 				}
 			}
 		});
@@ -247,8 +291,6 @@
 		twister.cineworld = $.extend(twister.cineworld || {}, {
 			const: {
 				apiKey: "9qfgpF7B",
-				getFilmsTimeout: 300,
-				getPerformancesTimeout: 300,
 				default: {
 					adLength: 15,
 					breakLength: 5
@@ -256,7 +298,8 @@
 			},
 			cinemas: {
 				all: [ /* retrieved from cineworld API */ ],
-				selectedIds: [ /* update when checklist checked */ ]
+				selectedIds: [ /* update when checklist checked */ ],
+				retrieveFilmsDelay: new twister.utils.DelayedExecutor({ timeout: 300 })
 			},
 			films: {
 				all: [ /* retrieved from cineworld API */ ],
@@ -266,7 +309,8 @@
 					// internal: { /* response from internal API */ }
 					// merged: { /* merged previous responses */ }
 				},
-				lengths: { /* cache for film lengths */ }
+				lengths: { /* cache for film lengths */ },
+				getPerformancesDelay: new twister.utils.DelayedExecutor({ timeout: 300 })
 			},
 			performances: {
 				// [index by date][index by cinema][index by id]
@@ -368,26 +412,7 @@
 						twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
 						twister.cineworld.rebuildUrl();
 
-						if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
-							clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
-							twister.cineworld.cinemas.getFilmsTimer = undefined;
-						}
-						if (twister.cineworld.cinemas.getFilmsTimer === undefined) {
-							twister.cineworld.cinemas.getFilmsTimer = setTimeout(function getFilmsTimer_onTimeout() {
-								twister.cineworld.cinemas.getFilmsTimer = undefined;
-								twister.cineworld.retrieveFilms()
-									.done(twister.cineworld.saveFilms)
-									.done(function (films) {
-										twister.ui.showStatus("Got " + films.length + " films.");
-									})
-									.fail(function (responseWithErrors) {
-										// response.errors is not empty.
-										twister.ui.showStatus("Failure getting films: " + JSON.stringify(response, null, '  '));
-									})
-									.done(twister.cineworld.displayFilms)
-								;
-							}, twister.cineworld.const.getFilmsTimeout);
-						}
+						twister.cineworld.cinemas.retrieveFilmsDelay.start();
 					},
 					onItemSelected: function cinemasList_onItemSelected(input) {
 						var request = {
@@ -409,6 +434,21 @@
 						});
 					}
 				} );
+				twister.cineworld.cinemas.retrieveFilmsDelay.updateConfig({
+					callback: function() {
+						twister.cineworld.retrieveFilms()
+							.done(twister.cineworld.saveFilms)
+							.done(function (films) {
+								twister.ui.showStatus("Got " + films.length + " films.");
+							})
+							.fail(function (responseWithErrors) {
+								// response.errors is not empty.
+								twister.ui.showStatus("Failure getting films: " + JSON.stringify(response, null, '  '));
+							})
+							.done(twister.cineworld.displayFilms)
+						;
+					}
+				});
 				return $('#cinemas');
 			},
 			retrieveFilms: function cineworld_retrieveFilms() {
@@ -550,19 +590,14 @@
 						twister.cineworld.films.selectedIds = checkedFilmEdis;
 						twister.cineworld.rebuildUrl();
 
-						// FIXME twister.cineworld.films.getPerformancesDelay.start();
-						if (twister.cineworld.films.getPerformancesTimer !== undefined) {
-							clearTimeout(twister.cineworld.films.getPerformancesTimer);
-							twister.cineworld.films.getPerformancesTimer = undefined;
-						}
-						if (twister.cineworld.films.getPerformancesTimer === undefined) {
-							twister.cineworld.films.getPerformancesTimer = setTimeout(function getPerformancesTimer_onTimeout() {
-								twister.cineworld.films.getPerformancesTimer = undefined;
-								twister.cineworld.getPerformances();
-							}, twister.cineworld.const.getPerformancesTimeout);
-						}
+						twister.cineworld.films.getPerformancesDelay.start();
 					},
 				} );
+				twister.cineworld.films.getPerformancesDelay.updateConfig({
+					callback: function() {
+						twister.cineworld.getPerformances();
+					}
+				});
 				$.each(twister.cineworld.films.selectedIds, function film_select() {
 					var filmElem = $('#films li:has(:checkbox[value=' + this + '])');
 					if(filmElem.length == 0) {
@@ -580,9 +615,8 @@
 				});
 				$.when.apply($, filmLengthRequests)
 					.then(function(/*...*/) {
-						// TODO twister.cineworld.plan();
+						// TODO twister.cineworld.plan(); replan, when film lengths are done, results may have changed
 
-						console.log("Lengths done: " + arguments.length);
 						for(var i = 0; i < arguments.length; ++i) {
 							var response = arguments[i];
 							var film = response[0];
@@ -749,8 +783,8 @@
 			plan: function() {
 				if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
 				if($('#films_checklist li label > .runtime:contains(?)').length != 0) return;
-				if(twister.cineworld.cinemas.getFilmsTimer !== undefined || twister.cineworld.films.selectedIds.length == 0) return;
-				if(twister.cineworld.films.getPerformancesTimer !== undefined) return;
+				if(twister.cineworld.cinemas.retrieveFilmsDelay.isInProgress() || twister.cineworld.films.selectedIds.length == 0) return;
+				if(twister.cineworld.films.getPerformancesDelay.isInProgress()) return;
 				console.groupEnd(); // Cineworld Performances
 				console.groupStart("The Plan (cinemas=" +  twister.cineworld.cinemas.selectedIds + ", films=" + twister.cineworld.films.selectedIds + ")");
 				var date = twister.cineworld.getDate();
