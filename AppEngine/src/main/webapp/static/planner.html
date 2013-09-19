@@ -126,10 +126,46 @@
 				}
 				return obj;
 			},
-			unPackAjaxPromise: function(/*...*/) {
-				return $.map(arguments, function(ajaxPromiseResult){
-					return $.isArray(ajaxPromiseResult)? ajaxPromiseResult[0] : null;
+			unPackArrayPromise: function(/*...*/) {
+				var array = $.map(arguments, function (arg) {
+					return arg != undefined? arg : {};
 				});
+				return $.when.apply(this, array);
+			},
+			unPackAjaxPromises: function(/*...*/) {
+				var firstOfAllArrays = $.map(arguments, function (ajaxPromiseResult) {
+					var first = $.isArray(ajaxPromiseResult) ? ajaxPromiseResult[0] : undefined;
+					return first || {};
+				});
+				return $.when.apply(this, firstOfAllArrays);
+			},
+			/**
+			 $.Deferred(bindDeferredThis(deferredThis, realDeferredFunc));
+			 or later: bindDeferredThis(deferredThis, dfd);
+			 */
+			bindDeferredThis: function bindDeferredThis(deferredThis, deferredOrFunc) {
+				var bind = function(deferred) {
+					deferred.resolve = function(/*...*/) {
+						this.resolveWith(deferredThis, arguments);
+					}
+					deferred.reject = function(/*...*/) {
+						this.rejectWith(deferredThis, arguments);
+					}
+					deferred.notify = function(/*...*/) {
+						this.notifyWith(deferredThis, arguments);
+					}
+					if (typeof deferredOrFunc === "function") {
+						deferredOrFunc.call( deferred, deferred );
+					}
+					return deferred;
+				}
+				if (deferredOrFunc != undefined && "promise" in deferredOrFunc) {
+					// it's a deferred: (deferredThis, dfd)
+					return bind(deferredOrFunc);
+				} else {
+					// it's a callback: (deferredThis, realDeferredFunc)
+					return bind;
+				}
 			}
 		});
 		twister.utils.url = $.extend(twister.utils.url || {}, {
@@ -252,7 +288,7 @@
 				twister.cineworld.cinemas.selectedIds = twister.utils.url.getQueryParams('cinema') || twister.cineworld.cinemas.selectedIds;
 			},
 			writeUI: function() {
-				twister.ui.screen.date.val(twister.cineworld.date).change();
+				twister.ui.screen.date.val(twister.cineworld.date);
 			},
 			getArgs: function() {
 				var args = 'date=' + encodeURIComponent(twister.cineworld.date);
@@ -280,6 +316,7 @@
 						full: true
 					}
 				})
+				.then(twister.utils.unPackArrayPromise)
 				.then(twister.cineworld.parseCinemasResponse)
 				;
 			},
@@ -331,7 +368,6 @@
 						twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
 						twister.cineworld.rebuildUrl();
 
-						/* TODO enable
 						if (twister.cineworld.cinemas.getFilmsTimer !== undefined) {
 							clearTimeout(twister.cineworld.cinemas.getFilmsTimer);
 							twister.cineworld.cinemas.getFilmsTimer = undefined;
@@ -339,10 +375,19 @@
 						if (twister.cineworld.cinemas.getFilmsTimer === undefined) {
 							twister.cineworld.cinemas.getFilmsTimer = setTimeout(function getFilmsTimer_onTimeout() {
 								twister.cineworld.cinemas.getFilmsTimer = undefined;
-								twister.cineworld.getFilms();
+								twister.cineworld.retrieveFilms()
+									.done(twister.cineworld.saveFilms)
+									.done(function (films) {
+										twister.ui.showStatus("Got " + films.length + " films.");
+									})
+									.fail(function (responseWithErrors) {
+										// response.errors is not empty.
+										twister.ui.showStatus("Failure getting films: " + JSON.stringify(response, null, '  '));
+									})
+									.done(twister.cineworld.displayFilms)
+								;
 							}, twister.cineworld.const.getFilmsTimeout);
 						}
-						*/
 					},
 					onItemSelected: function cinemasList_onItemSelected(input) {
 						var request = {
@@ -366,18 +411,25 @@
 				} );
 				return $('#cinemas');
 			},
-			getFilms: function cineworld_getFilms() {
+			retrieveFilms: function cineworld_retrieveFilms() {
+				var cinemaIds = twister.cineworld.cinemas.selectedIds;
+				var date = twister.cineworld.getDate();
+				return twister.cineworld.getFilms(cinemaIds, date)
+					.done(twister.cineworld.getFilmLengths)
+				;
+			},
+			getFilms: function cineworld_getFilms(cinemaIds, date) {
 				var request = {
 					key: twister.cineworld.const.apiKey,
 					full: true,
-					cinema: twister.cineworld.cinemas.selectedIds,
-					date: twister.cineworld.getDate()
+					cinema: cinemaIds,
+					date: date
 				};
 				if(request.cinema.length == 0) {
-					twister.cineworld.parseFilms({films: []});
-					return;
+					var dfd = new jQuery.Deferred();
+					dfd.resolve([]);
+					return dfd.promise();
 				}
-				var dfd = new jQuery.Deferred();
 
 				var quickbookRequest = $.ajax({
 					url: 'http://www.cineworld.com/api/quickbook/films',
@@ -388,31 +440,19 @@
 					data: request
 				});
 
-				$.when(quickbookRequest, apiRequest)
-					.fail(dfd.reject)
-					// TODO doesn't count .done(twister.utils.unPackAjaxPromise)
+				return $.when(quickbookRequest, apiRequest)
+					.then(twister.utils.unPackAjaxPromises)
 					.then(twister.cineworld.mergeResponses)
-					.then(function(mergedResponse) {
-						dfd.resolve(mergedResponse);
-						var filmLengthRequests = new Array();
-						$.each(mergedResponse.films, function film_getLength() {
-							filmLengthRequests.push(twister.cineworld.getFilmLength(this));
-						});
-						return $.when.apply($, filmLengthRequests);
-					})
-					.then(twister.utils.unPackAjaxPromise)
-					.then(function(filmLengths) {
-						console.log("Lengths done: " + filmLengths.length);
-					})
+					.then(twister.cineworld.parseMergedResponse)
 				;
-				return dfd.promise();
 			},
 			mergeResponses: function cineworld_mergeResponses(quickbook, internal) {
-				var merged = (twister.cineworld.films.responses = {
-						quickbook: quickbook = quickbook[0],
-						internal: internal = internal[0],
-						merged: { films: {}, errors: [] }
-				}).merged;
+				var merged = {
+					quickbook: quickbook,
+					internal: internal,
+					films: {},
+					errors: []
+				};
 
 				// Preprocess
 				$.each(internal.films, function() {
@@ -440,13 +480,9 @@
 
 				// Final processing
 				merged.films = $.map(merged.films, function(film) { return film; });
-				return merged;
+				return twister.cineworld.films.responses = merged;
 			},
-			clearFilms: function cineworld_clearFilms() {
-				twister.cineworld.films.all = {};
-				return $('#films').replaceWith('<select id="films" name="films" multiple="multiple"></select>');
-			},
-			parseFilms: function cineworld_parseFilms(response) {
+			parseMergedResponse: function cinewolrd_parseFilmsResponse(mergedResponse) {
 				/*
 				http://www.cineworld.com/api/quickbook/films:
 				3D: false
@@ -472,115 +508,159 @@
 				trailer: "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Despicable Me 2 _qtp.mp4"
 				weighted: 65
 				*/
-
+				var dfd = $.Deferred();
 				// Check for errors from the server
-				if (response.errors) {
-					$('#status').html(JSON.stringify(response, null, '  '));
+				if (mergedResponse.errors) {
+					dfd.reject(mergedResponse);
 				} else {
-					twister.cineworld.clearFilms();
-
-					var filmsList = $('#films');
-					response.films.sort(function(a, b) { return a.title.toUpperCase().localeCompare(b.title.toUpperCase()); });
-					$.each(response.films, function() {
-						twister.cineworld.films.all[this.edi] = this;
-						var title = this.title + ' (<span class="runtime">' + (this.length !== undefined? this.length : '?') + '</span>)';
-						var option = new Option(title, this.edi);
-						$(option).attr('title', JSON.stringify(this, null, '  '));
-						filmsList.append(option);
-					});
-					filmsList.toChecklist( {
-						showSelectedItems: false,
-						addScrollBar : false,
-						addSearchBox: true,
-						useHTMLLabels: true,
-						preferIdOverName: false,
-						searchBoxText: 'Filter by film title here...',
-						animateSearch: 0,
-						onItemChanged: function filmsList_onItemChanged() {
-							var checkedFilms = $("li :checkbox:checked", "#films");
-							var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
-							twister.cineworld.films.selectedIds = checkedFilmEdis;
-							twister.cineworld.rebuildUrl();
-
-							if (twister.cineworld.films.getPerformancesTimer !== undefined) {
-								clearTimeout(twister.cineworld.films.getPerformancesTimer);
-								twister.cineworld.films.getPerformancesTimer = undefined;
-							}
-							if (twister.cineworld.films.getPerformancesTimer === undefined) {
-								twister.cineworld.films.getPerformancesTimer = setTimeout(function getPerformancesTimer_onTimeout() {
-									twister.cineworld.films.getPerformancesTimer = undefined;
-									twister.cineworld.getPerformances();
-								}, twister.cineworld.const.getPerformancesTimeout);
-							}
-						},
-					} );
-					$.each(twister.cineworld.films.selectedIds, function film_select() {
-						var filmElem = $('#films li:has(:checkbox[value=' + this + '])');
-						if(filmElem.length == 0) {
-							console.warn("Film disappeared: " + this);
-						} else {
-							filmElem.click();
-						}
-					});
-					return films;
+					dfd.resolve(mergedResponse.films);
 				}
+				return dfd;
 			},
-			getFilmLength: function cineworld_getFilmLength(film) {
-				if(film.edi in twister.cineworld.films.lengths) {
-					film.length = twister.cineworld.films.lengths[film.edi];
-				}
-				if(film.length !== undefined) {
-					twister.cineworld.parseFilmLength(film, {runtime: film.length});
-					return null;
-				}
-				function simplify(title) {
-					return title.replace(/^\s*(IMAX)?\s*[23]D\s*-\s*/gi, "");
-				}
-				return $.ajax({
-					url: 'http://deanclatworthy.com/imdb/',
-					data:  {
-						q: simplify(film.title),
-						type: 'jsonp'
-					},
-					success: function(response, status, xhr) {
-						// http://deanclatworthy.com/imdb/?q=World%20War%20Z&type=jsonp&callback=callback
-						/* callback({
-							imdbid: "tt0816711", 
-							imdburl: "http://www.imdb.com/title/tt0816711/", 
-							genres: "Action,Drama,Horror,Sci-Fi,Thriller", 
-							languages: "English", 
-							country: "USA,Malta", 
-							votes: "67357", 
-							stv: 0, 
-							series: 0, 
-							rating: "7.3", 
-							runtime: "116min", 
-							title: "World War Z", 
-							year: "2013", 
-							usascreens: 3607, 
-							ukscreens: 0, 
-							cacheExpiry: 1374104898
-						}) */
-						if(response.error) {
-							$('#status').html(JSON.stringify(response, null, '  '));
-							return;
+			saveFilms: function cineworld_saveFilms(films) {
+				var filmsMap = {};
+				$.each(films, function() {
+					filmsMap[this.edi] = this;
+				});
+				twister.cineworld.films.all = filmsMap;
+			},
+			displayFilms: function cineworld_displayFilms(films) {
+				films.sort(function(a, b) { return a.title.toUpperCase().localeCompare(b.title.toUpperCase()); });
+
+				var filmsList = $('<select id="films" name="films" multiple="multiple"></select>');
+				$.each(films, function() {
+					var title = this.title + ' (<span class="runtime">' + (this.length !== undefined? this.length : '?') + '</span>)';
+					var option = new Option(title, this.edi);
+					$(option).attr('title', JSON.stringify(this, null, '  '));
+					filmsList.append(option);
+				});
+
+				$('#films').replaceWith(filmsList); // toChecklist needs the <select> to be part of DOM
+				filmsList.toChecklist( {
+					showSelectedItems: false,
+					addScrollBar : false,
+					addSearchBox: true,
+					useHTMLLabels: true,
+					preferIdOverName: false,
+					searchBoxText: 'Filter by film title here...',
+					animateSearch: 0,
+					onItemChanged: function filmsList_onItemChanged() {
+						var checkedFilms = $("li :checkbox:checked", "#films");
+						var checkedFilmEdis = $.map(checkedFilms, function(e) { return e.value; });
+						twister.cineworld.films.selectedIds = checkedFilmEdis;
+						twister.cineworld.rebuildUrl();
+
+						// FIXME twister.cineworld.films.getPerformancesDelay.start();
+						if (twister.cineworld.films.getPerformancesTimer !== undefined) {
+							clearTimeout(twister.cineworld.films.getPerformancesTimer);
+							twister.cineworld.films.getPerformancesTimer = undefined;
 						}
-						twister.cineworld.parseFilmLength(film, response);
+						if (twister.cineworld.films.getPerformancesTimer === undefined) {
+							twister.cineworld.films.getPerformancesTimer = setTimeout(function getPerformancesTimer_onTimeout() {
+								twister.cineworld.films.getPerformancesTimer = undefined;
+								twister.cineworld.getPerformances();
+							}, twister.cineworld.const.getPerformancesTimeout);
+						}
 					},
-					error : function(xhr, status, error) {
-						twister.cineworld.parseFilmLength(film, {runtime: 0});
+				} );
+				$.each(twister.cineworld.films.selectedIds, function film_select() {
+					var filmElem = $('#films li:has(:checkbox[value=' + this + '])');
+					if(filmElem.length == 0) {
+						console.warn("Film disappeared: " + this);
+					} else {
+						filmElem.click();
 					}
 				});
+				return films;
 			},
-			parseFilmLength: function cineworld_parseFilmLength(film, response) {
-				if(response.error || response.runtime == 0 || !$.isNumeric(parseInt(response.runtime))) {
-					console.warn("Warning, cannot get film runtime for: " + film.title + "; received: " + JSON.stringify(response));
-					response.runtime = 100;
+			getFilmLengths: function cineworld_getFilmLengths(films) {
+				var filmLengthRequests = new Array();
+				$.each(films, function film_getLength() {
+					filmLengthRequests.push(twister.cineworld.getFilmLength(this));
+				});
+				$.when.apply($, filmLengthRequests)
+					.then(function(/*...*/) {
+						// TODO twister.cineworld.plan();
+
+						console.log("Lengths done: " + arguments.length);
+						for(var i = 0; i < arguments.length; ++i) {
+							var response = arguments[i];
+							var film = response[0];
+							var runtime = response[1];
+							var error = response[2];
+							if(response.length == 2) { // [film, runtime]
+								film.length = runtime;
+							} else if (response.length == 3) { // [film, runtime, error]
+								console.warn("'{0}' has invalid runtime: '{1}' ({2})".format(film.title, runtime, error));
+								film.length = 100;
+							} else { // something terribly wrong
+								console.error("Invalid arguments #" + i + ": " + arguments[i]);
+								film.length = 100;
+							}
+						}
+						return $.map(arguments, function(response) { return response[0]; });
+					})
+					.done(function(films) {
+						$.each(films, function() {
+							$('#films #films_' + this.edi + ' + label .runtime').text(this.length);
+						});
+					})
+				;
+			},
+			getFilmLength: function cineworld_getFilmLength(film) {
+				var dfd = $.Deferred(twister.utils.bindDeferredThis(film));
+				if(film.length) { // from Cineworld API
+					dfd.resolve(film, film.length);
+				} else if(film.edi in twister.cineworld.films.lengths) { // cache
+					dfd.resolve(film, twister.cineworld.films.lengths[film.edi]);
+				} else {
+					$.ajax({
+						url: 'http://deanclatworthy.com/imdb/',
+						data:  {
+							q: film.title.replace(/^\s*(IMAX)?\s*[23]D\s*-\s*/gi, ""), // remove 2D/3D/IMAX qualifiers
+							type: 'jsonp'
+						}
+					})
+						.then(twister.utils.unPackArrayPromise)
+						.done(function getFilmLength_parseResponse(response, status, xhr) {
+							// http://deanclatworthy.com/imdb/?q=World%20War%20Z&type=jsonp&callback=callback
+							/* callback({
+								imdbid: "tt0816711", 
+								imdburl: "http://www.imdb.com/title/tt0816711/", 
+								genres: "Action,Drama,Horror,Sci-Fi,Thriller", 
+								languages: "English", 
+								country: "USA,Malta", 
+								votes: "67357", 
+								stv: 0, 
+								series: 0, 
+								rating: "7.3", 
+								runtime: "116min", 
+								title: "World War Z", 
+								year: "2013", 
+								usascreens: 3607, 
+								ukscreens: 0, 
+								cacheExpiry: 1374104898
+							}) */
+							if(response.error) {
+								dfd.resolve(film, undefined, response.error);
+							} else if(response.runtime == 0 || !$.isNumeric(parseInt(response.runtime))) {
+								dfd.resolve(film, response.runtime, "0 or not numeric");
+							} else {
+								dfd.resolve(film, parseInt(response.runtime));
+							}
+						})
+						.fail(function(xhr, status, error) {
+							dfd.resolve(film, undefined, error);
+						})
+					;
 				}
-				film.length = parseInt(response.runtime);
-				twister.cineworld.films.lengths[film.edi] = film.length;
-				$('#films #films_' + film.edi + ' + label .runtime').text(film.length);
-				twister.cineworld.plan();
+				return dfd.promise()
+					.done(function(film, runtime, error) {
+						if(error === undefined) {
+							twister.cineworld.films.lengths[film.edi] = runtime;
+						}
+					})
+				;
 			},
 			getPerformances: function cineworld_getPerformances() {
 				console.groupStart("Cineworld Performances");
@@ -861,7 +941,7 @@
 						twister.cineworld.date = this.value;
 						twister.cineworld.rebuildUrl();
 						$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));
-						// TODO enable twister.cineworld.getFilms();
+						twister.cineworld.retrieveFilms();
 					})
 				;
 			},
@@ -928,9 +1008,7 @@
 					} else {
 						$('#cinemas_checkLondon').click();
 					}
-				})
-				.then(twister.cineworld.getFilms)
-					.done(twister.cineworld.parseFilms)
+				});
 			;
 
 		});
@@ -1072,7 +1150,7 @@ function setupMock() {
 					result = twister.mock.cineworld.internal.films;
 				} else if (options.mockCinemas && /\/cinemas$/.test(params.url)) {
 					if (twister.config.verboseMock) console.debug("Returning mock cinemas: " + JSON.stringify(params));
-					restult = twister.mock.cineworld.quickbook.cinemas;
+					result = twister.mock.cineworld.quickbook.cinemas;
 				} else if (options.mockPerformances && /\/performances$/.test(params.url)
 					&& twister.mock.cineworld.quickbook.performances[params.data.cinema] != undefined
 					&& twister.mock.cineworld.quickbook.performances[params.data.cinema][params.data.film] != undefined) {
@@ -1081,7 +1159,7 @@ function setupMock() {
 					result = { mocked: true, performances: perfs };
 				}
 				if (result != undefined) {
-					return [result, "success", $.Deferred().resolve(result)];
+					return $.when([result, "success", $.Deferred().resolve(result)]);
 				} else {
 					return $ajax(params);
 				}
@@ -1113,7 +1191,7 @@ function setupMock() {
 					&& twister.mock.imdb.films[params.data.q] != undefined) {
 					if (twister.config.verboseMock) console.debug("Returning mock IMDB film: " + JSON.stringify(params));
 					var result = twister.mock.imdb.films[params.data.q];
-					return [result, "success", $.Deferred().resolve(result)];
+					return $.when([result, "success", $.Deferred().resolve(result)]);
 				} else {
 					return $ajax(params);
 				}
