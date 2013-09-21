@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="/static/scripts/libs/debug/quickjsonformatter.js"></script>
 
 	<script>
+		"use strict";
 		// trace console:
 		// search:  (?i)([a-z_]+): *function *([a-z_]+)? *\( *(([a-z_]+ *,? *)*) *\) +\{
 		// replace: $0\n\t\t\t\t/*tracer*/console.debug(String.prototype.format.apply(moment().toISOString() + " \1/\2(\3): "+(arguments.length>=1?"#1={0}":"")+(arguments.length>=2?", #2={1}":"")+(arguments.length>=3?", #3={2}":"")+(arguments.length>=4?", #4={3}":"")+(arguments.length>=5?", #5={4}":""), arguments));
@@ -75,6 +76,13 @@
 			}
 		})();
 
+		var extendNamespace = function() {
+			// TODO handle strings as namespace
+			var newArgs = Array.prototype.slice.call(arguments, 0);
+			newArgs.unshift(true);
+			return $.extend.apply($, newArgs);
+		}
+
 		if (!String.prototype.format) {
 			String.prototype.format = function() {
 				var args = arguments; // used in inner match-replacement function
@@ -100,7 +108,7 @@
 			console.warn("imdbapi called, callback of http://deanclatworthy.com/imdb/ was not respected: " + JSON.stringify(response));
 		}
 
-		twister = $.extend(window.twister || {}, {});
+		var twister = $.extend(window.twister || {}, {});
 		twister.config = $.extend(twister.config || {}, {
 			debug: false,
 			localUrlBase: 'http://localhost:8888',
@@ -166,52 +174,57 @@
 					// it's a callback: (deferredThis, realDeferredFunc)
 					return bind;
 				}
-			},
-			bindThis: function(func, self) {
-				return function() {
-					return func.apply(self, arguments);
-				}
-			},
-			DelayedExecutor: function(params) {
-				var config = $.extend({
-					timeout: 1000,
-					callback: function() {},
-					verbose: false,
-					name: "DelayedExecutor",
-					logMethod: twister.utils.bindThis(console.debug, console)
-				}, params);
-				this.timer = undefined;
-				var self = this;
-				return {
-					start: function() {
-						this.stop();
-						if(config.verbose) config.logMethod("[" + config.name + "] starting");
-						if (!this.isInProgress()) {
-							self.timer = setTimeout(function DelayedExecutor_onTimeout() {
-								if(config.verbose) config.logMethod("[" + config.name + "] ontimeout");
-								self.timer = undefined;
-								config.callback();
-							}, config.timeout);
-							if(config.verbose) config.logMethod("[" + config.name + "] started");
-						}
-					},
-					stop: function() {
-						if(config.verbose) config.logMethod("[" + config.name + "] stopping");
-						if (this.isInProgress()) {
-							clearTimeout(self.timer);
-							self.timer = undefined;
-							if(config.verbose) config.logMethod("[" + config.name + "] stopped");
-						}
-					},
-					isInProgress: function() {
-						return self.timer !== undefined;
-					},
-					updateConfig: function(overrides) {
-						$.extend(config, overrides);
-					}
-				}
 			}
-		});
+		};
+		twister.utils = extendNamespace(twister.utils, (function Class_DelayedExecutor() {
+			var defaultConfig = {
+				timeout: 1000,
+				callback: function() {},
+				verbose: false,
+				name: "DelayedExecutor",
+				logMethod: $.proxy(console.debug, console)
+			};
+			var DelayedExecutor_ = {
+				printProgress: function (event) {
+					if(this._config.verbose) {
+						this._config.logMethod("[" + this._config.name + "] " + event);
+					}
+				},
+				onTimeout: function () {
+					DelayedExecutor_.printProgress.call(this, "onTimeout");
+					this._timer = undefined;
+					if(typeof this._config.callback === "function") this._config.callback();
+				}
+			};
+
+			var DelayedExecutor = function DelayedExecutor_constructor(config) {
+				this._config = $.extend(defaultConfig, config);
+				this._timer = undefined;
+			}
+			DelayedExecutor.prototype.start = function() {
+				this.stop();
+				DelayedExecutor_.printProgress.call(this, "starting");
+				if (!this.isInProgress()) {
+					this._timer = setTimeout($.proxy(DelayedExecutor_.onTimeout, this), this._config.timeout);
+					DelayedExecutor_.printProgress.call(this, "started");
+				}
+			};
+			DelayedExecutor.prototype.stop = function() {
+				DelayedExecutor_.printProgress.call(this, "stopping");
+				if (this.isInProgress()) {
+					clearTimeout(this._timer);
+					this._timer = undefined;
+					DelayedExecutor_.printProgress.call(this, "stopped");
+				}
+			};
+			DelayedExecutor.prototype.isInProgress= function() {
+				return this._timer !== undefined;
+			};
+			DelayedExecutor.prototype.updateConfig= function(overrides) {
+				$.extend(this._config, overrides);
+			};
+			return {DelayedExecutor: DelayedExecutor};
+		})());
 		twister.utils.url = $.extend(twister.utils.url || {}, {
 			getHashAnchor: function() {
 				// #anchor!param1=value1&param2=&param3=value3
@@ -781,6 +794,7 @@
 				twister.cineworld.plan();
 			},
 			plan: function() {
+				// TODO remove absolute dependencies
 				if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
 				if($('#films_checklist li label > .runtime:contains(?)').length != 0) return;
 				if(twister.cineworld.cinemas.retrieveFilmsDelay.isInProgress() || twister.cineworld.films.selectedIds.length == 0) return;
