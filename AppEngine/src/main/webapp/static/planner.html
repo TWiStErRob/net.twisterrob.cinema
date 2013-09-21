@@ -76,8 +76,15 @@
 			}
 		})();
 
-		var extendNamespace = function() {
-			// TODO handle strings as namespace
+		var createNamespace = function(namespaceName) {
+			var namespaceParts = (""+namespaceName).split(".");
+			var namespace = window[namespaceParts[0]] = window[namespaceParts[0]] || {};
+			for(var i = 1; i < namespaceParts.length; ++i) {
+				namespace = namespace[namespaceParts[i]] = namespace[namespaceParts[i]] || {};
+			}
+			return namespace;
+		}
+		var extendNamespace = function(/*extensionObjects...*/) {
 			var newArgs = Array.prototype.slice.call(arguments, 0);
 			newArgs.unshift(true);
 			return $.extend.apply($, newArgs);
@@ -108,12 +115,14 @@
 			console.warn("imdbapi called, callback of http://deanclatworthy.com/imdb/ was not respected: " + JSON.stringify(response));
 		}
 
-		var twister = $.extend(window.twister || {}, {});
-		twister.config = $.extend(twister.config || {}, {
-			debug: false,
-			localUrlBase: 'http://localhost:8888',
-			logResponses: false,
-			verboseMock: false
+		createNamespace("twister");
+		twister = extendNamespace(twister, {
+			config: {
+				debug: false,
+				localUrlBase: 'http://localhost:8888',
+				logResponses: false,
+				verboseMock: false
+			}
 		});
 		twister.utils = $.extend(twister.utils || {}, {
 			/**
@@ -175,7 +184,9 @@
 					return bind;
 				}
 			}
-		};
+		});
+
+		// TODO use when extracting to file: createNamespace("twister.utils");
 		twister.utils = extendNamespace(twister.utils, (function Class_DelayedExecutor() {
 			var defaultConfig = {
 				timeout: 1000,
@@ -184,7 +195,7 @@
 				name: "DelayedExecutor",
 				logMethod: $.proxy(console.debug, console)
 			};
-			var DelayedExecutor_ = {
+			var DelayedExecutor_ = { // private extension methods, use ClassName_.method.call(this, args)
 				printProgress: function (event) {
 					if(this._config.verbose) {
 						this._config.logMethod("[" + this._config.name + "] " + event);
