@@ -6,6 +6,9 @@ twister.cineworld = NS(twister.cineworld, {
 	consts: {
 		apiKey: "9qfgpF7B"
 	},
+	performances: {
+		// [index by date][index by cinema][index by filmEdi]
+	},
 	getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
 		return $.ajax({
 				url: twister.config.localUrlBase + '/rest/cinemas/favorites'
@@ -230,49 +233,55 @@ twister.cineworld = NS(twister.cineworld, {
 			})
 		;
 	},
-	updatePerformance: function cineworld_updatePerformance(perfs) {
-		var elem = $(this);
+	getPerformance: function (args) {
 		var request = {
 			key: twister.cineworld.consts.apiKey,
-			cinema: elem.attr('cid'),
-			film: elem.attr('edi'),
+			cinema: args.cinemaId,
+			film: args.filmEdi,
 			date: twister.cineworld.getDate()
 		};
-		perfs = perfs || {};
+		var perfs = twister.cineworld.performances;
 		perfs[request.date] = perfs[request.date] || {};
 		perfs[request.date][request.cinema] = perfs[request.date][request.cinema] || {};
 		var perf = perfs[request.date][request.cinema][request.film];
-		if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache
-			twister.cineworld.parsePerformances(elem, request, {performances: perf});
+		var dfd = $.Deferred();
+		if(perf && new Date().getTime() - perf.retrieved.getTime() < 10 * 60 * 1000) { // use cache for 10 minutes
+			dfd.resolve(perf);
 		} else {
+			/* {
+					"performances":[
+						{"time":"13:00","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976170&key=9qfgpF7B"},
+						{"time":"15:30","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976178&key=9qfgpF7B"},
+						{"time":"18:10","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976186&key=9qfgpF7B"},
+						{"time":"20:40","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976194&key=9qfgpF7B"}
+					],
+					"legends":[{"code":"reg","description":"Regular"}]
+				} */
 			$.ajax({
 				url: 'http://www.cineworld.com/api/quickbook/performances',
-				data: request,
-				success: function(response, status, xhr) {
-					$.extend(response.performances, {retrieved: new Date()});
-					twister.cineworld.parsePerformances(elem, request, response);
+				data: request
+			})
+			.then(twister.utils.unPackArrayPromise)
+			.done(function getPerformance_ajax_done(response, status, xhr) {
+				$.extend(true, response, {
+					cinema: request.cinema,
+					film: request.film,
+					date: request.date,
+					retrieved: new Date()
+				});
+				if(response.errors) {
+					dfd.reject(response);
+				} else {
+					dfd.resolve(response);
 				}
+			})
+			.fail(function getPerformance_ajax_fail(xhr, status, error) {
+				dfd.reject(error);
 			});
 		}
-	},
-	parsePerformances: function(elem, request, response) {
-		/*
-		{
-		"performances":[{"time":"13:00","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976170&key=9qfgpF7B"},{"time":"15:30","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976178&key=9qfgpF7B"},{"time":"18:10","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976186&key=9qfgpF7B"},{"time":"20:40","available":true,"type":"reg","ad":true,"subtitled":false,"ss":false,"booking_url":"http://www.cineworld.co.uk/booking?performance=976194&key=9qfgpF7B"}],
-		"legends":[{"code":"reg","description":"Regular"}]
-		}
-		*/
-		if (response.errors) {
-			console.error(JSON.stringify(response));
-			elem.html(JSON.stringify(response, null, '  '));
-		} else {
-			twister.cineworld.performances[request.date][request.cinema][request.film] = response.performances;
-			elem.html($.map(response.performances, function(perf) {
-				return '<a href="' + perf.booking_url + '" title="' + JSON.stringify(perf, null, '  ').replace(/"/g, '&quot;') + '">'
-						+ perf.time
-						+ '</a>';
-			}).join(", "));
-		}
-		twister.cineworld.plan();
+		dfd.done(function getPerformance_cache(response) {
+			twister.cineworld.performances[response.date][response.cinema][response.film] = response;
+		});
+		return dfd.promise();
 	}
 });

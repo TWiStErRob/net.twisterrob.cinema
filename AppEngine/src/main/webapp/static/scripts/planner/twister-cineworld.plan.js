@@ -9,21 +9,29 @@ twister.cineworld = NS(twister.cineworld, {
 			breakLength: 5
 		}
 	},
-	planner: {},
+	planner: {
+	},
 	plan: function() {
-		// TODO remove absolute dependencies
-		if($('#performances_listing > table td[id^=performances_] > img').length != 0) return;
-		if($('#films_checklist li label > .runtime:contains(?)').length != 0) return;
-		if(twister.cineworld.cinemas.retrieveFilmsDelay.isInProgress() || twister.cineworld.films.selectedIds.length == 0) return;
-		if(twister.cineworld.films.getPerformancesDelay.isInProgress()) return;
-		console.groupEnd(); // Cineworld Performances
+		// TODO remove absolute dependencies (i.e. call plan() only when we have everything), and let other things happen when it's done
+		if($('#performances_listing > table td[id^=performances_] > img').length != 0) {
+			console.error("Can't plan(): not all performances are loaded"); return;
+		}
+		if($('#films_checklist li label > .runtime:contains(?)').length != 0) {
+			console.error("Can't plan(): not all runtimes are loaded"); return;
+		}
+		if(twister.cineworld.cinemas.retrieveFilmsDelay.isInProgress() || twister.cineworld.films.selectedIds.length == 0) {
+			console.error("Can't plan(): film retrieval in progress or no films"); return;
+		}
+		if(twister.cineworld.films.getPerformancesDelay.isInProgress())  {
+			console.error("Can't plan(): performance retrieval in progress"); return;
+		}
 		console.groupStart("The Plan (cinemas=" +  twister.cineworld.cinemas.selectedIds + ", films=" + twister.cineworld.films.selectedIds + ")");
 		var date = twister.cineworld.getDate();
 		$.each(twister.cineworld.cinemas.selectedIds, function(cinemaIndex, cid) {
 			var cinema = twister.cineworld.cinemas.all[cid];
 			$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
 				var film = twister.cineworld.films.all[edi];
-				var performances = twister.cineworld.performances[date][cid][edi];
+				var performances = twister.cineworld.performances[date][cid][edi].performances;
 				if (performances === undefined) return true;
 				$.each(performances, function(performanceIndex, perf) {
 					var time = moment(date + perf.time, 'YYYYMMDDHH:mm');
@@ -93,7 +101,7 @@ twister.cineworld = NS(twister.cineworld, {
 		$.each(graph, function(nodeIndex, node) {
 			$.each(twister.cineworld.films.selectedIds, function(filmIndex, edi) {
 				if( $.inArray(1 * edi, node.watched) == -1) { // didn't watch it already
-					var performances = twister.cineworld.performances[date][cinema.id][edi];
+					var performances = twister.cineworld.performances[date][cinema.id][edi].performances;
 					if (performances === undefined) return true;
 					$.each(performances, function(performanceIndex, perf) {
 						if(node.performance.plan.endTime < (perf.plan.startTime)) { // starts after the other finishes
