@@ -8,3 +8,24 @@ and extract:
 
 http://www.erichynds.com/blog/using-deferreds-in-jquery
 http://www.codeproject.com/Articles/168604/Combining-jQuery-Deferred-with-the-HTML5-Web-Worke
+
+Today's dev: http://cinema.twisterrob.net/static/planner.html
+
+Cineworld Unlimited planner
+
+Features:
+ *
+
+Used:
+http://www.scotthorlbeck.com/code/tochecklist/
+xhttps://developers.google.com/gdata/javadoc/com/google/gdata/data/calendar/CalendarEntry
+xhttp://momentjs.com/docs/#/manipulating/start-of/
+xhttp://documentcloud.github.com/underscore/#sortBy
+xhttps://developers.google.com/google-apps/calendar/v2/reference
+
+Next:
+	* http://www.erichynds.com/blog/using-deferreds-in-jquery
+	* http://api.jquery.com/category/deferred-object/
+	* http://appendto.github.io/jquery-mockjax/examples/demo.html
+	* auth
+	* valid http://ajax.aspnetcdn.com/ajax/jQuery.Validate/1.6/jQuery.Validate.pack.js

@@ -1,0 +1,34 @@
+#title {
+	font-family: Georgia;
+	text-shadow: 2px 1px 3px darkgray;
+}
+#cinemas {
+	width: 100%;
+}
+#cinemas_listing {
+	overflow: overlay;
+}
+#performances th:first-child {
+	white-space: nowrap;
+}
+#performances th.film {
+	width: 200px;
+}
+#status {
+	color: red;
+}
+table, tr, td, th {
+	border: 1px solid #000;
+}
+#statusmessage {
+	position: fixed;
+	bottom: 0;
+	padding: 0 5px;
+	line-height: 25px;
+	background-color: #eeee99;
+	margin-bottom: -25px;
+	font-weight: bold;
+	left: 0;
+	right: 0;
+	z-index: 99;
+}
