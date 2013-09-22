@@ -152,7 +152,7 @@ twister.cineworld = NS(twister.cineworld, {
 		$.each(films, function film_getLength() {
 			filmLengthRequests.push(twister.cineworld.getFilmLength(this));
 		});
-		$.when.apply($, filmLengthRequests)
+		return $.when.apply($, filmLengthRequests)
 			.then(function(/*...*/) {
 				// TODO twister.cineworld.plan(); replan, when film lengths are done, results may have changed
 
@@ -172,11 +172,6 @@ twister.cineworld = NS(twister.cineworld, {
 					}
 				}
 				return $.map(arguments, function(response) { return response[0]; });
-			})
-			.done(function(films) {
-				$.each(films, function() {
-					$('#films #films_' + this.edi + ' + label .runtime').text(this.length);
-				});
 			})
 		;
 	},

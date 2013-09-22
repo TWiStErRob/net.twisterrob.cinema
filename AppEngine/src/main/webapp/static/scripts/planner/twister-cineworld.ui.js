@@ -100,7 +100,16 @@ twister.cineworld = NS(twister.cineworld, {
 		} );
 		twister.cineworld.cinemas.retrieveFilmsDelay.updateConfig({
 			callback: function() {
-				twister.cineworld.retrieveFilms()
+				var filmsPromise = twister.cineworld.retrieveFilms();
+				filmsPromise
+					.then(twister.cineworld.getFilmLengths)
+					.done(function(films) {
+						$.each(films, function() {
+							$('#films #films_' + this.edi + ' + label .runtime').text(this.length);
+						});
+					})
+				;
+				filmsPromise
 					.done(twister.cineworld.saveFilms)
 					.done(function (films) {
 						twister.ui.showStatus("Got " + films.length + " films.");
@@ -118,9 +127,7 @@ twister.cineworld = NS(twister.cineworld, {
 	retrieveFilms: function cineworld_retrieveFilms() {
 		var cinemaIds = twister.cineworld.cinemas.selectedIds;
 		var date = twister.cineworld.getDate();
-		return twister.cineworld.getFilms(cinemaIds, date)
-			.done(twister.cineworld.getFilmLengths)
-		;
+		return twister.cineworld.getFilms(cinemaIds, date);
 	},
 	saveFilms: function cineworld_saveFilms(films) {
 		var filmsMap = {};
