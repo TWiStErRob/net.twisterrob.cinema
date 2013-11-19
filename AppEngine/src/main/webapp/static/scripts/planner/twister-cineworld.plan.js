@@ -96,7 +96,7 @@ twister.cineworld = NS(twister.cineworld, {
 		}
 		console.groupEnd(); // The Plan
 	},
-	planCinema: function cineworld_planCinema(cinema, graph) {
+	planCinema: function(cinema, graph) {
 		if(graph.level == 0) console.groupStart("Plan Cinema: " + cinema.name + " (" + cinema.id + ")");
 		var date = twister.cineworld.getDate();
 		$.each(graph, function(nodeIndex, node) {

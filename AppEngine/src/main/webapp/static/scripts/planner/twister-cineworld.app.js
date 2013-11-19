@@ -17,7 +17,7 @@ twister.ui = NS(twister.ui, {
 		layout: undefined,
 		date: undefined
 	},
-	init: function () {
+	init: function() {
 		twister.ui.initLayout();
 		twister.ui.initCalendar();
 	},

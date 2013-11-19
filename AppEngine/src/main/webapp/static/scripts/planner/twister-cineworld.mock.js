@@ -3,7 +3,7 @@ twister.core.namespaces.create("twister.cineworld.mock");
 var NS = twister.core.namespaces.extend;
 
 twister.cineworld.mock = NS(twister.cineworld.mock, {
-	init: function () {
+	init: function() {
 		// http://appendto.github.io/jquery-mockjax/examples/demo.html
 		twister.mock = $.extend(twister.mock || {}, {});
 		twister.mock.cineworld = $.extend(twister.mock.cineworld || {}, {

@@ -9,7 +9,7 @@ twister.cineworld = NS(twister.cineworld, {
 	performances: {
 		// [index by date][index by cinema][index by filmEdi]
 	},
-	getFavoriteCinemas: function cineworld_getFavoriteCinemas() {
+	getFavoriteCinemas: function() {
 		return $.ajax({
 				url: twister.config.localUrlBase + '/rest/cinemas/favorites'
 			})
@@ -19,7 +19,7 @@ twister.cineworld = NS(twister.cineworld, {
 			})
 		;
 	},
-	getCinemas: function cineworld_getCinemas() {
+	getCinemas: function() {
 		$('#cinemas').empty();
 		twister.ui.showStatus("Loading cinemas...");
 		return $.ajax({
@@ -33,7 +33,7 @@ twister.cineworld = NS(twister.cineworld, {
 		.then(twister.cineworld.parseCinemasResponse)
 		;
 	},
-	parseCinemasResponse: function cineworld_parseCinemasResponse(response) {
+	parseCinemasResponse: function(response) {
 		/*
 		address: "Queens Links Leisure Park, Links Road, Aberdeen"
 		cinema_url: "http://www.cineworld.co.uk/cinemas/1/information"
@@ -51,7 +51,7 @@ twister.cineworld = NS(twister.cineworld, {
 		}
 		return dfd;
 	},
-	getFilms: function cineworld_getFilms(cinemaIds, date) {
+	getFilms: function(cinemaIds, date) {
 		var request = {
 			key: twister.cineworld.consts.apiKey,
 			full: true,
@@ -79,7 +79,7 @@ twister.cineworld = NS(twister.cineworld, {
 			.then(twister.cineworld.parseMergedResponse)
 		;
 	},
-	mergeResponses: function cineworld_mergeResponses(quickbook, internal) {
+	mergeResponses: function(quickbook, internal) {
 		var merged = {
 			quickbook: quickbook,
 			internal: internal,
@@ -115,7 +115,7 @@ twister.cineworld = NS(twister.cineworld, {
 		merged.films = $.map(merged.films, function(film) { return film; });
 		return twister.cineworld.films.responses = merged;
 	},
-	parseMergedResponse: function cinewolrd_parseFilmsResponse(mergedResponse) {
+	parseMergedResponse: function(mergedResponse) {
 		/*
 		http://www.cineworld.com/api/quickbook/films:
 		3D: false
@@ -150,7 +150,7 @@ twister.cineworld = NS(twister.cineworld, {
 		}
 		return dfd;
 	},
-	getFilmLengths: function cineworld_getFilmLengths(films) {
+	getFilmLengths: function(films) {
 		var filmLengthRequests = new Array();
 		filmLengthRequests.push({
 			whenHack: "when returns the promise if there's only one, this object helps to create an array of deferreds"
@@ -180,7 +180,7 @@ twister.cineworld = NS(twister.cineworld, {
 			})
 		;
 	},
-	getFilmLength: function cineworld_getFilmLength(film) {
+	getFilmLength: function(film) {
 		var dfd = $.Deferred(twister.utils.bindDeferredThis(film));
 		if(film.length) { // from Cineworld API
 			dfd.resolve(film, film.length);
@@ -235,7 +235,7 @@ twister.cineworld = NS(twister.cineworld, {
 			})
 		;
 	},
-	getPerformance: function (args) {
+	getPerformance: function(args) {
 		var request = {
 			key: twister.cineworld.consts.apiKey,
 			cinema: args.cinemaId,

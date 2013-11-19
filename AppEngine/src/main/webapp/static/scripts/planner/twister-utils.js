@@ -40,7 +40,7 @@ twister.utils = NS(twister.utils, {
 	 $.Deferred(bindDeferredThis(deferredThis, realDeferredFunc));
 	 or later: bindDeferredThis(deferredThis, dfd);
 	 */
-	bindDeferredThis: function bindDeferredThis(deferredThis, deferredOrFunc) {
+	bindDeferredThis: function(deferredThis, deferredOrFunc) {
 		var bind = function(deferred) {
 			deferred.resolve = function(/*...*/) {
 				this.resolveWith(deferredThis, arguments);
@@ -75,12 +75,12 @@ twister.utils = NS(twister.utils, (function Class_DelayedExecutor() {
 		logMethod: $.proxy(console.debug, console)
 	};
 	var DelayedExecutor_ = { // private extension methods, use ClassName_.method.call(this, args)
-		printProgress: function (event, extraArg) {
+		printProgress: function(event, extraArg) {
 			if(this._config.verbose) {
 				this._config.logMethod("[" + this._config.name + "/" + this._timer + "] " + event + ": " + extraArg);
 			}
 		},
-		onTimeout: function () {
+		onTimeout: function() {
 			DelayedExecutor_.printProgress.call(this, "onTimeout", this._config.callback !== undefined? this._config.callback.name : undefined);
 			this._timer = undefined;
 			if(typeof this._config.callback === "function") this._config.callback();
@@ -145,7 +145,7 @@ twister.utils.url = NS(twister.utils.url, {
 
 
 	// http://stackoverflow.com/a/520845/253468 + http://stackoverflow.com/a/11030951/253468
-	getUrlParams: function (url, supportArrays, alwaysArray) {
+	getUrlParams: function(url, supportArrays, alwaysArray) {
 		var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g,
 			match, params = {},
 		decode = function (s) {return decodeURIComponent(s.replace(/\+/g, " "));};
@@ -176,7 +176,7 @@ twister.utils.url = NS(twister.utils.url, {
 });
 
 twister.utils.time = NS(twister.utils.time, {
-		parseDate: function (dateString, timeZone) {
+		parseDate: function(dateString, timeZone) {
 			return moment(google.gdata.DateTime.fromIso8601(dateString).date)
 				.utc()
 				.add('hours', twister.utils.time.parseOffset(dateString));
@@ -184,7 +184,7 @@ twister.utils.time = NS(twister.utils.time, {
 			//date.setTimezone(timeZone);
 			//return date;
 		},
-		parseOffset: function (dateString) {
+		parseOffset: function(dateString) {
 			var offset = dateString.substring(23);
 			var hours = offset.substring(1, 3);
 			var minutes = offset.substring(4, 6);

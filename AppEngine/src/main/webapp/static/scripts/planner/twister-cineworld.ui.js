@@ -33,7 +33,7 @@ twister.cineworld = NS(twister.cineworld, {
 			location.protocol + '//' + location.host + location.pathname
 			+ '?' + twister.cineworld.getArgs());
 	},
-	updateFromQuery: function updateFromQuery() {
+	updateFromQuery: function() {
 		twister.config.debug = !!twister.utils.url.getQueryParam('debug') || twister.config.debug;
 		twister.cineworld.date = twister.utils.url.getQueryParam('date') || twister.cineworld.date;
 		twister.cineworld.films.selectedIds = twister.utils.url.getQueryParams('film') || twister.cineworld.films.selectedIds;
@@ -50,14 +50,14 @@ twister.cineworld = NS(twister.cineworld, {
 		args += '&' + $.map(twister.cineworld.films.selectedIds, function(e) {return 'film=' + e; }).join('&');
 		return args;
 	},
-	saveCinemas: function cineworld_saveCinemas(cinemas) {
+	saveCinemas: function(cinemas) {
 		var cinemasMap = {};
 		$.each(cinemas, function() {
 			cinemasMap[this.id] = this;
 		});
 		twister.cineworld.cinemas.all = cinemasMap;
 	},
-	displayCinemas: function cineworld_displayCinemas(cinemas) {
+	displayCinemas: function(cinemas) {
 		var cinemasList = $('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
 		$.each(cinemas, function() {
 			var option = new Option(this.name, this.id);
@@ -128,19 +128,19 @@ twister.cineworld = NS(twister.cineworld, {
 		});
 		return $('#cinemas');
 	},
-	retrieveFilms: function cineworld_retrieveFilms() {
+	retrieveFilms: function() {
 		var cinemaIds = twister.cineworld.cinemas.selectedIds;
 		var date = twister.cineworld.getDate();
 		return twister.cineworld.getFilms(cinemaIds, date);
 	},
-	saveFilms: function cineworld_saveFilms(films) {
+	saveFilms: function(films) {
 		var filmsMap = {};
 		$.each(films, function() {
 			filmsMap[this.edi] = this;
 		});
 		twister.cineworld.films.all = filmsMap;
 	},
-	displayFilms: function cineworld_displayFilms(films) {
+	displayFilms: function(films) {
 		films.sort(function(a, b) { return a.title.toUpperCase().localeCompare(b.title.toUpperCase()); });
 
 		var filmsList = $('<select id="films" name="films" multiple="multiple"></select>');
@@ -209,7 +209,7 @@ twister.cineworld = NS(twister.cineworld, {
 		})
 		;
 	},
-	rebuildPerformancesTable: function cineworld_rebuildPerformancesTable() {
+	rebuildPerformancesTable: function() {
 		var html = '';
 		html += '<table id="performances">';
 
