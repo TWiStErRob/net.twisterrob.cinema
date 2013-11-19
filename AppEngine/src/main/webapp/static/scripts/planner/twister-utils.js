@@ -44,18 +44,18 @@ twister.utils = NS(twister.utils, {
 		var bind = function(deferred) {
 			deferred.resolve = function(/*...*/) {
 				this.resolveWith(deferredThis, arguments);
-			}
+			};
 			deferred.reject = function(/*...*/) {
 				this.rejectWith(deferredThis, arguments);
-			}
+			};
 			deferred.notify = function(/*...*/) {
 				this.notifyWith(deferredThis, arguments);
-			}
+			};
 			if (typeof deferredOrFunc === "function") {
 				deferredOrFunc.call( deferred, deferred );
 			}
 			return deferred;
-		}
+		};
 		if (deferredOrFunc != undefined && "promise" in deferredOrFunc) {
 			// it's a deferred: (deferredThis, dfd)
 			return bind(deferredOrFunc);
@@ -90,7 +90,7 @@ twister.utils = NS(twister.utils, (function Class_DelayedExecutor() {
 	var DelayedExecutor = function DelayedExecutor_constructor(config) {
 		this._config = $.extend(defaultConfig, config);
 		this._timer = undefined;
-	}
+	};
 	DelayedExecutor.prototype.start = function() {
 		this.stop();
 		DelayedExecutor_.printProgress.call(this, "starting");

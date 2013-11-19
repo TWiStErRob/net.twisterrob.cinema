@@ -10,6 +10,7 @@ twister.cineworld = NS(twister.cineworld, {
 		}
 	},
 	planner: {
+		// http://stackoverflow.com/a/14972456/253468
 	},
 	plan: function() {
 		// TODO remove absolute dependencies (i.e. call plan() only when we have everything), and let other things happen when it's done

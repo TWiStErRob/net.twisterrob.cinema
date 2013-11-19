@@ -20,8 +20,8 @@ if (!String.prototype.format) {
 	var console = (window.console = window.console || {});
 	var noop = console.noop = function () {};
 	var log = console.log || noop;
-	var start = function(name) { return function(param) { log("Start " + name + ": " + param); } };
-	var end = function(name) { return function(param) { log("End " + name + ": " + param); } };
+	var start = function(name) { return function(param) { log("Start " + name + ": " + param); }; };
+	var end = function(name) { return function(param) { log("End " + name + ": " + param); }; };
 
 	var methods = {
 		// Internet Explorer (IE 10): http://msdn.microsoft.com/en-us/library/ie/hh772169(v=vs.85).aspx#methods

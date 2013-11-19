@@ -9,7 +9,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<appengine.app.version>1</appengine.app.version>
-		<appengine.target.version>1.8.3</appengine.target.version>
+		<appengine.target.version>1.8.7</appengine.target.version>
 		<logging.slf4j.version>1.7.5</logging.slf4j.version>
 		<powermock.version>1.5.1</powermock.version>
 		<jersey.version>2.2</jersey.version>
@@ -254,8 +254,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>

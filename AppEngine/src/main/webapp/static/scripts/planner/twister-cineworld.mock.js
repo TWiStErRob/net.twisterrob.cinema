@@ -46,7 +46,7 @@ twister.cineworld.mock = NS(twister.cineworld.mock, {
 					} else {
 						return $ajax(params);
 					}
-				}
+				};
 			}
 		});
 		twister.mock.imdb = $.extend(twister.mock.imdb || {}, {
@@ -78,7 +78,7 @@ twister.cineworld.mock = NS(twister.cineworld.mock, {
 					} else {
 						return $ajax(params);
 					}
-				}
+				};
 			}
 		});
 	
