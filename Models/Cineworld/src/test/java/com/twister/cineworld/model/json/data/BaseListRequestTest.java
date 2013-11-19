@@ -1,6 +1,6 @@
 package com.twister.cineworld.model.json.data;
 
-import static org.easymock.EasyMock.createControl;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import java.net.URL;
@@ -17,7 +17,7 @@ public class BaseListRequestTest {
 	private IMocksControl control;
 
 	@Before
-	public void setUp() throws Throwable {
+	public void setUp() {
 		control = createControl();
 		target = new BaseListRequest<CineworldBase>() {
 			@Override
@@ -40,12 +40,12 @@ public class BaseListRequestTest {
 	}
 
 	@After
-	public void tearDown() throws Throwable {
+	public void tearDown() {
 		control.verify();
 	}
 
 	@Test
-	public void testMakeUrlBasic() throws Throwable {
+	public void testMakeUrlBasic() {
 		String expectedPattern = "http://www\\.cineworld\\.co\\.uk/api/testType\\?.*&key1=value1&key2=value2";
 		URL actual = target.makeUrl("testType", "key1=value1", "key2=value2");
 		assertNotNull(actual);

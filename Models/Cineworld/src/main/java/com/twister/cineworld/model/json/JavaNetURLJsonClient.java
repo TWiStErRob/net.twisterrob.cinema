@@ -3,19 +3,22 @@ package com.twister.cineworld.model.json;
 import java.io.*;
 import java.net.*;
 
+import net.twisterrob.java.io.IOTools;
+
 import org.slf4j.*;
 
 import com.google.gson.*;
 import com.twister.cineworld.exception.*;
 import com.twister.cineworld.exception.ExternalException.System;
-import com.twister.cineworld.tools.IOTools;
 
 public class JavaNetURLJsonClient implements JsonClient {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaNetURLJsonClient.class);
 	private final Gson m_gson;
 
 	public JavaNetURLJsonClient(final Gson gson) {
-		if (gson == null) throw new NullPointerException("Gson must be supplied");
+		if (gson == null) {
+			throw new NullPointerException("Gson must be supplied");
+		}
 		m_gson = gson;
 	}
 	public <T> T get(URL url, Class<T> responseType) throws ApplicationException {
@@ -35,14 +38,13 @@ public class JavaNetURLJsonClient implements JsonClient {
 			throw ex;
 		}
 	}
-	protected String retrieve(URL url) throws ApplicationException, IOException {
+	protected String retrieve(URL url) throws IOException {
 		Reader reader = new InputStreamReader(url.openStream(), "UTF-8");
 		String json = IOTools.readAll(reader);
 		return json;
 	}
 
-	public <T> T post(String url, Object requestObject, Class<T> responseType)
-			throws ApplicationException {
+	public <T> T post(String url, Object requestObject, Class<T> responseType) {
 		throw new UnsupportedOperationException("Only GET is supported");
 	}
 

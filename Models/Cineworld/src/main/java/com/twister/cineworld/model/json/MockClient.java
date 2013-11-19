@@ -3,12 +3,11 @@ package com.twister.cineworld.model.json;
 import java.net.URL;
 import java.util.*;
 
-import com.twister.cineworld.exception.ApplicationException;
 import com.twister.cineworld.model.json.data.*;
 import com.twister.cineworld.model.json.response.*;
 
 public class MockClient implements JsonClient {
-	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>	s_responseMapping	= new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
+	private static final Map<Class<? extends BaseListResponse<?>>, BaseListResponse<?>> s_responseMapping = new HashMap<Class<? extends BaseListResponse<?>>, BaseListResponse<?>>();
 	static {
 		s_responseMapping.put(CinemasResponse.class, MockClient.createCinemasResponse());
 		s_responseMapping.put(FilmsResponse.class, MockClient.createFilmsResponse());
@@ -19,21 +18,19 @@ public class MockClient implements JsonClient {
 		s_responseMapping.put(DistributorsResponse.class, MockClient.createDistributorsResponse());
 	}
 
-	public <T> T get(final URL url, final Class<T> responseType) throws ApplicationException {
+	public <T> T get(final URL url, final Class<T> responseType) {
 		return any(responseType);
 	}
 
-	public <T> T post(final String url, final Object requestObject, final Class<T> responseType)
-			throws ApplicationException {
+	public <T> T post(final String url, final Object requestObject, final Class<T> responseType) {
 		return any(responseType);
 	}
 
 	/**
 	 * Magic happens here.
 	 */
-	protected <T> T any(final Class<T> responseType) throws ApplicationException {
-		@SuppressWarnings("unchecked")
-		T response = (T) s_responseMapping.get(responseType);
+	protected <T> T any(final Class<T> responseType) {
+		T response = (T)s_responseMapping.get(responseType);
 		return response;
 	}
 
