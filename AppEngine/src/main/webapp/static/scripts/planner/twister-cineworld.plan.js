@@ -23,7 +23,7 @@ twister.cineworld = NS(twister.cineworld, {
 		if(twister.cineworld.cinemas.retrieveFilmsDelay.isInProgress() || twister.cineworld.films.selectedIds.length == 0) {
 			console.error("Can't plan(): film retrieval in progress or no films"); return;
 		}
-		if(twister.cineworld.films.getPerformancesDelay.isInProgress())  {
+		if(twister.cineworld.films.retrievePerformancesDelay.isInProgress())  {
 			console.error("Can't plan(): performance retrieval in progress"); return;
 		}
 		console.groupStart("The Plan (cinemas=" +  twister.cineworld.cinemas.selectedIds + ", films=" + twister.cineworld.films.selectedIds + ")");
@@ -147,7 +147,7 @@ twister.cineworld = NS(twister.cineworld, {
 							+ ": " + this.performance.film.title;
 				});
 				result += '</ul>';
-				console.log(result);
+				//console.debug(result);
 				$('#planner_' + cinema.id).append('<li>' + result + '</li>');
 			} else if (node.watched.length > 1) {
 				console.log("Ruled out: not all movies are included: " + node.watched);

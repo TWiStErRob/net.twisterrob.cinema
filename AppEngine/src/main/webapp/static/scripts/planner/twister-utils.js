@@ -75,42 +75,43 @@ twister.utils = NS(twister.utils, (function Class_DelayedExecutor() {
 		logMethod: $.proxy(console.debug, console)
 	};
 	var DelayedExecutor_ = { // private extension methods, use ClassName_.method.call(this, args)
-		printProgress: function (event) {
+		printProgress: function (event, extraArg) {
 			if(this._config.verbose) {
-				this._config.logMethod("[" + this._config.name + "] " + event);
+				this._config.logMethod("[" + this._config.name + "/" + this._timer + "] " + event + ": " + extraArg);
 			}
 		},
 		onTimeout: function () {
-			DelayedExecutor_.printProgress.call(this, "onTimeout");
+			DelayedExecutor_.printProgress.call(this, "onTimeout", this._config.callback !== undefined? this._config.callback.name : undefined);
 			this._timer = undefined;
 			if(typeof this._config.callback === "function") this._config.callback();
 		}
 	};
 
 	var DelayedExecutor = function DelayedExecutor_constructor(config) {
-		this._config = $.extend(defaultConfig, config);
+		this._config = $.extend({}, defaultConfig, config);
 		this._timer = undefined;
 	};
 	DelayedExecutor.prototype.start = function() {
 		this.stop();
-		DelayedExecutor_.printProgress.call(this, "starting");
+		//DelayedExecutor_.printProgress.call(this, "starting", "for " + this._config.timeout + "ms");
 		if (!this.isInProgress()) {
 			this._timer = setTimeout($.proxy(DelayedExecutor_.onTimeout, this), this._config.timeout);
-			DelayedExecutor_.printProgress.call(this, "started");
+			DelayedExecutor_.printProgress.call(this, "started", "for " + this._config.timeout + "ms");
 		}
 	};
 	DelayedExecutor.prototype.stop = function() {
-		DelayedExecutor_.printProgress.call(this, "stopping");
+		DelayedExecutor_.printProgress.call(this, "stopping", (this.isInProgress()? "in progress" : "already stopped"));
 		if (this.isInProgress()) {
-			clearTimeout(this._timer);
+			var timer = this._timer;
+			clearTimeout(timer);
 			this._timer = undefined;
-			DelayedExecutor_.printProgress.call(this, "stopped");
+			DelayedExecutor_.printProgress.call(this, "stopped", timer);
 		}
 	};
-	DelayedExecutor.prototype.isInProgress= function() {
+	DelayedExecutor.prototype.isInProgress = function() {
 		return this._timer !== undefined;
 	};
-	DelayedExecutor.prototype.updateConfig= function(overrides) {
+	DelayedExecutor.prototype.updateConfig = function(overrides) {
 		$.extend(this._config, overrides);
 	};
 	return {DelayedExecutor: DelayedExecutor};

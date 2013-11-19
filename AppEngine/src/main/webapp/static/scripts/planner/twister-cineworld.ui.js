@@ -6,7 +6,7 @@ twister.cineworld = NS(twister.cineworld, {
 	cinemas: {
 		all: [ /* retrieved from cineworld API */ ],
 		selectedIds: [ /* update when checklist checked */ ],
-		retrieveFilmsDelay: new twister.utils.DelayedExecutor({ timeout: 300 })
+		retrieveFilmsDelay: new twister.utils.DelayedExecutor({ timeout: 300, name: "retrieveFilmsDelay" })
 	},
 	films: {
 		all: [ /* retrieved from cineworld API */ ],
@@ -17,13 +17,18 @@ twister.cineworld = NS(twister.cineworld, {
 			// merged: { /* merged previous responses */ }
 		},
 		lengths: { /* cache for film lengths */ },
-		getPerformancesDelay: new twister.utils.DelayedExecutor({ timeout: 300 })
+		retrievePerformancesDelay: new twister.utils.DelayedExecutor({ timeout: 300, name: "retrievePerformancesDelay" })
 	},
 	date: moment().add('days', 0).format("YYYY-MM-DD"),
-	getDate: function cineworld_getDate() {
+	getDate: function() {
 		return twister.cineworld.date.replace(/-/g, '');
 	},
-	rebuildUrl: function rebuildUrl() {
+	dateChanged: function(e) {
+		twister.cineworld.date = this.value;
+		twister.cineworld.writeUI();
+		twister.cineworld.cinemas.retrieveFilmsDelay.start();
+	},
+	rebuildUrl: function() {
 		$("#url").attr("href",
 			location.protocol + '//' + location.host + location.pathname
 			+ '?' + twister.cineworld.getArgs());
@@ -36,6 +41,8 @@ twister.cineworld = NS(twister.cineworld, {
 	},
 	writeUI: function() {
 		twister.ui.screen.date.val(twister.cineworld.date);
+		twister.cineworld.rebuildUrl();
+		$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));
 	},
 	getArgs: function() {
 		var args = 'date=' + encodeURIComponent(twister.cineworld.date);
@@ -96,7 +103,7 @@ twister.cineworld = NS(twister.cineworld, {
 			}
 		} );
 		twister.cineworld.cinemas.retrieveFilmsDelay.updateConfig({
-			callback: function() {
+			callback: function retrieveFilmsCallback() {
 				var filmsPromise = twister.cineworld.retrieveFilms();
 				filmsPromise
 					.then(twister.cineworld.getFilmLengths)
@@ -159,11 +166,11 @@ twister.cineworld = NS(twister.cineworld, {
 				twister.cineworld.films.selectedIds = checkedFilmEdis;
 				twister.cineworld.rebuildUrl();
 
-				twister.cineworld.films.getPerformancesDelay.start();
+				twister.cineworld.films.retrievePerformancesDelay.start();
 			}
 		} );
-		twister.cineworld.films.getPerformancesDelay.updateConfig({
-			callback: function() {
+		twister.cineworld.films.retrievePerformancesDelay.updateConfig({
+			callback: function retrievePerformancesCallback() {
 				twister.cineworld.rebuildPerformancesTable();
 				var updatePerformanceRequests = [];
 				$('#performances_listing > table td[id^=performances_]').each(function() {

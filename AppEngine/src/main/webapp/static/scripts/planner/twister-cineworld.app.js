@@ -66,12 +66,7 @@ twister.ui = NS(twister.ui, {
 					//$( "#to" ).datepicker( "option", "minDate", selectedDate );
 				}
 			}))
-			.change(function(e) {
-				twister.cineworld.date = this.value;
-				twister.cineworld.rebuildUrl();
-				$("#dateDisplay").text(moment($("#date").val(), "YYYY-MM-DD").format("LL, dddd"));
-				twister.cineworld.retrieveFilms();
-			})
+			.change(twister.cineworld.dateChanged)
 		;
 	},
 	showStatus: function(statusText) {

@@ -152,15 +152,18 @@ twister.cineworld = NS(twister.cineworld, {
 	},
 	getFilmLengths: function cineworld_getFilmLengths(films) {
 		var filmLengthRequests = new Array();
+		filmLengthRequests.push({
+			whenHack: "when returns the promise if there's only one, this object helps to create an array of deferreds"
+		});
 		$.each(films, function film_getLength() {
 			filmLengthRequests.push(twister.cineworld.getFilmLength(this));
 		});
 		return $.when.apply($, filmLengthRequests)
-			.then(function(/*...*/) {
+			.then(function getFilmLengths_processFilmLengths(/*...*/) {
 				// TODO twister.cineworld.plan(); replan, when film lengths are done, results may have changed
-
-				for(var i = 0; i < arguments.length; ++i) {
-					var response = arguments[i];
+				var responses = Array.prototype.slice.call(arguments, 1);
+				for(var i = 0; i < responses.length; ++i) {
+					var response = responses[i];
 					var film = response[0];
 					var runtime = response[1];
 					var error = response[2];
@@ -170,11 +173,10 @@ twister.cineworld = NS(twister.cineworld, {
 						console.warn("'{0}' has invalid runtime: '{1}' ({2})".format(film.title, runtime, error));
 						film.length = 100;
 					} else { // something terribly wrong
-						console.error("Invalid arguments #" + i + ": " + arguments[i]);
-						film.length = 100;
+						console.error("Invalid arguments #" + i + ": " + response);
 					}
 				}
-				return $.map(arguments, function(response) { return response[0]; });
+				return $.map(responses, function(response) { return response[0]; });
 			})
 		;
 	},
