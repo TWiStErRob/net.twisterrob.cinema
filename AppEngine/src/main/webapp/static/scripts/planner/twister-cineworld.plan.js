@@ -131,10 +131,18 @@ twister.cineworld = NS(twister.cineworld, {
 					}
 					node = node.prev;
 				}
+				var first = results[0].performance.plan.movieRange.start;
+				var last = results[results.length - 1].performance.plan.movieRange.end;
+				var workEnd = moment(first).startOf('day').add(moment.duration({hours:17, minutes:30}));
 				var result = '';
-				result += results[0].performance.plan.movieRange.start.format("HH:mm");
+				result += first.format("HH:mm");
 				result += '&nbsp;-&nbsp;';
-				result += results[results.length - 1].performance.plan.movieRange.end.format("HH:mm");
+				result += last.format("HH:mm");
+				if(first.isBefore(workEnd)) {
+					console.log("Ruled out: too early");
+					// $('#planner_' + cinema.id).append('<li>' + result + ": too early" + '</li>');
+					return;
+				}
 				result += '<ul>';
 				$.each(results, function() {
 					if(this.prev.performance.film.edi != -1) {
