@@ -13,7 +13,10 @@
         <dependent-module archiveName="twister-cinema-client-cineworld-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Cineworld Performances API Java Client 1.0/Cineworld Performances API Java Client 1.0">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="twister-lib-java-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/twister-lib-java/twister-lib-java">
+        <dependent-module archiveName="twister-lib-java-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/twister-lib-java-cinema/twister-lib-java-cinema">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson-extras-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/gson-extras-2.2.3-SNAPSHOT-cinema/gson-extras-2.2.3-SNAPSHOT-cinema">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/Cinema - Appengine/target/WEB-INF/classes"/>
