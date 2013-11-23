@@ -1,0 +1,4 @@
+{
+	"NEO4J_REST_PATH": "db/data/",
+	"NEO4J_CYPHER_PATH": "cypher/"
+}

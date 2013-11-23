@@ -1,11 +1,12 @@
 /* jslint plusplus: true */
-var fs = require('fs');
-var url = require('url');
-var http = require('http');
-var restify = require('restify');
-var extend = require('node.extend');
-var assert = require('assert');
+var assert = require('assert');       // http://nodejs.org/api/assert.html
+var fs = require('fs');               // http://nodejs.org/api/fs.html
+var http = require('http');           // http://nodejs.org/api/http.html
+var url = require('url');             // http://nodejs.org/api/url.html
+var restify = require('restify');     // http://mcavage.me/node-restify
+var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var package = require('./package.json');
+var config = require('./config.json');
 
 // d:\Programming>heroku config --app twisterrob-cinema --shell
 // NEO4J_URL=http://ab8c5ac27:8a79ffd54@02774ad3f.hosted.neo4j.org:7752
@@ -18,7 +19,7 @@ var neo4jOptions = {
 	auth: neo4jURL.auth,
 	host: neo4jURL.hostname,
 	port: neo4jURL.port,
-	path: neo4jURL.pathname + 'db/data/cypher',
+	path: neo4jURL.pathname + config.NEO4J_REST_PATH + config.NEO4J_CYPHER_PATH,
 	method: 'POST',
 	headers: {
 		'Content-Type': 'application/json', // outgoing content type
