@@ -18,7 +18,7 @@ var neo4jOptions = {
 	auth: neo4jURL.auth,
 	host: neo4jURL.hostname,
 	port: neo4jURL.port,
-	path: neo4jURL.pathname + '/db/data/cypher',
+	path: neo4jURL.pathname + 'db/data/cypher',
 	method: 'POST',
 	headers: {
 		'Content-Type': 'application/json', // outgoing content type
