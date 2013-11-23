@@ -5,13 +5,21 @@ var url = require('url');             // http://nodejs.org/api/url.html
 var restify = require('restify');     // http://mcavage.me/node-restify / https://github.com/mcavage/node-restify
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var bunyan = require('bunyan');
+var neo4j = require('neo4j-js');
 var package = require('./package.json');
 var config = require('./config.json');
 
-var log = bunyan.createLogger({
-	name: 'app',
-	stream: process.stdout
-})
+//var bunyanProc = require('child_process').spawn('C:/Users/TWiStEr/AppData/Roaming/npm/bunyan.cmd');
+var logs = {
+	app: bunyan.createLogger({
+		name: 'app',
+		stream: process.stderr
+	}),
+	audit: bunyan.createLogger({
+		name: 'audit',
+		stream: process.stdout
+	})
+}, log = logs.app;
 
 // d:\Programming>heroku config --app twisterrob-cinema --shell
 // NEO4J_URL=http://ab8c5ac27:8a79ffd54@02774ad3f.hosted.neo4j.org:7752
@@ -33,57 +41,39 @@ var neo4jOptions = {
 };
 log.info(neo4jOptions, "Using NEO4J rest URL: %s", process.env.NEO4J_URL);
 
+var graph; // initialized in neo4j.connect
+var queries = {}; // initialized in neo4j.connect
+var neo4jConnection = process.env.NEO4J_URL + '/' + config.NEO4J_REST_PATH;
+log.info('Connecting to: %s', neo4jConnection);
+neo4j.connect(neo4jConnection, function (err, newGraph) {
+	if (err) {
+		throw err;
+	}
+	graph = newGraph;
+	extend(queries, {
+		getFilm: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8")
+	});
+	log.info('Connected to: %s', graph.version);
+});
 function getFilm(req, res, next) {
-	log.info("Incoming request: %s", req.url);
-	var neoReq = http.request(neo4jOptions, function(neoRes) {
-		log.info('STATUS: %s, HEADERS: %s', neoRes.statusCode, JSON.stringify(neoRes.headers));
-		neoRes.setEncoding('utf8');
-		var neoResponseData = "";
-		neoRes.on('data', function (chunk) {
-			neoResponseData += chunk;
-		});
-		neoRes.on('end', function() {
-			log.debug(neoResponseData);
-			var data = JSON.parse(neoResponseData);
-			var out = [];
-			for(var index = 0, dataLen = data.data.length; index < dataLen; ++index) {
-				var outObj = {};
-				for(var col = 0, colLen = data.columns.length; col < colLen; ++col) {
-					var column = data.columns[col];
-					var value = data.data[index][col];
-					outObj[column] = value;
-				}
-				out.push(outObj);
-			}
-			res.send(out);
-			next();
-		});
+	graph.query(queries.getFilm, {
+		node: parseInt(req.params.edi, 10),
+	}, function (error, results) {
+		res.send(results);
+		next();
 	});
-	neoReq.on('error', function(e) {
-		log.error(e);
-		res.send(500, e);
-		next(e);
-	});
-	neoReq.write(JSON.stringify({
-		query: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8"),
-		params: {
-			node: parseInt(req.params.edi, 10),
-		}
-	}));
-	log.info("Calling Neo4j");
-	neoReq.end();
 }
 
 function readHTML(fileName) {
 	return function readHTML_internal(req, res, next) {
 		fs.readFile(fileName, function (err, data) {
 			if (err) {
-				return next(err);
+				next(err);
 			}
 			res.setHeader('Content-Type', 'text/html');
 			res.writeHead(200);
 			res.end(data);
-			return next();
+			next();
 		});
 	};
 }
@@ -98,12 +88,14 @@ server.use(restify.queryParser({ mapParams: false }));
 server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.jsonp());
 server.use(restify.acceptParser(server.acceptable));
-server.on('after', restify.auditLogger({
-	log: bunyan.createLogger({
-		name: 'audit',
-		stream: process.stdout
-	})
-}));
+var audit = restify.auditLogger({
+	log: logs.audit
+});
+server.use(function(req, res, next) {
+	audit(req, res, next);
+	return next();
+});
+server.on('after', audit);
 
 server.get(/\/static\/?.*/, restify.serveStatic({
 	directory: './static' // FIXME change when updating to 2.6.1
