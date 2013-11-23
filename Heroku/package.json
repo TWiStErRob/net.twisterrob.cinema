@@ -19,6 +19,11 @@
 		"test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
 	},
 
+	"engines": {
+		"node": "0.8.14",
+		"npm":  "1.1.65"
+	},
+
 	"dependencies": {
 		"restify": "2.6.0",
 		"node.extend": "1.0.8"
