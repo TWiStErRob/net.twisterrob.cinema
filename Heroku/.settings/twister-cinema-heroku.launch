@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.nodeclipse.debug.launch.LaunchConfigurationType">
 <mapAttribute key="attr_environment_variables">
+<mapEntry key="NEO4J_URL" value="http://ab8c5ac27:8a79ffd54@02774ad3f.hosted.neo4j.org:7752"/>
 <mapEntry key="PORT" value="8080"/>
 </mapAttribute>
 <stringAttribute key="key_file_path" value="/twister-cinema-heroku/app.js"/>

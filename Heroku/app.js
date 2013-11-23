@@ -1,22 +1,34 @@
 /* jslint plusplus: true */
 var fs = require('fs');
+var url = require('url');
 var http = require('http');
 var restify = require('restify');
+var extend = require('node.extend');
+var assert = require('assert');
+var package = require('./package.json');
+
+// d:\Programming>heroku config --app twisterrob-cinema --shell
+// NEO4J_URL=http://ab8c5ac27:8a79ffd54@02774ad3f.hosted.neo4j.org:7752
+// PORT=8080
+assert.notEqual(process.env.NEO4J_URL, undefined, "NEO4J_URL environment variable must be defined (=http://username:password@hostname:port).");
+assert.notEqual(process.env.PORT, undefined, "PORT environment variable must be defined (=1234).");
+
+var neo4jURL = url.parse(process.env.NEO4J_URL, false /* queryStringAsObject */);
+var neo4jOptions = {
+	auth: neo4jURL.auth,
+	host: neo4jURL.hostname,
+	port: neo4jURL.port,
+	path: neo4jURL.pathname + '/db/data/cypher',
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json', // outgoing content type
+		'Accept': 'application/json; charset=UTF-8', // expected content type
+	}
+};
 
 function getFilm(req, res, next) {
 	console.log("Incoming request: ", req.url);
-	var options = {
-		host: "02774ad3f.hosted.neo4j.org",
-		auth: 'ab8c5ac27' + ':' + '8a79ffd54',
-		port: '7752',
-		path: '/db/data/cypher',
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json', // outgoing content type
-			'Accept': 'application/json; charset=UTF-8', // expected content type
-		}
-	};
-	var neoReq = http.request(options, function(neoRes) {
+	var neoReq = http.request(neo4jOptions, function(neoRes) {
 		console.log('STATUS: ' + neoRes.statusCode + ', HEADERS: ' + JSON.stringify(neoRes.headers));
 		neoRes.setEncoding('utf8');
 		var neoResponseData = "";
@@ -53,7 +65,11 @@ function getFilm(req, res, next) {
 	neoReq.end();
 }
 
-var server = restify.createServer();
+var server = restify.createServer({
+	name: package.name + "-" + package.version,
+	version: package.version,
+	host: 'localhost'
+});
 server.get('/film/:edi', getFilm);
 
 server.listen(process.env.PORT, function() {
