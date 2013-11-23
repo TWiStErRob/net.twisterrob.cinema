@@ -1,0 +1,25 @@
+{
+	"name": "twisterrob-cinema-heroku",
+	"version": "1.0.0",
+	"author": "Robert Papp <papp.robert.s@gmail.com>",
+	"contributors": {
+		"name": "Robert Papp",
+		"email": "papp.robert.s@gmail.com"
+	},
+
+	"description": "Heroku backing for twisterrob-cinema with Neo4j",
+	"readmeFilename": "README.md",
+
+	"main": "app.js",
+	"bin": {
+		"app": "./app.js"
+	},
+	"scripts": {
+		"start": "node ./app.js",
+		"test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+	},
+
+	"dependencies": {
+		"restify": "2.6.0"
+	}
+}
