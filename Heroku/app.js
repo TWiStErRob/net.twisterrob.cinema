@@ -1,4 +1,3 @@
-/* jslint plusplus: true */
 var assert = require('assert');       // http://nodejs.org/api/assert.html
 var fs = require('fs');               // http://nodejs.org/api/fs.html
 var http = require('http');           // http://nodejs.org/api/http.html
