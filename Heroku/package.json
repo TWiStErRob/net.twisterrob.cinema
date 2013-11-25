@@ -28,6 +28,8 @@
 		"restify": "2.6.0",
 		"node.extend": "1.0.8",
 		"bunyan": "0.21.1",
-		"neo4j-js": "0.0.7"
+		"neo4j-js": "0.0.7",
+		"request": "2.27.0",
+		"underscore": "1.5.2"
 	}
 }
