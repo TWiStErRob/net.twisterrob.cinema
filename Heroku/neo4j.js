@@ -19,7 +19,7 @@ module.exports = {
 		log.info('Connecting to: %s', neo4jConnection);
 		neo4j.connect(neo4jConnection, function (err, graph) {
 			if (err) {
-				throw err;
+				callback(err, undefined);
 			}
 			graphCache = graph;
 
@@ -31,7 +31,7 @@ module.exports = {
 			};
 
 			log.info('Connected to: %s', graph.version);
-			callback(graph);
+			callback(undefined, graph);
 		});
 	},
 	createNodes: function(graph, clazz, bodyContents, existingQuery, getNodeID, getNewID, fixNewObj, done) {
@@ -97,7 +97,7 @@ module.exports = {
 						// contentObj.update
 					}
 				} else {
-					log.info("No updated %ss.", clazz);
+					log.info("No deleted %ss.", clazz);
 				}
 				batch.run();
 			}

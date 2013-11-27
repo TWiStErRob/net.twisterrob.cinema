@@ -14,5 +14,10 @@ extend(exports, {
 		name: 'task',
 		stream: process.stderr,
 		level: 'TRACE'
+	}),
+	test: bunyan.createLogger({
+		name: 'task',
+		stream: process.stdout,
+		level: 'TRACE'
 	})
 });

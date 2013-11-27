@@ -2,7 +2,8 @@ var request = require('request');     // https://github.com/mikeal/request
 var log = require('./logs').task;
 var neo4j = require('./neo4j');
 
-neo4j.init(function(graph) {
+neo4j.init(function(err, graph) {
+	if(err) throw err;
 	request.get({
 		uri: 'http://www.cineworld.com/api/quickbook/films',
 		json: true,
@@ -10,10 +11,8 @@ neo4j.init(function(graph) {
 			key: "9qfgpF7B",
 			full: true
 		}
-	}, function (error, response, body) {
-		if(error) {
-			throw error;
-		}
+	}, function (err, response, body) {
+		if(err) throw err;
 		neo4j.createNodes(graph, 'Film', body.films, graph.queries.getAllFilms,
 			function(filmNode) {
 				return filmNode.film.data.edi;
