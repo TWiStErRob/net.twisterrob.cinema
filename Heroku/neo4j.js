@@ -39,33 +39,67 @@ module.exports = {
 			if(error) {
 				throw error;
 			}
-			var ids = _.map(results, getNodeID);
-			var films = _.reject(bodyContents, function(film) {
-				return _.contains(ids, getNewID(film));
-			});
-			if (films.length > 0) {
-				log.info("Inserting %d new %ss.", films.length, clazz);
-				var nodes = [];
+			var dbIDs = _.map(results, getNodeID);
+			var bodyIDs = _.map(bodyContents, getNewID);
+			var existingContent = _.filter(bodyContents, function(contentObj) {
+				return _.contains(dbIDs, getNewID(contentObj));
+			}), existingLength = existingContent.length;
+			var newContent = _.reject(bodyContents, function(contentObj) {
+				return _.contains(dbIDs, getNewID(contentObj));
+			}), newLength = newContent.length;
+			var deletedContent = _.reject(results, function(dbNode) {
+				return _.contains(bodyIDs, getNodeID(dbNode));
+			}), deletedLength = deletedContent.length;
+
+			if(newLength > 0 || existingLength > 0 || deletedLength > 0) {
 				var batch = graph.createBatch();
-				var nodeInserter = function(error, node) {
-					if(error) {
-						throw error;
+				var now = new Date();
+				log.info("Inserting %d new and updating %d and deleting %d existing %ss for %s.",
+						newLength, existingLength, deletedLength, clazz, now);
+				if (newLength > 0) {
+					var nodes = [];
+					var nodeInserter = function(error, node) {
+						if(error) {
+							throw error;
+						}
+						nodes.push(node);
+						if(nodes.length === newLength) {
+							log.info("Finished inserting %d new %ss.", newLength, clazz);
+							done(error, nodes);
+						}
+					};
+					for(var i = 0; i < newLength; i++) {
+						var contentObj = newContent[i];
+						contentObj.class = clazz;
+						contentObj._created = now;
+						contentObj._updated = now;
+						fixNewObj(contentObj);
+						graph.createNode(batch, contentObj, nodeInserter);
 					}
-					nodes.push(node);
-					if(nodes.length === films.length) {
-						log.info("Finished inserting %d new %ss.", films.length, clazz);
-						done(error, nodes);
+				} else {
+					log.info("No new %ss.", clazz);
+				}
+				if(existingLength > 0) {
+					for(var i = 0; i < existingLength; i++) {
+						var contentObj = existingContent[i];
+						contentObj.class = clazz;
+						contentObj._updated = now;
+						// contentObj.update
 					}
-				};
-				for(var i = 0, len = films.length; i < len; i++) {
-					var film = films[i];
-					film.class = clazz;
-					fixNewObj(film);
-					graph.createNode(batch, film, nodeInserter);
+				} else {
+					log.info("No updated %ss.", clazz);
+				}
+				if(deletedLength > 0) {
+					for(var i = 0; i < deletedLength; i++) {
+						var contentObj = deletedContent[i];
+						contentObj.class = clazz;
+						contentObj._deleted = now;
+						// contentObj.update
+					}
+				} else {
+					log.info("No updated %ss.", clazz);
 				}
 				batch.run();
-			} else {
-				log.info("No new %ss.", clazz);
 			}
 		});
 	}
