@@ -3,6 +3,7 @@ var extend = require('node.extend');  // https://github.com/dreamerslab/node.ext
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var _ = require('underscore');        // http://underscorejs.org/
+var assert = require('assert');
 var config = require('./config');
 
 var log = require('./logs').app;
@@ -34,18 +35,18 @@ module.exports = {
 			callback(undefined, graph);
 		});
 	},
-	createNodes: function(graph, clazz, bodyContents, existingQuery, getNodeID, getNewID, fixNewObj, done) {
-		graph.query(existingQuery, function (error, results) {
+	createNodes: function(graph, clazz, data, queryAll, getNodeID, getDataID, dataToNodeProperties, allDone) {
+		graph.query(queryAll, function (error, results) {
 			if(error) {
 				throw error;
 			}
 			var dbIDs = _.map(results, getNodeID);
-			var bodyIDs = _.map(bodyContents, getNewID);
-			var existingContent = _.filter(bodyContents, function(contentObj) {
-				return _.contains(dbIDs, getNewID(contentObj));
+			var bodyIDs = _.map(data, getDataID);
+			var existingContent = _.filter(data, function(contentObj) {
+				return _.contains(dbIDs, getDataID(contentObj));
 			}), existingLength = existingContent.length;
-			var newContent = _.reject(bodyContents, function(contentObj) {
-				return _.contains(dbIDs, getNewID(contentObj));
+			var newContent = _.reject(data, function(contentObj) {
+				return _.contains(dbIDs, getDataID(contentObj));
 			}), newLength = newContent.length;
 			var deletedContent = _.reject(results, function(dbNode) {
 				return _.contains(bodyIDs, getNodeID(dbNode));
@@ -56,25 +57,32 @@ module.exports = {
 				var now = new Date();
 				log.info("Inserting %d new and updating %d and deleting %d existing %ss for %s.",
 						newLength, existingLength, deletedLength, clazz, now);
+				var createdNodes = [], updatedNodes = [], deletedNodes = [];
+				var nodeFinished = function() {
+					if(createdNodes.length === newLength && updatedNodes.length === existingLength) {
+						log.info("Finished insering %d new and updating %d and deleting %d existing %ss for %s.",
+								newLength, existingLength, deletedLength, clazz, now);
+						allDone(error, createdNodes, updatedNodes, deletedNodes);
+					}
+				};
 				if (newLength > 0) {
-					var nodes = [];
 					var nodeInserter = function(error, node) {
 						if(error) {
 							throw error;
 						}
-						nodes.push(node);
-						if(nodes.length === newLength) {
-							log.info("Finished inserting %d new %ss.", newLength, clazz);
-							done(error, nodes);
-						}
+						createdNodes.push(node);
+						nodeFinished();
 					};
 					for(var i = 0; i < newLength; i++) {
 						var contentObj = newContent[i];
-						contentObj.class = clazz;
-						contentObj._created = now;
-						contentObj._updated = now;
-						fixNewObj(contentObj);
-						graph.createNode(batch, contentObj, nodeInserter);
+						var dbObj = extend(true, {}, contentObj);
+						dataToNodeProperties(dbObj);
+						extend(dbObj, {
+							class: clazz,
+							_created: now,
+							_updated: now
+						});
+						graph.createNode(batch, dbObj, nodeInserter);
 					}
 				} else {
 					log.info("No new %ss.", clazz);
@@ -82,7 +90,7 @@ module.exports = {
 				if(existingLength > 0) {
 					for(var i = 0; i < existingLength; i++) {
 						var contentObj = existingContent[i];
-						contentObj.class = clazz;
+						assert.equal(contentObj.class, clazz);
 						contentObj._updated = now;
 						// contentObj.update
 					}
@@ -92,7 +100,7 @@ module.exports = {
 				if(deletedLength > 0) {
 					for(var i = 0; i < deletedLength; i++) {
 						var contentObj = deletedContent[i];
-						contentObj.class = clazz;
+						assert.equal(contentObj.class, clazz);
 						contentObj._deleted = now;
 						// contentObj.update
 					}
