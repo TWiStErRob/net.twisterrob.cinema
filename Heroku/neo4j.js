@@ -35,22 +35,22 @@ module.exports = {
 			callback(undefined, graph);
 		});
 	},
-	createNodes: function(graph, clazz, data, queryAll, getNodeID, getDataID, dataToNodeProperties, allDone) {
+	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, dataToNodeProperties, allDone) {
 		graph.query(queryAll, function (error, results) {
 			if(error) {
 				throw error;
 			}
-			var dbIDs = _.map(results, getNodeID);
-			var bodyIDs = _.map(data, getDataID);
-			var existingContent = _.filter(data, function(contentObj) {
-				return _.contains(dbIDs, getDataID(contentObj));
-			}), existingLength = existingContent.length;
-			var newContent = _.reject(data, function(contentObj) {
-				return _.contains(dbIDs, getDataID(contentObj));
-			}), newLength = newContent.length;
-			var deletedContent = _.reject(results, function(dbNode) {
-				return _.contains(bodyIDs, getNodeID(dbNode));
-			}), deletedLength = deletedContent.length;
+			var nodes = _.pluck(results, nodeProperty);
+			var nodesByID = _.indexBy(nodes, nodeIDProperty),
+			    nodeIDs = _.keys(nodesByID);
+			var dataByID = _.indexBy(data, dataIDProperty),
+			    dataIDs = _.keys(dataByID);
+			var newContent = _.omit(_.clone(dataByID), nodeIDs),
+			    newLength = _.size(newContent);
+			var existingContent = _.pick(_.clone(nodesByID), dataIDs),
+			    existingLength = _.size(existingContent);
+			var deletedContent = _.omit(_.clone(nodesByID), dataIDs),
+			    deletedLength = _.size(deletedContent);
 
 			if(newLength > 0 || existingLength > 0 || deletedLength > 0) {
 				var batch = graph.createBatch();
@@ -73,8 +73,7 @@ module.exports = {
 						createdNodes.push(node);
 						nodeFinished();
 					};
-					for(var i = 0; i < newLength; i++) {
-						var contentObj = newContent[i];
+					_.each(newContent, function(contentObj) {
 						var dbObj = extend(true, {}, contentObj);
 						dataToNodeProperties(dbObj);
 						extend(dbObj, {
@@ -83,27 +82,30 @@ module.exports = {
 							_updated: now
 						});
 						graph.createNode(batch, dbObj, nodeInserter);
-					}
+					});
 				} else {
 					log.info("No new %ss.", clazz);
 				}
 				if(existingLength > 0) {
-					for(var i = 0; i < existingLength; i++) {
-						var contentObj = existingContent[i];
-						assert.equal(contentObj.class, clazz);
-						contentObj._updated = now;
+					//console.log(existingContent);
+					_.each(existingContent, function(node) {
+						//console.log(node);
+						assert.equal(node.data.class, clazz);
+						node.data._updated = now;
 						// contentObj.update
-					}
+						updatedNodes.push(node);
+						nodeFinished();
+					});
 				} else {
 					log.info("No updated %ss.", clazz);
 				}
 				if(deletedLength > 0) {
-					for(var i = 0; i < deletedLength; i++) {
-						var contentObj = deletedContent[i];
+					console.log(deletedContent);
+					_.each(deletedContent, function(contentObj) {
 						assert.equal(contentObj.class, clazz);
 						contentObj._deleted = now;
 						// contentObj.update
-					}
+					});
 				} else {
 					log.info("No deleted %ss.", clazz);
 				}

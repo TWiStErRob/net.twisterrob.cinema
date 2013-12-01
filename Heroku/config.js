@@ -11,6 +11,6 @@ assert.notEqual(process.env.PORT, undefined, "PORT environment variable must be 
 
 extend(true, exports, config, {
 	NEO4J_URL: process.env.NEO4J_URL,
-	production: process.env.HEROKU == 1,
+	production: process.env.ENV === "prod",
 	port: process.env.PORT
 });

@@ -6,25 +6,25 @@ exports.testLifeCycle = {
 	setUp: function (callback) {
 		var test = this;
 		test.class = 'Test';
-		test.queryAll = 'START n = node(*) WHERE n.class = "' + test.class + '" RETURN n';
+		test.queryAll = 'START n = node(*) WHERE n.class = "' + test.class + '" RETURN n as nodeAlias';
 		test.queryClean = 'START n = node(*) WHERE n.class = "' + test.class + '" DELETE n';
-		test.IDFuncNode = function(n) {
-			return n.id;
-		};
-		test.IDFuncData = function(d) {
-			return d.dataID;
-		};
+		test.nodeSelector = "nodeAlias";
+		test.nodeID = function(result) { return result.data.namedID; };
+		test.dataID = 'dataID';
 		test.dataToNodeMapping = function(d) {
 			d.namedID = d.dataID;
 			delete d.dataID;
 		};
 		neo4j.init(function(err, graph) {
-			// TODO assert graph
-//			test.ifError(err);
-//			test.ok(graph, "No graph");
+			if(err) { throw err; } // TODO test.ifError(err);
 			test.graph = graph;
 			callback();
 		});
+	},
+	checkSetup: function(test) {
+		test.data = this;
+		test.ok(test.data.graph, "No graph");
+		test.done();
 	},
 	tearDown : function(callback) {
 		callback();
@@ -44,12 +44,13 @@ exports.testLifeCycle = {
 			{ dataID: 3333, name: "Name 3" }
 		];
 		neo4j.createNodes(test.data.graph, test.data.class, data, test.data.queryAll,
-			test.data.IDFuncNode,
-			test.data.IDFuncData,
+			test.data.nodeSelector,
+			test.data.nodeID,
+			test.data.dataID,
 			test.data.dataToNodeMapping,
 			/**
 			 * <pre>
-			 * cinemaNodes == [ {
+			 * createdNodes == [ {
 			 *     id : '46',
 			 *     data : {
 			 *         namedID : 11,
@@ -79,25 +80,36 @@ exports.testLifeCycle = {
 			 * } ]
 			 * </pre>
 			 */
-			function done(error, cinemaNodes) {
+			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
-				test.ok(0 < cinemaNodes.length, "No nodes inserted.");
-				test.equal(cinemaNodes.length, data.length);
-				var firstCreated = cinemaNodes[0].data._created, firstUpdated = cinemaNodes[0].data._updated;
+				test.equal(updatedNodes.length, 0);
+				test.equal(deletedNodes.length, 0);
+				test.ok(0 < createdNodes.length, "No nodes inserted.");
+				test.equal(createdNodes.length, data.length);
+				var firstCreated = createdNodes[0].data._created,
+				    firstUpdated = createdNodes[0].data._updated;
 				test.ok(firstCreated, "No creation date");
 				test.ok(firstUpdated, "No update date");
 				for(var i = 0, len = data.length; i < len; i++) {
-					test.equal(cinemaNodes[i].data.namedID, data[i].dataID);
-					test.equal(cinemaNodes[i].data.name, data[i].name);
-					test.equal(cinemaNodes[i].data.class, test.data.class);
-					test.equal(cinemaNodes[i].data._created, firstCreated);
-					test.equal(cinemaNodes[i].data._updated, firstUpdated);
+					test.equal(createdNodes[i].data.namedID, data[i].dataID);
+					test.equal(createdNodes[i].data.name, data[i].name);
+					test.equal(createdNodes[i].data.class, test.data.class);
+					test.equal(createdNodes[i].data._created, firstCreated);
+					test.equal(createdNodes[i].data._updated, firstUpdated);
 				}
 				test.done();
 			}
 		);
 	},
-	/*testUpdate: function(test) {
+	testExisting: function(test) {
+		test.data = this;
+		test.data.graph.query(test.data.queryAll, function(err, results) {
+			test.ifError(err);
+			//console.log(results);
+			test.done();
+		});
+	},
+	testUpdate: function(test) {
 		test.data = this;
 		var data = [
 			{ dataID: 11, name: "Name 1" },
@@ -105,27 +117,31 @@ exports.testLifeCycle = {
 			{ dataID: 3333, name: "Name 3333" }
 		];
 		neo4j.createNodes(test.data.graph, test.data.class, data, test.data.queryAll,
-			test.data.IDFuncNode,
-			test.data.IDFuncData,
+			test.data.nodeSelector,
+			test.data.nodeID,
+			test.data.dataID,
 			function dataToNodeMapping(d) {
 				test.fail("Should not be called");
 			},
-			function done(error, cinemaNodes) {
+			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
-				test.ok(0 < cinemaNodes.length, "No nodes updated.");
-				test.equal(cinemaNodes.length, data.length);
-				var firstCreated = cinemaNodes[0].data._created, firstUpdated = cinemaNodes[0].data._updated;
+				test.equal(createdNodes.length, 0);
+				test.equal(deletedNodes.length, 0);
+				test.ok(0 < updatedNodes.length, "No nodes updated.");
+				test.equal(updatedNodes.length, data.length);
+				var firstCreated = updatedNodes[0].data._created,
+				    firstUpdated = updatedNodes[0].data._updated;
 				test.ok(firstCreated, "No creation date");
 				test.ok(firstUpdated, "No update date");
 				for(var i = 0, len = data.length; i < len; i++) {
-					test.equal(cinemaNodes[i].data.namedID, data[i].dataID);
-					//test.equal(cinemaNodes[i].data.name, data[i].name);
-					test.equal(cinemaNodes[i].data.class, "Test");
-					test.equal(cinemaNodes[i].data._created, firstCreated);
-					test.equal(cinemaNodes[i].data._updated, firstUpdated);
+					test.equal(updatedNodes[i].data.namedID, data[i].dataID);
+					//test.equal(createdNodes[i].data.name, data[i].name);
+					test.equal(updatedNodes[i].data.class, "Test");
+					test.equal(updatedNodes[i].data._created, firstCreated);
+					test.equal(updatedNodes[i].data._updated, firstUpdated);
 				}
 				test.done();
 			}
 		);
-	}*/
+	}
 };

@@ -14,12 +14,11 @@ neo4j.init(function(err, graph) {
 	}, function (err, response, body) {
 		if(err) throw err;
 		neo4j.createNodes(graph, 'Cinema', body.cinemas, graph.queries.getAllCinemas,
+			"cinema",
 			function(cinemaNode) {
-				return cinemaNode.id;
+				return cinemaNode.data.id;
 			},
-			function(cinema) {
-				return cinema.cineworldID;
-			},
+			"cineworldID",
 			function(cinemaToInsert) {
 				cinemaToInsert.cineworldID = cinemaToInsert.id;
 				delete cinemaToInsert.id;
