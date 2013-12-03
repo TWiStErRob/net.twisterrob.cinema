@@ -3,6 +3,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var extend = require('node.extend');
 var AssertionError = nodeunit.assert.AssertionError;
 
 /**
@@ -10,8 +11,52 @@ var AssertionError = nodeunit.assert.AssertionError;
  */
 exports.info = "JUnit-like Reporter";
 
+function ansi(code) {
+	return '\u001B[' + code + 'm';
+}
+function color(surrounding, text) {
+	return surrounding.before + text + surrounding.after;
+}
+exports.makeColor = ansi;
 exports.run = function(files, options, callback) {
-	var options = options || {};
+	var options = extend(true, {
+		success: {
+			before: ansi('22;32'),
+			after: ansi('22;1;37')
+		},
+		error: {
+			before: ansi('22;31'),
+			after: ansi('22;1;37')
+		},
+		failure: {
+			before: ansi('22;33'),
+			after: ansi('22;1;37')
+		},
+		test: {
+			before: ansi('22;1;34'),
+			after: ansi('22;1;37')
+		},
+		module: {
+			before: ansi('22;37'),
+			after: ansi('22;1;37')
+		},
+		file: {
+			before: ansi('22;1;35'),
+			after: ansi('22;1;37')
+		},
+		method: {
+			before: ansi('22;1;36'),
+			after: ansi('22;1;37')
+		},
+		assertion: {
+			before: ansi('22;36'),
+			after: ansi('22;1;37')
+		},
+		exception: {
+			before: ansi('41'),
+			after: ansi('40')
+		}
+	}, options);
 	var tracker = {
 		started: new Date().getTime(),
 		modules: {},
@@ -36,7 +81,7 @@ exports.run = function(files, options, callback) {
 		testspec: options.testspec,
 		testFullSpec: options.testFullSpec,
 		moduleStart: function(name) {
-			console.log('Running module ' + name);
+			console.log('Running module ' + color(options.module, name));
 			tracker.module = tracker.modules[name] = {
 				name: name,
 				started: new Date().getTime(),
@@ -45,7 +90,7 @@ exports.run = function(files, options, callback) {
 			};
 		},
 		testStart: function(name) {
-			console.log('Running ' + name );
+			console.log('Running ' + color(options.test, name));
 			tracker.module.tests[name] = {
 				name: name,
 				started: new Date().getTime()
@@ -67,10 +112,10 @@ exports.run = function(files, options, callback) {
 					}
 				}
 			});
-			console.log('Assertions run: ' + test.assertions.length
-					+ ', Failures: ' + test.fails.length
-					+ ', Errors: ' + test.errors.length
-					+ ', Time elapsed: ' + ((test.finished - test.started) / 1000) + ' sec'
+			console.log('Assertions run: ' + color(options.assertion, test.assertions.length)
+					+ ', Failures: ' + color(options.failure, test.fails.length)
+					+ ', Errors: ' + color(options.error, test.errors.length)
+					+ ', Time elapsed: ' + color(options.success, ((test.finished - test.started) / 1000)) + ' sec'
 			);
 			console.log('');
 		},
@@ -92,28 +137,25 @@ exports.run = function(files, options, callback) {
 				}
 			});
 
-			console.log('Tests run: ' + _.size(module.tests)
-					+ ', Failures: ' + module.fails.length
-					+ ', Errors: ' + module.errors.length
-					+ ', Assertions: ' + module.assertions.length
-					+ ', Time elapsed: ' + ((module.finished - module.started) / 1000) + ' sec'
+			console.log('Tests run: ' + color(options.test, _.size(module.tests))
+					+ ', Failures: ' + color(options.failure, module.fails.length)
+					+ ', Errors: ' + color(options.error, module.errors.length)
+					+ ', Assertions: ' + color(options.assertion, module.assertions.length)
+					+ ', Time elapsed: ' + color(options.success, ((module.finished - module.started) / 1000)) + ' sec'
 			);
 			_.each(module.errors, function(t) {
-				console.log("ERROR " + t.name);
+				console.log(color(options.error, "ERROR " + t.name));
 			});
 			_.each(module.fails, function(t) {
-				console.log("FAIL " + t.name);
+				console.log(color(options.failure, "FAIL " + t.name));
 			});
-			console.log();
-			console.log();
 		},
 		log: function(assertion) {
 			if(assertion.failed()) {
 				var e = assertion.error;
 				var stack = e.stack.split('\n');
-				console.log(stack.shift());
 				var l = stack.length;
-				for(var i = stack.length - 1, prev = true; 0 <= i; --i) {
+				for(var i = stack.length - 1, prev = true; 0 < i /* skip message */; --i) {
 					if(prev && /    at .*node_modules[\/\\]nodeunit[\/\\].*/.test(stack[i])) {
 						stack.splice(i, 1);
 						prev &= true;
@@ -121,14 +163,29 @@ exports.run = function(files, options, callback) {
 						prev &= false;
 					}
 				}
-				if(e instanceof AssertionError) {
-					console.log('    at assert.' + e.operator + ' (expected=[' + e.expected + '], actual=[' + e.actual + '])');
-				}
+				var dirname = __dirname.replace(/(.*[\/\\]).*/, "$1");
 				stack = _.map(stack, function(stackElem) {
-					return stackElem.replace(/D:\\Programming\\workspace\\Cinema\\Heroku\\/, "");
+					stackElem = stackElem.replace(dirname, "");
+					stackElem = stackElem.replace(/    at (.*\.|)(.*) \((.*):(\d+):(\d+)\)/,
+							color(options.exception,
+								"    at " + color(options.module, "$1") + color(options.method, "$2")
+								+ " (" + color(options.file, "$3") + ":" + color(options.success, "$4") + ":$5)"));
+					return stackElem;
 				});
+				if(e instanceof AssertionError) {
+					e.stack = stack.join('\n');
+					var newStack = nodeunit.utils.betterErrors(assertion).error.stack.split('\n');
+					newStack.splice(newStack.length - stack.length + 1, stack.length - 1);
+					console.log(color(options.failure, newStack.join('\n')));
+				} else {
+					console.log(color(options.error, stack[0]));
+				}
+				stack.splice(0, 1);
 				console.log(stack.join('\n'));
-				console.log('    (' + (l - stack.length) + ' more hidden)\n');
+				var hidden = l - stack.length - 1;
+				if(hidden > 0) {
+					console.log('    (' + hidden + ' more hidden)\n');
+				}
 			}
 		},
 		done: function(assertions, end) {
@@ -144,21 +201,18 @@ exports.run = function(files, options, callback) {
 					tracker.fails.push(m);
 				}
 			});
-			console.log('Modules run: ' + _.size(tracker.modules)
-					+ ', Failures: ' + tracker.fails.length
-					+ ', Errors: ' + tracker.errors.length
-					+ ', Assertions: ' + tracker.assertions.length
-					+ ', Time elapsed: ' + ((tracker.finished - tracker.started) / 1000) + ' sec'
+			console.log('Modules run: ' + color(options.module, _.size(tracker.modules))
+					+ ', Failures: ' + color(options.failure, tracker.fails.length)
+					+ ', Errors: ' + color(options.error, tracker.errors.length)
+					+ ', Assertions: ' + color(options.assertion, tracker.assertions.length)
+					+ ', Time elapsed: ' + color(options.success, ((tracker.finished - tracker.started) / 1000)) + ' sec'
 			);
 			_.each(tracker.errors, function(m) {
-				console.log("ERROR " + m.name);
+				console.log(color(options.error, "ERROR " + m.name));
 			});
 			_.each(tracker.fails, function(m) {
-				console.log("FAIL " + m.name);
+				console.log(color(options.failure, "FAIL " + m.name));
 			});
-			console.log();
-			console.log();
-			console.log();
 
 			if (callback) {
 				callback(assertions.failures() ? new Error('We have got test failures.') : undefined);
