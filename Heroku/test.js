@@ -1,16 +1,9 @@
-try {
-	var reporter = require('nodeunit').reporters['default'];
-} catch(e) {
-	console.log("Cannot find nodeunit module.");
-	console.log("You can download submodules for this project by doing:");
-	console.log("");
-	console.log("    git submodule init");
-	console.log("    git submodule update");
-	console.log("");
-	process.exit();
-}
+var nodeunit = require('nodeunit');
+//var reporter = nodeunit.reporters['default'];
+var reporter = require('./test/reporter.junit');
 
 process.chdir(__dirname);
+
 //reporter.run(['test/nodeunit.js']);
 //reporter.run(['test/underscore.js']);
 reporter.run(['test/neo4j.js']);
