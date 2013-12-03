@@ -39,6 +39,7 @@ module.exports = {
 		graph.query(queryAll, function (error, results) {
 			if(error) {
 				allDone(error, [], [], []);
+				return;
 			}
 			var nodes = _.pluck(results, nodeProperty);
 			var nodesByID = _.indexBy(nodes, nodeIDProperty),
@@ -80,8 +81,7 @@ module.exports = {
 						dataToNodeProperties(dbObj);
 						extend(dbObj, {
 							class: clazz,
-							_created: now,
-							_updated: now
+							_created: now
 						});
 						graph.createNode(batch, dbObj, nodeInserter);
 					});

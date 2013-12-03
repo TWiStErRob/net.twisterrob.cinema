@@ -23,7 +23,7 @@ neo4j.init(function(err, graph) {
 				filmToInsert.cineworldID = filmToInsert.id;
 				delete filmToInsert.id;
 			},
-			function(error, filmNodes) {
+			function(error, createdNodes, updatedNodes, deletedNodes) {
 				//console.log(filmNodes.length);
 			}
 		);

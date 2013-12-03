@@ -16,14 +16,14 @@ neo4j.init(function(err, graph) {
 		neo4j.createNodes(graph, 'Cinema', body.cinemas, graph.queries.getAllCinemas,
 			"cinema",
 			function(cinemaNode) {
-				return cinemaNode.data.id;
+				return cinemaNode.data.cineworldID;
 			},
-			"cineworldID",
+			"id",
 			function(cinemaToInsert) {
 				cinemaToInsert.cineworldID = cinemaToInsert.id;
 				delete cinemaToInsert.id;
 			},
-			function(error, cinemaNodes) {
+			function(error, createdNodes, updatedNodes, deletedNodes) {
 				//console.log(cinemaNodes.length);
 			}
 		);
