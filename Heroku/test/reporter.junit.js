@@ -65,11 +65,16 @@ exports.run = function(files, options, callback) {
 	process.on('exit', function() {
 		var unfinished = _.size(tracker.modules) - _.size(tracker.modulesDone);
 		if (unfinished > 0) {
-			console.log('INCONCLUSIVE: Undone tests (or their setUp/tearDown-s):');
-			// TODO tests
+			//console.log('INCONCLUSIVE: Undone tests (or their setUp/tearDown-s):');
 			_.each(tracker.modules, function(m) {
-				if(!_.contains(modulesDone, m)) {
-					console.log(m.name);
+				if(!_.contains(tracker.modulesDone, m)) {
+					console.log(color(options.error, "UNDONE module ") + color(options.module, m.name));
+				} else {
+					_.each(m.tests, function(t) {
+						if(!_.contains(m.tests, t)) {
+							console.log(color(options.error, "UNDONE test ") + color(options.test, t.name));
+						}
+					});
 				}
 			});
 			console.log('To fix this, make sure all tests call test.done()');
@@ -93,6 +98,7 @@ exports.run = function(files, options, callback) {
 			console.log('Running ' + color(options.test, name));
 			tracker.module.tests[name] = {
 				name: name,
+				module: module,
 				started: new Date().getTime()
 			};
 		},
@@ -144,10 +150,10 @@ exports.run = function(files, options, callback) {
 					+ ', Time elapsed: ' + color(options.success, ((module.finished - module.started) / 1000)) + ' sec'
 			);
 			_.each(module.errors, function(t) {
-				console.log(color(options.error, "ERROR " + t.name));
+				console.log(color(options.error, "ERROR ") + color(options.module, t.module.name) + "::" + color(options.test, t.name));
 			});
 			_.each(module.fails, function(t) {
-				console.log(color(options.failure, "FAIL " + t.name));
+				console.log(color(options.failure, "FAIL ") + color(options.module, t.module.name) + "::" + color(options.test, t.name));
 			});
 		},
 		log: function(assertion) {
@@ -208,10 +214,10 @@ exports.run = function(files, options, callback) {
 					+ ', Time elapsed: ' + color(options.success, ((tracker.finished - tracker.started) / 1000)) + ' sec'
 			);
 			_.each(tracker.errors, function(m) {
-				console.log(color(options.error, "ERROR " + m.name));
+				console.log(color(options.error, "ERROR ") + color(options.module, m.name));
 			});
 			_.each(tracker.fails, function(m) {
-				console.log(color(options.failure, "FAIL " + m.name));
+				console.log(color(options.failure, "FAIL ") + color(options.module, m.name));
 			});
 
 			if (callback) {

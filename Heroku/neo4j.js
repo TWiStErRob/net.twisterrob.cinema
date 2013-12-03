@@ -38,7 +38,7 @@ module.exports = {
 	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, dataToNodeProperties, allDone) {
 		graph.query(queryAll, function (error, results) {
 			if(error) {
-				throw error;
+				allDone(error, [], [], []);
 			}
 			var nodes = _.pluck(results, nodeProperty);
 			var nodesByID = _.indexBy(nodes, nodeIDProperty),
@@ -59,10 +59,12 @@ module.exports = {
 						newLength, existingLength, deletedLength, clazz, now);
 				var createdNodes = [], updatedNodes = [], deletedNodes = [];
 				var nodeFinished = function() {
-					if(createdNodes.length === newLength && updatedNodes.length === existingLength) {
+					if(true && createdNodes.length === newLength
+							&& updatedNodes.length === existingLength
+							&& deletedNodes.length === deletedLength) {
 						log.info("Finished insering %d new and updating %d and deleting %d existing %ss for %s.",
 								newLength, existingLength, deletedLength, clazz, now);
-						allDone(error, createdNodes, updatedNodes, deletedNodes);
+						allDone(undefined, createdNodes, updatedNodes, deletedNodes);
 					}
 				};
 				if (newLength > 0) {
@@ -86,30 +88,43 @@ module.exports = {
 				} else {
 					log.info("No new %ss.", clazz);
 				}
-				if(existingLength > 0) {
-					//console.log(existingContent);
-					_.each(existingContent, function(node) {
-						//console.log(node);
-						assert.equal(node.data.class, clazz);
-						node.data._updated = now;
-						// contentObj.update
-						updatedNodes.push(node);
+				var nodeUpdater = function(nodes, node) {
+					return function(error, data) {
+						if(error) {
+							throw error;
+						}
+						node.data = data;
+						nodes.push(node);
 						nodeFinished();
+					};
+				};
+				if(existingLength > 0) {
+					_.each(existingContent, function(node) {
+						assert.equal(node.data.class, clazz);
+						var id = _.keys(_.indexBy([node], nodeIDProperty))[0];
+						var newProperties = extend(true, {}, dataByID[id], {
+							_updated: now
+						});
+						node.setProperties(batch, true, newProperties, nodeUpdater(updatedNodes, node));
 					});
 				} else {
 					log.info("No updated %ss.", clazz);
 				}
 				if(deletedLength > 0) {
-					console.log(deletedContent);
-					_.each(deletedContent, function(contentObj) {
-						assert.equal(contentObj.class, clazz);
-						contentObj._deleted = now;
-						// contentObj.update
+					_.each(deletedContent, function(node) {
+						assert.equal(node.data.class, clazz);
+						var id = _.keys(_.indexBy([node], nodeIDProperty))[0];
+						var newProperties = extend(true, {}, dataByID[id], {
+							_deleted: now
+						});
+						node.setProperties(batch, true, newProperties, nodeUpdater(deletedNodes, node));
 					});
 				} else {
 					log.info("No deleted %ss.", clazz);
 				}
 				batch.run();
+			} else {
+				allDone(undefined, [], [], []);
 			}
 		});
 	}

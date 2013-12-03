@@ -34,5 +34,8 @@ exports.surround = {
 	test1: function (test) {
 		test.equals(this.foo, 'bar');
 		test.done();
+	},
+	test2: function(test) {
+		
 	}
 };
