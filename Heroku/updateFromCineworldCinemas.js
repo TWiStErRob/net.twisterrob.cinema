@@ -24,7 +24,7 @@ neo4j.init(function(err, graph) {
 				delete cinemaToInsert.id;
 			},
 			function(error, createdNodes, updatedNodes, deletedNodes) {
-				//console.log(cinemaNodes.length);
+				if(error) log.error(error);
 			}
 		);
 	});
