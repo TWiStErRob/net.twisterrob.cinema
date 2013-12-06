@@ -9,7 +9,8 @@ var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/bl
 var package = require('./package.json');
 var config = require('./config');
 var graph;
-require('./neo4j').init(function(connected) {
+require('./neo4j').init(function(error, connected) {
+	if(error) throw error;
 	graph = connected;
 });
 var logs = require('./logs');
@@ -17,8 +18,23 @@ var log = logs.app;
 
 function getFilm(req, res, next) {
 	graph.query(graph.queries.getFilm, {
-		node: parseInt(req.params.edi, 10),
+		node: parseInt(req.params.edi, 10)
 	}, function (error, results) {
+		if(error) throw error;
+		res.send(results);
+		next();
+	});
+}
+
+function addView(req, res, next) {
+	graph.query(graph.queries.addView, {
+		filmEDI: parseInt(req.params.edi, 10),
+		cinemaID: parseInt(req.body.cinema, 10)
+	}, function (error, results) {
+		if(error) {
+			console.error(error);
+			throw error;
+		}
 		res.send(results);
 		next();
 	});
@@ -62,6 +78,7 @@ server.get(/\/static\/?.*/, restify.serveStatic({
 }));
 server.get('/', readHTML(__dirname + '/static/static/index.html'));
 server.get('/film/:edi', getFilm);
+server.post('/film/:edi/view', addView);
 
 server.listen(process.env.PORT, function() {
 	log.info("%s listening at %s", server.name, server.url);
