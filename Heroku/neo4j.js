@@ -9,7 +9,13 @@ var config = require('./config');
 var log = require('./logs').app;
 
 var graphCache;
-
+function toProperties(jsObj) {
+	var json = JSON.stringify(jsObj);
+	json = json.replace(/\\"/g,"\uFFFF");
+	json = json.replace(/\"([^"]+)\":/g,"`$1`:");
+	json = json.replace(/\uFFFF/g,"\\\"");
+	return json;
+}
 module.exports = {
 	init: function(callback) {
 		if(graphCache !== undefined) {
@@ -29,6 +35,7 @@ module.exports = {
 				getFilm: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8"),
 				getAllFilms: fs.readFileSync(__dirname + '/queries/getAllFilms.cypher', "utf8"),
 				getAllCinemas: fs.readFileSync(__dirname + '/queries/getAllCinemas.cypher', "utf8"),
+				addView: fs.readFileSync(__dirname + '/queries/addView.cypher', "utf8"),
 			};
 
 			log.info('Connected to: %s', graph.version);
@@ -69,11 +76,11 @@ module.exports = {
 					}
 				};
 				if (newLength > 0) {
-					var nodeInserter = function(error, node) {
+					var nodeInserter = function(error, result) {
 						if(error) {
 							throw error;
 						}
-						createdNodes.push(node);
+						createdNodes.push(result[0].node);
 						nodeFinished();
 					};
 					_.each(newContent, function(contentObj) {
@@ -83,7 +90,7 @@ module.exports = {
 							class: clazz,
 							_created: now
 						});
-						graph.createNode(batch, dbObj, nodeInserter);
+						graph.query(batch, "CREATE (node:" + clazz + " " + toProperties(dbObj) + ") RETURN node", nodeInserter);
 					});
 				} else {
 					log.info("No new %ss.", clazz);

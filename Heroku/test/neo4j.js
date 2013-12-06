@@ -6,8 +6,8 @@ exports.testLifeCycle = {
 	setUp: function (callback) {
 		var test = this;
 		test.class = 'Test';
-		test.queryAll = 'START n = node(*) WHERE n.class = "' + test.class + '" and not has(n._deleted) RETURN n as nodeAlias';
-		test.queryClean = 'START n = node(*) WHERE n.class = "' + test.class + '" DELETE n';
+		test.queryAll = 'MATCH (n:' + test.class + ') WHERE not has(n._deleted) RETURN n as nodeAlias';
+		test.queryClean = 'MATCH (n:' + test.class + ') DELETE n';
 		test.nodeSelector = "nodeAlias";
 		test.nodeID = function(result) { return result.data.namedID; };
 		test.dataID = 'dataID';
@@ -27,6 +27,7 @@ exports.testLifeCycle = {
 		test.done();
 	},
 	tearDown : function(callback) {
+		// can't clean, this is not @AfterClass
 		callback();
 	},
 	testInit: function(test) {
@@ -71,17 +72,14 @@ exports.testLifeCycle = {
 				test.ok(0 < createdNodes.length, "No nodes inserted.");
 				test.equal(createdNodes.length, data.length);
 
-				var firstCreated = createdNodes[0].data._created,
-				    firstUpdated = createdNodes[0].data._updated;
+				var firstCreated = createdNodes[0].data._created;
 				test.ok(firstCreated, "No creation date");
-				test.ok(firstUpdated, "No update date");
 
 				for(var i = 0, len = createdNodes.length; i < len; i++) {
 					test.equal(createdNodes[i].data.namedID, data[i].dataID);
 					test.equal(createdNodes[i].data.name, data[i].name);
 					test.equal(createdNodes[i].data.class, test.data.class);
 					test.equal(createdNodes[i].data._created, firstCreated);
-					test.equal(createdNodes[i].data._updated, firstUpdated);
 				}
 				test.done();
 			}
