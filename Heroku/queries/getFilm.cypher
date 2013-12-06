@@ -1,5 +1,3 @@
-// {node}: node id
-START root = node(*)
-MATCH path = (root-[SAW]->film)
-WHERE root.type! = 'user'
-RETURN film.edi
+// {filmEDI}: Film.edi
+MATCH (f:Film {edi: {filmEDI}})
+RETURN f as film

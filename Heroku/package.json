@@ -25,7 +25,7 @@
 	},
 
 	"dependencies": {
-		"restify": "2.6.0",
+		"express": "3.x",
 		"node.extend": "1.0.8",
 		"bunyan": "0.21.1",
 		"neo4j-js": "0.0.7",

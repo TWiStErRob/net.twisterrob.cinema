@@ -23,7 +23,7 @@ module.exports = {
 			return;
 		}
 		var neo4jConnection = config.NEO4J_URL + '/' + config.NEO4J_REST_PATH;
-		log.info('Connecting to: %s', neo4jConnection);
+		log.info('Neo4j connecting to: %s', neo4jConnection);
 		neo4j.connect(neo4jConnection, function (err, graph) {
 			if (err) {
 				callback(err, undefined);
@@ -38,7 +38,7 @@ module.exports = {
 				addView: fs.readFileSync(__dirname + '/queries/addView.cypher', "utf8"),
 			};
 
-			log.info('Connected to: %s', graph.version);
+			log.info('Neo4j connected to: %s', graph.version);
 			callback(undefined, graph);
 		});
 	},
