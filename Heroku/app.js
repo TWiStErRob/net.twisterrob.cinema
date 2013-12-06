@@ -17,11 +17,16 @@ var logs = require('./logs');
 var log = logs.app;
 
 function getFilm(req, res) {
+	var edi = parseInt(req.param('edi'), 10);
 	graph.query(graph.queries.getFilm, {
-		filmEDI: parseInt(req.param('edi'), 10)
+		filmEDI: edi
 	}, function (error, results) {
 		if(error) throw error;
-		res.jsonp(results[0].film);
+		if(results.length) {
+			res.jsonp(results[0].film);
+		} else {
+			res.send(404, 'Film with EDI #' + edi + ' is not found.');
+		}
 	});
 }
 
