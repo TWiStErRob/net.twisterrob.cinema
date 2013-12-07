@@ -36,6 +36,8 @@ module.exports = {
 				getAllFilms: fs.readFileSync(__dirname + '/queries/getAllFilms.cypher', "utf8"),
 				getAllCinemas: fs.readFileSync(__dirname + '/queries/getAllCinemas.cypher', "utf8"),
 				addView: fs.readFileSync(__dirname + '/queries/addView.cypher', "utf8"),
+				addUser: fs.readFileSync(__dirname + '/queries/addUser.cypher', "utf8"),
+				getUser: fs.readFileSync(__dirname + '/queries/getUser.cypher', "utf8"),
 			};
 
 			log.info('Neo4j connected to: %s', graph.version);

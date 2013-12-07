@@ -4,7 +4,8 @@ var bunyan = require('bunyan');
 extend(exports, {
 	app: bunyan.createLogger({
 		name: 'app',
-		stream: process.stderr
+		stream: process.stderr,
+		level: 'DEBUG'
 	}),
 	audit: bunyan.createLogger({
 		name: 'audit',
