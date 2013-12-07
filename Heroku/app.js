@@ -6,8 +6,7 @@ var extend = require('node.extend');  // https://github.com/dreamerslab/node.ext
 var bunyan = require('bunyan');
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
-var passport = require('passport');   // http://passportjs.org/guide/
-var GoogleStrategy = require('passport-google').Strategy; // http://passportjs.org/guide/google/
+var auth = require('./auth');
 var package = require('./package.json');
 var config = require('./config');
 var graph;
@@ -54,85 +53,19 @@ app.configure('production', function configure_prod() {
 	app.set('app urlRoot', 'http://twisterrob-cinema.heroku.com/');
 });
 
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-	graph.query(graph.queries.getUser, {
-		userID: id
-	}, function (error, results) {
-		if(error) {
-			done(error, undefined);
-		} else if(!results.length) {
-			done("User not found", null);
-		} else {
-			done(error, results[0].user.data);
-		}
-	});
-});
-
-passport.use(new GoogleStrategy({
-		returnURL: app.get('app urlRoot') + 'auth/google/return',
-		realm: app.get('app urlRoot')
-	},
-	function(identifier, profile, done) {
-		// asynchronous verification, for effect...
-		process.nextTick(function validate() {
-			graph.query(graph.queries.addUser, {
-				id: identifier,
-				email: profile.emails[0].value,
-				name: profile.displayName
-			}, function (error, results) {
-				console.log(results);
-				if(error) {
-					return done(error, undefined);
-				} else {
-					return done(undefined, results[0].user.data);
-				}
-			});
-		});
-	}
-));
-
 app.configure(function configure_use() {
 	app.use(express.compress());
 	app.use(express.static(__dirname + '/static/'));
-	app.use(express.logger());
+	//app.use(express.logger());
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.cookieSession({
 		key: 'session',
 		secret: 'twister'
 	}));
-	app.use(passport.initialize());
-	app.use(passport.session());
 });
 
-app.get('/account', ensureAuthenticated, function(req, res){
-	res.jsonp({ user: req.user });
-});
-app.get('/login', function(req, res){
-	res.send('<a href="/auth/google">Google OpenID</a>');
-});
-
-app.get('/auth/google',
-	passport.authenticate('google', { failureRedirect: '/login' }),
-	function(req, res) {
-		res.redirect('/');
-	}
-);
-app.get('/auth/google/return',
-	passport.authenticate('google', { failureRedirect: '/login' }),
-	function(req, res) {
-		res.redirect('/');
-	}
-);
-
-app.get('/logout', function(req, res) {
-	req.logout();
-	res.redirect('/');
-});
+auth.init(app);
 
 app.get('/film/:edi', getFilm);
 app.post('/film/:edi/view', addView);

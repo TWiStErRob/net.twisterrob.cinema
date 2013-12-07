@@ -8,7 +8,6 @@ var config = require('./config');
 
 var log = require('./logs').app;
 
-var graphCache;
 function toProperties(jsObj) {
 	var json = JSON.stringify(jsObj);
 	json = json.replace(/\\"/g,"\uFFFF");
@@ -16,10 +15,12 @@ function toProperties(jsObj) {
 	json = json.replace(/\uFFFF/g,"\\\"");
 	return json;
 }
+
+// TODO use events api to emit graphloaded
 module.exports = {
 	init: function(callback) {
-		if(graphCache !== undefined) {
-			callback(undefined, graphCache);
+		if(global.graph !== undefined) {
+			callback(undefined, global.graph);
 			return;
 		}
 		var neo4jConnection = config.NEO4J_URL + '/' + config.NEO4J_REST_PATH;
@@ -28,7 +29,7 @@ module.exports = {
 			if (err) {
 				callback(err, undefined);
 			}
-			graphCache = graph;
+			global.graph = graph;
 
 			graph.queries = {
 				endOfBatch: fs.readFileSync(__dirname + '/queries/endOfBatch.cypher', "utf8"),

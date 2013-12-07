@@ -5,11 +5,17 @@ extend(exports, {
 	app: bunyan.createLogger({
 		name: 'app',
 		stream: process.stderr,
-		level: 'DEBUG'
+		level: 'TRACE'
+	}),
+	auth: bunyan.createLogger({
+		name: 'auth',
+		stream: process.stderr,
+		level: 'TRACE'
 	}),
 	audit: bunyan.createLogger({
 		name: 'audit',
-		stream: process.stdout
+		stream: process.stdout,
+		level: 'TRACE'
 	}),
 	task: bunyan.createLogger({
 		name: 'task',
