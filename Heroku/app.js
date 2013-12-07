@@ -37,7 +37,6 @@ function addView(req, res) {
 		cinemaID: parseInt(req.param('cinema'), 10),
 		userID: req.user.id
 	};
-	log.debug(params, "addView");
 	graph.query(graph.queries.addView, params, function (error, results) {
 		if(error) throw error;
 		if(results.length !== 1) {
@@ -47,9 +46,41 @@ function addView(req, res) {
 				film: results[0].film.data,
 				cinema: results[0].cinema.data,
 				user: results[0].user.data,
-				view: results[0].view.data,
+				view: results[0].view.data
 			});
 		}
+	});
+}
+
+function favCinema(req, res) {
+	var params = {
+		cinemaID: parseInt(req.param('cinema'), 10),
+		userID: req.user.id
+	};
+	graph.query(graph.queries.addFavoriteCinema, params, function (error, results) {
+		if(error) throw error;
+		if(results.length !== 1) {
+			res.send(404, 'No or more results found: ' + results.length);
+		} else {
+			res.jsonp({
+				cinema: results[0].cinema.data,
+				user: results[0].user.data
+			});
+		}
+	});
+}
+
+function getFavCinemas(req, res) {
+	var params = {
+		userID: req.user.id
+	};
+	graph.query(graph.queries.getFavoriteCinemas, params, function (error, results) {
+		if(error) throw error;
+		var data = [];
+		for(var i = 0, len = results.length; i < len; ++i) {
+			data.push(results[i].cinema.data);
+		}
+		res.jsonp(data);
 	});
 }
 
@@ -79,6 +110,8 @@ app.configure(function configure_use() {
 auth.init(app);
 
 app.get('/film/:edi', getFilm);
+app.get('/cinema/favs', getFavCinemas);
+app.post('/cinema/:cinema/fav', favCinema);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 
 app.listen(process.env.PORT, function() {

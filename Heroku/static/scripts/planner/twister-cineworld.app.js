@@ -6,7 +6,7 @@ var NS = twister.core.namespaces.extend;
 twister = NS(twister, {
 	config: {
 		debug: false,
-		localUrlBase: 'http://localhost:8888',
+		localUrlBase: '',
 		logResponses: false,
 		verboseMock: false
 	}

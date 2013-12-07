@@ -11,11 +11,11 @@ twister.cineworld = NS(twister.cineworld, {
 	},
 	getFavoriteCinemas: function() {
 		return $.ajax({
-				url: twister.config.localUrlBase + '/rest/cinemas/favorites'
+				url: twister.config.localUrlBase + '/cinema/favs'
 			})
 			.then(function cineworld_parseFavoriteCinemas(response, status, xhr) {
 				response = twister.utils.clean(response);
-				return $.map(response, function(fav) { return fav.cinemaId; });
+				return $.map(response, function(fav) { return fav.cineworldID; });
 			})
 		;
 	},
