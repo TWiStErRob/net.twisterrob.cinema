@@ -18,27 +18,38 @@ var logs = require('./logs');
 var log = logs.app;
 
 function getFilm(req, res) {
-	var edi = parseInt(req.param('edi'), 10);
-	graph.query(graph.queries.getFilm, {
-		filmEDI: edi
-	}, function (error, results) {
+	var params = {
+		filmEDI: parseInt(req.param('edi'), 10)
+	};
+	graph.query(graph.queries.getFilm, params, function (error, results) {
 		if(error) throw error;
 		if(results.length) {
 			res.jsonp(results[0].film);
 		} else {
-			res.send(404, 'Film with EDI #' + edi + ' is not found.');
+			res.send(404, 'Film with EDI #' + params.filmEDI + ' is not found.');
 		}
 	});
 }
 
 function addView(req, res) {
-	graph.query(graph.queries.addView, {
+	var params = {
 		filmEDI: parseInt(req.param('edi'), 10),
 		cinemaID: parseInt(req.param('cinema'), 10),
-		userID: 'twister'
-	}, function (error, results) {
+		userID: req.user.id
+	};
+	log.debug(params, "addView");
+	graph.query(graph.queries.addView, params, function (error, results) {
 		if(error) throw error;
-		res.jsonp(results);
+		if(results.length !== 1) {
+			res.send(404, 'No or more results found: ' + results.length);
+		} else {
+			res.jsonp({
+				film: results[0].film.data,
+				cinema: results[0].cinema.data,
+				user: results[0].user.data,
+				view: results[0].view.data,
+			});
+		}
 	});
 }
 
@@ -68,7 +79,8 @@ app.configure(function configure_use() {
 auth.init(app);
 
 app.get('/film/:edi', getFilm);
-app.post('/film/:edi/view', addView);
+app.post('/film/:edi/view', ensureAuthenticated, addView);
+
 app.listen(process.env.PORT, function() {
 	log.info("Express listening on %d", process.env.PORT);
 });

@@ -4,7 +4,7 @@
 MATCH
 	(c:Cinema { cineworldID:{cinemaID} }),
 	(f:Film { edi:{filmEDI} }),
-	(u:User { name:{userID} })
+	(u:User { id:{userID} })
 CREATE UNIQUE
 	(u)-[:ATTENDED]->(v:View {
 		film: {filmEDI},
