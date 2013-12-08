@@ -19,6 +19,22 @@ twister.cineworld = NS(twister.cineworld, {
 			})
 		;
 	},
+	addCinemaFav: function(id) {
+		return $.ajax({
+			url: twister.config.localUrlBase + '/cinema/' + id + '/fav'
+		})
+		.then(function cineworld_parseFavoriteCinema(response, status, xhr) {
+			return response.cinema.name;
+		});
+	},
+	removeCinemaFav: function(id) {
+		return $.ajax({
+			url: twister.config.localUrlBase + '/cinema/' + id + '/unfav'
+		})
+		.then(function cineworld_parseUnFavoriteCinema(response, status, xhr) {
+			return response.cinema.name;
+		});
+	},
 	getCinemas: function() {
 		$('#cinemas').empty();
 		twister.ui.showStatus("Loading cinemas...");

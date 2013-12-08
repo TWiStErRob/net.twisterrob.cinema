@@ -40,6 +40,7 @@ module.exports = {
 				addUser: fs.readFileSync(__dirname + '/queries/addUser.cypher', "utf8"),
 				getUser: fs.readFileSync(__dirname + '/queries/getUser.cypher', "utf8"),
 				addFavoriteCinema: fs.readFileSync(__dirname + '/queries/addFavoriteCinema.cypher', "utf8"),
+				removeFavoriteCinema: fs.readFileSync(__dirname + '/queries/removeFavoriteCinema.cypher', "utf8"),
 				getFavoriteCinemas: fs.readFileSync(__dirname + '/queries/getFavoriteCinemas.cypher', "utf8"),
 			};
 

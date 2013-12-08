@@ -57,51 +57,67 @@ twister.cineworld = NS(twister.cineworld, {
 		});
 		twister.cineworld.cinemas.all = cinemasMap;
 	},
+	toggleCinemaFav: function(e) {
+		var fav = $(e.target);
+		var wasFavorite = !fav.hasClass('grayscale');
+		var id = fav.data('cinema');
+		fav.addClass('loading');
+		if(wasFavorite) {
+			twister.cineworld.removeCinemaFav(id)
+				.done(function(cinemaName) {
+					fav.removeClass('loading');
+					fav.addClass('grayscale');
+					twister.ui.showStatus("Cinema #" + id + ": " + cinemaName + " successfully un-favorited.");
+				})
+				.fail(function(xhr, status, error) {
+					fav.removeClass('loading');
+					twister.ui.showStatus("Cannot un-favorite cinema #" + id + " - " + status + ", " + error);
+				});
+		} else {
+			twister.cineworld.addCinemaFav(id)
+				.done(function(cinemaName) {
+					fav.removeClass('loading');
+					fav.removeClass('grayscale');
+					twister.ui.showStatus("Cinema #" + id + ": " + cinemaName + " successfully favorited.");
+				})
+				.fail(function(xhr, status, error) {
+					fav.removeClass('loading');
+					twister.ui.showStatus("Cannot favorite cinema #" + id + " - " + status + ", " + error);
+				});
+		}
+	},
+	cinemasChanged: function() {
+		var checkedCinemas = $("li :checkbox:checked", "#cinemas");
+		var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
+		twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
+		twister.cineworld.rebuildUrl();
+
+		twister.cineworld.cinemas.retrieveFilmsDelay.start();
+	},
 	displayCinemas: function(cinemas) {
-		var cinemasList = $('<select id="cinemas" name="cinemas" multiple="multiple"></select>');
+		var cinemasList = $('<ul id="cinemas" name="cinemas" class="selectors" />');
 		$.each(cinemas, function() {
-			var option = new Option(this.name, this.id);
-			$(option).attr('title', JSON.stringify(this, null, '  '));
-			cinemasList.append(option);
+			var id = 'cinema' + this.id;
+			var li = $('<li>').addClass('selector').attr('id', id);
+			var idCB = id + 'check';
+			var cb = $('<input type="checkbox">').addClass('check').attr('id', idCB).val(this.id);
+			var img = $('<img>')
+				.addClass('favorite')
+				.addClass('grayscale')
+				.attr('src', '/images/star.png')
+				.data('cinema', this.id);
+			img.click(twister.cineworld.toggleCinemaFav);
+			cb.click(twister.cineworld.cinemasChanged);
+			var text = $('<label>')
+				.addClass('name')
+				.attr('for', idCB)
+				.text(this.name)
+				.attr('title', JSON.stringify(this, null, '  '));
+			li.append(cb).append(text).append(img);
+			cinemasList.append(li);
 		});
 
-		$('#cinemas').replaceWith(cinemasList); // toChecklist needs the <select> to be part of DOM
-		cinemasList.toChecklist( {
-			showSelectedItems: false,
-			addSearchBox: false,
-			addScrollBar : false,
-			preferIdOverName: false,
-			itemWidth: 200,
-			searchBoxText: 'Filter by cinema name here...',
-			animateSearch: 0,
-			onItemChanged: function cinemasList_onItemChanged() {
-				var checkedCinemas = $("li :checkbox:checked", "#cinemas");
-				var checkedCinemaIds = $.map(checkedCinemas, function(e) { return e.value; });
-				twister.cineworld.cinemas.selectedIds = checkedCinemaIds;
-				twister.cineworld.rebuildUrl();
-
-				twister.cineworld.cinemas.retrieveFilmsDelay.start();
-			},
-			onItemSelected: function cinemasList_onItemSelected(input) {
-				var request = {
-					cinema: input.value,
-					rating: 100,
-					displayOrder: 1
-				};
-				var cinemaName = $(arguments[0]).siblings("label").text();
-				return; // TODO enable again
-				$.ajax({
-					url: twister.config.localUrlBase + '/rest/cinemas/favorite',
-					data: request,
-					success: function(response, status, xhr) {
-						twister.ui.showStatus("Cinema #" + input.value + ": " + cinemaName + " successfully favorited.");
-					},
-					error: function(xhr, status, error) {
-						twister.ui.showStatus("Cannot favorite cinema #" + input.value + ": " + cinemaName + " - " + status + ", " + error);
-					}
-				});
-			}
-		} );
+		$('#cinemas').replaceWith(cinemasList);
 		twister.cineworld.cinemas.retrieveFilmsDelay.updateConfig({
 			callback: function retrieveFilmsCallback() {
 				var filmsPromise = twister.cineworld.retrieveFilms();

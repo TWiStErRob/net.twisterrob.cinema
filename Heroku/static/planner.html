@@ -55,29 +55,32 @@
 			<div id="status">&nbsp;</div>
 		</div>
 	</div>
-	<div id="main_area" class="ui-layout-center">
-		<div id="cinemas_listing" class="ui-layout-north">
-			<div id="cinemas_controls">
-				<input type="button" id="cinemas_checkAll" onclick="$('#cinemas').toChecklist('checkAll');" value="Check all" />
-				<input type="button" id="cinemas_checkNone" onclick="$('#cinemas').toChecklist('clearAll');" value="Uncheck All" />
-				<input type="button" id="cinemas_checkInvert" onclick="$('#cinemas').toChecklist('invert');" value="Invert" />
-				<input type="button" id="cinemas_checkLondon" onclick="$('#cinemas').toChecklist('clearAll'); $('#cinemas li:contains(London)').click();" value="London" />
+	<div class="ui-layout-center" id="main_area">
+		<div class="ui-layout-west" id="cinemas_listing">
+			<div class="ui-layout-north" id="cinemas_controls">
+				<input type="button" id="cinemas_checkAll" onclick="$('#cinemas .selector .check:checkbox').attr('checked', 'checked'); twister.cineworld.cinemasChanged();" value="Check all" />
+				<input type="button" id="cinemas_checkNone" onclick="$('#cinemas .selector .check:checkbox').removeAttr('checked'); twister.cineworld.cinemasChanged();" value="Uncheck All" />
+				<input type="button" id="cinemas_checkInvert" onclick="$('#cinemas .selector .check:checkbox').click();" value="Invert" />
+				<input type="button" id="cinemas_checkLondon" onclick="$('#cinemas .selector .check:checkbox').removeAttr('checked'); $('#cinemas .selector:has(.name:contains(London)) .check:checkbox').attr('checked', 'checked'); twister.cineworld.cinemasChanged();" value="London" />
+				<input type="button" id="cinemas_checkFavs" onclick="$('#cinemas .selector .check:checkbox').removeAttr('checked'); $('#cinemas .selector:not(:has(img.grayscale)) .check:checkbox').attr('checked', 'checked'); twister.cineworld.cinemasChanged();" value="Favorites" />
 			</div>
-			<div id="cinemas_container">
+			<div class="ui-layout-center" id="cinemas_container">
 				<select id="cinemas" name="cinemas" multiple="multiple"></select>
 			</div>
 		</div>
-		<div id="films_listing" class="ui-layout-west">
-			<div id="films_controls">
-			</div>
-			<div id="films_container">
-				<select id="films" name="films" multiple="multiple"></select>
-			</div>
-		</div>
 		<div class="ui-layout-center">
-			<div id="performances_listing">
+			<div class="ui-layout-west" id="films_listing">
+				<div id="films_controls">
+				</div>
+				<div id="films_container">
+					<select id="films" name="films" multiple="multiple"></select>
+				</div>
 			</div>
-			<div id="planner_listing">
+			<div class="ui-layout-center">
+				<div id="performances_listing">
+				</div>
+				<div id="planner_listing">
+				</div>
 			</div>
 		</div>
 	</div>

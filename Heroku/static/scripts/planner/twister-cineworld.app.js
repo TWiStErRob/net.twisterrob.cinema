@@ -23,20 +23,32 @@ twister.ui = NS(twister.ui, {
 	},
 	initLayout: function() {
 		twister.ui.screen.layout = $('body').layout({
-			center: {
+			north: { // date
+				initClosed: true
+			},
+			center: { // main_area
 				childOptions: {
-					north: {
-						initClosed: false
+					west: { // cinemas
+						size: 300,
+						childOptions: {
+							north: { // cinema controls
+							},
+							center: { // cinemas
+							}
+						}
 					},
-					west: {
-						size: 250
+					center: {
+						childOptions: {
+							west: { // films
+								size: 250
+							},
+							center: { // planner
+							}
+						}
 					}
 				}
 			},
-			north: {
-				initClosed: true
-			},
-			south: {
+			south: { // placeholder
 				initClosed: true
 			}
 		});
@@ -121,14 +133,17 @@ $(document).ready(function document_ready() {
 			var preSelectIds = twister.cineworld.cinemas.selectedIds;
 			var idsToSelect = preSelectIds.length ? preSelectIds : favoriteCinemaIds;
 			if(idsToSelect.length != 0) {
+				$('#cinemas li :checkbox').removeAttr('checked');
 				$.each(idsToSelect, function select_cinema() {
 					var cinemaElem = $('#cinemas li:has(:checkbox[value=' + this + '])');
 					if(cinemaElem.length == 0) {
 						console.warn("Cinema disappeared: " + this);
 					} else {
-						cinemaElem.click();
+						cinemaElem.find(':checkbox').attr('checked', 'checked');
+						cinemaElem.find('.favorite').removeClass('grayscale');
 					}
 				});
+				twister.cineworld.cinemasChanged();
 			} else {
 				$('#cinemas_checkLondon').click();
 			}

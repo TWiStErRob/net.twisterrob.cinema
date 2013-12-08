@@ -69,6 +69,23 @@ function favCinema(req, res) {
 		}
 	});
 }
+function unFavCinema(req, res) {
+	var params = {
+			cinemaID: parseInt(req.param('cinema'), 10),
+			userID: req.user.id
+	};
+	graph.query(graph.queries.removeFavoriteCinema, params, function (error, results) {
+		if(error) throw error;
+		if(results.length !== 1) {
+			res.send(404, 'No or more results found: ' + results.length);
+		} else {
+			res.jsonp({
+				cinema: results[0].cinema.data,
+				user: results[0].user.data
+			});
+		}
+	});
+}
 
 function getFavCinemas(req, res) {
 	var params = {
@@ -110,8 +127,9 @@ app.configure(function configure_use() {
 auth.init(app);
 
 app.get('/film/:edi', getFilm);
-app.get('/cinema/favs', getFavCinemas);
-app.post('/cinema/:cinema/fav', favCinema);
+app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
+app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
+app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 
 app.listen(process.env.PORT, function() {
