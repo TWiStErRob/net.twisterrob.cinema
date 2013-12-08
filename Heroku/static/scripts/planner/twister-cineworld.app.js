@@ -143,6 +143,7 @@ $(document).ready(function document_ready() {
 						cinemaElem.find('.favorite').removeClass('grayscale');
 					}
 				});
+				twister.cineworld.reorderCinemas();
 				twister.cineworld.cinemasChanged();
 			} else {
 				$('#cinemas_checkLondon').click();

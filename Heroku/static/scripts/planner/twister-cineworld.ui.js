@@ -60,6 +60,7 @@ twister.cineworld = NS(twister.cineworld, {
 	toggleCinemaFav: function(e) {
 		var fav = $(e.target);
 		var wasFavorite = !fav.hasClass('grayscale');
+		var cb = fav.closest('.selector').find('.check:checkbox');
 		var id = fav.data('cinema');
 		fav.addClass('loading');
 		if(wasFavorite) {
@@ -67,6 +68,8 @@ twister.cineworld = NS(twister.cineworld, {
 				.done(function(cinemaName) {
 					fav.removeClass('loading');
 					fav.addClass('grayscale');
+					twister.cineworld.reorderCinemas();
+					cb.removeAttr('checked').change();
 					twister.ui.showStatus("Cinema #" + id + ": " + cinemaName + " successfully un-favorited.");
 				})
 				.fail(function(xhr, status, error) {
@@ -78,6 +81,8 @@ twister.cineworld = NS(twister.cineworld, {
 				.done(function(cinemaName) {
 					fav.removeClass('loading');
 					fav.removeClass('grayscale');
+					twister.cineworld.reorderCinemas();
+					cb.attr('checked', 'checked').change();
 					twister.ui.showStatus("Cinema #" + id + ": " + cinemaName + " successfully favorited.");
 				})
 				.fail(function(xhr, status, error) {
@@ -85,6 +90,17 @@ twister.cineworld = NS(twister.cineworld, {
 					twister.ui.showStatus("Cannot favorite cinema #" + id + " - " + status + ", " + error);
 				});
 		}
+	},
+	reorderCinemas: function() {
+		$('ul#cinemas li.selector').sort(function(a,b) {
+			var isAFav = $(a).has('.favorite.grayscale').length ? -1 : 1;
+			var isBFav = $(b).has('.favorite.grayscale').length ? -1 : 1;
+			var aName = $(a).data('cinema-name');
+			var bName = $(b).data('cinema-name');
+			var favDiff = isBFav - isAFav;
+			var nameDiff = aName == bName? 0 : (aName < bName ? -1 : 1);
+			return favDiff != 0? favDiff : nameDiff;
+		}).appendTo('ul#cinemas');
 	},
 	cinemasChanged: function() {
 		var checkedCinemas = $("li :checkbox:checked", "#cinemas");
@@ -98,7 +114,7 @@ twister.cineworld = NS(twister.cineworld, {
 		var cinemasList = $('<ul id="cinemas" name="cinemas" class="selectors" />');
 		$.each(cinemas, function() {
 			var id = 'cinema' + this.id;
-			var li = $('<li>').addClass('selector').attr('id', id);
+			var li = $('<li>').addClass('selector').attr('id', id).data('cinema-name', this.name);
 			var idCB = id + 'check';
 			var cb = $('<input type="checkbox">').addClass('check').attr('id', idCB).val(this.id);
 			var img = $('<img>')
@@ -107,7 +123,7 @@ twister.cineworld = NS(twister.cineworld, {
 				.attr('src', '/images/star.png')
 				.data('cinema', this.id);
 			img.click(twister.cineworld.toggleCinemaFav);
-			cb.click(twister.cineworld.cinemasChanged);
+			cb.change(twister.cineworld.cinemasChanged);
 			var text = $('<label>')
 				.addClass('name')
 				.attr('for', idCB)
