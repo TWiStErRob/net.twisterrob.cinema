@@ -5,6 +5,7 @@ var config = require('./config.json');
 
 // d:\Programming>heroku config --app twisterrob-cinema --shell
 // NEO4J_URL=http://ab8c5ac27:8a79ffd54@02774ad3f.hosted.neo4j.org:7752
+// NEO4J_URL=http://cinema:zGu1PfA3JWQySjRSV6AO@cinema.sb01.stations.graphenedb.com:24789
 // PORT=8080
 assert.notEqual(process.env.NEO4J_URL, undefined, "NEO4J_URL environment variable must be defined (=http://username:password@hostname:port).");
 assert.notEqual(process.env.PORT, undefined, "PORT environment variable must be defined (=1234).");

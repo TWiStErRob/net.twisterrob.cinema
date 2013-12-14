@@ -36,12 +36,19 @@ module.exports = {
 				getFilm: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8"),
 				getAllFilms: fs.readFileSync(__dirname + '/queries/getAllFilms.cypher', "utf8"),
 				getAllCinemas: fs.readFileSync(__dirname + '/queries/getAllCinemas.cypher', "utf8"),
+				getCinemasAuth: fs.readFileSync(__dirname + '/queries/getCinemasAuth.cypher', "utf8"),
 				addView: fs.readFileSync(__dirname + '/queries/addView.cypher', "utf8"),
 				addUser: fs.readFileSync(__dirname + '/queries/addUser.cypher', "utf8"),
 				getUser: fs.readFileSync(__dirname + '/queries/getUser.cypher', "utf8"),
 				addFavoriteCinema: fs.readFileSync(__dirname + '/queries/addFavoriteCinema.cypher', "utf8"),
 				removeFavoriteCinema: fs.readFileSync(__dirname + '/queries/removeFavoriteCinema.cypher', "utf8"),
 				getFavoriteCinemas: fs.readFileSync(__dirname + '/queries/getFavoriteCinemas.cypher', "utf8"),
+			};
+
+			var q = graph.query;
+			graph.query = function queryWrapper(query, params) {
+				log.debug({query: query, params: params}, query);
+				return q.apply(this, Array.prototype.slice.call(arguments));
 			};
 
 			log.info('Neo4j connected to: %s', graph.version);

@@ -3,6 +3,7 @@ var http = require('http');           // http://nodejs.org/api/http.html
 var url = require('url');             // http://nodejs.org/api/url.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
+var _ = require('underscore');        // http://underscorejs.org/
 var bunyan = require('bunyan');
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
@@ -101,6 +102,38 @@ function getFavCinemas(req, res) {
 	});
 }
 
+function getCinemas(req, res) {
+	if (req.isAuthenticated()) {
+		var params = {
+			userID: req.user.id
+		};
+		graph.query(graph.queries.getCinemasAuth, params, function (error, results) {
+			if(error) throw error;
+			var data = [];
+			console.log(results);
+			for(var i = 0, len = results.length; i < len; ++i) {
+				var result = results[i];
+				var c = _.clone(result.cinema.data);
+				c.fav = !!result.fav;
+				data.push(c);
+			}
+			res.jsonp(data);
+		});
+	} else {
+		graph.query(graph.queries.getAllCinemas, {}, function (error, results) {
+			if(error) throw error;
+			var data = [];
+			for(var i = 0, len = results.length; i < len; ++i) {
+				var result = results[i];
+				var c = result.cinema.data;
+				data.push(c);
+			}
+			res.jsonp(data);
+		});
+	}
+}
+
+
 var app = express();
 app.configure(function configure_all() {
 	// global app.set
@@ -128,6 +161,7 @@ auth.init(app);
 
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
+app.get('/cinema', getCinemas);
 app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.post('/film/:edi/view', ensureAuthenticated, addView);

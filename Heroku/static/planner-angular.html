@@ -17,11 +17,18 @@
 <script src="scripts/planner-angular/filters.js"></script>
 <script src="scripts/planner-angular/directives.js"></script>
 <script src="scripts/planner-angular/animations.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/planner.css" />
 </head>
 <body>
 	<div ng-controller="CinemaListController">
-		<ul>
-			<li ng-repeat="cinema in cinemas">{{cinema.name}}</li>
+		<ul id="cinemas" class="selectors">
+			<li ng-repeat="cinema in cinemas | orderBy:'(fav?0:1) + name'"
+					class="selector"
+				>
+				<input id="cinema-{{cinema.id}}" type="checkbox" class="check" value="{{cinema.id}}" />
+				<img class="favorite" ng-class="{grayscale: cinema.fav}" src="/images/star.png">
+				<label class="name" for="cinema-{{cinema.id}}" title="{{cinema | json}}">{{cinema.name}}</label>
+			</li>
 		</ul>
 	</div>
 </body>

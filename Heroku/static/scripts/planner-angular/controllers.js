@@ -4,9 +4,7 @@
 var module = angular.module('appControllers', []);
 
 module.controller('CinemaListController',
-	       ['$scope', 'Cinema',
+	       ['$scope', 'CinemaFav',
 	function($scope,   Cinema) {
-	Cinema.list({}, function(response) {
-		$scope.cinemas = response.cinemas;
-	});
+	$scope.cinemas = Cinema.list({});
 }]);
