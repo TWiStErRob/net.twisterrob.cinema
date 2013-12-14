@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="app">
+<html lang="en" class="ui-stretch" ng-app="app">
 <head>
 <meta charset="utf-8">
 <title>Cineworld Cinemas Planner</title>
@@ -17,19 +17,28 @@
 <script src="scripts/planner-angular/filters.js"></script>
 <script src="scripts/planner-angular/directives.js"></script>
 <script src="scripts/planner-angular/animations.js"></script>
-<link rel="stylesheet" type="text/css" href="/styles/planner.css" />
+<link rel="stylesheet" type="text/css" href="/styles/planner-angular.css" />
 </head>
-<body>
-	<div ng-controller="CinemaListController">
-		<ul id="cinemas" class="selectors">
-			<li ng-repeat="cinema in cinemas | orderBy:'(fav?0:1) + name'"
-					class="selector"
-				>
-				<input id="cinema-{{cinema.id}}" type="checkbox" class="check" value="{{cinema.id}}" />
-				<img class="favorite" ng-class="{grayscale: cinema.fav}" src="/images/star.png">
-				<label class="name" for="cinema-{{cinema.id}}" title="{{cinema | json}}">{{cinema.name}}</label>
-			</li>
-		</ul>
-	</div>
+<body class="ui-stretch">
+	<section class="ui-stretch" ng-controller="AppController">
+		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
+			<ul id="cinemasList" class="selectors">
+				<li class="selector" ng-repeat="cinema in cinemas | orderBy:['-fav', 'name']">
+					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.id}}" ng-model="cinema.selected" />
+					<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">{{cinema.name}}</label>
+					<img  src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+				</li>
+			</ul>
+		</section>
+		<aside id="debug">
+			Selected cinemas
+			<ul>
+				<li ng-repeat="cinema in cinemas | filter:{selected: true} | orderBy:'name'">
+					<span>{{cinema.name}}</span>
+				</li>
+			</ul>
+		</aside>
+	</section>
+	<div id="statusmessage" ng-show="status">{{status}}</div>
 </body>
 </html>

@@ -63,10 +63,7 @@ function favCinema(req, res) {
 		if(results.length !== 1) {
 			res.send(404, 'No or more results found: ' + results.length);
 		} else {
-			res.jsonp({
-				cinema: results[0].cinema.data,
-				user: results[0].user.data
-			});
+			res.jsonp(results[0].cinema.data);
 		}
 	});
 }
@@ -80,10 +77,7 @@ function unFavCinema(req, res) {
 		if(results.length !== 1) {
 			res.send(404, 'No or more results found: ' + results.length);
 		} else {
-			res.jsonp({
-				cinema: results[0].cinema.data,
-				user: results[0].user.data
-			});
+			res.jsonp(results[0].cinema.data);
 		}
 	});
 }
@@ -114,7 +108,7 @@ function getCinemas(req, res) {
 			for(var i = 0, len = results.length; i < len; ++i) {
 				var result = results[i];
 				var c = _.clone(result.cinema.data);
-				c.fav = !!result.fav;
+				c.fav = result.fav;
 				data.push(c);
 			}
 			res.jsonp(data);
