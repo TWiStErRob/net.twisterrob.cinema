@@ -74,6 +74,8 @@ table, tr, td, th {
 ul.selectors {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+    margin-left: 3px;
 }
 
 .selectors .selector {
@@ -90,6 +92,7 @@ ul.selectors {
 .selector .name {
 	font-size: 10pt;
 	font-family: sans-serif;
+	display: inline;
 }
 
 img.grayscale {

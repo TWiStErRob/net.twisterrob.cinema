@@ -9,6 +9,8 @@
 <script src="/scripts/libs/angular/angular-animate.js"></script>
 <script src="/scripts/libs/angular/angular-resource.js"></script>
 <script src="/scripts/libs/angular/angular-route.js"></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.7.0.js"></script>
 
 <script src="/scripts/planner-angular/app.js"></script>
 <script src="/scripts/planner-angular/utils.js"></script>
@@ -23,10 +25,20 @@
 <script type="text/javascript" src="/scripts/libs/moment/moment-range-0.1.6.js"></script>
 <script type="text/javascript" src="/scripts/libs/underscore/underscore-1.4.3.js"></script>
 
+<link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" type="text/css" href="/styles/planner-angular.css" />
 </head>
 <body class="ui-stretch" ng-controller="AppController">
 	<section id="main" class="ui-stretch">
+		<header id="date" ng-controller="DateController">
+			<div class="form-horizontal">
+				<p>
+					<input type="text" datepicker-popup="shortDate" ng-model="date" ng-required="true" is-open="opened" ng-change="changed()" />
+					<button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
+					Selected date is: <em>{{date | date:'fullDate' }}</em>
+				</p>
+			</div>
+		</header>
 		<aside id="debug" ng-controller="DebugController">
 			Selected cinemas: {{(cineworld.cinemas | filter:{selected: true}).length}} / {{cineworld.cinemas.length}}
 			<ul>

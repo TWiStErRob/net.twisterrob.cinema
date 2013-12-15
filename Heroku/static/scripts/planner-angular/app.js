@@ -7,7 +7,8 @@ var app = angular.module('app', [
 	'appServices',
 	'appFilters',
 	'appDirectives',
-	'appAnimations'
+	'appAnimations',
+	'ui.bootstrap'
 ]);
 
 app.config([function fixCineworldCallbacks() {

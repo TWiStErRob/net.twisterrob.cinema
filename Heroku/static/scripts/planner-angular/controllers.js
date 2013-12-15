@@ -41,6 +41,20 @@ module.controller('DebugController',
 	}
 );
 
+module.controller('DateController',
+	function($scope, $timeout, cineworld) {
+		$scope.date = new Date();
+		$scope.open = function() {
+			$timeout(function() {
+				$scope.opened = true;
+			});
+		};
+		$scope.changed = function() {
+			cineworld.data.date = moment($scope.date);
+		}
+	}
+);
+
 module.controller('CinemaListController',
 	function($rootScope, $scope, cineworld, Cinema) {
 		$scope.cinemas = cineworld.updateCinemas();
