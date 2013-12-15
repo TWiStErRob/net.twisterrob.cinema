@@ -36,3 +36,50 @@ module.factory('CinemaFav', [
 			});
 	}
 ]);
+
+module.factory('Film', [
+	        '$resource',
+	function($resource) {
+		return $resource('/film',
+			{ 'cinemaIDs[]': [] },
+			{
+				list: { method: 'GET', params: { 'cinemaIDs[]': [] }, isArray: true }
+			});
+	}
+]);
+
+module.service('cineworld', function($rootScope, CinemaFav, Film) {
+	var data = this.data = {
+		date: moment(),
+		cinemas: undefined,
+		films: undefined
+	};
+	this.updateCinemas = function() {
+		var params = {};
+		return data.cinemas = CinemaFav.list(params, function(cinemas) {
+			angular.forEach(cinemas, function(cinema) {
+				cinema.selected = cinema.fav;
+			});
+			$rootScope.$broadcast('CinemasLoaded', cinemas);
+		});
+	};
+
+	this.updateFilms = function() {
+		var params = {
+			date: data.date.format("YYYYMMDD"),
+			cinemaIDs: data.cinemas
+				.filter(function(cinema) {
+					return cinema.selected;
+				})
+				.map(function(cinema) {
+					return cinema.cineworldID;
+				})
+		}
+		if(params.cinemaIDs.length == 0) {
+			return;
+		}
+		return data.films = Film.list(params, function(films) {
+			$rootScope.$broadcast('FilmsLoaded', films);
+		});
+	}
+});

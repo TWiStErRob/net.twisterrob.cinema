@@ -4,40 +4,61 @@
 <meta charset="utf-8">
 <title>Cineworld Cinemas Planner</title>
 
-<script src="scripts/libs/jquery/jquery-1.9.1.js"></script>
-<script src="scripts/libs/angular/angular.js"></script>
-<script src="scripts/libs/angular/angular-animate.js"></script>
-<script src="scripts/libs/angular/angular-resource.js"></script>
-<script src="scripts/libs/angular/angular-route.js"></script>
+<script src="/scripts/libs/jquery/jquery-1.9.1.js"></script>
+<script src="/scripts/libs/angular/angular.js"></script>
+<script src="/scripts/libs/angular/angular-animate.js"></script>
+<script src="/scripts/libs/angular/angular-resource.js"></script>
+<script src="/scripts/libs/angular/angular-route.js"></script>
 
-<script src="scripts/planner-angular/app.js"></script>
-<script src="scripts/planner-angular/utils.js"></script>
-<script src="scripts/planner-angular/controllers.js"></script>
-<script src="scripts/planner-angular/services.js"></script>
-<script src="scripts/planner-angular/filters.js"></script>
-<script src="scripts/planner-angular/directives.js"></script>
-<script src="scripts/planner-angular/animations.js"></script>
+<script src="/scripts/planner-angular/app.js"></script>
+<script src="/scripts/planner-angular/utils.js"></script>
+<script src="/scripts/planner-angular/controllers.js"></script>
+<script src="/scripts/planner-angular/services.js"></script>
+<script src="/scripts/planner-angular/filters.js"></script>
+<script src="/scripts/planner-angular/directives.js"></script>
+<script src="/scripts/planner-angular/animations.js"></script>
+
+<script type="text/javascript" src="/scripts/libs/moment/moment-2.1.0.js"></script>
+<!--<script type="text/javascript" src="/scripts/libs/moment/moment-2.1.0-hu.js"></script>-->
+<script type="text/javascript" src="/scripts/libs/moment/moment-range-0.1.6.js"></script>
+<script type="text/javascript" src="/scripts/libs/underscore/underscore-1.4.3.js"></script>
+
 <link rel="stylesheet" type="text/css" href="/styles/planner-angular.css" />
 </head>
-<body class="ui-stretch">
-	<section class="ui-stretch" ng-controller="AppController">
-		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
-			<ul id="cinemasList" class="selectors">
-				<li class="selector" ng-repeat="cinema in cinemas | orderBy:['-fav', 'name']">
-					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.id}}" ng-model="cinema.selected" />
-					<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">{{cinema.name}}</label>
-					<img  src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+<body class="ui-stretch" ng-controller="AppController">
+	<section id="main" class="ui-stretch">
+		<aside id="debug" ng-controller="DebugController">
+			Selected cinemas: {{(cineworld.cinemas | filter:{selected: true}).length}} / {{cineworld.cinemas.length}}
+			<ul>
+				<li ng-repeat="cinema in cineworld.cinemas | filter:{selected: true} | orderBy:'name'">
+					<span>{{cinema.name}} ({{cinema.cineworldID}})</span>
 				</li>
 			</ul>
-		</section>
-		<aside id="debug">
-			Selected cinemas
+
+			Selected films: {{(cineworld.films | filter:{selected: true}).length}} / {{cineworld.films.length}}
 			<ul>
-				<li ng-repeat="cinema in cinemas | filter:{selected: true} | orderBy:'name'">
-					<span>{{cinema.name}}</span>
+				<li ng-repeat="film in cineworld.films | filter:{selected: true} | orderBy:'title'">
+					<span>{{film.title}} ({{film.edi}})</span>
 				</li>
 			</ul>
 		</aside>
+		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
+			<ul id="cinemasList" class="selectors">
+				<li class="selector" ng-repeat="cinema in cinemas | orderBy:['-fav', 'name']">
+					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" ng-ampere-debounce="{ timeout : 500}" />
+					<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">{{cinema.name}}</label>
+					<img src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+				</li>
+			</ul>
+		</section>
+		<section id="films" class="ui-stretch" ng-controller="FilmListController">
+			<ul id="filmsList" class="selectors">
+				<li class="selector" ng-repeat="film in films | orderBy:['name']">
+					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
+					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}</label>
+				</li>
+			</ul>
+		</section>
 	</section>
 	<div id="statusmessage" ng-show="status">{{status}}</div>
 </body>

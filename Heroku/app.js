@@ -4,6 +4,7 @@ var url = require('url');             // http://nodejs.org/api/url.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var _ = require('underscore');        // http://underscorejs.org/
+var request = require('request');     // https://github.com/mikeal/request
 var bunyan = require('bunyan');
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
@@ -104,7 +105,6 @@ function getCinemas(req, res) {
 		graph.query(graph.queries.getCinemasAuth, params, function (error, results) {
 			if(error) throw error;
 			var data = [];
-			console.log(results);
 			for(var i = 0, len = results.length; i < len; ++i) {
 				var result = results[i];
 				var c = _.clone(result.cinema.data);
@@ -125,6 +125,40 @@ function getCinemas(req, res) {
 			res.jsonp(data);
 		});
 	}
+}
+
+function getFilms(req, res) {
+	var cineParams = {
+		key: "9qfgpF7B",
+		date: '20131215',
+		cinema: req.param('cinemaIDs')
+	};
+	if(cineParams.cinema == undefined || cineParams.cinema.length == 0) {
+		res.jsonp([]);
+		return;
+	}
+	request.get({
+		uri: 'http://www.cineworld.com/api/quickbook/films',
+		json: true,
+		qs: cineParams
+	}, function (err, response, body) {
+		if(err) throw err;
+		var params = {
+			filmEDIs: _.pluck(body.films, 'edi')
+		};
+		if(params.filmEDIs.length == 0) {
+			res.jsonp([]);
+			return;
+		}
+		graph.query(graph.queries.getFilms, params, function (error, results) {
+			if(error) throw error;
+			var data = [];
+			for(var i = 0, len = results.length; i < len; ++i) {
+				data.push(results[i].film.data);
+			}
+			res.jsonp(data);
+		});
+	});
 }
 
 
@@ -153,6 +187,7 @@ app.configure(function configure_use() {
 
 auth.init(app);
 
+app.get('/film', getFilms);
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
 app.get('/cinema', getCinemas);

@@ -34,6 +34,7 @@ module.exports = {
 			graph.queries = {
 				endOfBatch: fs.readFileSync(__dirname + '/queries/endOfBatch.cypher', "utf8"),
 				getFilm: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8"),
+				getFilms: fs.readFileSync(__dirname + '/queries/getFilms.cypher', "utf8"),
 				getAllFilms: fs.readFileSync(__dirname + '/queries/getAllFilms.cypher', "utf8"),
 				getAllCinemas: fs.readFileSync(__dirname + '/queries/getAllCinemas.cypher', "utf8"),
 				getCinemasAuth: fs.readFileSync(__dirname + '/queries/getCinemasAuth.cypher', "utf8"),
