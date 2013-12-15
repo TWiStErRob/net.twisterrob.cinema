@@ -60,6 +60,8 @@
 			</ul>
 		</section>
 	</section>
-	<div id="statusmessage" ng-show="status">{{status}}</div>
+	<div id="statusmessage" ng-show="stati.length > 0">
+		<div ng-repeat="status in stati">{{status}}</div>
+	</div>
 </body>
 </html>

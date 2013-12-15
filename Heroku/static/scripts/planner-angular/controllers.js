@@ -18,11 +18,17 @@ module.controller('AppController',
 			showStatus('Cinema un-favorited: ' + cinema.name);
 		});
 
+		$scope.stati = [];
+		var current = undefined;
 		function showStatus(message, persistent) {
-			$scope.status = message;
-			if(!persistent) {
-				$timeout(function() {
-					$scope.status = undefined;
+			if(persistent) {
+				$scope.stati.length = 0;
+				$scope.stati.push(message);
+			} else {
+				$scope.stati.push(message);
+				if(current) { $timeout.cancel(current); }
+				current = $timeout(function() {
+					$scope.stati.length = 0;
 				}, 2000);
 			}
 		}
