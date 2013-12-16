@@ -10,18 +10,24 @@
 	font-family: Georgia;
 	text-shadow: 2px 1px 3px darkgray;
 }
+
+#main > header {
+	height: 40px;
+}
+
 #cinemas {
 	float: left;
 	width: auto;
-	height: 100%;
+	height: calc(100% - 40px);
 	margin: 0;
 	padding: 0;
 	overflow-y: scroll;
 }
+
 #films {
 	float: left;
 	width: auto;
-	height: 100%;
+	height: calc(100% - 40px);
 	margin: 0;
 	padding: 0;
 	overflow-y: scroll;
@@ -30,7 +36,7 @@
 #debug {
 	float: right;
 	width: 300px;
-	height: 100%;
+	height: calc(100% - 40px);
 	border-left: 1px solid black;
 	padding-left: 4px;
 }

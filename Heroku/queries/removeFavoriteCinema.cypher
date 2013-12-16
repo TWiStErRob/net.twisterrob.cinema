@@ -1,3 +1,4 @@
+// removeFavoriteCinema: Find the User and remove the relation GOESTO to the Cinema
 // {cinemaID}: Cinema.cineworldID
 // {userID}: User.id
 MATCH

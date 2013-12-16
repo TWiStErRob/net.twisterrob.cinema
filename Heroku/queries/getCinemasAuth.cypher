@@ -1,3 +1,4 @@
+// getCinemasAuth: ??
 // {userID}: User.id
 MATCH (c:Cinema)
 WHERE not has (c._deleted)

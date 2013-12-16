@@ -4,34 +4,26 @@
 var module = angular.module('appControllers', []);
 
 module.controller('AppController',
-	function($scope,   $timeout) {
+	function($scope) {
+	}
+);
+
+module.controller('StatusController',
+	function($scope,  Status) {
+		Status.setTimeout(3000);
+		$scope.stati = Status.getStati();
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
-			showStatus('Loaded ' + cinemas.length + ' cinemas.');
+			Status.showStatus('Loaded ' + cinemas.length + ' cinemas.');
 		})
 		$scope.$on('FilmsLoaded', function(event, films) {
-			showStatus('Loaded ' + films.length + ' films.');
+			Status.showStatus('Loaded ' + films.length + ' films.');
 		})
 		$scope.$on('CinemaFavorited', function(event, cinema) {
-			showStatus('Cinema favorited: ' + cinema.name);
+			Status.showStatus('Cinema favorited: ' + cinema.name);
 		});
 		$scope.$on('CinemaUnFavorited', function(event, cinema) {
-			showStatus('Cinema un-favorited: ' + cinema.name);
+			Status.showStatus('Cinema un-favorited: ' + cinema.name);
 		});
-
-		$scope.stati = [];
-		var current = undefined;
-		function showStatus(message, persistent) {
-			if(persistent) {
-				$scope.stati.length = 0;
-				$scope.stati.push(message);
-			} else {
-				$scope.stati.push(message);
-				if(current) { $timeout.cancel(current); }
-				current = $timeout(function() {
-					$scope.stati.length = 0;
-				}, 2000);
-			}
-		}
 	}
 );
 
@@ -43,21 +35,33 @@ module.controller('DebugController',
 
 module.controller('DateController',
 	function($scope, $timeout, cineworld) {
-		$scope.date = new Date();
+		$scope.cineworld = cineworld.data;
+
+		$scope.$watch('cineworld.date', function (newValue, oldValue, scope) {
+			cineworld.updateFilms();
+		}, true);
+
 		$scope.open = function() {
 			$timeout(function() {
 				$scope.opened = true;
 			});
 		};
-		$scope.changed = function() {
-			cineworld.data.date = moment($scope.date);
-		}
 	}
 );
 
 module.controller('CinemaListController',
 	function($rootScope, $scope, cineworld, Cinema) {
-		$scope.cinemas = cineworld.updateCinemas();
+		$scope.cineworld = cineworld.data;
+
+		$scope.loading = true;
+		$scope.$on('CinemasLoading', function(event) {
+			$scope.loading = true;
+		});
+		$scope.$on('CinemasLoaded', function(event, cinemas) {
+			$scope.loading = false;
+		});
+
+		cineworld.updateCinemas();
 
 		$scope.favClick = function(cinema) {
 			cinema.favLoading = true;
@@ -81,12 +85,17 @@ module.controller('CinemaListController',
 
 module.controller('FilmListController',
 	function($rootScope, $scope, cineworld) {
-		$scope.$on('CinemasLoaded', function(event, cinemas) {
-			$scope._cinemas = cinemas;
-		})
-		$scope.$watch('_cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
-			$scope.films = cineworld.updateFilms();
+		$scope.cineworld = cineworld.data;
+		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
+			cineworld.updateFilms();
 		}, true);
+		$scope.loading = true;
+		$scope.$on('FilmsLoading', function(event) {
+			$scope.loading = true;
+		});
+		$scope.$on('FilmsLoaded', function(event, films) {
+			$scope.loading = false;
+		});
 
 		$scope.viewPopup = function(film) {}
 	}

@@ -48,14 +48,46 @@ module.factory('Film', [
 	}
 ]);
 
+module.factory('Status', function($timeout) {
+	var data = {
+		stati: [],
+		timeout: 2000,
+		currentTimeout: undefined
+	};
+	return {
+		showStatus: function (message, persistent) {
+			if(persistent) {
+				data.stati.length = 0;
+				data.stati.push(message);
+			} else {
+				data.stati.push(message);
+				if(data.currentTimeout) {
+					$timeout.cancel(data.currentTimeout);
+				}
+				data.currentTimeout = $timeout(function() {
+					data.stati.length = 0;
+				}, data.timeout);
+			}
+		},
+		getStati: function() {
+			return data.stati;
+		},
+		setTimeout: function(timeout) {
+			data.timeout = timeout;
+		}
+	}
+});
+
 module.service('cineworld', function($rootScope, CinemaFav, Film) {
 	var data = this.data = {
-		date: moment(),
+		date: new Date(),
 		cinemas: undefined,
 		films: undefined
 	};
+
 	this.updateCinemas = function() {
 		var params = {};
+		$rootScope.$broadcast('CinemasLoading', cinemas);
 		return data.cinemas = CinemaFav.list(params, function(cinemas) {
 			angular.forEach(cinemas, function(cinema) {
 				cinema.selected = cinema.fav;
@@ -66,7 +98,7 @@ module.service('cineworld', function($rootScope, CinemaFav, Film) {
 
 	this.updateFilms = function() {
 		var params = {
-			date: data.date.format("YYYYMMDD"),
+			date: moment(data.date).format("YYYYMMDD"),
 			cinemaIDs: data.cinemas
 				.filter(function(cinema) {
 					return cinema.selected;
@@ -78,6 +110,7 @@ module.service('cineworld', function($rootScope, CinemaFav, Film) {
 		if(params.cinemaIDs.length == 0) {
 			return;
 		}
+		$rootScope.$broadcast('FilmsLoading');
 		return data.films = Film.list(params, function(films) {
 			$rootScope.$broadcast('FilmsLoaded', films);
 		});

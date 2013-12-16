@@ -1,3 +1,4 @@
+// addFavoriteCinema: create a GOESTO relation between User and Cinema if it doesn't exist
 // {cinemaID}: Cinema.cineworldID
 // {userID}: User.id
 MATCH

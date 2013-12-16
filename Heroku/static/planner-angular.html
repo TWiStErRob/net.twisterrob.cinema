@@ -33,9 +33,9 @@
 		<header id="date" ng-controller="DateController">
 			<div class="form-horizontal">
 				<p>
-					<input type="text" datepicker-popup="shortDate" ng-model="date" ng-required="true" is-open="opened" ng-change="changed()" />
+					<input type="text" datepicker-popup="shortDate" ng-model="cineworld.date" ng-required="true" is-open="opened" ng-change="changed()" />
 					<button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
-					Selected date is: <em>{{date | date:'fullDate' }}</em>
+					Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
 				</p>
 			</div>
 		</header>
@@ -55,8 +55,9 @@
 			</ul>
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
-			<ul id="cinemasList" class="selectors">
-				<li class="selector" ng-repeat="cinema in cinemas | orderBy:['-fav', 'name']">
+			<div ng-show="loading">Loading cinemas...</div>
+			<ul id="cinemasList" class="selectors" ng-show="!loading">
+				<li class="selector" ng-repeat="cinema in cineworld.cinemas | orderBy:['-fav', 'name']">
 					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" ng-ampere-debounce="{ timeout : 500}" />
 					<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">{{cinema.name}}</label>
 					<img src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
@@ -64,16 +65,17 @@
 			</ul>
 		</section>
 		<section id="films" class="ui-stretch" ng-controller="FilmListController">
-			<ul id="filmsList" class="selectors">
-				<li class="selector" ng-repeat="film in films | orderBy:['name']">
+			<div ng-show="loading">Loading films...</div>
+			<ul id="filmsList" class="selectors" ng-show="!loading">
+				<li class="selector" ng-repeat="film in cineworld.films | orderBy:['name']">
 					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
 					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}</label>
 				</li>
 			</ul>
 		</section>
 	</section>
-	<div id="statusmessage" ng-show="stati.length > 0">
-		<div ng-repeat="status in stati">{{status}}</div>
+	<div id="statusmessage" ng-show="stati.length > 0" ng-controller="StatusController">
+		<div ng-repeat="status in stati track by $index">{{status}}</div>
 	</div>
 </body>
 </html>
