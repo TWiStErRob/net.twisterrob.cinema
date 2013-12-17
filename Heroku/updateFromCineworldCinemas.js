@@ -13,16 +13,15 @@ neo4j.init(function(err, graph) {
 		}
 	}, function (err, response, body) {
 		if(err) throw err;
+		_.each(body.cinemas, function(cinema) {
+			cinema.cineworldID = cinema.id; delete cinema.id;
+		});
 		neo4j.createNodes(graph, 'Cinema', body.cinemas, graph.queries.getAllCinemas,
 			"cinema",
 			function(cinemaNode) {
 				return cinemaNode.data.cineworldID;
 			},
-			"id",
-			function(cinemaToInsert) {
-				cinemaToInsert.cineworldID = cinemaToInsert.id;
-				delete cinemaToInsert.id;
-			},
+			"cineworldID",
 			function(error, createdNodes, updatedNodes, deletedNodes) {
 				if(error) log.error(error);
 			}

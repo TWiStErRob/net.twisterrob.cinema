@@ -1,10 +1,12 @@
 var fs = require('fs');               // http://nodejs.org/api/fs.html
+var path = require('path');           // http://nodejs.org/api/path.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var _ = require('underscore');        // http://underscorejs.org/
 var assert = require('assert');
 var config = require('./config');
+var utils = require('./utils');
 
 var log = require('./logs').app;
 
@@ -31,32 +33,21 @@ module.exports = {
 			}
 			global.graph = graph;
 
-			graph.queries = {
-				endOfBatch: fs.readFileSync(__dirname + '/queries/endOfBatch.cypher', "utf8"),
-				getFilm: fs.readFileSync(__dirname + '/queries/getFilm.cypher', "utf8"),
-				getFilms: fs.readFileSync(__dirname + '/queries/getFilms.cypher', "utf8"),
-				getAllFilms: fs.readFileSync(__dirname + '/queries/getAllFilms.cypher', "utf8"),
-				getAllCinemas: fs.readFileSync(__dirname + '/queries/getAllCinemas.cypher', "utf8"),
-				getCinemasAuth: fs.readFileSync(__dirname + '/queries/getCinemasAuth.cypher', "utf8"),
-				addView: fs.readFileSync(__dirname + '/queries/addView.cypher', "utf8"),
-				addUser: fs.readFileSync(__dirname + '/queries/addUser.cypher', "utf8"),
-				getUser: fs.readFileSync(__dirname + '/queries/getUser.cypher', "utf8"),
-				addFavoriteCinema: fs.readFileSync(__dirname + '/queries/addFavoriteCinema.cypher', "utf8"),
-				removeFavoriteCinema: fs.readFileSync(__dirname + '/queries/removeFavoriteCinema.cypher', "utf8"),
-				getFavoriteCinemas: fs.readFileSync(__dirname + '/queries/getFavoriteCinemas.cypher', "utf8"),
-			};
+			utils.readFiles(path.join(__dirname, 'queries'), true, function(err, results) {
+				if(err) throw err;
+				graph.queries = results;
+				var q = graph.query;
+				graph.query = function queryWrapper(query, params) {
+					log.debug({query: query, params: params}, query);
+					return q.apply(this, Array.prototype.slice.call(arguments));
+				};
 
-			var q = graph.query;
-			graph.query = function queryWrapper(query, params) {
-				log.debug({query: query, params: params}, query);
-				return q.apply(this, Array.prototype.slice.call(arguments));
-			};
-
-			log.info('Neo4j connected to: %s', graph.version);
-			callback(undefined, graph);
+				log.info('Neo4j connected to: %s', graph.version);
+				callback(undefined, graph);
+			});
 		});
 	},
-	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, dataToNodeProperties, allDone) {
+	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, allDone) {
 		graph.query(queryAll, function (error, results) {
 			if(error) {
 				allDone(error, [], [], []);
@@ -98,9 +89,7 @@ module.exports = {
 						nodeFinished();
 					};
 					_.each(newContent, function(contentObj) {
-						var dbObj = extend(true, {}, contentObj);
-						dataToNodeProperties(dbObj);
-						extend(dbObj, {
+						var dbObj = extend(true, {}, contentObj, {
 							class: clazz,
 							_created: now
 						});

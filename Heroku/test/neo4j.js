@@ -10,11 +10,7 @@ exports.testLifeCycle = {
 		test.queryClean = 'MATCH (n:' + test.class + ') DELETE n';
 		test.nodeSelector = "nodeAlias";
 		test.nodeID = function(result) { return result.data.namedID; };
-		test.dataID = 'dataID';
-		test.dataToNodeMapping = function(d) {
-			d.namedID = d.dataID;
-			delete d.dataID;
-		};
+		test.dataID = 'namedID';
 		neo4j.init(function(err, graph) {
 			if(err) { throw err; } // TODO test.ifError(err);
 			test.graph = graph;
@@ -43,7 +39,6 @@ exports.testLifeCycle = {
 			test.data.nodeSelector,
 			test.data.nodeID,
 			test.data.dataID,
-			test.data.dataToNodeMapping,
 			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
 				test.equal(createdNodes.length, 0);
@@ -56,15 +51,14 @@ exports.testLifeCycle = {
 	testAdd: function(test) {
 		test.data = this;
 		var data = [
-			{ dataID: 11, name: "Name 1" },
-			{ dataID: 222, name: "Name 2" },
-			{ dataID: 3333, name: "Name 3" }
+			{ namedID: 11, name: "Name 1" },
+			{ namedID: 222, name: "Name 2" },
+			{ namedID: 3333, name: "Name 3" }
 		];
 		neo4j.createNodes(test.data.graph, test.data.class, data, test.data.queryAll,
 			test.data.nodeSelector,
 			test.data.nodeID,
 			test.data.dataID,
-			test.data.dataToNodeMapping,
 			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
 				test.equal(updatedNodes.length, 0);
@@ -76,7 +70,7 @@ exports.testLifeCycle = {
 				test.ok(firstCreated, "No creation date");
 
 				for(var i = 0, len = createdNodes.length; i < len; i++) {
-					test.equal(createdNodes[i].data.namedID, data[i].dataID);
+					test.equal(createdNodes[i].data.namedID, data[i].namedID);
 					test.equal(createdNodes[i].data.name, data[i].name);
 					test.equal(createdNodes[i].data.class, test.data.class);
 					test.equal(createdNodes[i].data._created, firstCreated);
@@ -96,17 +90,14 @@ exports.testLifeCycle = {
 	testUpdate: function(test) {
 		test.data = this;
 		var data = [
-			{ dataID: 11, name: "Name 1" },
-			{ dataID: 222, name: "Name 222" },
-			{ dataID: 3333, name: "Name 3333" }
+			{ namedID: 11, name: "Name 1" },
+			{ namedID: 222, name: "Name 222" },
+			{ namedID: 3333, name: "Name 3333" }
 		];
 		neo4j.createNodes(test.data.graph, test.data.class, data, test.data.queryAll,
 			test.data.nodeSelector,
 			test.data.nodeID,
 			test.data.dataID,
-			function dataToNodeMapping(d) {
-				test.fail("Should not be called");
-			},
 			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
 				test.equal(createdNodes.length, 0);
@@ -120,7 +111,7 @@ exports.testLifeCycle = {
 				test.ok(firstUpdated, "No update date");
 
 				for(var i = 0, len = updatedNodes.length; i < len; i++) {
-					test.equal(updatedNodes[i].data.namedID, data[i].dataID);
+					test.equal(updatedNodes[i].data.namedID, data[i].namedID);
 					test.equal(updatedNodes[i].data.name, data[i].name);
 					test.equal(updatedNodes[i].data.class, test.data.class);
 					test.equal(updatedNodes[i].data._created, firstCreated);
@@ -133,17 +124,14 @@ exports.testLifeCycle = {
 	testDelete: function(test) {
 		test.data = this;
 		var deleted = [
-			{ dataID: 11, name: "Name 1" },
-			{ dataID: 222, name: "Name 222" },
-			{ dataID: 3333, name: "Name 3333" }
+			{ namedID: 11, name: "Name 1" },
+			{ namedID: 222, name: "Name 222" },
+			{ namedID: 3333, name: "Name 3333" }
 		];
 		neo4j.createNodes(test.data.graph, test.data.class, [], test.data.queryAll,
 			test.data.nodeSelector,
 			test.data.nodeID,
 			test.data.dataID,
-			function dataToNodeMapping(d) {
-				test.fail("Should not be called");
-			},
 			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
 				test.equal(createdNodes.length, 0);
@@ -159,7 +147,7 @@ exports.testLifeCycle = {
 				test.ok(firstDeleted, "No delete date");
 
 				for(var i = 0, len = deletedNodes.length; i < len; i++) {
-					test.equal(deletedNodes[i].data.namedID, deleted[i].dataID);
+					test.equal(deletedNodes[i].data.namedID, deleted[i].namedID);
 					test.equal(deletedNodes[i].data.name, deleted[i].name);
 					test.equal(deletedNodes[i].data.class, test.data.class);
 					test.equal(deletedNodes[i].data._created, firstCreated);
@@ -176,9 +164,6 @@ exports.testLifeCycle = {
 			test.data.nodeSelector,
 			test.data.nodeID,
 			test.data.dataID,
-			function dataToNodeMapping(d) {
-				test.fail("Should not be called");
-			},
 			function done(error, createdNodes, updatedNodes, deletedNodes) {
 				test.ifError(error);
 				test.equal(createdNodes.length, 0);
