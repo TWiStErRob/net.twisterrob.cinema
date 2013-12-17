@@ -50,6 +50,7 @@ neo4j.init(function(err, graph) {
 					film.cineworldInternalID = film.id; delete film.id;
 					film.poster_url = body.base_url + film.poster; delete film.poster;
 					film.release = moment(film.release, 'YYYYMMDD').format();
+					film.runtime = film.length; delete film.length;
 				});
 				neo4j.createNodes(graph, 'Film', body.films, graph.queries.getAllFilms,
 					"film",

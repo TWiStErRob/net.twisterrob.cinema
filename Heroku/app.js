@@ -15,6 +15,7 @@ var graph;
 require('./neo4j').init(function(error, connected) {
 	if(error) throw error;
 	graph = connected;
+	listen();
 });
 var logs = require('./logs');
 var log = logs.app;
@@ -154,10 +155,7 @@ function getFilms(req, res) {
 			if(error) throw error;
 			var data = [];
 			for(var i = 0, len = results.length; i < len; ++i) {
-				var result = results[i];
-				var f = _.clone(result.film.data);
-				f.runtime = (80 + Math.floor(Math.random() * 40)) * Math.floor(Math.random() * 2);
-				data.push(f);
+				data.push(results[i].film.data);
 			}
 			res.jsonp(data);
 		});
@@ -198,9 +196,16 @@ app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 
-app.listen(process.env.PORT, function() {
-	log.info("Express listening on %d", process.env.PORT);
-});
+app.initialized = true;
+listen();
+function listen() {
+	if(app.initialized && graph) {
+		delete app.initialized;
+		app.listen(process.env.PORT, function() {
+			log.info("Express listening on %d", process.env.PORT);
+		});
+	}
+}
 
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
