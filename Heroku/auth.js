@@ -94,6 +94,7 @@ function setupRoutes(app) {
 		if(req.isAuthenticated()) {
 			log.trace({user: req.user}, 'Logging out %s.', req.user.id);
 			req.logout();
+			res.redirect('/');
 		} else {
 			log.warn('Already logged out.');
 			res.redirect('/');

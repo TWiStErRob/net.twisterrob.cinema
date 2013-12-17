@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$scope', 'cineworld', '$location',
-	function($scope,   cineworld,   $location) {
+	        '$rootScope', 'cineworld', '$location',
+	function($scope,       cineworld,   $location) {
 		$scope.cineworld = cineworld;
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$location.search('c', _.pluck(newValue, 'cineworldID'));
@@ -25,12 +25,17 @@ module.controller('StatusController', [
 	function($scope,   Status) {
 		Status.timeout = 3000;
 		$scope.stati = Status.stati;
+		$scope.$on('ResourceError', function(event, error) {
+			var message = error.config.method + ' ' + error.config.url;
+			message += ': ' + error.status + '/' + error.data;
+			Status.showStatus(message);
+		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
 			Status.showStatus('Loaded ' + cinemas.length + ' cinemas.');
-		})
+		});
 		$scope.$on('FilmsLoaded', function(event, films) {
 			Status.showStatus('Loaded ' + films.length + ' films.');
-		})
+		});
 		$scope.$on('CinemaFavorited', function(event, cinema) {
 			Status.showStatus('Cinema favorited: ' + cinema.name);
 		});
@@ -62,8 +67,8 @@ module.controller('DateController', [
 ]);
 
 module.controller('CinemaListController', [
-	        '$scope', 'Cinema',
-	function($scope,   Cinema) {
+	        '$rootScope', '$scope', 'Cinema',
+	function($rootScope,   $scope,   Cinema) {
 		$scope.loading = true;
 		$scope.$on('CinemasLoading', function(event) {
 			$scope.loading = true;
@@ -78,17 +83,27 @@ module.controller('CinemaListController', [
 			cinema.favLoading = true;
 			var params = {cinemaID: cinema.cineworldID};
 			if(cinema.fav) {
-				Cinema.unFav(params, function(newCinema) {
-					cinema.fav = false;
-					cinema.favLoading = false;
-					$scope.$emit('CinemaUnFavorited', cinema);
-				});
+				Cinema.unFav(params).$promise.then(
+					function(newCinema) {
+						cinema.fav = false;
+						cinema.favLoading = false;
+						$rootScope.$broadcast('CinemaUnFavorited', cinema);
+					},
+					function(error) {
+						$rootScope.$broadcast('ResourceError', error);
+					}
+				);
 			} else {
-				Cinema.fav(params, function(newCinema) {
-					cinema.fav = true;
-					cinema.favLoading = false;
-					$scope.$emit('CinemaFavorited', cinema);
-				});
+				Cinema.fav(params).$promise.then(
+					function(newCinema) {
+						cinema.fav = true;
+						cinema.favLoading = false;
+						$rootScope.$broadcast('CinemaFavorited', cinema);
+					},
+					function(error) {
+						$rootScope.$broadcast('ResourceError', error);
+					}
+				);
 			}
 		}
 	}
