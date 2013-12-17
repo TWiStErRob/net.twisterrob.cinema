@@ -130,7 +130,7 @@ function getCinemas(req, res) {
 function getFilms(req, res) {
 	var cineParams = {
 		key: "9qfgpF7B",
-		date: '20131215',
+		date: req.param('date'),
 		cinema: req.param('cinemaIDs')
 	};
 	if(cineParams.cinema == undefined || cineParams.cinema.length == 0) {
@@ -154,7 +154,10 @@ function getFilms(req, res) {
 			if(error) throw error;
 			var data = [];
 			for(var i = 0, len = results.length; i < len; ++i) {
-				data.push(results[i].film.data);
+				var result = results[i];
+				var f = _.clone(result.film.data);
+				f.runtime = (80 + Math.floor(Math.random() * 40)) * Math.floor(Math.random() * 2);
+				data.push(f);
 			}
 			res.jsonp(data);
 		});

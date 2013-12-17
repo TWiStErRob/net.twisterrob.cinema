@@ -4,6 +4,7 @@ var passport = require('passport');   // http://passportjs.org/guide/
 var GoogleStrategy = require('passport-google').Strategy; // http://passportjs.org/guide/google/
 var package = require('./package.json');
 var config = require('./config');
+var moment = require('moment');
 var graph;
 require('./neo4j').init(function(error, connected) {
 	if(error) throw error;
@@ -43,21 +44,20 @@ function setupPassport(app) {
 			profile: true
 		},
 		function(identifier, profile, done) {
-			// asynchronous verification, for effect...
-			process.nextTick(function validate() {
-				graph.query(graph.queries.addUser, {
-					id: identifier,
-					email: profile.emails[0].value,
-					name: profile.displayName
-				}, function (error, results) {
-					if(error) {
-						return done(error, undefined);
-					} else if(!results.length) {
-						return done(undefined, false);
-					} else {
-						return done(undefined, results[0].user.data);
-					}
-				});
+			graph.query(graph.queries.addUser, {
+				id: identifier,
+				email: profile.emails[0].value,
+				name: profile.displayName,
+				realm: app.get('app urlRoot'),
+				created: moment().format()
+			}, function (error, results) {
+				if(error) {
+					return done(error, undefined);
+				} else if(!results.length) {
+					return done(undefined, false);
+				} else {
+					return done(undefined, results[0].user.data);
+				}
 			});
 		}
 	));

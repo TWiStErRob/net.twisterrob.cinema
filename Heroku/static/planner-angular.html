@@ -69,7 +69,7 @@
 			<ul id="filmsList" class="selectors" ng-show="!loading">
 				<li class="selector" ng-repeat="film in cineworld.films | orderBy:['name']">
 					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
-					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}</label>
+					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}<span class="optional" ng-show="film.runtime > 0"> (<span class="runtime">{{film.runtime}}</span>)</label>
 				</li>
 			</ul>
 		</section>

@@ -4,7 +4,20 @@
 var module = angular.module('appControllers', []);
 
 module.controller('AppController',
-	function($scope) {
+	function($scope, cineworld, $location) {
+		$scope.cineworld = cineworld.data;
+		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
+			$location.search('c', _.pluck(newValue, 'cineworldID'));
+			$location.replace();
+		}, true);
+		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
+			$location.search('f', _.pluck(newValue, 'edi'));
+			$location.replace();
+		}, true);
+		$scope.$watch('cineworld.date', function (newValue, oldValue, scope) {
+			$location.search('d', moment(newValue).format('YYYY-MM-DD'));
+			$location.replace();
+		}, true);
 	}
 );
 
@@ -50,7 +63,7 @@ module.controller('DateController',
 );
 
 module.controller('CinemaListController',
-	function($rootScope, $scope, cineworld, Cinema) {
+	function($rootScope, $scope, cineworld, CinemaFav) {
 		$scope.cineworld = cineworld.data;
 
 		$scope.loading = true;
@@ -67,13 +80,13 @@ module.controller('CinemaListController',
 			cinema.favLoading = true;
 			var params = {cinemaID: cinema.cineworldID};
 			if(cinema.fav) {
-				Cinema.unFav(params, function(newCinema) {
+				CinemaFav.unFav(params, function(newCinema) {
 					cinema.fav = false;
 					cinema.favLoading = false;
 					$scope.$emit('CinemaUnFavorited', cinema);
 				});
 			} else {
-				Cinema.fav(params, function(newCinema) {
+				CinemaFav.fav(params, function(newCinema) {
 					cinema.fav = true;
 					cinema.favLoading = false;
 					$scope.$emit('CinemaFavorited', cinema);
