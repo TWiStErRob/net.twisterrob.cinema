@@ -1,4 +1,2 @@
 'use strict';
-
-/* Animations */
-var module = angular.module('appAnimations', []);
+var module = angular.module('appAnimations'); // see app.js

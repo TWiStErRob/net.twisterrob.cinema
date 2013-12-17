@@ -2,7 +2,7 @@
 
 /* App Module */
 var app = angular.module('app', [
-	'utils',
+	'appUtils',
 	'appControllers',
 	'appServices',
 	'appFilters',
@@ -10,18 +10,28 @@ var app = angular.module('app', [
 	'appAnimations',
 	'ui.bootstrap'
 ]);
+angular.module('appUtils', []);
+angular.module('appControllers', []);
+angular.module('appServices', ['ngResource']);
+angular.module('appFilters', []);
+angular.module('appDirectives', []);
+angular.module('appAnimations', []);
 
-app.config([function fixCineworldCallbacks() {
+app.config([
+	fixCineworldCallbacks
+]);
+
+function fixCineworldCallbacks() {
 	var $window = window,
 	    callbacks = $window.angular.callbacks,
-	    c = callbacks.counter,
-	    pendingCallbacks = {};
+	    pendingCallbacks = {},
+	    counter = callbacks.counter;
 	Object.defineProperty(callbacks, "counter", {
 		get: function() {
 			cleanFixedCallbacks();
-			var counter = this.realCounter;
 			var originalName = '_' + counter;
-			var fixedName = ('angular.callbacks.' + originalName).replace(/[^a-zA-Z0-9_]/g, '');
+			var fixedName = ('angular.callbacks.' + originalName)
+					.replace(/[^a-zA-Z0-9_]/g, '');
 			function fixedCallback(data) {
 				callbacks[originalName](data);
 				delete $window[fixedName];
@@ -32,11 +42,10 @@ app.config([function fixCineworldCallbacks() {
 			pendingCallbacks[fixedName] = fixedCallback;
 			return counter;
 		},
-		set: function(counter) {
-			this.realCounter = counter;
+		set: function(value) {
+			counter = value;
 		}
 	});
-	callbacks.counter = c;
 
 	/**
 	 * Clear uncalled callback fixes.
@@ -48,4 +57,4 @@ app.config([function fixCineworldCallbacks() {
 			}
 		});
 	}
-}]);
+}

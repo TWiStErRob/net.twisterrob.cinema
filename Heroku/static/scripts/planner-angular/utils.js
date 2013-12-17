@@ -1,7 +1,5 @@
 'use strict';
-
-/* Utils */
-var module = angular.module('utils', ['ngResource']);
+var module = angular.module('appUtils'); // see app.js
 
 module.service('AngularHacks', function _constructor() { 
 	this.fixNextJSONP = function () { 

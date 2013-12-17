@@ -1,11 +1,10 @@
 'use strict';
+var module = angular.module('appControllers'); // see app.js
 
-/* Controllers */
-var module = angular.module('appControllers', []);
-
-module.controller('AppController',
-	function($scope, cineworld, $location) {
-		$scope.cineworld = cineworld.data;
+module.controller('AppController', [
+	        '$scope', 'cineworld', '$location',
+	function($scope,   cineworld,   $location) {
+		$scope.cineworld = cineworld;
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$location.search('c', _.pluck(newValue, 'cineworldID'));
 			$location.replace();
@@ -19,12 +18,13 @@ module.controller('AppController',
 			$location.replace();
 		}, true);
 	}
-);
+]);
 
-module.controller('StatusController',
-	function($scope,  Status) {
-		Status.setTimeout(3000);
-		$scope.stati = Status.getStati();
+module.controller('StatusController', [
+	        '$scope', 'Status',
+	function($scope,   Status) {
+		Status.timeout = 3000;
+		$scope.stati = Status.stati;
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
 			Status.showStatus('Loaded ' + cinemas.length + ' cinemas.');
 		})
@@ -38,20 +38,19 @@ module.controller('StatusController',
 			Status.showStatus('Cinema un-favorited: ' + cinema.name);
 		});
 	}
-);
+]);
 
-module.controller('DebugController',
-	function($scope, cineworld) {
-		$scope.cineworld = cineworld.data;
+module.controller('DebugController', [
+	        '$scope',
+	function($scope) {
 	}
-);
+]);
 
-module.controller('DateController',
-	function($scope, $timeout, cineworld) {
-		$scope.cineworld = cineworld.data;
-
+module.controller('DateController', [
+	        '$scope', '$timeout',
+	function($scope,   $timeout) {
 		$scope.$watch('cineworld.date', function (newValue, oldValue, scope) {
-			cineworld.updateFilms();
+			$scope.cineworld.updateFilms();
 		}, true);
 
 		$scope.open = function() {
@@ -60,12 +59,11 @@ module.controller('DateController',
 			});
 		};
 	}
-);
+]);
 
-module.controller('CinemaListController',
-	function($rootScope, $scope, cineworld, CinemaFav) {
-		$scope.cineworld = cineworld.data;
-
+module.controller('CinemaListController', [
+	        '$scope', 'Cinema',
+	function($scope,   Cinema) {
 		$scope.loading = true;
 		$scope.$on('CinemasLoading', function(event) {
 			$scope.loading = true;
@@ -74,19 +72,19 @@ module.controller('CinemaListController',
 			$scope.loading = false;
 		});
 
-		cineworld.updateCinemas();
+		$scope.cineworld.updateCinemas();
 
 		$scope.favClick = function(cinema) {
 			cinema.favLoading = true;
 			var params = {cinemaID: cinema.cineworldID};
 			if(cinema.fav) {
-				CinemaFav.unFav(params, function(newCinema) {
+				Cinema.unFav(params, function(newCinema) {
 					cinema.fav = false;
 					cinema.favLoading = false;
 					$scope.$emit('CinemaUnFavorited', cinema);
 				});
 			} else {
-				CinemaFav.fav(params, function(newCinema) {
+				Cinema.fav(params, function(newCinema) {
 					cinema.fav = true;
 					cinema.favLoading = false;
 					$scope.$emit('CinemaFavorited', cinema);
@@ -94,13 +92,13 @@ module.controller('CinemaListController',
 			}
 		}
 	}
-);
+]);
 
-module.controller('FilmListController',
-	function($rootScope, $scope, cineworld) {
-		$scope.cineworld = cineworld.data;
+module.controller('FilmListController', [
+	        '$scope',
+	function($scope) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
-			cineworld.updateFilms();
+			$scope.cineworld.updateFilms();
 		}, true);
 		$scope.loading = true;
 		$scope.$on('FilmsLoading', function(event) {
@@ -112,4 +110,4 @@ module.controller('FilmListController',
 
 		$scope.viewPopup = function(film) {}
 	}
-);
+]);

@@ -1,4 +1,2 @@
 'use strict';
-
-/* Directives */
-var module = angular.module('appDirectives', []);
+var module = angular.module('appDirectives'); // see app.js
