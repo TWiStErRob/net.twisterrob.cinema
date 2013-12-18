@@ -12,6 +12,14 @@ neo4j.init(function(err, graph) {
 			key: "9qfgpF7B",
 			full: true
 		}
+		/*
+		address: "Queens Links Leisure Park, Links Road, Aberdeen"
+		cinema_url: "http://www.cineworld.co.uk/cinemas/1/information"
+		id: 1
+		name: "Aberdeen - Queens Links"
+		postcode: "AB24 5EN"
+		telephone: "0871 200 2000"
+		*/
 	}, function (err, response, body) {
 		if(err) throw err;
 		_.each(body.cinemas, function(cinema) {

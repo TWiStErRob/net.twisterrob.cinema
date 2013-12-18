@@ -16,6 +16,17 @@ neo4j.init(function(err, graph) {
 					key: "9qfgpF7B",
 					full: true
 				}
+				/*
+				3D: false
+				classification: "15"
+				edi: 63829
+				film_url: "http://www.cineworld.co.uk/whatson/6237"
+				id: 6237
+				imax: false
+				poster_url: "http://www.cineworld.co.uk/assets/media/films/6237_poster.jpg"
+				still_url: "http://www.cineworld.co.uk/assets/media/films/6237_still.jpg"
+				title: "This Is The End"
+				 */
 			}, function (err, response, body) {
 				if(err) throw err;
 				_.each(body.films, function(film) {
@@ -44,6 +55,18 @@ neo4j.init(function(err, graph) {
 					key: "9qfgpF7B",
 					full: true
 				}
+				/*
+				actors: "Steve Carell, Al Pacino, Kristen Wiig, Ken Jeong, Steve Coogan, Russell Brand, Miranda Cosgrove"
+				cert: "U"
+				edi: 43599
+				id: 6322
+				length: 98
+				poster: "/assets/media/films/6235_poster.jpg"
+				release: "20130628"
+				title: "2D - Despicable Me 2"
+				trailer: "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Despicable Me 2 _qtp.mp4"
+				weighted: 65
+				 */
 			}, function (err, response, body) {
 				if(err) throw err;
 				_.each(body.films, function(film) {
@@ -66,6 +89,9 @@ neo4j.init(function(err, graph) {
 					}
 				);
 			});
+		},
+		detail: function(callback) {
+			// TODO http://www.cineworld.co.uk/api/film/detail?key=9qfgpF7B&film=6237
 		}
 	}, function(err, results) {
 		if(err) console.log(err);
