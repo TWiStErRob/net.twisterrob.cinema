@@ -32,15 +32,11 @@ module.factory('Status', [
 	function($timeout) {
 		var stati = [];
 		var timeout = 2000;
-		var currentTimeout = undefined;
 		return {
 			showStatus: function (message) {
-				if(currentTimeout) {
-					$timeout.cancel(currentTimeout);
-				}
 				stati.push(message);
-				currentTimeout = $timeout(function() {
-					stati.length = 0;
+				$timeout(function() {
+					stati.shift();
 				}, timeout);
 			},
 			get timeout() { return timeout; },

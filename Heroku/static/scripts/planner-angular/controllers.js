@@ -23,7 +23,6 @@ module.controller('AppController', [
 module.controller('StatusController', [
 	        '$scope', 'Status',
 	function($scope,   Status) {
-		Status.timeout = 3000;
 		$scope.stati = Status.stati;
 		$scope.$on('ResourceError', function(event, error) {
 			var message = error.config.method + ' ' + error.config.url;
@@ -84,7 +83,7 @@ module.controller('CinemaListController', [
 			var params = {cinemaID: cinema.cineworldID};
 			if(cinema.fav) {
 				Cinema.unFav(params).$promise.then(
-					function(newCinema) {
+					function(/*ignore*/ newCinema) {
 						cinema.fav = false;
 						cinema.favLoading = false;
 						$rootScope.$broadcast('CinemaUnFavorited', cinema);
@@ -95,7 +94,7 @@ module.controller('CinemaListController', [
 				);
 			} else {
 				Cinema.fav(params).$promise.then(
-					function(newCinema) {
+					function(/*ignore*/ newCinema) {
 						cinema.fav = true;
 						cinema.favLoading = false;
 						$rootScope.$broadcast('CinemaFavorited', cinema);
