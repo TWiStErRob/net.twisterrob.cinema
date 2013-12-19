@@ -24,18 +24,17 @@
 <script type="text/javascript" src="/scripts/libs/moment/moment-range-0.1.9.js"></script>
 <script type="text/javascript" src="/scripts/libs/underscore/underscore-1.5.2.js"></script>
 
-<link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/lib/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" type="text/css" href="/styles/planner-angular.css" />
 </head>
 <body class="ui-stretch" ng-controller="AppController">
 	<section id="main" class="ui-stretch">
 		<header id="date" ng-controller="DateController">
-			<div class="form-horizontal">
-				<p>
-					<input type="text" datepicker-popup="shortDate" ng-model="cineworld.date" ng-required="true" is-open="opened" ng-change="changed()" />
-					<button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
-					Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
-				</p>
+			<form class="form-inline" role="form">
+				<label for="date">Date</label>
+				<input id="date" type="text" datepicker-popup="shortDate" ng-model="cineworld.date" ng-required="true" is-open="opened" ng-change="changed()" />
+				<button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
+				Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
 			</div>
 		</header>
 		<aside id="debug" ng-controller="DebugController">
@@ -55,12 +54,28 @@
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
 			<div ng-show="loading">Loading cinemas...</div>
-			<ul id="cinemasList" class="selectors" ng-show="!loading">
-				<li class="selector" ng-repeat="cinema in cineworld.cinemas | orderBy:['-fav', 'name']">
-					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" ng-ampere-debounce="{ timeout : 500}" />
-					<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">{{cinema.name}}</label>
-					<img src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+			<script type="text/ng-template" id="cinema.shtml">
+				<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">
+					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
+					{{cinema.name}}
+				</label>
+				<img src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+			</script>
+			<ul class="inline">
+				<li ng-repeat="button in buttons">
+					<button ng-click="buttonClick(button)" type="button" class="btn btn-primary btn-mini">{{button.label}}</button>
 				</li>
+			</ul>
+			<ul id="cinemasListFav" class="selectors" ng-show="!loading">
+				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav: true} | orderBy:'name'" ng-include="'cinema.shtml'" />
+			</ul>
+			<hr/>
+			<ul id="cinemasListLondon" class="selectors" ng-show="!loading">
+				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav:false, name:'London'} | orderBy:'name'" ng-include="'cinema.shtml'" />
+			</ul>
+			<hr/>
+			<ul id="cinemasListRest" class="selectors" ng-show="!loading">
+				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav:false, name:'!London'} | orderBy:'name'" ng-include="'cinema.shtml'" />
 			</ul>
 		</section>
 		<section id="films" class="ui-stretch" ng-controller="FilmListController">
