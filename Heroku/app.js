@@ -5,6 +5,7 @@ var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var _ = require('underscore');        // http://underscorejs.org/
 var request = require('request');     // https://github.com/mikeal/request
+var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var bunyan = require('bunyan');
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
@@ -139,9 +140,9 @@ function getFilms(req, res) {
 		return;
 	}
 	request.get({
-		uri: 'http://www.cineworld.com/api/quickbook/films',
-		json: true,
-		qs: cineParams
+		// need to build url manually because visionmedia's qs (used by request) adds indices to arrays (cinema)
+		uri: 'http://www.cineworld.com/api/quickbook/films?' + qs.stringify(cineParams),
+		json: true
 	}, function (err, response, body) {
 		if(err) throw err;
 		var params = {
