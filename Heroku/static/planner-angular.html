@@ -59,29 +59,47 @@
 					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
 					{{cinema.name}}
 				</label>
-				<img src="/images/star.png" class="favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+				<i class="icon-favorite" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
 			</script>
 			<ul class="inline">
 				<li ng-repeat="button in buttons">
-					<button ng-click="buttonClick(button)" type="button" class="btn btn-primary btn-mini">{{button.label}}</button>
+					<button ng-click="buttonClick(button)" type="button" class="btn btn-primary btn-mini" ng-disabled="loading">{{button.label}}</button>
 				</li>
 			</ul>
-			<ul id="cinemasListFav" class="selectors" ng-show="!loading">
-				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav: true} | orderBy:'name'" ng-include="'cinema.shtml'" />
-			</ul>
-			<hr/>
-			<ul id="cinemasListLondon" class="selectors" ng-show="!loading">
-				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav:false, name:'London'} | orderBy:'name'" ng-include="'cinema.shtml'" />
-			</ul>
-			<hr/>
-			<ul id="cinemasListRest" class="selectors" ng-show="!loading">
-				<li class="selector" ng-repeat="cinema in cineworld.cinemas | filter:{fav:false, name:'!London'} | orderBy:'name'" ng-include="'cinema.shtml'" />
-			</ul>
+			<accordion close-others="false" ng-init="isOpen_favs=true; isOpen_london=true" >
+				<accordion-group is-open="isOpen_favs">
+					<accordion-heading>
+						Favorite cinemas ({{(cineworld.cinemas | filter:{fav: true}).length}})
+						<i class="pull-right" ng-class="{'icon-chevron-down': isOpen_favs, 'icon-chevron-right': !isOpen_favs}"></i>
+					</accordion-heading>
+					<ul class="unstyled" ng-show="!loading">
+						<li ng-repeat="cinema in cineworld.cinemas | filter:{fav: true} | orderBy:'name'" ng-include="'cinema.shtml'" />
+					</ul>
+				</accordion-group>
+				<accordion-group is-open="isOpen_london">
+					<accordion-heading>
+						London cinemas ({{(cineworld.cinemas | filter:{name:'London'}).length}})
+						<i class="pull-right" ng-class="{'icon-chevron-down': isOpen_london, 'icon-chevron-right': !isOpen_london}"></i>
+					</accordion-heading>
+					<ul class="unstyled" ng-show="!loading">
+						<li ng-repeat="cinema in (cineworld.cinemas | filter:{name:'London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
+					</ul>
+				</accordion-group>
+				<accordion-group is-open="isOpen_others">
+					<accordion-heading>
+						Other cinemas ({{(cineworld.cinemas | filter:{name:'!London'}).length}})
+						<i class="pull-right" ng-class="{'icon-chevron-down': isOpen_others, 'icon-chevron-right': !isOpen_others}"></i>
+					</accordion-heading>
+					<ul class="unstyled" ng-show="!loading">
+						<li ng-repeat="cinema in (cineworld.cinemas | filter:{name:'!London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
+					</ul>
+				</accordion-group>
+			</accordion>
 		</section>
 		<section id="films" class="ui-stretch" ng-controller="FilmListController">
 			<div ng-show="loading">Loading films...</div>
-			<ul id="filmsList" class="selectors" ng-show="!loading">
-				<li class="selector" ng-repeat="film in cineworld.films | orderBy:['name']">
+			<ul class="unstyled" ng-show="!loading">
+				<li ng-repeat="film in cineworld.films | orderBy:['name']">
 					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
 					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}<span class="optional" ng-show="film.runtime > 0"> (<span class="runtime">{{film.runtime}}</span>)</label>
 				</li>

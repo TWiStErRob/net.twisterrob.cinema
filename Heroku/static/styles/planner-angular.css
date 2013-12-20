@@ -77,31 +77,19 @@ table, tr, td, th {
 	margin-bottom: -25px;
 }
 
-ul.selectors {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    margin-left: 3px;
-}
-
-.selectors .selector {
-    
-}
-.selector .check {
-    
-}
-
-.selector .favorite {
+.icon-favorite {
     width: 1em;
     height: 1em;
+    background-image: url("../images/star.png");
+    background-position: 0;
+    background-size: cover;
 }
-.selector .name {
-	font-size: 10pt;
-	font-family: sans-serif;
+
+.name {
 	display: inline;
 }
 
-img.grayscale {
+.grayscale {
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
     filter: gray; /* IE6-9 */
     -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
@@ -115,15 +103,15 @@ img.grayscale {
     0% {-webkit-filter: grayscale(100%);}
     100% {-webkit-filter: grayscale(0%);}
 }
-.favorite {
+.icon-favorite {
     -webkit-transition-duration: 0.7s;
 }
-.favorite.loading {
+.icon-favorite.loading {
     -webkit-animation-name: fav-disable;
     -webkit-animation-duration: 0.4s;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: ease-out;
 }
-.favorite.loading.grayscale {
+.icon-favorite.loading.grayscale {
     -webkit-animation-name: fav-enable;
 }
