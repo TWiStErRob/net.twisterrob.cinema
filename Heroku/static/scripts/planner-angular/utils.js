@@ -10,3 +10,8 @@ module.service('AngularHacks', function _constructor() {
 		};
 	};
 });
+
+var underscore = angular.module('underscore', []);
+underscore.service('_', function() {
+	return window._.noConflict(); // assumes underscore has already been loaded on the page
+});

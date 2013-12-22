@@ -4,6 +4,7 @@ var url = require('url');             // http://nodejs.org/api/url.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var _ = require('underscore');        // http://underscorejs.org/
+process.env.NODE_DEBUG = "request";
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var bunyan = require('bunyan');

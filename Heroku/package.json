@@ -29,7 +29,7 @@
 		"node.extend": "1.0.8",
 		"bunyan": "0.21.1",
 		"neo4j-js": "0.0.7",
-		"request": "2.27.0",
+		"request": "2.30.0",
 		"underscore": "1.5.2",
 		"nodeunit": "0.8.2",
 		"passport": "*",

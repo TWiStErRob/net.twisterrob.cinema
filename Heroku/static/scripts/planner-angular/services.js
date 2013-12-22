@@ -47,8 +47,8 @@ module.factory('Status', [
 ]);
 
 module.service('cineworld', [
-	        '$rootScope', 'Cinema', 'Film',
-	function($rootScope,   Cinema,   Film) {
+	        '$rootScope', '_', 'Cinema', 'Film',
+	function($rootScope,   _,   Cinema,   Film) {
 		this.date = new Date();
 		this.cinemas = undefined;
 		this.films = undefined;
@@ -56,14 +56,11 @@ module.service('cineworld', [
 			var params = {};
 			$rootScope.$broadcast('CinemasLoading', cinemas);
 			return this.cinemas = Cinema.list(params, function(cinemas) {
-				angular.forEach(cinemas, function(cinema) {
-					cinema.selected = cinema.fav;
-				});
 				$rootScope.$broadcast('CinemasLoaded', cinemas);
 			});
 		};
 
-		this.updateFilms = function() {
+		this.updateFilms = function(forgetSelection) {
 			var params = {
 				date: moment(this.date).format("YYYYMMDD"),
 				cinemaIDs: this.cinemas
@@ -77,8 +74,16 @@ module.service('cineworld', [
 			if(params.cinemaIDs.length == 0) {
 				return;
 			}
+			var selectedFilms = forgetSelection? [] : _.indexBy(
+				(this.films || []).filter(function(film) {
+					return film.selected;
+				}), 'edi'
+			);
 			$rootScope.$broadcast('FilmsLoading');
 			return this.films = Film.list(params, function(films) {
+				angular.forEach(films, function(film) {
+					film.selected = film.edi in selectedFilms;
+				});
 				$rootScope.$broadcast('FilmsLoaded', films);
 			});
 		};

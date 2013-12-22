@@ -78,8 +78,6 @@ table, tr, td, th {
 }
 
 .icon-favorite {
-    width: 1em;
-    height: 1em;
     background-image: url("../images/star.png");
     background-position: 0;
     background-size: cover;
@@ -87,6 +85,7 @@ table, tr, td, th {
 
 .name {
 	display: inline;
+	margin-right: 1em;
 }
 
 .grayscale {

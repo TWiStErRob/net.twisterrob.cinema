@@ -11,8 +11,8 @@ var app = angular.module('app', [
 	'ui.bootstrap'
 ]);
 angular.module('appUtils', []);
-angular.module('appControllers', []);
-angular.module('appServices', ['ngResource']);
+angular.module('appControllers', ['underscore']);
+angular.module('appServices', ['ngResource', 'underscore']);
 angular.module('appFilters', []);
 angular.module('appDirectives', []);
 angular.module('appAnimations', []);

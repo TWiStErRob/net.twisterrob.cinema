@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', 'cineworld', '$location',
-	function($scope,       cineworld,   $location) {
+	        '$rootScope', '_', 'cineworld', '$location',
+	function($scope,       _,   cineworld,   $location) {
 		$scope.cineworld = cineworld;
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$location.search('c', _.pluck(newValue, 'cineworldID'));
@@ -73,13 +73,16 @@ module.controller('CinemaListController', [
 			$scope.loading = true;
 		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
+			$scope.buttonClick({assign: function(cinema) {
+				cinema.selected = !!cinema.fav;
+			}});
 			$scope.loading = false;
 		});
 		$scope.cineworld.updateCinemas();
 
 		$scope.buttons = [
 			{ label: "All", assign: function(cinema) {
-					cinema.selected = true;
+				cinema.selected = true;
 			} },
 			{ label: "None", assign: function(cinema) {
 				cinema.selected = false;
