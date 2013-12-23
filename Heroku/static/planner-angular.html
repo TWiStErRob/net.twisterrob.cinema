@@ -99,7 +99,7 @@
 		<section id="films" class="ui-stretch" ng-controller="FilmListController">
 			<div ng-show="loading">Loading films...</div>
 			<ul class="unstyled" ng-show="!loading">
-				<li ng-repeat="film in cineworld.films | orderBy:['name']">
+				<li ng-repeat="film in cineworld.films | orderBy:['title']">
 					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
 					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}<span class="optional" ng-show="film.runtime > 0"> (<span class="runtime">{{film.runtime}}</span>)</label>
 				</li>

@@ -17,11 +17,12 @@ angular.module('appFilters', []);
 angular.module('appDirectives', []);
 angular.module('appAnimations', []);
 
-app.config([
-	fixCineworldCallbacks
-]);
+app.config(['$locationProvider', function($locationProvider) {
+	$locationProvider.html5Mode(true);
+	$locationProvider.hashPrefix('');
+}]);
 
-function fixCineworldCallbacks() {
+app.config([function fixCineworldCallbacks() {
 	var $window = window,
 	    callbacks = $window.angular.callbacks,
 	    pendingCallbacks = {},
@@ -57,4 +58,4 @@ function fixCineworldCallbacks() {
 			}
 		});
 	}
-}
+}]);
