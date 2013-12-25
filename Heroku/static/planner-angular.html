@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <title>Cineworld Cinemas Planner</title>
 
+<script type="text/javascript">
+	window.onerror = function() {
+		window.error = arguments;
+		var args = Array.prototype.slice.call(arguments);
+		args.push("See window.error from console for more");
+		alert(args.join("\n"));
+	};
+</script>
 <script src="/scripts/libs/jquery/jquery-1.10.2.js"></script>
 <script src="/scripts/libs/angular/angular.js"></script>
 <script src="/scripts/libs/angular/angular-animate.js"></script>

@@ -4,18 +4,49 @@ var module = angular.module('appControllers'); // see app.js
 module.controller('AppController', [
 	        '$rootScope', '_', 'cineworld', '$location',
 	function($scope,       _,   cineworld,   $location) {
+		var search = {
+			film: 'f',
+			cinema:'c',
+			date: 'd',
+			dateFormat: 'YYYY-MM-DD'
+		};
 		$scope.cineworld = cineworld;
+
+		// Two-way binding for cinemas
+		$scope.$watch(function() {
+			return $location.search()[search.cinema];
+		}, function(cinemaIDs) {
+			cinemaIDs = _.ensureArray(cinemaIDs);
+			cinemaIDs = _.map(cinemaIDs, _.fn.parseInt);
+			_.push($scope.cineworld.pendingSelectedCinemas, cinemaIDs);
+		});
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
-			$location.search('c', _.pluck(newValue, 'cineworldID'));
-			$location.replace();
+			$location.search(search.cinema, _.pluck(newValue, 'cineworldID')).replace();
 		}, true);
+
+		// Two-way binding for films
+		$scope.$watch(function() {
+			return $location.search()[search.film];
+		}, function(filmEDIs) {
+			filmEDIs = _.ensureArray(filmEDIs);
+			filmEDIs = _.map(filmEDIs, _.fn.parseInt);
+			_.push($scope.cineworld.pendingSelectedFilms, filmEDIs);
+		});
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
-			$location.search('f', _.pluck(newValue, 'edi'));
-			$location.replace();
+			$location.search(search.film, _.pluck(newValue, 'edi')).replace();
 		}, true);
+
+		// Two-way binding for date, order of watches are important, first takes precedence on load
+		$scope.$watch(function() {
+			return $location.search()[search.date];
+		}, function(date) {
+			var m = moment(date, search.dateFormat);
+			if(m.isValid()) {
+				$scope.cineworld.date = m.toDate();
+			}
+		});
 		$scope.$watch('cineworld.date', function (newValue, oldValue, scope) {
-			$location.search('d', moment(newValue).format('YYYY-MM-DD'));
-			$location.replace();
+			$location.search(search.date, moment(newValue).format(search.dateFormat)).replace();
 		}, true);
 	}
 ]);
@@ -66,16 +97,18 @@ module.controller('DateController', [
 ]);
 
 module.controller('CinemaListController', [
-	        '$rootScope', '$scope', 'Cinema',
-	function($rootScope,   $scope,   Cinema) {
+	        '$rootScope', '$scope', '_', 'Cinema',
+	function($rootScope,   $scope,   _,   Cinema) {
 		$scope.loading = true;
 		$scope.$on('CinemasLoading', function(event) {
 			$scope.loading = true;
 		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
-			$scope.buttonClick({assign: function(cinema) {
-				cinema.selected = !!cinema.fav;
-			}});
+			if(!_.any(cinemas, _.fn.prop('selected'))) {
+				$scope.buttonClick({assign: function(cinema) {
+					cinema.selected = !!cinema.fav;
+				}});
+			}
 			$scope.loading = false;
 		});
 		$scope.cineworld.updateCinemas();

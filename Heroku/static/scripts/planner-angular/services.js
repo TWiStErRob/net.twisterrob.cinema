@@ -33,9 +33,9 @@ module.factory('Status', [
 		var stati = [];
 		var timeout = 2000;
 		return {
-			showStatus: function (message) {
-				stati.push(message);
-				$timeout(function() {
+			showStatus: function addBottomMessage(message) {
+				stati.push(message); // ad new message to the queue
+				$timeout(function removeTopMessage() {
 					stati.shift();
 				}, timeout);
 			},
@@ -49,41 +49,42 @@ module.factory('Status', [
 module.service('cineworld', [
 	        '$rootScope', '_', 'Cinema', 'Film',
 	function($rootScope,   _,   Cinema,   Film) {
-		this.date = new Date();
-		this.cinemas = undefined;
-		this.films = undefined;
+		var data = this;
+		data.date = new Date();
+		data.date.setHours(0, 0, 0, 0);
+		data.cinemas = undefined;
+		data.films = undefined;
+		data.pendingSelectedCinemas = [];
+		data.pendingSelectedFilms = [];
+
 		this.updateCinemas = function() {
 			var params = {};
-			$rootScope.$broadcast('CinemasLoading', cinemas);
-			return this.cinemas = Cinema.list(params, function(cinemas) {
+			$rootScope.$broadcast('CinemasLoading', data.cinemas);
+			return data.cinemas = Cinema.list(params, function(cinemas) {
+				angular.forEach(cinemas, function(cinema) {
+					cinema.selected = _.contains(data.pendingSelectedCinemas, cinema.cineworldID);
+				});
+				data.pendingSelectedCinemas.length = 0;
 				$rootScope.$broadcast('CinemasLoaded', cinemas);
 			});
 		};
 
-		this.updateFilms = function(forgetSelection) {
+		this.updateFilms = function() {
 			var params = {
-				date: moment(this.date).format("YYYYMMDD"),
-				cinemaIDs: this.cinemas
-					.filter(function(cinema) {
-						return cinema.selected;
-					})
-					.map(function(cinema) {
-						return cinema.cineworldID;
-					})
+				date: moment(data.date).format("YYYYMMDD"),
+				cinemaIDs: data.cinemas
+					.filter(_.fn.prop('selected'))
+					.map(_.fn.prop('cineworldID'))
 			}
 			if(params.cinemaIDs.length == 0) {
 				return;
 			}
-			var selectedFilms = forgetSelection? [] : _.indexBy(
-				(this.films || []).filter(function(film) {
-					return film.selected;
-				}), 'edi'
-			);
-			$rootScope.$broadcast('FilmsLoading');
-			return this.films = Film.list(params, function(films) {
+			$rootScope.$broadcast('FilmsLoading', data.films);
+			return data.films = Film.list(params, function(films) {
 				angular.forEach(films, function(film) {
-					film.selected = film.edi in selectedFilms;
+					film.selected = _.contains(data.pendingSelectedFilms, film.edi);
 				});
+				data.pendingSelectedFilms.length = 0;
 				$rootScope.$broadcast('FilmsLoaded', films);
 			});
 		};
