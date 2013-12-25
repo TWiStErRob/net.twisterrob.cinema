@@ -105,33 +105,31 @@ module.controller('CinemaListController', [
 		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
 			if(!_.any(cinemas, _.fn.prop('selected'))) {
-				$scope.buttonClick({assign: function(cinema) {
-					cinema.selected = !!cinema.fav;
-				}});
+				$scope.buttonClick($scope.buttons.london);
 			}
 			$scope.loading = false;
 		});
 		$scope.cineworld.updateCinemas();
 
-		$scope.buttons = [
-			{ label: "All", assign: function(cinema) {
+		$scope.buttons = {
+			all: { label: "All", handle: function(cinema) {
 				cinema.selected = true;
 			} },
-			{ label: "None", assign: function(cinema) {
+			none: { label: "None", handle: function(cinema) {
 				cinema.selected = false;
 			} },
-			/*{ label: "Invert", assign: function(cinema) {
+			invert: { label: "Invert", handle: function(cinema) {
 				cinema.selected = !cinema.selected;
-			} },*/
-			{ label: "London", assign: function(cinema) {
+			}, hidden: true },
+			london: { label: "London", handle: function(cinema) {
 				cinema.selected = /London/.test(cinema.name);
 			} },
-			{ label: "Favorites", assign: function(cinema) {
+			favs: { label: "Favorites", handle: function(cinema) {
 				cinema.selected = !!cinema.fav;
-			} },
-		];
+			} }
+		};
 		$scope.buttonClick = function(button) {
-			angular.forEach($scope.cineworld.cinemas, button.assign);
+			angular.forEach($scope.cineworld.cinemas, button.handle);
 		}
 
 		$scope.favClick = function(cinema) {

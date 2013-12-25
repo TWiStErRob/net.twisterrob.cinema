@@ -1,4 +1,7 @@
-<!doctype html>
+<?xml version="1.0"?>
+<!doctype html [
+	&lt;!ATTLIST li ng-repeat NMTOKENS&gt;
+]>
 <html lang="en" class="ui-stretch" ng-app="app">
 <head>
 <meta charset="utf-8">
@@ -70,8 +73,8 @@
 				</label>
 			</script>
 			<ul class="inline">
-				<li ng-repeat="button in buttons">
-					<button ng-click="buttonClick(button)" type="button" class="btn btn-primary btn-mini" ng-disabled="loading">{{button.label}}</button>
+				<li ng-repeat="(id, button) in buttons" ng-hide="button.hidden">
+					<button ng-click="buttonClick(button)" id="cinema-{{id}}" type="button" class="btn btn-primary btn-mini" ng-disabled="loading">{{button.label}}</button>
 				</li>
 			</ul>
 			<accordion close-others="false" ng-init="isOpen_favs=true; isOpen_london=true" >
