@@ -134,7 +134,7 @@ function getFilms(req, res) {
 	var cineParams = {
 		key: "9qfgpF7B",
 		date: req.param('date'),
-		cinema: req.param('cinemaIDs')
+		cinema: req.paramArr('cinemaIDs')
 	};
 	if(cineParams.date === undefined
 	|| cineParams.cinema === undefined || cineParams.cinema.length === 0) {
@@ -169,8 +169,8 @@ function getPerformances(req, res) {
 	var perfParams = {
 		key: "9qfgpF7B",
 		date: req.param('date'),
-		cinema: req.param('cinemaIDs'),
-		film: req.param('filmEDIs'),
+		cinema: req.paramArr('cinemaIDs'),
+		film: req.paramArr('filmEDIs'),
 	};
 	if(perfParams.date   === undefined
 	|| perfParams.cinema === undefined || perfParams.cinema.length === 0
@@ -242,6 +242,13 @@ app.configure('production', function configure_prod() {
 });
 
 app.configure(function configure_use() {
+	app.use(function extendReq(req, res, next) {
+		req.paramArr = function(name) {
+			var param = this.param(name);
+			return param === undefined? [] : (_.isArray(param)? param : [param]);
+		};
+		return next();
+	});
 	app.use(express.compress());
 	app.use(express.static(__dirname + '/static/'));
 	//app.use(express.logger());
