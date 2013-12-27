@@ -191,7 +191,14 @@ module.controller('PerformancesController', [
 			$scope.loading = true;
 		});
 		$scope.$on('PerformancesLoaded', function(event, performances) {
-			//$scope.performances = _.groupBy(performances, ['cinema', 'film']);
+			var x = _.groupBy(performances, ['cinema', 'film']);
+			_.each(x, function(y, xk) {
+				_.each(y, function(z, yk) {
+					if(z.length !== 1) console.error("Cinema " + xk + ", film " + yk + " has multiple objects: " + z.length, z);
+					y[yk] = z[0].performances;
+				});
+			});
+			$scope.performances = x;
 			$scope.loading = false;
 		});
 

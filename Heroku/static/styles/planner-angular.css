@@ -81,6 +81,7 @@ table, tr, td, th {
 .name {
 	display: inline;
 	margin-right: 1em;
+	font-weight: inherit;
 }
 
 .grayscale {
