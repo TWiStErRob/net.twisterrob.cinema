@@ -2,7 +2,7 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', '_', 'cineworld', '$location',
+	        '$rootScope', '_', 'Cineworld', '$location',
 	function($scope,       _,   cineworld,   $location) {
 		var search = {
 			film: 'f',
