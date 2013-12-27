@@ -4,7 +4,7 @@ var extend = require('node.extend');  // https://github.com/dreamerslab/node.ext
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var _ = require('underscore');        // http://underscorejs.org/
-var assert = require('assert');
+var assert = require('assert');       // http://nodejs.org/api/assert.html
 var config = require('./config');
 var utils = require('./utils');
 

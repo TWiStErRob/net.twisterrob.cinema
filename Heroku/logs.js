@@ -1,5 +1,5 @@
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
-var bunyan = require('bunyan');
+var bunyan = require('bunyan');       // https://github.com/trentm/node-bunyan
 
 extend(exports, {
 	app: bunyan.createLogger({

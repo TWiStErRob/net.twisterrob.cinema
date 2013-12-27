@@ -27,6 +27,22 @@ module.factory('Film', [
 	}
 ]);
 
+module.factory('Performance', [
+	        '$resource',
+	function($resource) {
+		return $resource('/performance',
+			{
+				'cinemaIDs': [],
+				'filmEDIs': [],
+				'date': undefined
+			},
+			{
+				list: { method: 'GET', isArray: true }
+			}
+		);
+	}
+]);
+
 module.factory('Status', [
 	        '$timeout',
 	function($timeout) {
@@ -47,18 +63,21 @@ module.factory('Status', [
 ]);
 
 module.service('cineworld', [
-	        '$rootScope', '_', 'Cinema', 'Film',
-	function($rootScope,   _,   Cinema,   Film) {
+	        '$rootScope', '_', 'Cinema', 'Film', 'Performance',
+	function($rootScope,   _,   Cinema,   Film,   Performance) {
 		var data = this;
 		data.date = new Date();
 		data.date.setHours(0, 0, 0, 0);
-		data.cinemas = undefined;
-		data.films = undefined;
+		data.cinemas = [];
+		data.films = [];
+		data.performances = {};
 		data.pendingSelectedCinemas = [];
 		data.pendingSelectedFilms = [];
 
 		this.updateCinemas = function() {
-			var params = {};
+			var params = {
+				// no params for cinemas
+			};
 			$rootScope.$broadcast('CinemasLoading', data.cinemas);
 			return data.cinemas = Cinema.list(params, function(cinemas) {
 				angular.forEach(cinemas, function(cinema) {
@@ -71,12 +90,10 @@ module.service('cineworld', [
 
 		this.updateFilms = function() {
 			var params = {
-				date: moment(data.date).format("YYYYMMDD"),
-				cinemaIDs: data.cinemas
-					.filter(_.fn.prop('selected'))
-					.map(_.fn.prop('cineworldID'))
-			}
-			if(params.cinemaIDs.length == 0) {
+				date: data.formattedDate,
+				cinemaIDs: data.selectedCinemaIDs
+			};
+			if(params.cinemaIDs.length === 0) {
 				return;
 			}
 			$rootScope.$broadcast('FilmsLoading', data.films);
@@ -88,5 +105,36 @@ module.service('cineworld', [
 				$rootScope.$broadcast('FilmsLoaded', films);
 			});
 		};
+
+		this.updatePerformances = function() {
+			var params = {
+				date: data.formattedDate,
+				cinemaIDs: data.selectedCinemaIDs,
+				filmEDIs: data.selectedFilmEDIs
+			}
+			if(params.cinemaIDs.length === 0 || params.filmEDIs.length === 0) {
+				return;
+			}
+			$rootScope.$broadcast('PerformancesLoading', data.performances);
+			return data.performances = Performance.list(params, function(performances) {
+				$rootScope.$broadcast('PerformancesLoaded', performances);
+			});
+		};
+
+		Object.defineProperty(data, 'selectedCinemas', {
+			get: function() { return data.cinemas.filter(_.fn.prop('selected')); }
+		});
+		Object.defineProperty(data, 'selectedCinemaIDs', {
+			get: function() { return data.selectedCinemas.map(_.fn.prop('cineworldID')); }
+		});
+		Object.defineProperty(data, 'selectedFilms', {
+			get: function() { return data.films.filter(_.fn.prop('selected')); }
+		});
+		Object.defineProperty(data, 'selectedFilmEDIs', {
+			get: function() { return data.selectedFilms.map(_.fn.prop('edi')); }
+		});
+		Object.defineProperty(data, 'formattedDate', {
+			get: function() { return moment(data.date).format("YYYYMMDD"); }
+		});
 	}
 ]);

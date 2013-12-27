@@ -7,7 +7,7 @@ var _ = require('underscore');        // http://underscorejs.org/
 process.env.NODE_DEBUG = "request";
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
-var bunyan = require('bunyan');
+var async = require('async');         // https://github.com/caolan/async
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var auth = require('./auth');
@@ -136,7 +136,8 @@ function getFilms(req, res) {
 		date: req.param('date'),
 		cinema: req.param('cinemaIDs')
 	};
-	if(cineParams.cinema == undefined || cineParams.cinema.length == 0) {
+	if(cineParams.date === undefined
+	|| cineParams.cinema === undefined || cineParams.cinema.length === 0) {
 		res.jsonp([]);
 		return;
 	}
@@ -164,6 +165,70 @@ function getFilms(req, res) {
 	});
 }
 
+function getPerformances(req, res) {
+	var perfParams = {
+		key: "9qfgpF7B",
+		date: req.param('date'),
+		cinema: req.param('cinemaIDs'),
+		film: req.param('filmEDIs'),
+	};
+	if(perfParams.date   === undefined
+	|| perfParams.cinema === undefined || perfParams.cinema.length === 0
+	|| perfParams.film   === undefined || perfParams.film.length   === 0) {
+		res.jsonp([]);
+		return;
+	}
+	
+	var combinations = [];
+	for(var c = 0, cLen = perfParams.cinema.length; c < cLen; c++) {
+		var cinema = perfParams.cinema[c];
+		for(var f = 0, fLen = perfParams.film.length; f < fLen; f++) {
+			var film = perfParams.film[f];
+			combinations.push({
+				date: perfParams.date,
+				cinema: cinema,
+				film: film
+			});
+		}
+	}
+	var reqs = _.map(combinations, function(combo) {
+		return {
+			uri: 'http://www.cineworld.com/api/quickbook/performances',
+			json: true,
+			qs: {
+				key: perfParams.key,
+				date: combo.date,
+				cinema: combo.cinema,
+				film: combo.film
+			}
+		};
+	});
+	var tasks = _.map(reqs, function(req) {
+		return function(callback) {
+			return request.get(req, callback);
+		};
+	});
+	async.parallelLimit(tasks, 3, function (err, results) {
+		if(err) throw err;
+		// [ [req, body], [req, body], [req, body], ... ]
+		results = _.pluck(results, 1);
+		// [ /* body */{ errors: [], performances: [] }, /* body */{ errors: [], performances: [] }, ... ]
+		var errors = _.flatten(_.pluck(results, 'errors'));
+		if(_.compact(errors).length > 0) { // ignore empty arrays and undefineds
+			res.send(500, errors.join("\n"));
+		}
+		var performances = _.pluck(results, 'performances');
+		var responseArr = _.map(_.zip(combinations, performances), function(pair) {
+			return {
+				date: pair[0].date,
+				cinema: pair[0].cinema,
+				film: pair[0].film,
+				performances: pair[1]
+			};
+		});
+		res.send(responseArr);
+	});
+}
 
 var app = express();
 app.configure(function configure_all() {
@@ -196,6 +261,7 @@ app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
 app.get('/cinema', getCinemas);
 app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
+app.get('/performance', getPerformances);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 
 app.initialized = true;

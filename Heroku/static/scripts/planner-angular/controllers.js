@@ -96,7 +96,7 @@ module.controller('DateController', [
 	}
 ]);
 
-module.controller('CinemaListController', [
+module.controller('CinemasController', [
 	        '$rootScope', '$scope', '_', 'Cinema',
 	function($rootScope,   $scope,   _,   Cinema) {
 		$scope.loading = true;
@@ -162,7 +162,7 @@ module.controller('CinemaListController', [
 	}
 ]);
 
-module.controller('FilmListController', [
+module.controller('FilmsController', [
 	        '$scope',
 	function($scope) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
@@ -177,5 +177,26 @@ module.controller('FilmListController', [
 		});
 
 		$scope.viewPopup = function(film) {}
+	}
+]);
+
+module.controller('PerformancesController', [
+	        '$scope',
+	function($scope) {
+		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
+			$scope.cineworld.updatePerformances();
+		}, true);
+		$scope.loading = true;
+		$scope.$on('PerformancesLoading', function(event) {
+			$scope.loading = true;
+		});
+		$scope.$on('PerformancesLoaded', function(event, performances) {
+			//$scope.performances = _.groupBy(performances, ['cinema', 'film']);
+			$scope.loading = false;
+		});
+
+		$scope.cleanName = function(cinemaName) {
+			return cinemaName.replace("London - ", "");
+		}
 	}
 ]);

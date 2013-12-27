@@ -15,28 +15,23 @@
 	height: 40px;
 }
 
-#cinemas {
+#cinemas, #films, #performances, #debug {
 	float: left;
 	width: auto;
 	height: calc(100% - 40px);
 	margin: 0;
 	padding: 0;
 	overflow-y: scroll;
+	max-width: 275px;
 }
 
-#films {
-	float: left;
-	width: auto;
-	height: calc(100% - 40px);
-	margin: 0;
-	padding: 0;
-	overflow-y: scroll;
+#performances {
+	max-width: inherit;
 }
 
 #debug {
 	float: right;
 	width: 300px;
-	height: calc(100% - 40px);
 	border-left: 1px solid black;
 	padding-left: 4px;
 }

@@ -63,7 +63,7 @@
 				</li>
 			</ul>
 		</aside>
-		<section id="cinemas" class="ui-stretch" ng-controller="CinemaListController">
+		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
 			<div ng-show="loading">Loading cinemas...</div>
 			<script type="text/ng-template" id="cinema.shtml">
 				<i class="icon-favorite pull-right" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
@@ -107,7 +107,7 @@
 				</accordion-group>
 			</accordion>
 		</section>
-		<section id="films" class="ui-stretch" ng-controller="FilmListController">
+		<section id="films" class="ui-stretch" ng-controller="FilmsController">
 			<div ng-show="loading">Loading films...</div>
 			<ul class="unstyled" ng-show="!loading">
 				<li ng-repeat="film in cineworld.films | orderBy:['title']">
@@ -115,6 +115,25 @@
 					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}<span class="optional" ng-show="film.runtime > 0"> (<span class="runtime">{{film.runtime}}</span>)</label>
 				</li>
 			</ul>
+		</section>
+		<section id="performances" class="ui-stretch" ng-controller="PerformancesController">
+			<div ng-show="loading">Loading performances...</div>
+			<table ng-show="!loading">
+				<thead>
+					<tr>
+						<th>Cinema</th>
+						<th ng-repeat="film in cineworld.films | filter: {selected: true}">{{film.title}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="cinema in cineworld.cinemas | filter: {selected: true}">
+						<td>{{cleanName(cinema.name)}}</td>
+						<td ng-repeat="film in cineworld.films | filter: {selected: true}">
+							perf[{{cinema.cineworldID}}][{{film.edi}}]
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</section>
 	</section>
 	<div id="statusmessage" ng-show="stati.length > 0" ng-controller="StatusController">
