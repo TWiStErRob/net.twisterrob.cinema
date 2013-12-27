@@ -133,6 +133,7 @@ module.controller('CinemasController', [
 		}
 
 		$scope.favClick = function(cinema) {
+			if(cinema.favLoading) return;
 			cinema.favLoading = true;
 			var params = {cinemaID: cinema.cineworldID};
 			if(cinema.fav) {

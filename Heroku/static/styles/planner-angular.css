@@ -27,20 +27,22 @@
 
 #performances {
 	max-width: inherit;
+	width: 550px;
+	overflow-x: scroll;
 }
 
 #debug {
 	float: right;
-	width: 300px;
+	width: 250px;
 	border-left: 1px solid black;
 	padding-left: 4px;
 }
 
-#performances th:first-child {
+#performances td:first-child {
 	white-space: nowrap;
 }
 #performances th.film {
-	width: 200px;
+	width: 150px;
 }
 #status {
 	color: red;

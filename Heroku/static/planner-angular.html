@@ -138,7 +138,8 @@
 						 </td>
 						<td ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{performances[cinema.cineworldID][film.edi] | json}}">
 							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]" title="{{performance | json}}">
-								{{performance.time}}{{$last? "" : ","}}
+								<a href="{{performance.booking_url}}">{{performance.time}}</a>
+								{{$last? "" : ","}}
 							</span>
 						</td>
 						<td></td>
