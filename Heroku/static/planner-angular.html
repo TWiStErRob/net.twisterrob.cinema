@@ -66,7 +66,11 @@
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
 			<div ng-show="loading">Loading cinemas...</div>
 			<script type="text/ng-template" id="cinema.shtml">
-				<i class="icon-favorite pull-right" ng-class="{grayscale: !cinema.fav, loading: cinema.favLoading}" ng-click="favClick(cinema)" />
+				<i class="pull-right" ng-class="{
+					'loading'        : cinema.favLoading,
+					'icon-heart'     : cinema.fav,
+					'icon-star-empty': !cinema.fav
+				}" ng-click="favClick(cinema)" />
 				<label class="name" for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">
 					<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
 					{{cinema.name}}
@@ -122,17 +126,22 @@
 				<thead>
 					<tr>
 						<th>Cinema</th>
-						<th ng-repeat="film in cineworld.films | filter: {selected: true}">{{film.title}}</th>
+						<th class="film" ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{film | json}}">{{film.title}}</th>
+						<th>Planner</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="cinema in cineworld.cinemas | filter: {selected: true}">
-						<td>{{cleanName(cinema.name)}}</td>
-						<td ng-repeat="film in cineworld.films | filter: {selected: true}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]">
+						<td class="cinema" title="{{cinema | json}}">
+							{{cleanName(cinema.name)}}
+							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}"><i class="icon-globe"></i></a>
+						 </td>
+						<td ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{performances[cinema.cineworldID][film.edi] | json}}">
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]" title="{{performance | json}}">
 								{{performance.time}}{{$last? "" : ","}}
 							</span>
 						</td>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>
