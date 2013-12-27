@@ -31,6 +31,7 @@
 <script src="/scripts/planner-angular/services/Performance.js"></script>
 <script src="/scripts/planner-angular/services/Cineworld.js"></script>
 <script src="/scripts/planner-angular/services/Status.js"></script>
+<script src="/scripts/planner-angular/services/Planner.js"></script>
 <script src="/scripts/planner-angular/filters.js"></script>
 <script src="/scripts/planner-angular/directives.js"></script>
 <script src="/scripts/planner-angular/animations.js"></script>
@@ -131,7 +132,6 @@
 					<tr>
 						<th>Cinema</th>
 						<th class="film" ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{film | json}}">{{film.title}}</th>
-						<th>Planner</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -146,10 +146,12 @@
 								{{$last? "" : ","}}
 							</span>
 						</td>
-						<td></td>
 					</tr>
 				</tbody>
 			</table>
+			<ul ng-show="!loading">
+				<li ng-repeat="plan in plans">{{plan}}</li>
+			</ul>
 		</section>
 	</section>
 	<div id="statusmessage" ng-show="stati.length > 0" ng-controller="StatusController">

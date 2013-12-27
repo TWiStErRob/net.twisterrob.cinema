@@ -182,8 +182,8 @@ module.controller('FilmsController', [
 ]);
 
 module.controller('PerformancesController', [
-	        '$scope',
-	function($scope) {
+	        '$scope', 'Planner',
+	function($scope,   Planner) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -201,6 +201,7 @@ module.controller('PerformancesController', [
 			});
 			$scope.performances = x;
 			$scope.loading = false;
+			$scope.plans = Planner.plan();
 		});
 
 		$scope.cleanName = function(cinemaName) {
