@@ -178,6 +178,8 @@ function getPerformances(req, res) {
 		res.jsonp([]);
 		return;
 	}
+	perfParams.cinema = _.map(perfParams.cinema, function(x) { return parseInt(x, 10); });
+	perfParams.film = _.map(perfParams.film, function(x) { return parseInt(x, 10); });
 	
 	var combinations = [];
 	for(var c = 0, cLen = perfParams.cinema.length; c < cLen; c++) {
@@ -262,13 +264,14 @@ app.configure(function configure_use() {
 
 auth.init(app);
 
-app.get('/film', getFilms);
+var cacheLength = 1 * 60 * 60;
+app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
-app.get('/cinema', getCinemas);
+app.get('/cinema', cacher(cacheLength), getCinemas);
 app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
-app.get('/performance', getPerformances);
+app.get('/performance', cacher(cacheLength), getPerformances);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 
 app.initialized = true;
@@ -285,4 +288,12 @@ function listen() {
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
 	res.send(401, 'Please log in first to access this feature.');
+}
+
+function cacher(length) {
+	return function addCacheHeaders(req, res, next) {
+		res.setHeader("Cache-Control", "public, max-age=" + length);
+		res.setHeader("Expires", new Date(Date.now() + (length * 1000)).toUTCString());
+		return next();
+	};
 }

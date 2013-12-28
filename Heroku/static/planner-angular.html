@@ -121,7 +121,12 @@
 			<ul class="unstyled" ng-show="!loading">
 				<li ng-repeat="film in cineworld.films | orderBy:['title']">
 					<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
-					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">{{film.title}}<span class="optional" ng-show="film.runtime > 0"> (<span class="runtime">{{film.runtime}}</span>)</label>
+					<label class="name" for="film-{{film.edi}}" title="{{film | json}}">
+						{{film.title}}
+						<span class="optional" ng-show="film.runtime > 0">
+							(<span class="runtime">{{film.runtime}}</span>)
+						</span>
+					</label>
 				</li>
 			</ul>
 		</section>
@@ -131,7 +136,12 @@
 				<thead>
 					<tr>
 						<th>Cinema</th>
-						<th class="film" ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{film | json}}">{{film.title}}</th>
+						<th class="film" ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{film | json}}">
+							{{film.title}}
+							<span class="optional" ng-show="film.runtime > 0">
+								(<span class="runtime">{{film.runtime}}</span>)
+							</span>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -150,7 +160,32 @@
 				</tbody>
 			</table>
 			<ul ng-show="!loading">
-				<li ng-repeat="plan in plans">{{plan}}</li>
+				<script type="text/ng-template" id="plan.shtml">
+					<span title="{{plan.offenses | json}}">
+						{{plan.range.start | moment:'format':'HH:mm'}}&mdash;{{plan.range.end | moment:'format':'HH:mm'}}
+						(offends: {{plan.offenses.count}})
+					</span>
+					<ol>
+						<li ng-repeat-start="movie in plan" ng-if="movie.breakLength" value="{{$index}}" style="list-style-type: none">
+							{{movie.breakLength}} minutes break
+						</li>
+						<li ng-repeat-end>
+							{{movie.range.start | moment:'format':'HH:mm'}}&mdash;{{movie.range.end | moment:'format':'HH:mm'}}:
+							{{movie.film.title}}
+						</li>
+					</ol>
+				</script>
+				<li ng-repeat="cinemaPlan in plans">
+					{{cinemaPlan.cinema.name}}:
+					<ul>
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.all" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.fewMovies" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.shortBreak"  />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.longBreak" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.early" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.multiple" />
+					<ul>
+				</li>
 			</ul>
 		</section>
 	</section>
