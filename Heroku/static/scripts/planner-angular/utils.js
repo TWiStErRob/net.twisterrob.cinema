@@ -1,7 +1,7 @@
 'use strict';
 var module = angular.module('appUtils'); // see app.js
 
-module.service('AngularHacks', function _constructor() { 
+module.service('AngularHacks', ['$window', function($window) { 
 	this.fixNextJSONP = function () { 
 		var c = $window.angular.callbacks.counter;
 		$window['angularcallbacks_' + c] = function (data) {
@@ -9,11 +9,29 @@ module.service('AngularHacks', function _constructor() {
 			delete $window['angularcallbacks_' + c];
 		};
 	};
-});
+}]);
 
-var underscore = angular.module('underscore', []);
-underscore.service('_', function() {
-	var _ = window._//.noConflict();
+var momentModule = angular.module('moment', []);
+momentModule.service('moment', ['$window', function($window) {
+	var moment = $window.moment;
+	moment.noConflict = function() {
+		delete $window.moment;
+		return this;
+	};
+	moment.range = moment.fn.range;
+	return moment//.noConflict();
+}]);
+
+momentModule.filter('moment', ['moment', function(moment) {
+	return function(input, method /*, args*/) {
+		var args = Array.prototype.splice.call(arguments, 2 /* skip input and method */);
+		return moment.fn[method].apply(input, args);
+	};
+}]);
+
+var underscoreModule = angular.module('underscore', []);
+underscoreModule.service('_', ['$window', function($window) {
+	var _ = $window._;
 	var __ = {
 		groupBy: _.groupBy
 	};
@@ -65,5 +83,5 @@ underscore.service('_', function() {
 			};
 		}
 	};
-	return _; // assumes underscore has already been loaded on the page
-});
+	return _//.noConflict();
+}]);

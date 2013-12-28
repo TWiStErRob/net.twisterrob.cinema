@@ -147,43 +147,36 @@
 				<tbody>
 					<tr ng-repeat="cinema in cineworld.cinemas | filter: {selected: true}">
 						<td class="cinema" title="{{cinema | json}}">
+							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}" class="icon-globe pull-right"></a>
 							{{cleanName(cinema.name)}}
-							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}"><i class="icon-globe"></i></a>
 						 </td>
 						<td ng-repeat="film in cineworld.films | filter: {selected: true}" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]" title="{{performance | json}}">
-								<a href="{{performance.booking_url}}">{{performance.time}}</a>
-								{{$last? "" : ","}}
-							</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" title="{{performance | json}}">{{performance.time}}</a>{{$last? "" : ","}}</span>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<ul ng-show="!loading">
 				<script type="text/ng-template" id="plan.shtml">
-					<span title="{{plan.offenses | json}}">
-						{{plan.range.start | moment:'format':'HH:mm'}}&mdash;{{plan.range.end | moment:'format':'HH:mm'}}
-						(offends: {{plan.offenses.count}})
+					<span>
+						<span>{{plan.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span>{{plan.range.end | moment:'format':'HH:mm'}}</span>
+						(<span title="{{plan.offenses | json}}">offends: {{plan.offenses.count}}-&gt;{{offensePriority(plan)}}</span>)
 					</span>
 					<ol>
-						<li ng-repeat-start="movie in plan" ng-if="movie.breakLength" value="{{$index}}" style="list-style-type: none">
-							{{movie.breakLength}} minutes break
+						<li ng-repeat-start="movie in plan" ng-if="movie.breakBefore" value="{{$index}}" style="list-style-type: none">
+							{{movie.breakBefore}} minutes break
 						</li>
-						<li ng-repeat-end>
+						<li ng-repeat-end title="{{movie | json}}">
 							{{movie.range.start | moment:'format':'HH:mm'}}&mdash;{{movie.range.end | moment:'format':'HH:mm'}}:
-							{{movie.film.title}}
+							{{movie.film().title}}
 						</li>
 					</ol>
 				</script>
 				<li ng-repeat="cinemaPlan in plans">
 					{{cinemaPlan.cinema.name}}:
 					<ul>
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.all" />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.fewMovies" />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.shortBreak"  />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.longBreak" />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.early" />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.multiple" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.valid" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.offending | orderBy:[offenseCount, offensePriority]" />
 					<ul>
 				</li>
 			</ul>

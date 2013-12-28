@@ -2,8 +2,8 @@
 var module = angular.module('appServices'); // see app.js
 
 module.service('Planner', [
-	        '$rootScope', '_', 'Cineworld',
-	function($rootScope,   _,   Cineworld) {
+	        '$rootScope', '_', 'moment', 'Cineworld',
+	function($rootScope,   _,   moment,   Cineworld) {
 		var config = {
 			defaults: {
 				minWaitBetweenMovies: 5 /* minutes */,
@@ -47,14 +47,14 @@ module.service('Planner', [
 						film: film.edi
 					};
 					var performances = _.where(params.performances, filter);
-					performances = _.flatten(_.pluck(performances, 'performances'), true);
+					performances = _(performances).pluck('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {
 						var time = moment(filter.date + performance.time, 'YYYYMMDDHH:mm');
 						var plan = _.extend({}, performance, {
-							date: date,
-							cinema: cinema,
-							film: film,
+							date: function() { return date; },
+							cinema: function() { return cinema; },
+							film: function() { return film; },
 							scheduledTime: time,
 							adLength: params.estimatedAdvertisementLength,
 							startTime: time.clone()
@@ -63,40 +63,37 @@ module.service('Planner', [
 							             .add('minutes', params.estimatedAdvertisementLength)
 							             .add('minutes', film.runtime),
 						});
-						plan.range = moment().range(plan.startTime, plan.endTime);
-						plan.fullRange = moment().range(plan.scheduledTime, plan.endTime);
+						plan.range = moment.range(plan.startTime, plan.endTime);
+						plan.fullRange = moment.range(plan.scheduledTime, plan.endTime);
 						return plan;
 					});
 				});
 			});
-			var results = _.indexBy(_.map(params.cinemas, function(cinema) {
-				var cinemaResults = {
-					cinema: cinema,
-					all: [],
-					shortBreak: [],
-					longBreak: [],
-					fewMovies: [],
-					early: [],
-					multiple: []
-				};
-				planCinema(cinemaResults, cache, cinema, params.films, [{
-					watched: ["travel"],
-					performance: {
-						endTime: moment(params.date, 'YYYYMMDDHH'),
-						film: {
-							edi: -1
+			var results = _(params.cinemas)
+				.map(function(cinema) {
+					var cinemaResults = {
+						cinema: cinema,
+						valid: [],
+						offending: []
+					};
+					planCinema(cinemaResults, cache, cinema, params.films, [{
+						watched: ["travel"],
+						performance: {
+							endTime: moment(params.date, 'YYYYMMDDHH'),
+							film: {
+								edi: -1
+							},
+							range: moment().range()
 						},
-						range: {
-							end: moment()
-						}
-					},
-					next: [],
-					level: 0
-				}]);
-				return cinemaResults;
-			}), function(result) {
-				return result.cinema.cineworldID;
-			});
+						next: [],
+						level: 0
+					}]);
+					return cinemaResults;
+				})
+				.indexBy(function(result) {
+					return result.cinema.cineworldID;
+				})
+				.value();
 
 			return results;
 
@@ -109,7 +106,7 @@ module.service('Planner', [
 							_.each(performances, function(perf) {
 								if(node.performance.endTime < (perf.startTime)) { // starts after the other finishes
 									node.next.push({
-										watched: node.watched.concat([perf.film.edi]),
+										watched: node.watched.concat([perf.film().edi]),
 										performance: perf,
 										next: [],
 										prev: node,
@@ -126,9 +123,11 @@ module.service('Planner', [
 						var plan = unfold(node);
 						plan.first = plan[0];
 						plan.last = plan[plan.length - 1];
-						plan.range = moment().range(plan.first.range.start, plan.last.range.end);
+						plan.range = moment.range(plan.first.range.start, plan.last.range.end);
 						_.reduce(plan, function(prev, current) {
-							current.breakLength = Math.floor((current.range.start - prev.range.end) / 60 / 1000);
+							var breakLength = Math.floor((current.range.start - prev.range.end) / 60 / 1000);
+							current.breakBefore = breakLength;
+							prev.breakAfter = breakLength;
 							return current;
 						});
 
@@ -136,32 +135,19 @@ module.service('Planner', [
 						plan.offenses = {
 							fewMovies: !(films.length + 1 == node.watched.length && node.watched.length != 1),
 							early: plan.range.start.isBefore(workEnd),
-							tooShort: !!_.find(plan, function(unfold) {
-								return unfold.breakLength < params.minWaitBetweenMovies;
-							}),
-							tooLong: !!_.find(plan, function(unfold) {
-								return unfold.breakLength > params.maxWaitBetweenMovies;
-							})
+							shortBreak: _.find(plan, function(performance) {
+								return performance.breakBefore < params.minWaitBetweenMovies;
+							}) !== undefined,
+							longBreak: !!_.find(plan, function(performance) {
+								return performance.breakBefore > params.maxWaitBetweenMovies;
+							}) !== undefined
 						};
 
 						plan.offenses.count = _.reduce(plan.offenses, function(offenseCount, offense) { return offenseCount + (offense ? 1 : 0); }, 0);
 						if (plan.offenses.count === 0) {
-							results.all.push(plan);
-						} else if (plan.offenses.count > 1) {
-							results.multiple.push(plan);
+							results.valid.push(plan);
 						} else {
-							if(early) {
-								results.early.push(plan);
-							}
-							if(tooShort) {
-								results.shortBreak.push(plan);
-							}
-							if(tooLong) {
-								results.longBreak.push(plan);
-							}
-							if(fewMovies) {
-								results.fewMovies.push(plan);
-							}
+							results.offending.push(plan);
 						}
 					} else {
 						// node.watched.length == 0 | 1 ==> don't care about these (last single movies (1), and errors(0?) )

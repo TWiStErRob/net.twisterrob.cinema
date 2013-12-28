@@ -2,8 +2,8 @@
 var module = angular.module('appServices'); // see app.js
 
 module.service('Cineworld', [
-	        '$rootScope', '_', 'Cinema', 'Film', 'Performance',
-	function($rootScope,   _,   Cinema,   Film,   Performance) {
+	        '$rootScope', '_', 'moment', 'Cinema', 'Film', 'Performance',
+	function($rootScope,   _,   moment,   Cinema,   Film,   Performance) {
 		var config = {
 			cinemaWait: 100,
 			filmWait: 300,
@@ -51,7 +51,6 @@ module.service('Cineworld', [
 			});
 		}, config.filmWait);
 		
-
 		this.updatePerformances = _.debounce(function() {
 			var params = {
 				date: data.formattedDate,

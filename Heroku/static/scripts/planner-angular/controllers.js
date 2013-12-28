@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', '_', 'Cineworld', '$location',
-	function($scope,       _,   cineworld,   $location) {
+	        '$rootScope', '_', 'moment', 'Cineworld', '$location',
+	function($scope,       _,   moment,   cineworld,   $location) {
 		var search = {
 			film: 'f',
 			cinema:'c',
@@ -182,8 +182,8 @@ module.controller('FilmsController', [
 ]);
 
 module.controller('PerformancesController', [
-	        '$scope', 'Planner',
-	function($scope,   Planner) {
+	        '$scope', '_', 'Planner',
+	function($scope,   _,   Planner) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -203,6 +203,24 @@ module.controller('PerformancesController', [
 			$scope.loading = false;
 			$scope.plans = Planner.plan();
 		});
+
+		$scope.offenseCount = function(plan) {
+			return plan.offenses.count;
+		}
+		$scope.offensePriority = function(plan) {
+			return _(plan.offenses)
+					.pick(function(offense) { return offense === true; })
+					.keys()
+					.reduce(aggregateOffensePriority, 0);
+
+			function aggregateOffensePriority(sum, offense) {
+				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']; // lower is better
+				// use shifting to produce a non-conflicting result (fewMovies + shortBreak != longBreak)
+				// also ECMA-262§11.7.1.7-8: (2 << -1) === (2 << 0xFFFFFFFFFF & 0x1F) === (2 << 31) === (0b10 << 31) === 0b10...0 [32 zeros],
+				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1)
+				return sum + (2 << _.indexOf(prio, offense));
+			}
+		}
 
 		$scope.cleanName = function(cinemaName) {
 			return cinemaName.replace("London - ", "");

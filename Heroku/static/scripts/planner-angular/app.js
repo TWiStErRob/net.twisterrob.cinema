@@ -8,11 +8,13 @@ var app = angular.module('app', [
 	'appFilters',
 	'appDirectives',
 	'appAnimations',
-	'ui.bootstrap'
+	'ui.bootstrap',
+	'underscore',
+	'moment'
 ]);
 angular.module('appUtils', []);
-angular.module('appControllers', ['underscore']);
-angular.module('appServices', ['ngResource', 'underscore']);
+angular.module('appControllers', []);
+angular.module('appServices', ['ngResource']);
 angular.module('appFilters', []);
 angular.module('appDirectives', []);
 angular.module('appAnimations', []);
