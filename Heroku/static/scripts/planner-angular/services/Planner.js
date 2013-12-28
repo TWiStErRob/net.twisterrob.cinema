@@ -83,7 +83,7 @@ module.service('Planner', [
 							film: {
 								edi: -1
 							},
-							range: moment().range()
+							range: moment.range()
 						},
 						next: [],
 						level: 0
@@ -138,7 +138,7 @@ module.service('Planner', [
 							shortBreak: _.find(plan, function(performance) {
 								return performance.breakBefore < params.minWaitBetweenMovies;
 							}) !== undefined,
-							longBreak: !!_.find(plan, function(performance) {
+							longBreak: _.find(plan, function(performance) {
 								return performance.breakBefore > params.maxWaitBetweenMovies;
 							}) !== undefined
 						};
