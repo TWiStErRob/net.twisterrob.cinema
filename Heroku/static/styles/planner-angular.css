@@ -63,11 +63,18 @@ input[type="checkbox"] {
 }
 
 /** Bootstrap specific */
+.glyphicon:empty {
+	height: 1em;
+}
+
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {
-    background-image: url('../images/icon-loading.gif');
+    background-image: url('../images/icon-loading-white.gif');
     background-position: 0;
+}
+.glyphicon.loading:before {
+	content: "";
 }
 
 .accordion-toggle {
