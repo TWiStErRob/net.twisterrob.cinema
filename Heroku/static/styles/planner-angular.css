@@ -7,7 +7,7 @@
 	overflow: auto;
 }
 
-input {
+input[type="checkbox"] {
 	vertical-align: text-bottom;
 }
 
@@ -19,17 +19,20 @@ input {
 
 #cinemas, #films, #performances, #debug {
 	float: left;
-	width: auto;
 	height: calc(100% - 40px - 8px);
 	margin: 0;
 	padding: 4px;
 	overflow-y: scroll;
-	max-width: 275px;
 }
 
+#cinemas {
+	width: 275px;
+}
+#films {
+	width: 275px;
+}
 #performances {
-	max-width: inherit;
-	width: 750px;
+	width: auto;
 	overflow-x: scroll;
 }
 
@@ -61,9 +64,38 @@ input {
 
 /** Bootstrap specific */
 [class^="icon-"].loading,
-[class*=" icon-"].loading {
+[class*=" icon-"].loading,
+.glyphicon.loading {
     background-image: url('../images/icon-loading.gif');
     background-position: 0;
+}
+
+.accordion-toggle {
+	cursor: pointer;
+}
+.accordion-toggle:hover {
+	text-decoration: none;
+}
+
+.glyphicon.pull-right {
+	margin-left: 2px;
+}
+
+.cinema .checkbox,
+.film .checkbox {
+	margin: 0;
+}
+
+.cinema .checkbox {
+	white-space: nowrap;
+}
+
+.panel-body {
+	padding: 10px;
+}
+
+.list-unstyled {
+	margin: 0;
 }
 
 label.compact {
@@ -79,13 +111,35 @@ label.compact {
 */
 
 /** Site styles */
-body {
+
+body, .panel-body {
 	background-color: #121215;
+	color: #CCCCCC;
+}
+
+.panel-default > .panel-heading {
+	background-color: #333333;
 	color: #CCCCCC;
 }
 
 a {
 	color: #F7F7F7;
+}
+
+::-webkit-scrollbar {
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(192, 192, 192, .4);
+}
+::-webkit-scrollbar-corner {
+	background: transparent;
 }
 
 #status {
@@ -143,6 +197,10 @@ a {
 
 .cinema-name {
 	color: #EE2021;
+}
+
+.cinema .glyphicon-heart {
+	color: red;
 }
 
 .plan-header {
