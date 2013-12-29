@@ -1,3 +1,4 @@
+/** Generic layout */
 .ui-stretch {
 	height: 100%;
 	width: 100%;
@@ -6,32 +7,34 @@
 	overflow: auto;
 }
 
-#title {
-	font-family: Georgia;
-	text-shadow: 2px 1px 3px darkgray;
+input {
+	vertical-align: text-bottom;
 }
 
+/** Site layout */
 #main > header {
-	height: 40px;
+	height: 39px;
+	border-bottom: 1px solid white;
 }
 
 #cinemas, #films, #performances, #debug {
 	float: left;
 	width: auto;
-	height: calc(100% - 40px);
+	height: calc(100% - 40px - 8px);
 	margin: 0;
-	padding: 0;
+	padding: 4px;
 	overflow-y: scroll;
 	max-width: 275px;
 }
 
 #performances {
 	max-width: inherit;
-	width: 550px;
+	width: 750px;
 	overflow-x: scroll;
 }
 
 #debug {
+	display: none;
 	float: right;
 	width: 250px;
 	border-left: 1px solid black;
@@ -44,12 +47,7 @@
 #performances th.film {
 	width: 150px;
 }
-#status {
-	color: red;
-}
-table, tr, td, th {
-	border: 1px solid #000;
-}
+
 #statusmessage {
 	display: block;
 	position: fixed;
@@ -59,29 +57,98 @@ table, tr, td, th {
 	z-index: 99;
 
 	padding: 0 5px;
-
-	background-color: #eeee99;
-	font-weight: bold;
-
-	-webkit-transition:all linear 0.2s;
-	transition:all linear 0.2s;
-	margin-bottom: 0px;
-	line-height: 25px; /* same as hidden margin-bottom */
 }
 
-#statusmessage.ng-hide {
-	display: block !important;
-	margin-bottom: -25px;
-}
-
+/** Bootstrap specific */
 [class^="icon-"].loading,
 [class*=" icon-"].loading {
     background-image: url('../images/icon-loading.gif');
     background-position: 0;
 }
 
-.name {
+label.compact {
 	display: inline;
-	margin-right: 1em;
-	font-weight: inherit;
+}
+
+/*
+#121215; // Cineworld Black BG
+#F7F7F7; // Cineworld light text
+#CCCCCC; // Cineworld dark text
+#89D531; // MyCineworld green
+#D70011; // Cineworld red
+*/
+
+/** Site styles */
+body {
+	background-color: #121215;
+	color: #CCCCCC;
+}
+
+a {
+	color: #F7F7F7;
+}
+
+#status {
+	color: red;
+}
+
+table, tr, td, th {
+	border: 1px solid #CCCCCC;
+}
+
+
+#statusmessage {
+	background-color: #CCCCCC;
+	color: #0794DD;
+	font-weight: bold;
+}
+
+.id {
+	color: gray;
+}
+
+.length,
+.film-runtime {
+	color: #5587E4;
+}
+.film-runtime:before,
+.film-runtime:after {
+	color: #CCCCCC;
+}
+.film-runtime:before {
+	content: '(';
+}
+.film-runtime:after {
+	content: ')';
+}
+
+.time,
+.film-start,
+.film-end {
+	color: #36BBCE;
+}
+
+.film-title {
+	color: #89D531;
+}
+
+.cinema-name {
+	color: #EE2021;
+}
+
+.plan-header {
+	font-weight: bold;
+}
+
+/** Angular specific */
+#statusmessage {
+	margin-bottom: 0px;
+	line-height: 25px; /* same as hidden margin-bottom */
+	-webkit-transition:all linear 0.2s;
+	transition:all linear 0.2s;
+}
+
+#statusmessage.ng-hide {
+	display: block !important;
+	margin-bottom: -25px;
 }
