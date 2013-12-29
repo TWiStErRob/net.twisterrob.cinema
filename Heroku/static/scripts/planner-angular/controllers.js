@@ -201,7 +201,11 @@ module.controller('PerformancesController', [
 			});
 			$scope.performances = x;
 			$scope.loading = false;
-			$scope.plans = Planner.plan();
+			var plans = Planner.plan();
+			_.each(plans, function(plan) {
+				plan.display = plan.valid.length > 0;
+			});
+			$scope.plans = plans;
 		});
 
 		$scope.offenseCount = function(plan) {

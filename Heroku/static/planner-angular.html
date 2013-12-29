@@ -1,7 +1,3 @@
-<?xml version="1.0"?>
-<!doctype html [
-	&lt;!ATTLIST li ng-repeat NMTOKENS&gt;
-]>
 <html lang="en" class="ui-stretch" ng-app="app">
 <head>
 <meta charset="utf-8">
@@ -21,7 +17,7 @@
 <script src="/scripts/libs/angular/angular-resource.js"></script>
 <script src="/scripts/libs/angular/angular-route.js"></script>
 <script src="/lib/bootstrap/bootstrap-2.3.2/js/bootstrap.js"></script>
-<script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.7.0.js"></script>
+<script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.8.0.js"></script>
 
 <script src="/scripts/planner-angular/app.js"></script>
 <script src="/scripts/planner-angular/utils.js"></script>
@@ -152,7 +148,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<ul ng-show="!loading">
+			<accordion id="plan-results" ng-show="!loading" close-others="false">
 				<script type="text/ng-template" id="plan.shtml">
 					<span class="plan-header">
 						<span class="film-start">{{plan.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | moment:'format':'HH:mm'}}</span>
@@ -169,14 +165,30 @@
 						</li>
 					</ol>
 				</script>
-				<li ng-repeat="cinemaPlan in plans">
-					<span class="cinema-name">{{cinemaPlan.cinema.name}}</span>:
+				<accordion-group ng-repeat="cinemaPlan in plans" is-open="cinemaPlan.display">
+					<accordion-heading>
+						<span class="cinema-name">{{cinemaPlan.cinema.name}}</span>
+						(<ng-pluralize count="cinemaPlan.valid.length"
+							when="{
+								'0': 'no plans',
+								'one': '1 plan',
+								'other': '{} plans'
+							}"></ng-pluralize>
+						and
+						<ng-pluralize count="cinemaPlan.offending.length"
+							when="{
+								'0': 'no suggestions',
+								'one': '1 suggestion',
+								'other': '{} suggestions'
+							}"></ng-pluralize>)
+						<i class="icon-white pull-right" ng-class="{'icon-chevron-down': cinemaPlan.display, 'icon-chevron-right': !cinemaPlan.display}"></i>
+					</accordion-heading>
 					<ul>
 						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.valid" />
 						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.offending | orderBy:[offenseCount, offensePriority]" />
-					<ul>
-				</li>
-			</ul>
+					</ul>
+				</accordion-group>
+			</accordion>
 		</section>
 	</section>
 	<div id="statusmessage" ng-show="stati.length > 0" ng-controller="StatusController">

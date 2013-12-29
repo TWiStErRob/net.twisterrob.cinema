@@ -92,8 +92,17 @@ a {
 	color: red;
 }
 
-table, tr, td, th {
+#performances table,
+#performances tr,
+#performances td,
+#performances th {
 	border: 1px solid #CCCCCC;
+}
+#performances td.cinema {
+	padding: 2px 6px;
+}
+#performances table {
+	margin-bottom: 6px;
 }
 
 
