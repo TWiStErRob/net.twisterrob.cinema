@@ -47,10 +47,11 @@ function addView(req, res) {
 		if(results.length !== 1) {
 			res.send(404, 'No or more results found: ' + results.length);
 		} else {
-			res.jsonp(_.extend({}, results[0].view.data, {
-				film: results[0].film.data,
-				cinema: results[0].cinema.data,
-				user: results[0].user.data,
+			var result = results[0];
+			res.jsonp(_.extend({}, result.view.data, {
+				film: result.film.data,
+				cinema: result.cinema.data,
+				user: result.user.data,
 			}));
 		}
 	});
@@ -153,14 +154,44 @@ function getFilms(req, res) {
 			res.jsonp([]);
 			return;
 		}
-		graph.query(graph.queries.getFilms, params, function (error, results) {
-			if(error) throw error;
-			var data = [];
-			for(var i = 0, len = results.length; i < len; ++i) {
-				data.push(results[i].film.data);
-			}
-			res.jsonp(data);
-		});
+		if (req.isAuthenticated()) {
+			params = _.extend(params, {
+				userID: req.user.id
+			});
+			console.log(params);
+			graph.query(graph.queries.getFilmsAuth, params, function (error, results) {
+				console.log(arguments);
+				if(error) throw error;
+				var data = [];
+				for(var i = 0, len = results.length; i < len; ++i) {
+					var result = results[i];
+					var f = _.clone(result.film.data);
+					if(result.view) {
+						// f.view.film = f would be circular
+						f.view = _.extend({}, result.view.data, {
+							film: _.clone(result.film.data),
+							cinema: _.clone(result.cinema.data),
+							user: _.clone(result.user.data),
+						});
+					} else {
+						f.view = null;
+					}
+					data.push(f);
+				}
+				res.jsonp(data);
+			});
+		} else {
+			graph.query(graph.queries.getFilms, params, function (error, results) {
+				if(error) throw error;
+				var data = [];
+				for(var i = 0, len = results.length; i < len; ++i) {
+					var result = results[i];
+					var f = result.film.data;
+					data.push(f);
+				}
+				res.jsonp(data);
+			});
+		}
 	});
 }
 
@@ -263,7 +294,7 @@ app.configure(function configure_use() {
 
 auth.init(app);
 
-var cacheLength = 1 * 60 * 60;
+var cacheLength = 0 * 60 * 60;
 app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
@@ -290,9 +321,13 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function cacher(length) {
-	return function addCacheHeaders(req, res, next) {
-		res.setHeader("Cache-Control", "public, max-age=" + length);
-		res.setHeader("Expires", new Date(Date.now() + (length * 1000)).toUTCString());
-		return next();
-	};
+	if(length) {
+		return function addCacheHeaders(req, res, next) {
+			res.setHeader("Cache-Control", "public, max-age=" + length);
+			res.setHeader("Expires", new Date(Date.now() + (length * 1000)).toUTCString());
+			return next();
+		};
+	} else {
+		return function(req, res, next) { return next(); };
+	}
 }
