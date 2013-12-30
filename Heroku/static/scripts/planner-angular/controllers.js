@@ -76,8 +76,8 @@ module.controller('StatusController', [
 ]);
 
 module.controller('DebugController', [
-	        '$scope',
-	function($scope) {
+	        '$scope', 'moment', '_', '$compile',
+	function($scope,   moment,   _,   $compile) {
 	}
 ]);
 
@@ -88,9 +88,9 @@ module.controller('DateController', [
 			$scope.cineworld.updateFilms();
 		}, true);
 
-		$scope.open = function() {
+		$scope.displayCineworldDatePicker = function() {
 			$timeout(function() {
-				$scope.opened = true;
+				$scope.cineworldDatePickerDisplayed = true;
 			});
 		};
 	}
@@ -163,9 +163,38 @@ module.controller('CinemasController', [
 	}
 ]);
 
+module.controller('ViewPopupController', function($scope, $timeout, _, moment, $modalInstance, cinemas, film) {
+	$scope.cinemas = cinemas;
+	var date = moment().add('hours', -4).startOf('hour').toDate();
+	$scope.selected = {
+		cinema: _(cinemas).sortBy('name').find('selected'),
+		film: film,
+		date: date,
+		time: date,
+		friends: []
+	};
+
+	$scope.cinemaGroup = function(cinema) {
+		return cinema.fav ? "Favorites" : "Others"
+	}
+
+	$scope.displayDatePicker = function() {
+		$timeout(function() {
+			$scope.datePickerDisplayed = true;
+		});
+	}
+
+	$scope.ok = function () {
+		$modalInstance.close($scope.selected);
+	};
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+});
+
 module.controller('FilmsController', [
-	        '$scope',
-	function($scope) {
+	        '$scope', '$modal', '$log',
+	function($scope,   $modal,   $log) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -177,7 +206,29 @@ module.controller('FilmsController', [
 			$scope.loading = false;
 		});
 
-		$scope.viewPopup = function(film) {}
+		$scope.viewPopup = function(film) {
+			var modalInstance = $modal.open({
+				templateUrl: 'viewPopup.shtml',
+				controller: 'ViewPopupController',
+				resolve: {
+					cinemas: function () {
+						return $scope.cineworld.cinemas;
+					},
+					film: function() {
+						return film;
+					}
+				}
+			});
+
+			modalInstance.result.then(
+				function (modalResult) {
+					$scope.selected = modalResult;
+				},
+				function () {
+					// ignore cancel
+				}
+			);
+		}
 	}
 ]);
 

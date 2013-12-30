@@ -27,6 +27,7 @@
 <script src="/scripts/libs/angular/angular-route.js"></script>
 <script src="/lib/bootstrap/bootstrap-3.0.3/js/bootstrap.js"></script>
 <script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.9.0.js"></script>
+<script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.9.0-popover.js"></script>
 
 <script src="/scripts/planner-angular/app.js"></script>
 <script src="/scripts/planner-angular/utils.js"></script>
@@ -51,29 +52,47 @@
 <body class="ui-stretch" ng-controller="AppController">
 	<section id="main" class="ui-stretch">
 		<header id="date" ng-controller="DateController">
-			<form class="form-inline" role="form">
+			<form name="cineworldDateForm" class="form-inline" role="form">
 				<div class="form-group">
-					<label for="date">Date</label>
-					<input id="date" type="text" datepicker-popup="shortDate" ng-model="cineworld.date" ng-required="true" is-open="opened" ng-change="changed()" />
+					<label for="cineworldDate">Date</label>
+					<input id="cineworldDate" name="cineworldDate" type="text" ng-model="cineworld.date" class="form-control"
+						datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" ng-change="changed()" />
 				</div>
-				<button class="btn btn-primary btn-sm" ng-click="open()"><i class="glyphicon glyphicon-calendar"></i></button>
+				<button class="btn btn-default" ng-click="open()">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button>
 				Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
 			</div>
 		</header>
 		<aside id="debug" ng-controller="DebugController">
-			Selected cinemas: {{(cineworld.cinemas | filter:{selected: true}).length}} / {{cineworld.cinemas.length}}
+			<h6>Selected cinemas: {{(cineworld.cinemas | filter:{selected: true}).length}} / {{cineworld.cinemas.length}}</h6>
 			<ul>
 				<li ng-repeat="cinema in cineworld.cinemas | filter:{selected: true} | orderBy:'name'">
 					<span class="cinema-name">{{cinema.name}}</span> (<span class="id">{{cinema.cineworldID}}</span>)
 				</li>
 			</ul>
 
-			Selected films: {{(cineworld.films | filter:{selected: true}).length}} / {{cineworld.films.length}}
+			<h6>Selected films: {{(cineworld.films | filter:{selected: true}).length}} / {{cineworld.films.length}}</h6>
 			<ul>
 				<li ng-repeat="film in cineworld.films | filter:{selected: true} | orderBy:'title'">
 					<span class="film-title">{{film.title}}</span> (<span class="id">{{film.edi}}</span>)
 				</li>
 			</ul>
+
+			<h6>Combo</h6>
+			
+			<select ng-model="cinema" class="form-control" required ng-options="c.name group by !c.fav for c in cineworld.cinemas | orderBy:'name'">
+				<option vlaue="">-- choose a cinema</option>
+			</select>
+
+			<h6>Popover</h6>
+			<button popover-placement="top" popover="On the Top!" class="btn btn-default">Top</button>
+
+			<h6>Popover template</h6>
+			<script type="text/ng-template" id="x.shtml">
+				<span>blah: <b>{{text}}</b></span>
+			</script>
+			<button popover-placement="top" popover-template="'x.shtml'" class="btn btn-default">Top</button>
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
 			<script type="text/ng-template" id="cinema.shtml">
@@ -136,11 +155,112 @@
 					</accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
+						<script type="text/ng-template" id="viewPopup.shtml">
+							<div class="modal-header">
+								<h3>Edit view of <span class="film-tilte">{{selected.film.title}}</h3>
+							</div>
+							<div class="modal-body">
+								<form novalidate name="viewForm" class="form-horizontal" role="form">
+									<div class="form-group">
+										<label class="col-sm-3 control-label film-title">Film</label>
+										<div class="col-sm-9">
+											<p class="form-control-static">{{selected.film.title}}</p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="cinema" class="col-sm-3 control-label cinema-name">Cinema</label>
+										<div class="col-sm-9">
+											<select name="cinema" ng-model="selected.cinema" required class="form-control"
+												ng-options="c.name group by cinemaGroup(c) for c in cinemas | orderBy:[cinemaGroup, 'name']"
+												popover="Where did you watch this film." popover-trigger="focus" popover-placement="top">
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label time">Date</label>
+										<div class="col-sm-9">
+											<div class="input-group">
+												<input id="date" name="date" type="text" ng-model="selected.date"
+													class="form-control" datepicker-popup="shortDate" is-open="datePickerDisplayed" />
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" ng-click="displayDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>&nbsp;
+													</button>
+												</span>
+											</div>
+											<!--<datepicker ng-model="selected.date" show-weeks="true"></datepicker>-->
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label time">Time</label>
+										<div class="col-sm-9">
+											<timepicker ng-model="selected.time" hour-step="1" minute-step="5" show-meridian="false"></timepicker>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">Friends</label>
+										<div class="col-sm-9">
+											<div class="form-horizontal">
+												<div class="form-group" ng-repeat="friend in selected.friends track by $index">
+													<label for="friend-{{$index}}" title="{{friend}}" class="col-sm-3">Friend #{{$index+1}}</label>
+													<div class="col-sm-9">
+														<div class="input-group">
+															<input id="friend-{{$index}}" type="text" class="form-control input-sm"
+																	ng-model="selected.friends[$index]" />
+															<span class="input-group-btn">
+																<button class="btn btn-default btn-sm" type="button" title="Remove"
+																		ng-click="selected.friends.splice($index, 1)">
+																	<i class="glyphicon glyphicon-remove"></i>&nbsp;
+																</button>
+															</span>
+														</div>
+													</div>
+												</li>
+											</div>
+											<div class="input-group">
+												<input type="text" class="form-control" ng-model="newFriend"/>
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" title="Add friend"
+															ng-click="selected.friends.push(newFriend)">
+														<i class="glyphicon glyphicon-plus"></i>
+														<i class="glyphicon glyphicon-user"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">To recap</label>
+										<div class="col-sm-9">
+											<p class="form-control-static">you have
+												watched <span class="film-title">{{selected.film.title}}</span>
+												at <span class="cinema-name">{{selected.cinema.name}}</span>
+												on <span class="time">{{selected.date | date:'shortDate'}}</span>
+												at <span class="time">{{selected.time | date:'shortTime'}}</span>,
+												<ng-pluralize count="selected.friends.length" offset="2"
+													when="{
+														'0': 'alone',
+														'1': 'with {{selected.friends[0]}}',
+														'2': 'with {{selected.friends[0]}} and {{selected.friends[1]}}',
+														'one': 'with {{selected.friends[0]}}, {{selected.friends[1]}} and another friend',
+														'other': 'with {{selected.friends[0]}}, {{selected.friends[1]}} and {} other friends'
+													}"></ng-pluralize>.
+											</p>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-success" ng-click="ok()">OK</button>
+								<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+							</div>
+						</script>
 						<li class="film" ng-repeat="film in cineworld.films | orderBy:['title']">
+							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="viewPopup(film)"></i>
+							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
-									<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 									<span class="film-title">{{film.title}}</span>
 								</label>
 							</div>

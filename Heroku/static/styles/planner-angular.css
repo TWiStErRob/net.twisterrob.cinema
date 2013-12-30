@@ -67,6 +67,13 @@ input[type="checkbox"] {
 	height: 1em;
 }
 
+@media (min-width: 768px) {
+	/* fixes wrapping when it shouldn't https://github.com/twbs/bootstrap/issues/8732 */
+	.form-inline .form-control {
+		width: auto;
+	}
+}
+
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {
@@ -105,8 +112,8 @@ input[type="checkbox"] {
 	margin: 0;
 }
 
-label.compact {
-	display: inline;
+.film > .popover {
+	max-width: inherit;
 }
 
 /*
@@ -122,6 +129,11 @@ label.compact {
 body, .panel-body {
 	background-color: #121215;
 	color: #CCCCCC;
+}
+
+.modal-content {
+	background-color: #121215;
+	border: 1px solid #999999;
 }
 
 .panel-default > .panel-heading {
