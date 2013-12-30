@@ -88,6 +88,7 @@ module.controller('DateController', [
 			$scope.cineworld.updateFilms();
 		}, true);
 
+		$scope.cineworldDatePickerDisplayed = false;
 		$scope.displayCineworldDatePicker = function() {
 			$timeout(function() {
 				$scope.cineworldDatePickerDisplayed = true;
@@ -178,11 +179,18 @@ module.controller('ViewPopupController', function($scope, $timeout, _, moment, $
 		return cinema.fav ? "Favorites" : "Others"
 	}
 
-	$scope.displayDatePicker = function() {
-		$timeout(function() {
-			$scope.datePickerDisplayed = true;
-		});
-	}
+	$scope.uiState = {
+		datePickerDisplayed: false,
+		displayDatePicker: function() {
+			$timeout(function() {
+				// TODO figure out why doesn't it work it's supposed to (location of function doesn't matter):
+				// 1. doesn't work without $digest
+				// 2. doesn't work without uiState intermediate object (not even with $digest)
+				$scope.uiState.datePickerDisplayed = true;
+				$scope.$digest();
+			});
+		}
+	};
 
 	$scope.ok = function () {
 		$modalInstance.close($scope.selected);

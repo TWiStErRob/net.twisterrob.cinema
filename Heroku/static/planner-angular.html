@@ -27,7 +27,6 @@
 <script src="/scripts/libs/angular/angular-route.js"></script>
 <script src="/lib/bootstrap/bootstrap-3.0.3/js/bootstrap.js"></script>
 <script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.9.0.js"></script>
-<script src="/scripts/libs/angular/plugins/ui-bootstrap-tpls-0.9.0-popover.js"></script>
 
 <script src="/scripts/planner-angular/app.js"></script>
 <script src="/scripts/planner-angular/utils.js"></script>
@@ -56,9 +55,9 @@
 				<div class="form-group">
 					<label for="cineworldDate">Date</label>
 					<input id="cineworldDate" name="cineworldDate" type="text" ng-model="cineworld.date" class="form-control"
-						datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" ng-change="changed()" />
+						datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" />
 				</div>
-				<button class="btn btn-default" ng-click="open()">
+				<button class="btn btn-default" ng-click="displayCineworldDatePicker()">
 					<i class="glyphicon glyphicon-calendar"></i>
 				</button>
 				Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
@@ -80,19 +79,9 @@
 			</ul>
 
 			<h6>Combo</h6>
-			
 			<select ng-model="cinema" class="form-control" required ng-options="c.name group by !c.fav for c in cineworld.cinemas | orderBy:'name'">
 				<option vlaue="">-- choose a cinema</option>
 			</select>
-
-			<h6>Popover</h6>
-			<button popover-placement="top" popover="On the Top!" class="btn btn-default">Top</button>
-
-			<h6>Popover template</h6>
-			<script type="text/ng-template" id="x.shtml">
-				<span>blah: <b>{{text}}</b></span>
-			</script>
-			<button popover-placement="top" popover-template="'x.shtml'" class="btn btn-default">Top</button>
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
 			<script type="text/ng-template" id="cinema.shtml">
@@ -181,9 +170,9 @@
 										<div class="col-sm-9">
 											<div class="input-group">
 												<input id="date" name="date" type="text" ng-model="selected.date"
-													class="form-control" datepicker-popup="shortDate" is-open="datePickerDisplayed" />
+													class="form-control" datepicker-popup="shortDate" is-open="uiState.datePickerDisplayed" />
 												<span class="input-group-btn">
-													<button class="btn btn-default" type="button" ng-click="displayDatePicker()">
+													<button class="btn btn-default" type="button" ng-click="uiState.displayDatePicker()">
 														<i class="glyphicon glyphicon-calendar"></i>&nbsp;
 													</button>
 												</span>
@@ -215,7 +204,7 @@
 															</span>
 														</div>
 													</div>
-												</li>
+												</div>
 											</div>
 											<div class="input-group">
 												<input type="text" class="form-control" ng-model="newFriend"/>
