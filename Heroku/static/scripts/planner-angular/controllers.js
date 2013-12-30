@@ -131,7 +131,7 @@ module.controller('CinemasController', [
 		};
 		$scope.buttonClick = function(button) {
 			angular.forEach($scope.cineworld.cinemas, button.handle);
-		}
+		};
 
 		$scope.favClick = function(cinema) {
 			if(cinema.favLoading) return;
@@ -160,15 +160,14 @@ module.controller('CinemasController', [
 					}
 				);
 			}
-		}
+		};
 	}
 ]);
 
-module.controller('ViewPopupController', function($scope, $timeout, _, moment, $modalInstance, cinemas, film) {
+module.controller('ViewPopupController', function($scope, $timeout, $modalInstance, cinemas, cinema, film, date) {
 	$scope.cinemas = cinemas;
-	var date = moment().add('hours', -4).startOf('hour').toDate();
 	$scope.selected = {
-		cinema: _(cinemas).sortBy('name').find('selected'),
+		cinema: cinema,
 		film: film,
 		date: date,
 		time: date,
@@ -176,8 +175,8 @@ module.controller('ViewPopupController', function($scope, $timeout, _, moment, $
 	};
 
 	$scope.cinemaGroup = function(cinema) {
-		return cinema.fav ? "Favorites" : "Others"
-	}
+		return cinema.fav ? "Favorites" : "Others";
+	};
 
 	$scope.uiState = {
 		datePickerDisplayed: false,
@@ -201,8 +200,8 @@ module.controller('ViewPopupController', function($scope, $timeout, _, moment, $
 });
 
 module.controller('FilmsController', [
-	        '$scope', '$modal', '$log',
-	function($scope,   $modal,   $log) {
+	        '$scope', '$modal', 'Film',
+	function($scope,   $modal,   Film) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -215,6 +214,7 @@ module.controller('FilmsController', [
 		});
 
 		$scope.viewPopup = function(film) {
+			if(film.view !== undefined || film.addingView) return;
 			var modalInstance = $modal.open({
 				templateUrl: 'viewPopup.shtml',
 				controller: 'ViewPopupController',
@@ -222,21 +222,36 @@ module.controller('FilmsController', [
 					cinemas: function () {
 						return $scope.cineworld.cinemas;
 					},
+					cinema: function() {
+						return _($scope.cineworld.cinemas).sortBy('name').find('selected');
+					},
 					film: function() {
 						return film;
+					},
+					date: function() {
+						return moment().startOf('day').add('hours', 18).toDate();
 					}
 				}
 			});
 
 			modalInstance.result.then(
 				function (modalResult) {
+					if(film !== modalResult.film) throw "Must be the same";
+					film.addingView = true;
+					Film.addView({
+						edi: film.edi,
+						cinema: modalResult.cinema.cineworldID
+					}, function(view) {
+						film.view = view;
+						film.addingView = false;
+					});
 					$scope.selected = modalResult;
 				},
 				function () {
 					// ignore cancel
 				}
 			);
-		}
+		};
 	}
 ]);
 
@@ -269,7 +284,7 @@ module.controller('PerformancesController', [
 
 		$scope.offenseCount = function(plan) {
 			return plan.offenses.count;
-		}
+		};
 		$scope.offensePriority = function(plan) {
 			return _(plan.offenses)
 					.pick(function(offense) { return offense === true; })
@@ -283,10 +298,10 @@ module.controller('PerformancesController', [
 				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1)
 				return sum + (2 << _.indexOf(prio, offense));
 			}
-		}
+		};
 
 		$scope.cleanName = function(cinemaName) {
 			return cinemaName.replace("London - ", "");
-		}
+		};
 	}
 ]);

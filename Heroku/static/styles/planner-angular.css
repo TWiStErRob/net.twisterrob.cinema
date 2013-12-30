@@ -222,6 +222,10 @@ a {
 	color: red;
 }
 
+.film .glyphicon-eye-close {
+	color: greenyellow;
+}
+
 .plan-header {
 	font-weight: bold;
 }

@@ -245,7 +245,11 @@
 							</div>
 						</script>
 						<li class="film" ng-repeat="film in cineworld.films | orderBy:['title']">
-							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="viewPopup(film)"></i>
+							<i class="glyphicon pull-right" ng-click="viewPopup(film)" ng-class="{
+								'glyphicon-eye-open': film.view === undefined,
+								'glyphicon-eye-close': film.view !== undefined,
+								'loading': film.addingView
+							}" tooltip="{{film.view === undefined ? 'Click to add view!' : 'Watched at ' + film.view.cinema.name}}"></i>
 							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">

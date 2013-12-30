@@ -47,12 +47,11 @@ function addView(req, res) {
 		if(results.length !== 1) {
 			res.send(404, 'No or more results found: ' + results.length);
 		} else {
-			res.jsonp({
+			res.jsonp(_.extend({}, results[0].view.data, {
 				film: results[0].film.data,
 				cinema: results[0].cinema.data,
 				user: results[0].user.data,
-				view: results[0].view.data
-			});
+			}));
 		}
 	});
 }
@@ -272,7 +271,7 @@ app.get('/cinema', cacher(cacheLength), getCinemas);
 app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.get('/performance', cacher(cacheLength), getPerformances);
-app.post('/film/:edi/view', ensureAuthenticated, addView);
+app.get('/film/:edi/view', ensureAuthenticated, addView);
 
 app.initialized = true;
 listen();
