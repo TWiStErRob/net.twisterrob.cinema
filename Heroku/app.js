@@ -166,12 +166,12 @@ function getFilms(req, res) {
 				for(var i = 0, len = results.length; i < len; ++i) {
 					var result = results[i];
 					var f = _.clone(result.film.data);
-					if(result.view) {
-						// f.view.film = f would be circular
+					if(!_.isEmpty(result.view) && !_.isEmpty(result.view.data)
+							&& result.view.data.class != 'Film') { // workaround for neo4j wrapper not liking nulls
 						f.view = _.extend({}, result.view.data, {
-							film: _.clone(result.film.data),
-							cinema: _.clone(result.cinema.data),
-							user: _.clone(result.user.data),
+							film: result.film.data, // using f would be circular
+							cinema: result.cinema.data,
+							user: result.user.data,
 						});
 					} else {
 						f.view = null;

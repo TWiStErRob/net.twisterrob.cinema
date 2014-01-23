@@ -214,7 +214,7 @@ module.controller('FilmsController', [
 		});
 
 		$scope.viewPopup = function(film) {
-			if(film.view !== undefined || film.addingView) return;
+			if(film.view || film.addingView) return;
 			var modalInstance = $modal.open({
 				templateUrl: 'viewPopup.shtml',
 				controller: 'ViewPopupController',
