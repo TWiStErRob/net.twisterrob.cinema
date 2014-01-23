@@ -218,12 +218,26 @@ a {
 	color: #EE2021;
 }
 
+.cinema input:checked {
+	outline: 2px outset red;
+}
+.cinema input:checked  + * {
+	background-color: #400;
+}
+
 .cinema .glyphicon-heart {
 	color: red;
 }
 
 .film .glyphicon-eye-close {
 	color: greenyellow;
+}
+
+.film input:checked {
+	outline: 2px outset greenyellow;
+}
+.film input:checked  + * {
+	background-color: #030;
 }
 
 .plan-header {
