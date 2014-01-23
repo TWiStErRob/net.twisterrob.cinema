@@ -4,7 +4,7 @@ var url = require('url');             // http://nodejs.org/api/url.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var _ = require('underscore');        // http://underscorejs.org/
-process.env.NODE_DEBUG = "request";
+process.env.NODE_DEBUG = ''; // request neo4j express
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var async = require('async');         // https://github.com/caolan/async
@@ -158,9 +158,7 @@ function getFilms(req, res) {
 			params = _.extend(params, {
 				userID: req.user.id
 			});
-			console.log(params);
 			graph.query(graph.queries.getFilmsAuth, params, function (error, results) {
-				console.log(arguments);
 				if(error) throw error;
 				var data = [];
 				for(var i = 0, len = results.length; i < len; ++i) {
@@ -283,7 +281,9 @@ app.configure(function configure_use() {
 	});
 	app.use(express.compress());
 	app.use(express.static(__dirname + '/static/'));
-	//app.use(express.logger());
+	if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
+		app.use(express.logger());
+	}
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.cookieSession({

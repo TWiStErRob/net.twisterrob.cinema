@@ -38,7 +38,9 @@ module.exports = {
 				graph.queries = results;
 				var q = graph.query;
 				graph.query = function queryWrapper(query, params) {
-					log.debug({query: query, params: params}, query);
+					if(process.env.NODE_DEBUG && /\bneo4j\b/g.test(process.env.NODE_DEBUG)) {
+						log.debug({query: query, params: params}, query);
+					}
 					return q.apply(this, Array.prototype.slice.call(arguments));
 				};
 
