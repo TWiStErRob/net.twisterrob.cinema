@@ -5,11 +5,17 @@ module.factory('Film', [
 	        '$resource',
 	function($resource) {
 		return $resource('/film/:edi/:action',
-			{ 'cinemaIDs[]': [], 'edi': undefined, 'action': undefined },
 			{
-				list: { method: 'GET', isArray: true },                // no input required
-				get: { method: 'GET' },                                // edi is user input
-				addView: { method: 'GET', params: { action: 'view' } } // edi is user input
+				'action': undefined,
+				'edi': undefined,
+				'cinemaIDs[]': undefined,
+				date: undefined
+			},
+			{
+				list: { method: 'GET', isArray: true },                     // no input required
+				get: { method: 'GET' },                                     // edi is user input
+				addView: { method: 'GET', params: { action: 'view' } },     // edi/cinemaIDs/date is user input
+				removeView: { method: 'GET', params: { action: 'unview' } } // edi is user input
 			}
 		);
 	}

@@ -74,6 +74,9 @@ input[type="checkbox"] {
 	}
 }
 
+.glyphicon[ng-click] {
+	cursor: pointer;
+}
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {

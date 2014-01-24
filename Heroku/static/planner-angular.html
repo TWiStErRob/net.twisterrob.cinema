@@ -90,7 +90,7 @@
 						'loading'        : cinema.favLoading,
 						'glyphicon-heart'     : cinema.fav,
 						'glyphicon-star-empty': !cinema.fav
-					}" ng-click="favClick(cinema)" />
+					}" ng-click="favClick(cinema)" tooltip="{{!cinema.fav? 'Add as a Favorite!' : 'Remove from Favorites!'}}" />
 					<label for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">
 						<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
 						<span class="cinema-name">{{cinema.name}}</span>
@@ -175,7 +175,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label time">Time</label>
 							<div class="col-sm-9">
-								<timepicker ng-model="selected.time" hour-step="1" minute-step="5" show-meridian="false"></timepicker>
+								<timepicker ng-model="selected.date" hour-step="1" minute-step="5" show-meridian="false"></timepicker>
 							</div>
 						</div>
 						<div class="form-group">
@@ -217,7 +217,7 @@
 									watched <span class="film-title">{{selected.film.title}}</span>
 									at <span class="cinema-name">{{selected.cinema.name}}</span>
 									on <span class="time">{{selected.date | date:'shortDate'}}</span>
-									at <span class="time">{{selected.time | date:'shortTime'}}</span>,
+									at <span class="time">{{selected.date | date:'shortTime'}}</span>,
 									<ng-pluralize count="selected.friends.length" offset="2"
 										when="{
 											'0': 'alone',
@@ -245,11 +245,7 @@
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: null} | orderBy:['title']">
-							<i class="glyphicon pull-right" ng-click="viewPopup(film)" ng-class="{
-								'glyphicon-eye-open': !film.view,
-								'glyphicon-eye-close': !!film.view,
-								'loading': film.addingView
-							}" tooltip="{{film.view === undefined ? 'Click to add view!' : 'Watched at ' + film.view.cinema.name}}"></i>
+							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="viewAction(film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
 							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
@@ -268,11 +264,7 @@
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: {}} | orderBy:['title']">
-							<i class="glyphicon pull-right" ng-click="viewPopup(film)" ng-class="{
-								'glyphicon-eye-open': film.view === undefined,
-								'glyphicon-eye-close': film.view !== undefined,
-								'loading': film.addingView
-							}" tooltip="{{film.view === undefined ? 'Click to add view!' : 'Watched at ' + film.view.cinema.name}}"></i>
+							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="viewAction(film)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
 							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">

@@ -170,7 +170,6 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 		cinema: cinema,
 		film: film,
 		date: date,
-		time: date,
 		friends: []
 	};
 
@@ -200,8 +199,8 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 });
 
 module.controller('FilmsController', [
-	        '$scope', '$modal', 'Film',
-	function($scope,   $modal,   Film) {
+	        '$scope', '$modal', 'moment', 'Film',
+	function($scope,   $modal,   moment,   Film) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -213,8 +212,27 @@ module.controller('FilmsController', [
 			$scope.loading = false;
 		});
 
-		$scope.viewPopup = function(film) {
-			if(film.view || film.addingView) return;
+		$scope.viewAction = function(film) {
+			if(film.processingView) return;
+			if(film.view === null) {
+				addViewPopup(film);
+			} else {
+				removeViewPopup(film);
+			}
+		};
+
+		function addView(film, cinema, date) {
+			film.processingView = true;
+			Film.addView({
+				edi: film.edi,
+				cinema: cinema.cineworldID,
+				date: moment(date).utc().valueOf()
+			}, function(view) {
+				film.view = view;
+				film.processingView = false;
+			});
+		}
+		function addViewPopup(film) {
 			var modalInstance = $modal.open({
 				templateUrl: 'viewPopup.shtml',
 				controller: 'ViewPopupController',
@@ -229,7 +247,7 @@ module.controller('FilmsController', [
 						return film;
 					},
 					date: function() {
-						return moment().startOf('day').add('hours', 18).toDate();
+						return moment().startOf('day').add('hours', 18).toDate(); // today at 6 pm
 					}
 				}
 			});
@@ -237,21 +255,27 @@ module.controller('FilmsController', [
 			modalInstance.result.then(
 				function (modalResult) {
 					if(film !== modalResult.film) throw "Must be the same";
-					film.addingView = true;
-					Film.addView({
-						edi: film.edi,
-						cinema: modalResult.cinema.cineworldID
-					}, function(view) {
-						film.view = view;
-						film.addingView = false;
-					});
-					$scope.selected = modalResult;
+					addView(film, modalResult.cinema, modalResult.date);
 				},
 				function () {
 					// ignore cancel
 				}
 			);
-		};
+		}
+
+		function removeView(film) {
+			film.processingView = true;
+			Film.removeView({
+				edi: film.edi
+			}, function() {
+				film.view = null;
+				film.processingView = false;
+			});
+		}
+		function removeViewPopup(film) {
+			// TODO ask user?
+			removeView(film);
+		}
 	}
 ]);
 

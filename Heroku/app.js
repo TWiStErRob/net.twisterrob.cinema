@@ -40,6 +40,7 @@ function addView(req, res) {
 	var params = {
 		filmEDI: parseInt(req.param('edi'), 10),
 		cinemaID: parseInt(req.param('cinema'), 10),
+		dateEpochUTC: parseInt(req.param('date'), 10),
 		userID: req.user.id
 	};
 	graph.query(graph.queries.addView, params, function (error, results) {
@@ -54,6 +55,17 @@ function addView(req, res) {
 				user: result.user.data,
 			}));
 		}
+	});
+}
+
+function removeView(req, res) {
+	var params = {
+		filmEDI: parseInt(req.param('edi'), 10),
+		userID: req.user.id
+	};
+	graph.query(graph.queries.removeView, params, function (error, results) {
+		if(error) throw error;
+		res.send(200);
 	});
 }
 
@@ -303,6 +315,7 @@ app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.get('/performance', cacher(cacheLength), getPerformances);
 app.get('/film/:edi/view', ensureAuthenticated, addView);
+app.get('/film/:edi/unview', ensureAuthenticated, removeView);
 
 app.initialized = true;
 listen();

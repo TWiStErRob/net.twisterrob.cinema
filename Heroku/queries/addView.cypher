@@ -2,6 +2,7 @@
 // {cinemaID}: Cinema.cineworldID
 // {filmEDI}: Film.edi
 // {userID}: User.id
+// {dateEpochUTC}: View.date
 MATCH
 	(c:Cinema { cineworldID:{cinemaID} }),
 	(f:Film { edi:{filmEDI} }),
@@ -10,7 +11,8 @@ CREATE UNIQUE
 	(u)-[:ATTENDED]->(v:View {
 		film: {filmEDI},
 		cinema: {cinemaID},
-		user: {userID}
+		user: {userID},
+		date: {dateEpochUTC}
 	}),
 	(v:View)-[:AT]->(c),
 	(v:View)-[:WATCHED]->(f)
