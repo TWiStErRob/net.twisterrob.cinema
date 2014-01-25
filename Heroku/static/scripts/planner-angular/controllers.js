@@ -113,24 +113,28 @@ module.controller('CinemasController', [
 		$scope.cineworld.updateCinemas();
 
 		$scope.buttons = {
-			all: { label: "All", handle: function(cinema) {
+			all: { label: "All", selector: function(cinema) {
 				cinema.selected = true;
 			} },
-			none: { label: "None", handle: function(cinema) {
+			none: { label: "None", selector: function(cinema) {
 				cinema.selected = false;
 			} },
-			invert: { label: "Invert", handle: function(cinema) {
+			invert: { label: "Invert", selector: function(cinema) {
 				cinema.selected = !cinema.selected;
 			}, hidden: true },
-			london: { label: "London", handle: function(cinema) {
+			london: { label: "London", selector: function(cinema) {
 				cinema.selected = /London/.test(cinema.name);
 			} },
-			favs: { label: "Favorites", handle: function(cinema) {
+			favs: { label: "Favorites", selector: function(cinema) {
 				cinema.selected = !!cinema.fav;
 			} }
 		};
 		$scope.buttonClick = function(button) {
-			angular.forEach($scope.cineworld.cinemas, button.handle);
+			if(button.handle) {
+				return button.handle();
+			} else {
+				_.forEach($scope.cineworld.cinemas, button.selector);
+			}
 		};
 
 		$scope.favClick = function(cinema) {
@@ -164,17 +168,21 @@ module.controller('CinemasController', [
 	}
 ]);
 
-module.controller('ViewPopupController', function($scope, $timeout, $modalInstance, cinemas, cinema, film, date) {
+module.controller('ViewPopupController', function($scope, $timeout, $modalInstance, cinemas, defaultCinema, films, defaultFilm, defaultDate) {
 	$scope.cinemas = cinemas;
+	$scope.films = films;
 	$scope.selected = {
-		cinema: cinema,
-		film: film,
-		date: date,
+		cinema: defaultCinema,
+		film: defaultFilm,
+		date: defaultDate,
 		friends: []
 	};
 
 	$scope.cinemaGroup = function(cinema) {
 		return cinema.fav ? "Favorites" : "Others";
+	};
+	$scope.filmGroup = function(film) {
+		return film.view ? "Watched" : "New";
 	};
 
 	$scope.uiState = {
@@ -199,8 +207,8 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 });
 
 module.controller('FilmsController', [
-	        '$scope', '$modal', 'moment', 'Film',
-	function($scope,   $modal,   moment,   Film) {
+	        '$scope', '$modal', '$dialog', '_', 'moment', 'Film',
+	function($scope,   $modal,   $dialog,   _,   moment,   Film) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -212,27 +220,60 @@ module.controller('FilmsController', [
 			$scope.loading = false;
 		});
 
-		$scope.viewAction = function(film) {
-			if(film.processingView) return;
-			if(film.view === null) {
-				addViewPopup(film);
+		$scope.buttons = {
+			all: { label: "All", selector: function(film) {
+				film.selected = true;
+			} },
+			none: { label: "None", selector: function(film) {
+				film.selected = false;
+			} },
+			invert: { label: "Invert", selector: function(film) {
+				film.selected = !film.selected;
+			}, hidden: true },
+			new: { label: "New", selector: function(film) {
+				film.selected = !film.view; // doesn't have a View
+			} },
+			watched: { label: "Watched", selector: function(film) {
+				film.selected = !!film.view; // has view
+			}, hidden: true },
+			addView: { label: "Add View", handle: function() {
+				$scope.addViewPopup(null, null);
+			} }
+		};
+		$scope.buttonClick = function(button) {
+			if(button.handle) {
+				return button.handle();
 			} else {
-				removeViewPopup(film);
+				_.forEach($scope.cineworld.films, button.selector);
 			}
 		};
 
 		function addView(film, cinema, date) {
+			if(film.processingView) return;
 			film.processingView = true;
 			Film.addView({
 				edi: film.edi,
 				cinema: cinema.cineworldID,
 				date: moment(date).utc().valueOf()
 			}, function(view) {
-				film.view = view;
+				var existing = _($scope.cineworld.films).find(function(film) {
+					return film.view
+						&& film.view.cinema.cineworldID === view.cinema.cineworldID
+						&& film.view.film.cineworldID === view.film.cineworldID
+						&& film.view.date === view.date
+					;
+				});
+				if(existing) {
+					existing.view = view;
+				} else {
+					existing = _.clone(view.film);
+					existing.view = view;
+					$scope.cineworld.films.push(existing);
+				}
 				film.processingView = false;
 			});
 		}
-		function addViewPopup(film) {
+		$scope.addViewPopup = function(cinema, film) {
 			var modalInstance = $modal.open({
 				templateUrl: 'viewPopup.shtml',
 				controller: 'ViewPopupController',
@@ -240,13 +281,16 @@ module.controller('FilmsController', [
 					cinemas: function () {
 						return $scope.cineworld.cinemas;
 					},
-					cinema: function() {
-						return _($scope.cineworld.cinemas).sortBy('name').find('selected');
+					films: function() {
+						return $scope.cineworld.films;
 					},
-					film: function() {
-						return film;
+					defaultCinema: function() {
+						return cinema || _($scope.cineworld.cinemas).sortBy('name').find('selected');
 					},
-					date: function() {
+					defaultFilm: function() {
+						return film || _($scope.cineworld.film).sortBy('title').find('selected');
+					},
+					defaultDate: function() {
 						return moment().startOf('day').add('hours', 18).toDate(); // today at 6 pm
 					}
 				}
@@ -254,16 +298,16 @@ module.controller('FilmsController', [
 
 			modalInstance.result.then(
 				function (modalResult) {
-					if(film !== modalResult.film) throw "Must be the same";
-					addView(film, modalResult.cinema, modalResult.date);
+					addView(modalResult.film, modalResult.cinema, modalResult.date);
 				},
 				function () {
 					// ignore cancel
 				}
 			);
-		}
+		};
 
 		function removeView(film) {
+			if(film.processingView) return;
 			film.processingView = true;
 			Film.removeView({
 				edi: film.edi
@@ -272,10 +316,15 @@ module.controller('FilmsController', [
 				film.processingView = false;
 			});
 		}
-		function removeViewPopup(film) {
-			// TODO ask user?
-			removeView(film);
-		}
+		$scope.removeViewPopup = function(film) {
+			$dialog
+				.prompt("Deleting a View", "Are you sure you want to delete this view of " + film.title + "?")
+				.then(function(result) {
+				if(result === 'yes') {
+					removeView(film);
+				}
+			});
+		};
 	}
 ]);
 
@@ -317,9 +366,11 @@ module.controller('PerformancesController', [
 
 			function aggregateOffensePriority(sum, offense) {
 				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']; // lower is better
-				// use shifting to produce a non-conflicting result (fewMovies + shortBreak != longBreak)
-				// also ECMA-262§11.7.1.7-8: (2 << -1) === (2 << 0xFFFFFFFFFF & 0x1F) === (2 << 31) === (0b10 << 31) === 0b10...0 [32 zeros],
-				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1)
+				// Given var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']:
+				// if I used the index of each element conflicts would arise: shortBreak(1) + longBreak(2) != early(3).
+				// So use shifting to produce a bitmap and add them to create a non-conflicting result.
+				// Also ECMA-262§11.7.1.7-8: (2 << -1) === (2 << 0xFFFFFFFFFF & 0x1F) === (2 << 31) === (0b10 << 31) === 0b10...0 [32 zeros],
+				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1), hence it's safe to use _.indexOf without any checks.
 				return sum + (2 << _.indexOf(prio, offense));
 			}
 		};
