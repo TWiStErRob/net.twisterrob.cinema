@@ -265,6 +265,8 @@ module.controller('FilmsController', [
 				});
 				if(existing) {
 					existing.view = view;
+				} else if (_($scope.cineworld.films).filter({ edi: view.film.edi, view: null }).size() === 1) {
+					film.view = view;
 				} else {
 					existing = _.clone(view.film);
 					existing.view = view;
@@ -288,7 +290,7 @@ module.controller('FilmsController', [
 						return cinema || _($scope.cineworld.cinemas).sortBy('name').find('selected');
 					},
 					defaultFilm: function() {
-						return film || _($scope.cineworld.film).sortBy('title').find('selected');
+						return film || _($scope.cineworld.films).sortBy('title').find('selected');
 					},
 					defaultDate: function() {
 						return moment().startOf('day').add('hours', 18).toDate(); // today at 6 pm
@@ -306,14 +308,32 @@ module.controller('FilmsController', [
 			);
 		};
 
-		function removeView(film) {
-			if(film.processingView) return;
-			film.processingView = true;
+		function removeView(view) {
+			var films = _($scope.cineworld.films).filter({ edi: view.film.edi });
+			if(films.any('processingView')) return;
+			films.each(function(film) { film.processingView = true; });
 			Film.removeView({
-				edi: film.edi
+				edi: view.film.edi,
+				cinema: view.cinema.cineworldID,
+				date: view.date // not conversion, it's already UTC
 			}, function() {
-				film.view = null;
-				film.processingView = false;
+				if(films.size() === 1) {
+					films.first().view = null;
+				} else {
+					var film = _($scope.cineworld.films).find(function(film) {
+						return film.view
+							&& film.view.cinema.cineworldID === view.cinema.cineworldID
+							&& film.view.film.cineworldID === view.film.cineworldID
+							&& film.view.date === view.date
+						;
+					});
+					if(film) {
+						_.pull($scope.cineworld.films, film);
+					} else {
+						console.error("Should have found it.", view);
+					}
+				}
+				films.each(function(film) { film.processingView = false; });
 			});
 		}
 		$scope.removeViewPopup = function(film) {

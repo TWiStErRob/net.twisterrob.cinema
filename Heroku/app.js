@@ -61,6 +61,8 @@ function addView(req, res) {
 function removeView(req, res) {
 	var params = {
 		filmEDI: parseInt(req.param('edi'), 10),
+		cinemaID: parseInt(req.param('cinema'), 10),
+		dateEpochUTC: parseInt(req.param('date'), 10),
 		userID: req.user.id
 	};
 	graph.query(graph.queries.removeView, params, function (error, results) {

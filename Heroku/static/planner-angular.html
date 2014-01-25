@@ -276,7 +276,7 @@
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: {}} | orderBy:['title']">
-							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
+							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
 							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
