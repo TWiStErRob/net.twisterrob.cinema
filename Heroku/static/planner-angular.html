@@ -263,7 +263,7 @@
 					</accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
-						<li class="film" ng-repeat="film in cineworld.films | filter: {view: null} | orderBy:['title']">
+						<li class="film" ng-repeat="film in cineworld.films | filter: '!view' | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
 							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
 							<div class="checkbox">

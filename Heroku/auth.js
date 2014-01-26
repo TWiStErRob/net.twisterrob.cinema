@@ -31,7 +31,7 @@ function setupPassport(app) {
 			if(error) {
 				done(error, undefined);
 			} else if(!results.length) {
-				done("User not found", null);
+				done("User " + id + " not found", null);
 			} else {
 				done(error, results[0].user.data);
 			}
