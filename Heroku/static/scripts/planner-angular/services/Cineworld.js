@@ -5,9 +5,9 @@ module.service('Cineworld', [
 	        '$rootScope', '_', 'moment', 'Cinema', 'Film', 'Performance',
 	function($rootScope,   _,   moment,   Cinema,   Film,   Performance) {
 		var config = {
-			cinemaWait: 100,
-			filmWait: 300,
-			performanceWait: 300
+			cinemaWait: 0,
+			filmWait: 1000,
+			performanceWait: 2000
 		};
 
 		var data = this;
@@ -45,6 +45,7 @@ module.service('Cineworld', [
 			return data.films = Film.list(params, function(films) {
 				angular.forEach(films, function(film) {
 					film.selected = _.contains(data.pendingSelectedFilms, film.edi);
+					// TODO view.date<UTC> = moment(view.date).local().toDate()
 				});
 				data.pendingSelectedFilms.length = 0;
 				$rootScope.$broadcast('FilmsLoaded', films);
