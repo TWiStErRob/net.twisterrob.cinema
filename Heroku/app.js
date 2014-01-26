@@ -282,7 +282,7 @@ app.configure('development', function configure_dev() {
 	app.set('app urlRoot', 'http://localhost:' + config.port + '/');
 });
 app.configure('production', function configure_prod() {
-	app.set('app urlRoot', 'http://twisterrob-cinema.heroku.com/');
+	app.set('app urlRoot', 'http://cinema.twisterrob.net/');
 });
 
 app.configure(function configure_use() {
