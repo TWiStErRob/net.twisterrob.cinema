@@ -175,6 +175,8 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 		cinema: defaultCinema,
 		film: defaultFilm,
 		date: defaultDate,
+		time: defaultDate,
+		newFriend: "",
 		friends: []
 	};
 
@@ -199,7 +201,15 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 	};
 
 	$scope.ok = function () {
-		$modalInstance.close($scope.selected);
+		var sel = $scope.selected;
+		var date = moment(sel.date).startOf('day').valueOf(); // strip time
+		var time = sel.time - moment(sel.time).startOf('day'); // strip date
+		$modalInstance.close({
+			cinema: sel.cinema,
+			film: sel.film,
+			date: date + time,
+			friends: sel.friends
+		});
 	};
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
