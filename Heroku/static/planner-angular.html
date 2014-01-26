@@ -195,7 +195,7 @@
 							</div>
 						</div>
 						<div class="form-group" ng-class="{'has-error': viewForm.friendsForm.$invalid}">
-							<label class="col-sm-3 control-label">Friends</label>
+							<label class="col-sm-3 control-label">Friends ({{selected.friends.length}})</label>
 							<div class="col-sm-9">
 								<div class="form-horizontal" ng-form name="friendsForm">
 									<div ng-form name="friendForm" ng-repeat="friend in selected.friends track by $index"
@@ -204,7 +204,8 @@
 										<div class="col-sm-9">
 											<div class="input-group">
 												<input name="friend-{{$index}}" type="text" class="form-control input-sm"
-														ng-model="selected.friends[$index]" required />
+														ng-model="selected.friends[$index]" required
+														popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
 												<span class="input-group-btn">
 													<button class="btn btn-default btn-sm" type="button" title="Remove"
 															ng-click="selected.friends.splice($index, 1)">
@@ -215,36 +216,30 @@
 										</div>
 									</div>
 								</div>
-								<div class="input-group">
-									<input name="newFriend" type="text" class="form-control" ng-model="selected.newFriend"
-										popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button" title="Add friend"
-												ng-disabled="selected.newFriend.trim()===''"
-												ng-click="selected.friends.push(selected.newFriend)">
-											<i class="glyphicon glyphicon-plus"></i>
-											<i class="glyphicon glyphicon-user"></i>
-										</button>
-									</span>
-								</div>
+								<button class="btn btn-default btn-xs form-control" type="button" title="Add friend"
+										ng-click="selected.friends.push('')">
+									<i class="glyphicon glyphicon-plus"></i>&nbsp;
+									Add a new friend
+									&nbsp;<i class="glyphicon glyphicon-user"></i>
+								</button>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">To recap</label>
 							<div class="col-sm-9">
 								<p class="form-control-static">you have
-									watched <span class="film-title">{{selected.film? selected.film.title : "?"}}</span>
-									at <span class="cinema-name">{{selected.cinema? selected.cinema.name : "?"}}</span>
-									on <span class="time">{{selected.date? (selected.date | date:'shortDate') : "?"}}</span>
-									at <span class="time">{{selected.time? (selected.time | date:'shortTime') : "?"}}</span>,
+									watched <span class="film-title">{{selected.film? selected.film.title : "what?"}}</span>
+									at <span class="cinema-name">{{selected.cinema? selected.cinema.name : "where?"}}</span>
+									on <span class="time">{{selected.date? (selected.date | date:'shortDate') : "when?"}}</span>
+									at <span class="time">{{selected.time? (selected.time | date:'shortTime') : "when?"}}</span>,
 									<ng-pluralize count="selected.friends.length" offset="2"
-										when="{
-											'0': 'alone',
-											'1': 'with {{selected.friends[0]}}',
-											'2': 'with {{selected.friends[0]}} and {{selected.friends[1]}}',
-											'one': 'with {{selected.friends[0]}}, {{selected.friends[1]}} and another friend',
-											'other': 'with {{selected.friends[0]}}, {{selected.friends[1]}} and {} other friends'
-										}"></ng-pluralize>.
+										when='{
+											0: "alone",
+											1: "with {{selected.friends[0] || &apos;who?&apos;}}",
+											2: "with {{selected.friends[0] || &apos;who?&apos;}} and {{selected.friends[1] || &apos;who?&apos;}}",
+											one: "with {{selected.friends[0] || &apos;who?&apos;}}, {{selected.friends[1] || &apos;who?&apos;}} and another friend",
+											other: "with {{selected.friends[0] || &apos;who?&apos;}}, {{selected.friends[1] || &apos;who?&apos;}} and {} other friends"
+										}'></ng-pluralize>.
 								</p>
 							</div>
 						</div>
