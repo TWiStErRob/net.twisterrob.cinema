@@ -212,6 +212,14 @@ a {
 .film-end {
 	color: #36BBCE;
 }
+.time.offense,
+.length.offense,
+.film-start.offense,
+.film-end.offense,
+.offenseDetails {
+	color: darkslategrey;
+	font-size: x-small;
+}
 
 .film-title {
 	color: #89D531;

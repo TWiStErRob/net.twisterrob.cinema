@@ -3,6 +3,7 @@ var http = require('http');           // http://nodejs.org/api/http.html
 var url = require('url');             // http://nodejs.org/api/url.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
+var moment = require('moment');       // http://momentjs.com/docs/
 var _ = require('underscore');        // http://underscorejs.org/
 process.env.NODE_DEBUG = ''; // request neo4j express
 var request = require('request');     // https://github.com/mikeal/request
@@ -270,6 +271,12 @@ function getPerformances(req, res) {
 				performances: pair[1]
 			};
 		});
+		_.each(responseArr, function(response) {
+			response.date = moment(response.date, 'YYYYMMDD').valueOf();
+			_.each(response.performances, function(performance) {
+				performance.time = moment(performance.time, 'HH:mm') - moment().startOf('day');
+			});
+		});
 		res.send(responseArr);
 	});
 }
@@ -309,6 +316,9 @@ app.configure(function configure_use() {
 auth.init(app);
 
 var cacheLength = 0 * 60 * 60;
+app.get('/planner', function(req, res) {
+	res.sendfile(__dirname + '/static/planner-angular.html');
+});
 app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);

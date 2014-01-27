@@ -4,17 +4,15 @@ var module = angular.module('appServices'); // see app.js
 module.service('Planner', [
 	        '$rootScope', '_', 'moment', 'Cineworld',
 	function($rootScope,   _,   moment,   Cineworld) {
-		var config = {
-			defaults: {
-				minWaitBetweenMovies: 5 /* minutes */,
-				maxWaitBetweenMovies: 45 /* minutes */,
-				estimatedAdvertisementLength: 15 /* minutes */,
-
-			}
+		this.defaults = {
+			minWaitBetweenMovies: moment.duration({minutes: 5}).as('minutes'),
+			maxWaitBetweenMovies: moment.duration({minutes: 45}).as('minutes'),
+			estimatedAdvertisementLength: moment.duration({minutes: 15}).as('minutes'),
+			endOfWork: moment.duration({hours:17, minutes:30}).as('milliseconds')
 		};
 
 		this.plan = function(options) {
-			var params = _.extend({}, config.defaults, {
+			var params = _.extend({}, this.defaults, {
 				date: Cineworld.date,
 				cinemas: Cineworld.selectedCinemas,
 				films: Cineworld.selectedFilms,
@@ -35,14 +33,14 @@ module.service('Planner', [
 		 * }
 		 */
 		function plan(params) {
-			var date = moment(params.date);
+			var date = moment(params.date).valueOf();
 			var cache = {};
 			_.each(params.cinemas, function(cinema) {
 				cache[cinema.cineworldID] = {};
 				_.each(params.films, function(film) {
 					cache[cinema.cineworldID][film.edi] = [];
 					var filter = {
-						date: date.format('YYYYMMDD'),
+						date: date,
 						cinema: cinema.cineworldID,
 						film: film.edi
 					};
@@ -50,7 +48,7 @@ module.service('Planner', [
 					performances = _(performances).pluck('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {
-						var time = moment(filter.date + performance.time, 'YYYYMMDDHH:mm');
+						var time = moment(filter.date + performance.time);
 						var plan = _.extend({}, performance, {
 							date: function() { return date; },
 							cinema: function() { return cinema; },
@@ -131,7 +129,7 @@ module.service('Planner', [
 							return current;
 						});
 
-						var workEnd = plan.range.start.clone().startOf('day').add(moment.duration({hours:17, minutes:30}));
+						var workEnd = plan.range.start.clone().startOf('day').add(params.endOfWork);
 						plan.offenses = {
 							fewMovies: !(films.length + 1 == node.watched.length && node.watched.length != 1),
 							early: plan.range.start.isBefore(workEnd),

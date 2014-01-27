@@ -358,9 +358,20 @@ module.controller('FilmsController', [
 	}
 ]);
 
+module.controller('PlanOptionsPopupController', function($scope, moment, $modalInstance, options) {
+	$scope.options = options;
+
+	$scope.ok = function () {
+		$modalInstance.close(options);
+	};
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+});
+
 module.controller('PerformancesController', [
-	        '$scope', '_', 'Planner',
-	function($scope,   _,   Planner) {
+	        '$scope', '_', '$modal', 'Planner',
+	function($scope,   _,   $modal,   Planner) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -378,12 +389,51 @@ module.controller('PerformancesController', [
 			});
 			$scope.performances = x;
 			$scope.loading = false;
-			var plans = Planner.plan();
+			$scope.plan();
+		});
+
+		$scope.buttons = {
+			plan: { label: "Plan", handle: function() {
+				$scope.plan();
+			} },
+			options: { label: "Options", handle: function() {
+				$scope.optionsPopup();
+			} }
+		};
+		$scope.buttonClick = function(button) {
+			return button.handle();
+		};
+
+		$scope.plan = function() {
+			var plans = Planner.plan($scope.options);
 			_.each(plans, function(plan) {
 				plan.display = plan.valid.length > 0;
 			});
 			$scope.plans = plans;
-		});
+		};
+
+		$scope.options = _.clone(Planner.defaults);
+		$scope.optionsPopup = function() {
+			var modalInstance = $modal.open({
+				templateUrl: 'planOptionsPopup.shtml',
+				controller: 'PlanOptionsPopupController',
+				resolve: {
+					options: function () {
+						return _.clone($scope.options);
+					}
+				}
+			});
+
+			modalInstance.result.then(
+				function (modalResult) {
+					$scope.options = modalResult;
+					$scope.plan();
+				},
+				function () {
+					// ignore cancel
+				}
+			);
+		};
 
 		$scope.offenseCount = function(plan) {
 			return plan.offenses.count;
