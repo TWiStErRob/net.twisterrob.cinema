@@ -72,7 +72,7 @@ module.controller('FilmsController', [
 		}
 		$scope.addViewPopup = function(cinema, film) {
 			var modalInstance = $modal.open({
-				templateUrl: 'viewPopup.shtml',
+				templateUrl: 'templates/viewPopup.html',
 				controller: 'ViewPopupController',
 				resolve: {
 					cinemas: function () {

@@ -1,0 +1,111 @@
+	<div class="modal-header">
+		<h3>View of <span class="film-title">{{selected.film.title}}</h3>
+	</div>
+	<div class="modal-body">
+		<form novalidate name="viewForm" class="form-horizontal" role="form">
+			<div class="form-group" ng-class="{'has-error': viewForm.film.$invalid, 'has-success': !viewForm.film.$invalid}">
+				<label for="film" class="col-sm-3 control-label">Film</label>
+				<div class="col-sm-9">
+					<select name="film" class="form-control"
+						ng-model="selected.film" required
+						ng-options="c.title group by filmGroup(c) for c in films | orderBy:[filmGroup, 'title']"
+						popover="Which film have you seen?" popover-trigger="focus" popover-placement="top">
+					</select>
+					<span ng-show="viewForm.film.$error.required" class="help-inline">Please select a film!</span>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': viewForm.cinema.$invalid, 'has-success': !viewForm.cinema.$invalid}">
+				<label for="cinema" class="col-sm-3 control-label">Cinema</label>
+				<div class="col-sm-9">
+					<select name="cinema" class="form-control"
+						ng-model="selected.cinema" required
+						ng-options="c.name group by cinemaGroup(c) for c in cinemas | orderBy:[cinemaGroup, 'name']"
+						popover="Where did you watch this film?" popover-trigger="focus" popover-placement="top">
+					</select>
+					<span ng-show="viewForm.cinema.$error.required" class="help-inline">Please select a cinema!</span>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': viewForm.date.$invalid, 'has-success': !viewForm.date.$invalid}">
+				<label class="col-sm-3 control-label">Date</label>
+				<div class="col-sm-9">
+					<!--<datepicker ng-model="selected.date" show-weeks="true"></datepicker>-->
+					<div class="input-group">
+						<input name="date" type="text"
+							ng-model="selected.date" required
+							class="form-control" datepicker-popup="shortDate" is-open="uiState.datePickerDisplayed"
+							popover="When did you watch this film?" popover-trigger="focus" popover-placement="top" />
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" ng-click="uiState.displayDatePicker()">
+								<i class="glyphicon glyphicon-calendar"></i>&nbsp;
+							</button>
+						</span>
+					</div>
+					<span ng-show="viewForm.date.$error.required" class="help-inline">Please select a date!</span>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': viewForm.time.$invalid, 'has-success': !viewForm.time.$invalid}">
+				<label class="col-sm-3 control-label">Time</label>
+				<div class="col-sm-9">
+					<!-- workaround to not being able to get $invalid state of the timepicker directive nor the child inputs are named -->
+					<input name="time" type="hidden" required ng-model="selected.time" />
+					<timepicker hour-step="1" minute-step="5" show-meridian="false"
+						ng-model="selected.time" required
+						popover="Which screening did you go to?" popover-trigger="focus" popover-placement="top"></timepicker>
+					<span ng-show="viewForm.time.$error.required" class="help-inline">Please select a time!</span>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': viewForm.friendsForm.$invalid}">
+				<label class="col-sm-3 control-label">Friends ({{selected.friends.length}})</label>
+				<div class="col-sm-9">
+					<div class="form-horizontal" ng-form name="friendsForm">
+						<div ng-form name="friendForm" ng-repeat="friend in selected.friends track by $index"
+							class="form-group" ng-class="{'has-error': friendForm.$invalid, 'has-success': !friendForm.$invalid}">
+							<label class="col-sm-3 control-label" for="friend-{{$index}}" title="selected.friends[$index]">Friend #{{$index+1}}</label>
+							<div class="col-sm-9">
+								<div class="input-group">
+									<input name="friend-{{$index}}" type="text" class="form-control input-sm"
+											ng-model="selected.friends[$index]" required
+											popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
+									<span class="input-group-btn">
+										<button class="btn btn-default btn-sm" type="button" title="Remove"
+												ng-click="selected.friends.splice($index, 1)">
+											<i class="glyphicon glyphicon-remove"></i>&nbsp;
+										</button>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button class="btn btn-default btn-xs form-control" type="button" title="Add friend"
+							ng-click="selected.friends.push('')">
+						<i class="glyphicon glyphicon-plus"></i>&nbsp;
+						Add a new friend
+						&nbsp;<i class="glyphicon glyphicon-user"></i>
+					</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">To recap</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">you have
+						watched <span class="film-title">{{selected.film? selected.film.title : "what?"}}</span>
+						at <span class="cinema-name">{{selected.cinema? selected.cinema.name : "where?"}}</span>
+						on <span class="time">{{selected.date? (selected.date | date:'shortDate') : "when?"}}</span>
+						at <span class="time">{{selected.time? (selected.time | date:'shortTime') : "when?"}}</span>,
+						<ng-pluralize count="selected.friends.length" offset="2"
+							when='{
+								0: "alone",
+								1: "with {{selected.friends[0] || &apos;who?&apos;}}",
+								2: "with {{selected.friends[0] || &apos;who?&apos;}} and {{selected.friends[1] || &apos;who?&apos;}}",
+								one: "with {{selected.friends[0] || &apos;who?&apos;}}, {{selected.friends[1] || &apos;who?&apos;}} and another friend",
+								other: "with {{selected.friends[0] || &apos;who?&apos;}}, {{selected.friends[1] || &apos;who?&apos;}} and {} other friends"
+							}'></ng-pluralize>.
+					</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" ng-click="ok()" ng-disabled="viewForm.$invalid">Add</button>
+		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>

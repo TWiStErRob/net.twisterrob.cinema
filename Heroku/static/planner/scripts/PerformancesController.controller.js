@@ -62,7 +62,7 @@ module.controller('PerformancesController', [
 		$scope.options = _.cloneDeep(Planner.defaults);
 		$scope.optionsPopup = function() {
 			var modalInstance = $modal.open({
-				templateUrl: 'planOptionsPopup.shtml',
+				templateUrl: 'templates/planOptionsPopup.html',
 				controller: 'PlanOptionsPopupController',
 				resolve: {
 					options: function () {
