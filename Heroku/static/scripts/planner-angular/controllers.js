@@ -2,8 +2,9 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', '_', 'moment', 'Cineworld', '$location',
-	function($scope,       _,   moment,   cineworld,   $location) {
+	        '$rootScope', '_', '$window', 'moment', 'Cineworld', '$location',
+	function($scope,       _,   $window,   moment,   cineworld,   $location) {
+		$scope.Math = $window.Math;
 		var search = {
 			film: 'f',
 			cinema:'c',
@@ -278,7 +279,7 @@ module.controller('FilmsController', [
 				} else if (_($scope.cineworld.films).filter({ edi: view.film.edi, view: null }).size() === 1) {
 					film.view = view;
 				} else {
-					existing = _.clone(view.film);
+					existing = _.cloneDeep(view.film);
 					existing.view = view;
 					$scope.cineworld.films.push(existing);
 				}
@@ -407,19 +408,34 @@ module.controller('PerformancesController', [
 		$scope.plan = function() {
 			var plans = Planner.plan($scope.options);
 			_.each(plans, function(plan) {
-				plan.display = plan.valid.length > 0;
+				plan.open = plan.valid.length > 0;
+				function More(list, additional) {
+					this.list = list;
+					this._extra = additional;
+				}
+				More.prototype.showMore = function(count) {
+					count = Math.max(0, count);
+					count = Math.min(count, this._extra.length);
+					var more = this._extra.splice(0, count);
+					return this.list.push.apply(this.list, more);
+				}
+				More.prototype.remaining = function() {
+					return this._extra.length;
+				}
+				
+				plan.more = new More(_.clone(plan.valid), _.clone(plan.offending));
 			});
 			$scope.plans = plans;
 		};
 
-		$scope.options = _.clone(Planner.defaults);
+		$scope.options = _.cloneDeep(Planner.defaults);
 		$scope.optionsPopup = function() {
 			var modalInstance = $modal.open({
 				templateUrl: 'planOptionsPopup.shtml',
 				controller: 'PlanOptionsPopupController',
 				resolve: {
 					options: function () {
-						return _.clone($scope.options);
+						return _.cloneDeep($scope.options);
 					}
 				}
 			});
@@ -435,6 +451,14 @@ module.controller('PerformancesController', [
 			);
 		};
 
+		/**
+		 * 1. Plans with valid plans
+		 * 2. Plans with offending suggestions
+		 * 3. Plans without anything
+		 */
+		$scope.planRank = function(plan) {
+			return plan.valid.length? 1 : (plan.offending.length? 2 : 3);
+		};
 		$scope.offenseCount = function(plan) {
 			return plan.offenses.count;
 		};

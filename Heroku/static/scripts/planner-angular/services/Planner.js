@@ -67,31 +67,26 @@ module.service('Planner', [
 					});
 				});
 			});
-			var results = _(params.cinemas)
-				.map(function(cinema) {
-					var cinemaResults = {
-						cinema: cinema,
-						valid: [],
-						offending: []
-					};
-					planCinema(cinemaResults, cache, cinema, params.films, [{
-						watched: ["travel"],
-						performance: {
-							endTime: moment(params.date, 'YYYYMMDDHH'),
-							film: {
-								edi: -1
-							},
-							range: moment.range()
+			var results = _.map(params.cinemas, function(cinema) {
+				var cinemaResults = {
+					cinema: cinema,
+					valid: [],
+					offending: []
+				};
+				planCinema(cinemaResults, cache, cinema, params.films, [{
+					watched: ["travel"],
+					performance: {
+						endTime: moment(params.date, 'YYYYMMDDHH'),
+						film: {
+							edi: -1
 						},
-						next: [],
-						level: 0
-					}]);
-					return cinemaResults;
-				})
-				.indexBy(function(result) {
-					return result.cinema.cineworldID;
-				})
-				.value();
+						range: moment.range()
+					},
+					next: [],
+					level: 0
+				}]);
+				return cinemaResults;
+			});
 
 			return results;
 

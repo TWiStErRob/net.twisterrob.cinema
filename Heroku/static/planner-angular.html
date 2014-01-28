@@ -389,24 +389,24 @@
 							<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
 						</li>
 						<li ng-repeat-end title="{{movie | json}}">
-							<span class="film-start">{{movie.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end">{{movie.range.end | moment:'format':'HH:mm'}}</span>
+							<span class="film-start" ng-class="{offense: (movie.range.start | moment:'valueOf') < (movie.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: (movie.range.end | moment:'valueOf') < (plan.range.end | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.end | moment:'format':'HH:mm'}}</span>
 							<span class="film-runtime">{{movie.film().runtime}}</span>:
 							<span class="film-title">{{movie.film().title}}</span>
 						</li>
 					</ol>
 				</script>
-				<accordion-group ng-repeat="cinemaPlan in plans" is-open="cinemaPlan.display">
+				<accordion-group ng-repeat="cPlan in plans | orderBy:[planRank, 'cinema.name']" is-open="cPlan.open">
 					<accordion-heading>
-						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cinemaPlan.display, 'glyphicon-chevron-right': !cinemaPlan.display}"></i>
-						<span class="cinema-name">{{cinemaPlan.cinema.name}}</span>
-						(<ng-pluralize count="cinemaPlan.valid.length"
+						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cPlan.open, 'glyphicon-chevron-right': !cPlan.open}"></i>
+						<span class="cinema-name">{{cPlan.cinema.name}}</span>
+						(<ng-pluralize count="cPlan.valid.length"
 							when="{
 								'0': 'no plans',
 								'one': '1 plan',
 								'other': '{} plans'
 							}"></ng-pluralize>
 						and
-						<ng-pluralize count="cinemaPlan.offending.length"
+						<ng-pluralize count="cPlan.offending.length"
 							when="{
 								'0': 'no suggestions',
 								'one': '1 suggestion',
@@ -414,8 +414,13 @@
 							}"></ng-pluralize>)
 					</accordion-heading>
 					<ul>
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.valid" />
-						<li ng-include="'plan.shtml'" ng-repeat="plan in cinemaPlan.offending | orderBy:[offenseCount, offensePriority]" />
+						<li ng-include="'plan.shtml'" ng-repeat="plan in cPlan.more.list | orderBy:[offenseCount, offensePriority]" />
+						<li ng-if="cPlan.more.remaining() > 0">
+							Show more suggestions:
+							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(5)">{{Math.min(5, cPlan.more.remaining())}} of {{cPlan.more.remaining()}} more ...</button>
+							|
+							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(cPlan.more.remaining())">All!</button>
+						</li>
 					</ul>
 				</accordion-group>
 			</accordion>
