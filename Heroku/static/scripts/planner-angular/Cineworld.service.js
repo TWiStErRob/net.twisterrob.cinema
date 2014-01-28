@@ -84,3 +84,4 @@ module.service('Cineworld', [
 		});
 	}
 ]);
+

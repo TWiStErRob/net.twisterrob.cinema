@@ -16,3 +16,4 @@ module.factory('Performance', [
 		);
 	}
 ]);
+

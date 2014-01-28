@@ -9,7 +9,7 @@ var app = angular.module('app', [
 	'appDirectives',
 	'appAnimations',
 	'ui.bootstrap',
-	'underscore',
+	'lodash',
 	'moment'
 ]);
 angular.module('appUtils', []);
