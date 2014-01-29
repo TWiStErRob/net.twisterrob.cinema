@@ -207,6 +207,10 @@ a {
 	content: ')';
 }
 
+.film .film-runtime {
+	cursor: pointer;
+}
+
 .time,
 .film-start,
 .film-end {

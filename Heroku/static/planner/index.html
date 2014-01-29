@@ -52,6 +52,7 @@
 <script src="scripts/PerformancesController.controller.js"></script>
 <script src="scripts/PlanOptionsPopupController.controller.js"></script>
 <script src="scripts/ViewPopupController.controller.js"></script>
+<script src="scripts/FilmPopupController.controller.js"></script>
 
 <script type="text/javascript" src="/scripts/libs/moment/moment-with-langs-2.4.0.js"></script>
 <script type="text/javascript" src="/scripts/libs/moment/moment-range-0.1.9.js"></script>
@@ -163,7 +164,7 @@
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: '!view' | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
-							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
+							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime : "???"}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
@@ -182,7 +183,7 @@
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: {}} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
-							<span class="film-runtime pull-right" ng-show="film.runtime > 0">{{film.runtime}}</span>
+							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime : "???"}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />

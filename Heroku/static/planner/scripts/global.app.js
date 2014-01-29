@@ -24,6 +24,13 @@ app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('');
 }]);
 
+app.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+	$sceDelegateProvider.resourceUrlWhitelist([
+		'self',
+		'http://webcache1.bbccustomerpublishing.com/cineworld/trailers/**'
+	]);
+}]);
+
 app.config([function fixCineworldCallbacks() {
 	var $window = window,
 	    callbacks = $window.angular.callbacks,

@@ -317,7 +317,7 @@ auth.init(app);
 
 var cacheLength = 0 * 60 * 60;
 app.get('/planner', function(req, res) {
-	res.sendfile(__dirname + '/static/planner-angular.html');
+	res.sendfile(__dirname + '/static/planner/index.html');
 });
 app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);
