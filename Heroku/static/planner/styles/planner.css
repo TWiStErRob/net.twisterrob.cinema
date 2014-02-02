@@ -11,6 +11,10 @@ input[type="checkbox"] {
 	vertical-align: text-bottom;
 }
 
+video {
+	width: 100%;
+}
+
 /** Site layout */
 #main > header {
 	height: 39px;
@@ -139,6 +143,63 @@ body, .panel-body {
 	border: 1px solid #999999;
 }
 
+/*@media screen and (max-width: 480px) {*/
+	.modal-xs .modal-dialog {
+		width: auto;
+	}
+	.modal-sm .modal-dialog {
+		width: auto;
+	}
+	.modal-md .modal-dialog {
+		width: auto;
+	}
+	.modal-lg .modal-dialog {
+		width: auto;
+	}
+/*}*/
+@media screen and (min-width: 768px) {
+	.modal-xs .modal-dialog {
+		width: 50%;
+	}
+	.modal-sm .modal-dialog {
+		width: 60%;
+	}
+	.modal-md .modal-dialog {
+		width: 80%;
+	}
+	.modal-lg .modal-dialog {
+		width: 90%;
+	}
+}
+@media screen and (min-width: 992px) {
+	.modal-xs .modal-dialog {
+		width: 40%;
+	}
+	.modal-sm .modal-dialog {
+		width: 50%;
+	}
+	.modal-md .modal-dialog {
+		width: 60%;
+	}
+	.modal-lg .modal-dialog {
+		width: 70%;
+	}
+}
+@media screen and (min-width: 1200px) {
+	.modal-xs .modal-dialog {
+		width: 30%;
+	}
+	.modal-sm .modal-dialog {
+		width: 40%;
+	}
+	.modal-md .modal-dialog {
+		width: 50%;
+	}
+	.modal-lg .modal-dialog {
+		width: 70%;
+	}
+}
+
 .panel-default > .panel-heading {
 	background-color: #333333;
 	color: #CCCCCC;
@@ -196,19 +257,18 @@ a {
 .film-runtime {
 	color: #5587E4;
 }
-.film-runtime:before,
-.film-runtime:after {
-	color: #CCCCCC;
-}
-.film-runtime:before {
-	content: '(';
-}
-.film-runtime:after {
-	content: ')';
-}
 
 .film .film-runtime {
 	cursor: pointer;
+}
+
+.film .film-runtime:before {
+	color: #CCCCCC;
+	content: '(';
+}
+.film .film-runtime:after {
+	color: #CCCCCC;
+	content: ')';
 }
 
 .time,

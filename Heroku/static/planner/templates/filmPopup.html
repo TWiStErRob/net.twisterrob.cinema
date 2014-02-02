@@ -1,21 +1,21 @@
 	<div class="modal-header">
 		<h3>Film details for <span class="film-title">{{film.title}}</span></h3>
 	</div>
-	<div class="modal-body">
-		<img src="{{film.poster_url}}" style="float: left; margin-right: 1em;" />
-		<span><em>Actors</em>: {{film.actors}}</span><br/>
-		<span><em>Release</em>: <span class="time">{{film.release | date:'fullDate'}}</span></span><br/>
-		<span><em>Length</em>: <span class="film-runtime">{{film.runtime > 0? film.runtime : "???"}}</span> minutes</span>
-
-		<br clear="all" />
-
-		<video id="trailer" width="90%" controls ng-if="!!film.trailer">
-			<source src="{{film.trailer}}" type="video/mp4">
-			<img src="{{film.still_url}}" />
-		</video>
-		<img src="{{film.still_url}}" ng-if="!film.trailer" />
+	<div class="modal-body row">
+		<div class="col-xs-12 col-sm-6 col-md-5">
+			<img ng-src="{{film.poster_url}}" style="float: left; margin-right: 1em;" />
+			<span><em>Actors</em>: {{film.actors}}</span><br/>
+			<span><em>Release</em>: <span class="time">{{film.release | date:'fullDate'}}</span></span><br/>
+			<span><em>Length</em>: <span class="film-runtime">{{film.runtime > 0? film.runtime : "???"}}</span> minutes</span>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-7">
+			<video id="trailer" ng-src="{{film.trailer}}" tw-poster="{{film.still_url}}" controls>
+				Sorry, your browser doesn't support video, try downloading:
+				<a ng-href="{{film.trailer}}"><img ng-src="{{film.still_url}}" /></a>
+			</video>
+		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary"><a href="{{film.film_url}}" target="_blank">More info</a></button>
+		<button class="btn btn-primary"><a ng-href="{{film.film_url}}" target="_blank">More info</a></button>
 		<button class="btn btn-success" ng-click="dismiss()">Dismiss</button>
 	</div>
