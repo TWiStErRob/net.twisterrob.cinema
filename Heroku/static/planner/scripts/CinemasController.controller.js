@@ -9,8 +9,12 @@ module.controller('CinemasController', [
 			$scope.loading = true;
 		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
-			if(!_.any(cinemas, _.fn.prop('selected'))) {
-				$scope.buttonClick($scope.buttons.london);
+			if(!_.any(cinemas, 'selected')) {
+				if(_.any(cinemas, 'fav')) {
+					$scope.buttonClick($scope.buttons.favs);
+				} else {
+					$scope.buttonClick($scope.buttons.london);
+				}
 			}
 			$scope.loading = false;
 		});

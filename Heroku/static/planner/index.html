@@ -202,10 +202,10 @@
 				</li>
 			</ul>
 			<div ng-show="loading">Loading performances...</div>
-			<table ng-show="!loading">
+			<table ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length <= (cineworld.cinemas | filter: {selected: true}).length">
 				<thead>
 					<tr>
-						<th class="cinema">Cinema</th>
+						<th class="cinema">Cinema \ Film</th>
 						<th class="film" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{film | json}}">
 							<span class="film-title">{{film.title}}</span>
 							<span ng-show="film.runtime > 0" class="film-runtime">{{film.runtime}}</span>
@@ -219,7 +219,29 @@
 							<span class="cinema-name">{{cleanName(cinema.name)}}</span>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: performance.time < options.endOfWork}">{{performance.time | date:'HH:mm'}}</a>{{$last? "" : ","}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: performance.time < options.endOfWork}">{{performance.time | date:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length > (cineworld.cinemas | filter: {selected: true}).length">
+				<thead>
+					<tr>
+						<th class="film">Film \ Cinema</th>
+						<th class="cinema" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{cinema | json}}">
+							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}" class="glyphicon glyphicon-globe pull-right"></a>
+							<span class="cinema-name">{{cleanName(cinema.name)}}</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'">
+						<td class="film" title="{{film | json}}">
+							<span class="film-title">{{film.title}}</span>
+							<span ng-show="film.runtime > 0" class="film-runtime">{{film.runtime}}</span>
+						 </td>
+						<td class="performances" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: performance.time < options.endOfWork}">{{performance.time | date:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -243,34 +265,35 @@
 								'other': '{} suggestions'
 							}"></ng-pluralize>)
 					</accordion-heading>
-					<ul>
-						<li ng-repeat="plan in cPlan.more.list | orderBy:[offenseCount, offensePriority]">
+					<ul class="plans">
+						<li class="plan" ng-repeat="plan in cPlan.more.list">
+							<span class="plan-remove pull-right" title="Remove plan" ng-click="cPlan.more.list.splice($index, 1)">x</span>
 							<span class="plan-header" title="{{plan | json}}">
 								<span class="film-start" ng-class="{offense: (plan.range.start | moment:'valueOf') < (plan.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{plan.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | moment:'format':'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">
-									(offends: {{plan.offenses.count}})
+									(offends: {{offenseCount(plan)}}, prio: {{offensePriority(plan)}})
 								</span>
 							</span>
-							<ol>
-								<li ng-repeat-start="movie in plan" ng-if="movie.breakBefore" value="{{$index}}" style="list-style-type: none">
+							<ol class="plan-films">
+								<li class="plan-film-break" ng-repeat-start="movie in plan" ng-if="movie.breakBefore" value="{{$index}}">
 									<span class="length" ng-class="{offense: movie.breakBefore < options.minWaitBetweenMovies || movie.breakBefore > options.maxWaitBetweenMovies}">{{movie.breakBefore}}</span>
 									minutes break
 									<span class="offenseDetails" ng-show="movie.breakBefore < options.minWaitBetweenMovies">(minimum: {{options.minWaitBetweenMovies}} minutes)</span>
 									<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
 								</li>
-								<li ng-repeat-end title="{{movie | json}}">
+								<li class="plan-film" ng-repeat-end title="{{movie | json}}">
 									<span class="film-start" ng-class="{offense: (movie.range.start | moment:'valueOf') < (movie.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: (movie.range.end | moment:'valueOf') < (plan.range.end | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.end | moment:'format':'HH:mm'}}</span>
 									<span class="film-runtime">{{movie.film().runtime}}</span>:
 									<span class="film-title">{{movie.film().title}}</span>
 								</li>
 							</ol>
 						</li>
-						<li ng-if="cPlan.more.remaining() > 0">
+						<div class="plans-footer" ng-if="cPlan.more.remaining() > 0">
 							Show more suggestions:
 							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(5)">{{Math.min(5, cPlan.more.remaining())}} of {{cPlan.more.remaining()}} more ...</button>
 							|
 							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(cPlan.more.remaining())">All!</button>
-						</li>
+						</div>
 					</ul>
 				</accordion-group>
 			</accordion>

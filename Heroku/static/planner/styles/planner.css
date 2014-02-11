@@ -55,6 +55,33 @@ video {
 	width: 150px;
 }
 
+.plans {
+	padding-left: 0;
+}
+.plans .plan {
+	display: inline-block;
+	width: 395px;
+	border: 1px solid gray;
+	margin: 2px;
+}
+
+.plan .plan-film-break {
+	list-style-type: none;
+}
+
+.plan .plan-remove:before {
+	color: gray;
+	content: '[';
+}
+.plan .plan-remove:after {
+	color: gray;
+	content: ']';
+}
+.plan .plan-remove {
+	margin-right: 3px;
+	cursor: pointer;
+}
+
 #statusmessage {
 	display: block;
 	position: fixed;

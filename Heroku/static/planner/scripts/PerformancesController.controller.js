@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('PerformancesController', [
-	        '$scope', '_', '$modal', 'Planner',
-	function($scope,   _,   $modal,   Planner) {
+	        '$scope', '_', '$modal', 'Planner', 'orderByFilter',
+	function($scope,   _,   $modal,   Planner,   orderByFilter) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -54,7 +54,8 @@ module.controller('PerformancesController', [
 					return this._extra.length;
 				}
 				
-				plan.more = new More(_.clone(plan.valid), _.clone(plan.offending));
+				var sorted = orderByFilter(plan.offending, [$scope.offensePriority]);
+				plan.more = new More(_.clone(plan.valid), sorted);
 			});
 			$scope.plans = plans;
 		};

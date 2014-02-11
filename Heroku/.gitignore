@@ -1,3 +1,5 @@
-.svn/
-node_modules/
-static/scripts/libs/angular/docs/
+/node_modules
+/npm-debug.log
+/.git
+/cinema.sublime-project
+/cinema.sublime-workspace
