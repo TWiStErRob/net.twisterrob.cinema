@@ -72,14 +72,14 @@ module.exports = {
 				var now = new Date();
 				log.info("Inserting %d new and updating %d and deleting %d existing %ss for %s.",
 						newLength, existingLength, deletedLength, clazz, now);
-				var createdNodes = [], updatedNodes = [], deletedNodes = [];
+				var createdNodes = [], updatedNodes = [], deletedNodes = [], ignoredDeleteNodes = [];
 				var nodeFinished = function() {
 					if(true && createdNodes.length === newLength
 							&& updatedNodes.length === existingLength
-							&& deletedNodes.length === deletedLength) {
-						log.info("Finished insering %d new and updating %d and deleting %d existing %ss for %s.",
-								newLength, existingLength, deletedLength, clazz, now);
-						allDone(undefined, createdNodes, updatedNodes, deletedNodes);
+							&& deletedNodes.length + ignoredDeleteNodes.length === deletedLength) {
+						log.info("Finished insering %d new and updating %d and deleting %d (%d ignored) existing %ss for %s.",
+								createdNodes.length, updatedNodes.length, deletedNodes.length, ignoredDeleteNodes.length, clazz, now);
+						allDone(undefined, createdNodes, updatedNodes, deletedNodes, ignoredDeleteNodes);
 					}
 				};
 				if (newLength > 0) {
@@ -126,10 +126,15 @@ module.exports = {
 					_.each(deletedContent, function(node) {
 						assert.equal(node.data.class, clazz);
 						var id = _.keys(_.indexBy([node], nodeIDProperty))[0];
-						var newProperties = extend(true, {}, dataByID[id], {
-							_deleted: now
-						});
-						node.setProperties(batch, true, newProperties, nodeUpdater(deletedNodes, node));
+						var data = nodesByID[id].data;
+						if(!("_deleted" in data)) {
+							var newProperties = extend(true, {}, data, {
+								_deleted: now
+							});
+							node.setProperties(batch, true, newProperties, nodeUpdater(deletedNodes, node));
+						} else {
+							nodeUpdater(ignoredDeleteNodes, node)(null, data);
+						}
 					});
 				} else {
 					log.info("No deleted %ss.", clazz);

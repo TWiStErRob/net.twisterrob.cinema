@@ -132,7 +132,7 @@ function getCinemas(req, res) {
 			res.jsonp(data);
 		});
 	} else {
-		graph.query(graph.queries.getAllCinemas, {}, function (error, results) {
+		graph.query(graph.queries.getActiveCinemas, {}, function (error, results) {
 			if(error) throw error;
 			var data = [];
 			for(var i = 0, len = results.length; i < len; ++i) {
