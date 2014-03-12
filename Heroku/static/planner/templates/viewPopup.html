@@ -106,6 +106,25 @@
 		</form>
 	</div>
 	<div class="modal-footer">
+		<div class="btn-group dropup">
+			<button type="button" class="btn btn-warning" ng-click="ignore(undefined)">Ignore</button>
+			<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+				<span class="caret"></span>
+				<span class="sr-only">Ignore view</span>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li><a href="#" ng-click="ignore(undefined)" title="Just ignore this one.">Ignore</a></li>
+				<li class="divider"></li>
+				<li><a href="#" ng-click="ignore('uninteresting')" title="I don't like the looks and I don't want to watch this movie.">Not interested</a></li>
+				<li><a href="#" ng-click="ignore('timing')" title="The timings of this film does not fit my life schedule.">Invalid schedule</a></li>
+				<li><a href="#" ng-click="ignore('watched')" title="I've already seen this movie.">Already watched</a></li>
+				<li><a href="#" ng-show="selected.film['3D']" ng-click="ignore('watched2D')" title="This movie has a 2D version, which I've already seen and don't want to watch the 3D one.">Watched 2D version</a></li>
+				<li><a href="#" ng-show="!selected.film['3D']" ng-click="ignore('watched3D')" title="This movie has a 3D version, which I've already seen and don't want to watch the 2D one.">Watched 3D version</a></li>
+				<li><a href="#" ng-show="!selected.film['imax']" ng-click="ignore('watchedIMAX')" title="This movie has an IMAX version, which I've already seen and don't want to watch the regular one.">Watched IMAX version</a></li>
+				<li class="divider"></li>
+				<li><a href="#" ng-click="ignore('other')" title="I have my own reasons!">Other</a></li>
+			</ul>
+		</div>
 		<button class="btn btn-success" ng-click="ok()" ng-disabled="viewForm.$invalid">Add</button>
 		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
 	</div>
