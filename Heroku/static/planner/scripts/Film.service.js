@@ -15,7 +15,8 @@ module.factory('Film', [
 				list: { method: 'GET', isArray: true },                     // no input required
 				get: { method: 'GET' },                                     // edi is user input
 				addView: { method: 'GET', params: { action: 'view' } },     // edi/cinemaIDs/date is user input
-				removeView: { method: 'GET', params: { action: 'unview' } } // edi is user input
+				removeView: { method: 'GET', params: { action: 'unview' } },// edi is user input
+				ignore: { method: 'GET', params: { action: 'ignore' } },    // edi/reason is user input
 			}
 		);
 	}

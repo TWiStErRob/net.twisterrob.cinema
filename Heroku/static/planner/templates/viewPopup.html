@@ -107,13 +107,13 @@
 	</div>
 	<div class="modal-footer">
 		<div class="btn-group dropup">
-			<button type="button" class="btn btn-warning" ng-click="ignore(undefined)">Ignore</button>
-			<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+			<button type="button" class="btn btn-warning" ng-click="ignore(null)" ng-disabled="viewForm.film.$invalid">Ignore</button>
+			<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" ng-disabled="viewForm.film.$invalid">
 				<span class="caret"></span>
 				<span class="sr-only">Ignore view</span>
 			</button>
 			<ul class="dropdown-menu pull-right" role="menu">
-				<li><a href="#" ng-click="ignore(undefined)" title="Just ignore this one.">Ignore</a></li>
+				<li><a href="#" ng-click="ignore(null)" title="Just ignore this one.">Ignore</a></li>
 				<li class="divider"></li>
 				<li><a href="#" ng-click="ignore('uninteresting')" title="I don't like the looks and I don't want to watch this movie.">Not interested</a></li>
 				<li><a href="#" ng-click="ignore('timing')" title="The timings of this film does not fit my life schedule.">Invalid schedule</a></li>

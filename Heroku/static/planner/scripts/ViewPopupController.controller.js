@@ -33,7 +33,7 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 		}
 	};
 
-	$scope.ok = function () {
+	$scope.ok = function(reason) {
 		var sel = $scope.selected;
 		var date = moment(sel.date).startOf('day').valueOf(); // strip time
 		var time = sel.time - moment(sel.time).startOf('day'); // strip date
@@ -41,10 +41,14 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 			cinema: sel.cinema,
 			film: sel.film,
 			date: date + time,
-			friends: sel.friends
+			friends: sel.friends,
+			ignore: reason
 		});
 	};
-	$scope.cancel = function () {
+	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
 	};
+	$scope.ignore = function(reason) {
+		$scope.ok(reason);
+	}
 });

@@ -72,6 +72,17 @@ function removeView(req, res) {
 	});
 }
 
+function ignore(req, res) {
+	var params = {
+		filmEDI: parseInt(req.param('edi'), 10),
+		reason: req.param('reason')
+	};
+	//graph.query(graph.queries.addIgnore, params, function (error, results) {
+	//	if(error) throw error;
+		res.send(200);
+	//});
+}
+
 function favCinema(req, res) {
 	var params = {
 		cinemaID: parseInt(req.param('cinema'), 10),
@@ -328,6 +339,7 @@ app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.get('/performance', cacher(cacheLength), getPerformances);
 app.get('/film/:edi/view', ensureAuthenticated, addView);
 app.get('/film/:edi/unview', ensureAuthenticated, removeView);
+app.get('/film/:edi/ignore', ensureAuthenticated, ignore);
 
 app.initialized = true;
 listen();

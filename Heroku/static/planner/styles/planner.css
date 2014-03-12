@@ -105,6 +105,11 @@ video {
 	}
 }
 
+.modal-footer .dropdown-menu {
+	/* https://github.com/twbs/bootstrap/issues/13037 */
+	text-align: initial;
+}
+
 .glyphicon[ng-click] {
 	cursor: pointer;
 }

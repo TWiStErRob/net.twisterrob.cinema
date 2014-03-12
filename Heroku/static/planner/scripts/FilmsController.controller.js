@@ -70,6 +70,17 @@ module.controller('FilmsController', [
 				film.processingView = false;
 			});
 		}
+		function ignore(film, reason) {
+			if(film.processingView) return;
+			film.processingView = true;
+			Film.ignore({
+				edi: film.edi,
+				reason: reason
+			}, function() {
+				(film.view || (film.view = {})).ignored = reason;
+				film.processingView = false;
+			})
+		};
 		$scope.addViewPopup = function(cinema, film) {
 			var modalInstance = $modal.open({
 				templateUrl: 'templates/viewPopup.html',
@@ -95,7 +106,11 @@ module.controller('FilmsController', [
 
 			modalInstance.result.then(
 				function (modalResult) {
-					addView(modalResult.film, modalResult.cinema, modalResult.date);
+					if(modalResult.ignore !== undefined) {
+						ignore(modalResult.film, modalResult.ignore);
+					} else {
+						addView(modalResult.film, modalResult.cinema, modalResult.date);
+					}
 				},
 				function () {
 					// ignore cancel
