@@ -79,7 +79,7 @@ function ignore(req, res) {
 	};
 	//graph.query(graph.queries.addIgnore, params, function (error, results) {
 	//	if(error) throw error;
-		res.send(200);
+		res.jsonp({ film: { edi: param.sfilmEDI }, reason: params.reason, date: new Date() });
 	//});
 }
 

@@ -76,8 +76,8 @@ module.controller('FilmsController', [
 			Film.ignore({
 				edi: film.edi,
 				reason: reason
-			}, function() {
-				(film.view || (film.view = {})).ignored = reason;
+			}, function(ignore) {
+				film.ignore = ignore;
 				film.processingView = false;
 			})
 		};
