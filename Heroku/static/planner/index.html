@@ -232,7 +232,7 @@
 					</accordion-heading>
 					<ul class="plans">
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
-							<span class="plan-remove pull-right" title="Remove plan" ng-click="cPlan.more.list.splice($index, 1)">x</span>
+							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
 							<span class="plan-header" title="{{plan | json}}">
 								<span class="film-start" ng-class="{offense: (plan.range.start | moment:'valueOf') < (plan.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{plan.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | moment:'format':'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">

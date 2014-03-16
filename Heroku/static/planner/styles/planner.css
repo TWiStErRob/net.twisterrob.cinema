@@ -69,19 +69,6 @@ video {
 	list-style-type: none;
 }
 
-.plan .plan-remove:before {
-	color: gray;
-	content: '[';
-}
-.plan .plan-remove:after {
-	color: gray;
-	content: ']';
-}
-.plan .plan-remove {
-	margin-right: 3px;
-	cursor: pointer;
-}
-
 #statusmessage {
 	display: block;
 	position: fixed;
@@ -96,6 +83,16 @@ video {
 /** Bootstrap specific */
 .glyphicon:empty {
 	height: 1em;
+}
+
+.close {
+	margin-right: 3px;
+	color: gray;
+	opacity: 1;
+}
+.close:hover {
+	color: white;
+	opacity: 1;
 }
 
 @media (min-width: 768px) {

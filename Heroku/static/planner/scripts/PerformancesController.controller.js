@@ -55,7 +55,9 @@ module.controller('PerformancesController', [
 				}
 				
 				var sorted = orderByFilter(plan.offending, [$scope.offensePriority]);
-				plan.more = new More(_.clone(plan.valid), sorted);
+				var matcher = { offenses: { count: 1, fewMovies: true } };
+				var initial = _.clone(plan.valid).concat(_.filter(sorted, matcher)); sorted = _.reject(sorted, matcher);
+				plan.more = new More(initial, sorted);
 			});
 			$scope.plans = plans;
 		};
