@@ -19,7 +19,17 @@ momentModule.filter('moment', [
 	function(moment) {
 		return function(input, method /*, args*/) {
 			var args = Array.prototype.splice.call(arguments, 2 /* skip input and method */);
-			return moment.fn[method].apply(input, args);
+			return moment.fn[method].apply(moment(input), args);
+		};
+	}
+]);
+
+momentModule.filter('momentLocalFormat', [
+	        'moment',
+	function(moment) {
+		return function(input/*, args*/) {
+			var args = Array.prototype.splice.call(arguments, 1 /* skip input */);
+			return moment.fn.format.apply(moment(input).local(), args);
 		};
 	}
 ]);

@@ -283,9 +283,9 @@ function getPerformances(req, res) {
 			};
 		});
 		_.each(responseArr, function(response) {
-			response.date = moment(response.date, 'YYYYMMDD').valueOf();
+			response.date = moment.utc(response.date, 'YYYYMMDD');
 			_.each(response.performances, function(performance) {
-				performance.time = moment(performance.time, 'HH:mm') - moment().startOf('day');
+				performance.time = response.date.clone().add(moment.duration(performance.time, 'HH:mm')).subtract(1, 'hours');
 			});
 		});
 		res.send(responseArr);

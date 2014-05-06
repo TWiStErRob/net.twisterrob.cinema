@@ -33,7 +33,7 @@ module.service('Planner', [
 		 * }
 		 */
 		function plan(params) {
-			var date = moment(params.date).valueOf();
+			var date = moment.utc(params.date).add(-moment(params.date).zone(), 'minutes').toISOString();
 			var cache = {};
 			_.each(params.cinemas, function(cinema) {
 				cache[cinema.cineworldID] = {};
@@ -48,7 +48,7 @@ module.service('Planner', [
 					performances = _(performances).pluck('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {
-						var time = moment(filter.date + performance.time);
+						var time = moment.utc(performance.time);
 						var plan = _.extend({}, performance, {
 							date: function() { return date; },
 							cinema: function() { return cinema; },
@@ -56,10 +56,10 @@ module.service('Planner', [
 							scheduledTime: time,
 							adLength: params.estimatedAdvertisementLength,
 							startTime: time.clone()
-							               .add('minutes', params.estimatedAdvertisementLength),
+							               .add(params.estimatedAdvertisementLength, 'minutes'),
 							endTime: time.clone()
-							             .add('minutes', params.estimatedAdvertisementLength)
-							             .add('minutes', film.runtime),
+							             .add(params.estimatedAdvertisementLength, 'minutes')
+							             .add(film.runtime, 'minutes'),
 						});
 						plan.range = moment.range(plan.startTime, plan.endTime);
 						plan.fullRange = moment.range(plan.scheduledTime, plan.endTime);
@@ -76,7 +76,7 @@ module.service('Planner', [
 				planCinema(cinemaResults, cache, cinema, params.films, [{
 					watched: ["travel"],
 					performance: {
-						endTime: moment(params.date, 'YYYYMMDDHH'),
+						endTime: moment.utc(params.date, 'YYYYMMDDHH'),
 						film: {
 							edi: -1
 						},
@@ -97,7 +97,7 @@ module.service('Planner', [
 						if(!_.contains(node.watched, film.edi)) { // didn't watch it already
 							var performances = cache[cinema.cineworldID][film.edi];
 							_.each(performances, function(perf) {
-								if(node.performance.endTime < (perf.startTime)) { // starts after the other finishes
+								if(node.performance.endTime < perf.startTime) { // starts after the other finishes
 									node.next.push({
 										watched: node.watched.concat([perf.film().edi]),
 										performance: perf,

@@ -184,7 +184,7 @@
 							<span class="cinema-name">{{cleanName(cinema.name)}}</span>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: performance.time < options.endOfWork}">{{performance.time | date:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -206,7 +206,7 @@
 							<span ng-show="film.runtime > 0" class="film-runtime">{{film.runtime}}</span>
 						 </td>
 						<td class="performances" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: performance.time < options.endOfWork}">{{performance.time | date:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -234,7 +234,7 @@
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
 							<span class="plan-header" title="{{plan | json}}">
-								<span class="film-start" ng-class="{offense: (plan.range.start | moment:'valueOf') < (plan.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{plan.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | moment:'format':'HH:mm'}}</span>
+								<span class="film-start" ng-class="{offense: (plan.range.start | moment:'valueOf') < (plan.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">
 									(offends: {{offenseCount(plan)}}, prio: {{offensePriority(plan)}})
 								</span>
@@ -247,7 +247,7 @@
 									<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}">
-									<span class="film-start" ng-class="{offense: (movie.range.start | moment:'valueOf') < (movie.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.start | moment:'format':'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: (movie.range.end | moment:'valueOf') < (plan.range.end | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.end | moment:'format':'HH:mm'}}</span>
+									<span class="film-start" ng-class="{offense: (movie.range.start | moment:'valueOf') < (movie.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: (movie.range.end | moment:'valueOf') < (plan.range.end | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
 									<span class="film-runtime">{{movie.film().runtime}}</span>:
 									<span class="film-title">{{movie.film().title}}</span>
 								</li>
