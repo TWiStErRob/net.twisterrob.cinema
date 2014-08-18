@@ -31,6 +31,7 @@ app.config(['$sceDelegateProvider', function($sceDelegateProvider) {
 	]);
 }]);
 
+// https://github.com/angular/angular.js/issues/1551
 app.config([function fixCineworldCallbacks() {
 	var $window = window,
 	    callbacks = $window.angular.callbacks,
@@ -39,7 +40,7 @@ app.config([function fixCineworldCallbacks() {
 	Object.defineProperty(callbacks, "counter", {
 		get: function() {
 			cleanFixedCallbacks();
-			var originalName = '_' + counter;
+			var originalName = '_' + counter.toString(36);
 			var fixedName = ('angular.callbacks.' + originalName)
 					.replace(/[^a-zA-Z0-9_]/g, '');
 			function fixedCallback(data) {
