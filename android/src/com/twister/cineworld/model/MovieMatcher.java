@@ -1,23 +1,36 @@
 package com.twister.cineworld.model;
 
 import java.util.*;
+import java.util.regex.*;
 
 import com.twister.cineworld.model.generic.*;
 
 public class MovieMatcher {
 	public List<Movie> match(final List<Film> cineFilms) {
 		List<Movie> films = new LinkedList<Movie>();
+		Pattern partsRegex = Pattern.compile("^(.*)\\s*-\\s*(\\d{2}/\\d{2}/\\d{4})$");
+		Pattern qualifierRegex = Pattern.compile("^(?:\\((2D|3D|IMAX ?3-?D)\\)|M4J|SubM4J) (.*)$");
 		for (Film cineFilm : cineFilms) {
 			String title = cineFilm.getTitle();
 			if (title != null) {
-				String[] parts = title.split("\\s*-\\s*", 2);
-				// Log.d("MATCH", Arrays.toString(parts));
-				if (parts.length == 2 && parts[1].matches("\\d{2}/\\d{2}/\\d{4}")) {
-					title = parts[0];
-				} else if (parts.length == 1) {
-					title = parts[1];
-				} else {
-					title = parts[0];
+				// strip date from the end (historical, don't exactly know why)
+				Matcher parts = partsRegex.matcher(title);
+				if (parts.matches()) {
+					title = parts.group(1); // before -
+				}
+				// strip screening type qualifier to collapse films into a movie
+				Matcher qualifier = qualifierRegex.matcher(title);
+				if (qualifier.matches()) {
+					if ("M4J".equals(qualifier.group(1))) {
+						// TODO cross-check with advisory
+						// TODO cineFilm.setMadeForJuniors(true);
+					} else if ("SubM4J".equals(qualifier.group(1))) {
+						// TODO cineFilm.setSubtitled(true);
+						// cineFilm.setMadeForJuniors(true);
+					} else {
+						// TODO maybe double-check 2D-3D qualifications
+					}
+					title = qualifier.group(2); // after (...)
 				}
 			}
 			Movie film = find(films, title);
