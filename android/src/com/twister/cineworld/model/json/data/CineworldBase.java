@@ -1,5 +1,7 @@
 package com.twister.cineworld.model.json.data;
 
-public class CineworldBase {
+import java.io.Serializable;
+
+public class CineworldBase implements Serializable {
 
 }

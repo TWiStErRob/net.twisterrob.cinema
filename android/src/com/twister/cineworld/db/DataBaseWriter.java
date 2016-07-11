@@ -279,12 +279,12 @@ class DataBaseWriter {
 			+ "FilmDistributor(_id, name) "
 			+ "VALUES(           ?,    ?);";
 	private static final String	 SQL_INSERT_GEOCACHE = "INSERT INTO "
-			+ "\"Helper:GeoCache\"(postcode, latitude, longitude) "
+			+ "\"Helper:GeoCache\"(_postcode, latitude, longitude) "
 			+ "VALUES(                    ?,        ?,         ?);";
 	private static final String	 SQL_UPDATE_GEOCACHE = "UPDATE "
 			+ "\"Helper:GeoCache\""
 			+ "SET latitude = ?, longitude = ?"
-			+ "WHERE postcode = ?;";
+			+ "WHERE _postcode = ?;";
 	
 	// #endnoformat
 

@@ -1,11 +1,12 @@
 package com.twister.cineworld.model.json.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.twister.cineworld.model.json.data.CineworldBase;
 
-public abstract class BaseListResponse<T extends CineworldBase> {
+public abstract class BaseListResponse<T extends CineworldBase> implements Serializable {
 	@SerializedName("m_errors")
 	private List<String>	m_errors;
 
