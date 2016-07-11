@@ -80,15 +80,46 @@ public final class IOTools {
 	}
 
 	public static Bitmap getImage(final URL url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection connection = IOTools.getWithRedirects(url);
 		try {
-			connection.connect();
 			InputStream input = connection.getInputStream();
-
 			Bitmap bitmap = BitmapFactory.decodeStream(input);
 			return bitmap;
 		} finally {
 			connection.disconnect();
+		}
+	}
+
+	private static HttpURLConnection getWithRedirects(URL url) throws IOException {
+		HttpURLConnection connection = null;
+		try {
+			boolean retry = true;
+			int follows = 0;
+			do {
+				connection = (HttpURLConnection) url.openConnection();
+				connection.connect();
+				if (connection.getResponseCode() == 301 || connection.getResponseCode() == 302) {
+					url = new URL(connection.getHeaderField("Location"));
+					connection.disconnect();
+					follows++;
+				} else {
+					retry = false;
+				}
+			} while (retry && follows <= 5);
+			if (retry) {
+				throw new IOException("Too many redirects: " + url);
+			}
+			return connection;
+		} catch (IOException ex) {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			throw ex;
+		} catch (RuntimeException ex) {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			throw ex;
 		}
 	}
 

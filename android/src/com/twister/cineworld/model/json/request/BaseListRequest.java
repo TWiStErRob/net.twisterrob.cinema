@@ -16,7 +16,7 @@ public abstract class BaseListRequest<T extends CineworldBase> {
 	// no need for android
 	private static final String		DEFAULT_CALLBACK		= null;
 
-	private static final String		BASE_URL_STRING			= "http://www.cineworld.co.uk/api/";
+	private static final String		BASE_URL_STRING			= "https://www.cineworld.co.uk/api/";
 	private static final URL		BASE_URL;
 	static {
 		try {

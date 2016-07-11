@@ -252,8 +252,14 @@ public class CineworldJSONAccessor implements Accessor {
 	}
 
 	private <T extends CineworldBase> List<T> getList(final BaseListRequest<T> request) throws ApplicationException {
-		BaseListResponse<T> response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
-		if (response.getErrors() != null && !response.getErrors().isEmpty())
+		BaseListResponse<T> response = null;
+		try {
+			response = this.m_jsonClient.get(request.getURL(), request.getResponseClass());
+		} catch (Exception ex) {
+			throw new NetworkException("Cannot get response %s for request %s",
+					ex, request.getResponseClass(), request.getURL());
+		}
+		if (response == null || (response.getErrors() != null && !response.getErrors().isEmpty()))
 			throw new InternalException("Errors in JSON response: %s", response.getErrors());
 		return response.getList();
 	}
@@ -340,11 +346,11 @@ public class CineworldJSONAccessor implements Accessor {
 			generic.setClassification(cineworld.getClassification());
 			generic.setAdvisory(cineworld.getAdvisory());
 			generic.setPosterUrl(createUrl("filmPoster", cineworld.getPosterUrl(),
-					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
+					"https://www.cineworld.co.uk/xmedia-cw/img/film.placeholder.poster.jpg"));
 			generic.setStillUrl(createUrl("filmStill", cineworld.getStillUrl(),
-					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
+					"https://www.cineworld.co.uk/xmedia-cw/img/film.placeholder.poster.jpg"));
 			generic.setFilmUrl(createUrl("filmDetails", cineworld.getFilmUrl(),
-					"http://www.cineworld.co.uk/cw/assets/images/whatson/film.placeholder.poster.jpg"));
+					"https://www.cineworld.co.uk/xmedia-cw/img/film.placeholder.poster.jpg"));
 			generic.set3D(cineworld.is3D());
 			generic.setIMax(cineworld.isIMax());
 			result = generic;

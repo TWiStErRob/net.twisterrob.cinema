@@ -5,6 +5,7 @@ import java.net.*;
 
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.entity.StringEntity;
 
 import android.net.http.AndroidHttpClient;
@@ -92,6 +93,7 @@ public class ApacheHttpJsonClient implements JsonClient {
 		}
 		// executing request
 		AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android/com.twister.cineworld");
+		HttpClientParams.setRedirecting(httpClient.getParams(), true); // allow redirects for GET and HEAD
 
 		String json = null;
 		InputStream is = null;
