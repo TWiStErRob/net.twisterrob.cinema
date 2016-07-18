@@ -5,21 +5,16 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
-        <wb-resource deploy-path="/static" source-path="/src/main/webapp/static"/>
-        <wb-resource deploy-path="/static/styles" source-path="/src/main/webapp/static/styles"/>
-        <wb-resource deploy-path="/static/images" source-path="/src/main/webapp/static/images"/>
-        <wb-resource deploy-path="/static/scripts" source-path="/src/main/webapp/static/scripts"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp/static"/>
         <dependent-module archiveName="twister-cinema-client-cineworld-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Cineworld Performances API Java Client 1.0/Cineworld Performances API Java Client 1.0">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="twister-lib-java-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/twister-lib-java-cinema/twister-lib-java-cinema">
+        <dependent-module archiveName="twister-lib-java-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/twister-lib-java-cinema/twister-lib-java-cinema">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="gson-extras-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/gson-extras-2.2.3-SNAPSHOT-cinema/gson-extras-2.2.3-SNAPSHOT-cinema">
+        <dependent-module archiveName="gson-extras-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/gson-extras/gson-extras">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="java-output-path" value="/Cinema - Appengine/target/WEB-INF/classes"/>
+        <property name="java-output-path" value="/twister-cinema-appengine/target/WEB-INF/classes"/>
         <property name="context-root" value="twister-cinema-appengine"/>
     </wb-module>
 </project-modules>

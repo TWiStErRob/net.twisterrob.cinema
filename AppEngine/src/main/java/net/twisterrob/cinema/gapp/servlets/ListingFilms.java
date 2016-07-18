@@ -31,7 +31,7 @@ public class ListingFilms extends HttpServlet {
 		if (user != null) {
 			Object result = getResult(user);
 			req.setAttribute("views", result);
-			// FIXM
+			// FIXME
 			// http://stackoverflow.com/questions/10036958/the-easiest-way-to-remove-the-bidirectional-recursive-relationships
 			req.setAttribute("user", user);
 			req.setAttribute("url", userService.createLogoutURL(req.getRequestURI()));

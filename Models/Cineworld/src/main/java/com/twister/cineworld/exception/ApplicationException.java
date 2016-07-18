@@ -40,7 +40,7 @@ public abstract class ApplicationException extends Exception {
 		this.params = params;
 	}
 
-	private void checkType(final ErrorType type) {
+	private static void checkType(final ErrorType type) {
 		if (type == null) {
 			throw new IllegalArgumentException(String.format("%s (%s) is mandatory", "type", ErrorType.class));
 		}

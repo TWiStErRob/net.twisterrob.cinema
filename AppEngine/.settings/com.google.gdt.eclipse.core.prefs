@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-jarsExcludedFromWebInfLib=D\:/Programming/eclipse/dropins/appengine/sdk/appengine-java-sdk-1.8.3/lib/tools/jsp/repackaged-appengine-jakarta-jstl-1.1.2.jar|D\:/Programming/eclipse/dropins/appengine/sdk/appengine-java-sdk-1.8.3/lib/tools/jsp/repackaged-appengine-jakarta-standard-1.1.2.jar
+jarsExcludedFromWebInfLib=
 warSrcDir=war
 warSrcDirIsOutput=true

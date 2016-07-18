@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- https://code.google.com/p/googleappengine/source/browse/trunk/java/src/main/com/google/appengine/tools/development/appengine-web.xsd -->
 <appengine-web-app
 		xmlns="http://appengine.google.com/ns/1.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://appengine.google.com/ns/1.0 https://googleappengine.googlecode.com/svn-history/r376/trunk/java/src/main/com/google/appengine/tools/development/appengine-web.xsd"
+		xsi:schemaLocation="http://appengine.google.com/ns/1.0
+		                    file:///p:\tools\sdk\appengine-java-sdk-1.9.38\docs\appengine-web.xsd"
 	>
 	<application>twisterrob-cinema</application>
 	<version>1</version>
