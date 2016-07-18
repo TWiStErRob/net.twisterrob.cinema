@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 public class ListingFilms extends HttpServlet {
 	private static final Logger LOG = LoggerFactory.getLogger(ListingFilms.class);
 
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		setup();
 		User user = PMF.getCurrentUser();
@@ -40,14 +41,14 @@ public class ListingFilms extends HttpServlet {
 
 		try {
 			Collection<Film> oldFilms = new FilmServiceImpl().getFilms();
-			Collection<Film> newFilms = new ArrayList<Film>();
+			Collection<Film> newFilms = new ArrayList<>();
 			DateTime newAfter = new DateTime().minusDays(1);
 			for (Iterator<Film> it = oldFilms.iterator(); it.hasNext();) {
 				Film film = it.next();
 				if (newAfter.compareTo(film.getCreated()) <= 0) { // newAfter <= film.created
 					it.remove();
 					newFilms.add(film);
-				};
+				}
 			}
 			req.setAttribute("films", ImmutableMap.<String, Collection<Film>> builder() //
 					.put("new", newFilms) //

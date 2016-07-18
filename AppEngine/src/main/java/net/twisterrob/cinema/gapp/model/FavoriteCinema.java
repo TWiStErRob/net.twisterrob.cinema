@@ -9,7 +9,7 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 @PersistenceCapable
 @FetchGroup(name = "detailed", members = {@Persistent(name = "cinema")})
 public class FavoriteCinema extends Dateable implements StoreCallback {
-	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+	/*@formatter:off*/ @Override public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent(mappedBy = "favoriteCinemas")
 	@XmlElement

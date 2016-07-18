@@ -15,6 +15,7 @@ import org.slf4j.*;
 public class TestServlet extends HttpServlet {
 	private static final Logger LOG = LoggerFactory.getLogger(TestServlet.class);
 
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		LOG.info("Hello");
 		PersistenceManager pm = PMF.getPM();

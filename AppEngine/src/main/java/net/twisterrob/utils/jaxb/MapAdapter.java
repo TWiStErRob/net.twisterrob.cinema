@@ -14,9 +14,9 @@ public class MapAdapter<K, V> extends XmlAdapter<MapAdapter.AdaptedMap<K, V>, Ma
 		if (map == null) {
 			return null;
 		}
-		AdaptedMap<K, V> adaptedMap = new AdaptedMap<K, V>();
+		AdaptedMap<K, V> adaptedMap = new AdaptedMap<>();
 		for (Entry<K, V> entry: map.entrySet()) {
-			AdaptedEntry<K, V> adaptedEntry = new AdaptedEntry<K, V>(entry.getKey(), entry.getValue());
+			AdaptedEntry<K, V> adaptedEntry = new AdaptedEntry<>(entry.getKey(), entry.getValue());
 			adaptedMap.entries.add(adaptedEntry);
 		}
 		return adaptedMap;
@@ -28,7 +28,7 @@ public class MapAdapter<K, V> extends XmlAdapter<MapAdapter.AdaptedMap<K, V>, Ma
 			return null;
 		}
 		List<AdaptedEntry<K, V>> adaptedEntries = adaptedMap.entries;
-		Map<K, V> map = new HashMap<K, V>(adaptedEntries.size());
+		Map<K, V> map = new HashMap<>(adaptedEntries.size());
 		for (AdaptedEntry<K, V> adaptedEntry: adaptedEntries) {
 			map.put(adaptedEntry.key, adaptedEntry.value);
 		}
@@ -43,7 +43,7 @@ public class MapAdapter<K, V> extends XmlAdapter<MapAdapter.AdaptedMap<K, V>, Ma
 		 * @see http://stackoverflow.com/q/18666984/253468
 		 */
 		@XmlVariableNode("key")
-		List<AdaptedEntry<K, V>> entries = new ArrayList<AdaptedEntry<K, V>>();
+		List<AdaptedEntry<K, V>> entries = new ArrayList<>();
 	}
 
 	public static class AdaptedEntry<K, V> {

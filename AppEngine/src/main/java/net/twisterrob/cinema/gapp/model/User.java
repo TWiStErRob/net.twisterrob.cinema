@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.*;
 
 @PersistenceCapable
 public class User extends Dateable implements StoreCallback {
-	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+	/*@formatter:off*/ @Override public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent
 	@XmlElement

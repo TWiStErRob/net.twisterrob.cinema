@@ -8,7 +8,7 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class View extends Dateable implements StoreCallback {
-	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+	/*@formatter:off*/ @Override public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent(mappedBy = "views")
 	@XmlElement

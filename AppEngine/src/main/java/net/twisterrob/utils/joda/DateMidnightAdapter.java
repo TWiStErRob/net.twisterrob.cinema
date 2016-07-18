@@ -9,14 +9,15 @@ import org.joda.time.DateMidnight;
  * @see DateMidnight
  */
 @Deprecated
+@SuppressWarnings("deprecation")
 public class DateMidnightAdapter extends XmlAdapter<String, DateMidnight> {
-
-	public DateMidnight unmarshal(String v) throws Exception {
+	@Override
+	public DateMidnight unmarshal(String v) {
 		return v == null? null : new DateMidnight(v);
 	}
 
-	public String marshal(DateMidnight v) throws Exception {
+	@Override
+	public String marshal(DateMidnight v) {
 		return v == null? null : v.toString();
 	}
-
 }

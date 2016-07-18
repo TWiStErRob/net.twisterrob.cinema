@@ -5,7 +5,7 @@ import javax.jdo.listener.StoreCallback;
 
 @PersistenceCapable
 public class DateFieldsTestObject extends Dateable implements StoreCallback {
-	/*@formatter:off*/ public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
+	/*@formatter:off*/ @Override public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent
 	private String name;

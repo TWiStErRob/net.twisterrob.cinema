@@ -14,7 +14,7 @@ public class JsonMoxyConfigurationContextResolver implements ContextResolver<Mox
 	private final MoxyJsonConfig config;
 
 	public JsonMoxyConfigurationContextResolver() {
-		final Map<String, String> namespacePrefixMapper = new HashMap<String, String>();
+		final Map<String, String> namespacePrefixMapper = new HashMap<>();
 		namespacePrefixMapper.put("http://www.w3.org/2001/XMLSchema-instance", "xsi");
 		namespacePrefixMapper.put("http://appengine.google.com/datastore", "google-ds");
 

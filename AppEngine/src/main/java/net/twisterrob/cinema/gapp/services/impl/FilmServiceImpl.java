@@ -31,7 +31,7 @@ public class FilmServiceImpl implements FilmService {
 		PersistenceManager pm = PMF.getPM();
 		try {
 			List<CineworldFilm> incomingFilms = new CineworldAccessor().getAllFilms();
-			Collection<Film> newFilms = new LinkedList<Film>();
+			Collection<Film> newFilms = new LinkedList<>();
 			for (CineworldFilm incomingFilm: incomingFilms) {
 				LOG.info("Processing {}: {}...", incomingFilm.getEdi(), incomingFilm.getTitle());
 				try {

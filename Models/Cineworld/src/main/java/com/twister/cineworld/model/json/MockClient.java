@@ -30,6 +30,7 @@ public class MockClient implements JsonClient {
 	 * Magic happens here.
 	 */
 	protected <T> T any(final Class<T> responseType) {
+		@SuppressWarnings("unchecked")
 		T response = (T)s_responseMapping.get(responseType);
 		return response;
 	}

@@ -144,7 +144,7 @@ public class EasyMocks implements MethodRule {
 		this.mockFactory = mockFactory;
 	}
 
-	private Map<ClassAndName, Object> mocks = new HashMap<ClassAndName, Object>();
+	private Map<ClassAndName, Object> mocks = new HashMap<>();
 	private MockFactory mockFactory;
 	@SuppressWarnings("unused")
 	private enum MockFactory {

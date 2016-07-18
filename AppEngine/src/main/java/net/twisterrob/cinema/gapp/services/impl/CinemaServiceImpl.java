@@ -33,7 +33,7 @@ public class CinemaServiceImpl implements CinemaService {
 		PersistenceManager pm = PMF.getPM();
 		try {
 			List<CineworldCinema> incomingCinemas = new CineworldAccessor().getAllCinemas();
-			Collection<Cinema> newCinemas = new LinkedList<Cinema>();
+			Collection<Cinema> newCinemas = new LinkedList<>();
 			for (CineworldCinema incomingCinema: incomingCinemas) {
 				LOG.info("Processing {}: {}...", incomingCinema.getId(), incomingCinema.getName());
 				try {
