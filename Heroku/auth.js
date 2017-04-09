@@ -1,7 +1,7 @@
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var passport = require('passport');   // http://passportjs.org/guide/
-var GoogleStrategy = require('passport-google').Strategy; // http://passportjs.org/guide/google/
+var GoogleStrategy = require('passport-google-oauth20').Strategy; // http://passportjs.org/docs/google
 var package = require('./package.json');
 var config = require('./config');
 var moment = require('moment');
@@ -12,6 +12,7 @@ require('./neo4j').init(function(error, connected) {
 });
 var log = require('./logs').auth;
 
+// TODO add returnUrl handling
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -39,13 +40,13 @@ function setupPassport(app) {
 	});
 
 	passport.use(new GoogleStrategy({
-			returnURL: app.get('app urlRoot') + 'auth/google/return',
-			realm: app.get('app urlRoot'),
-			profile: true
+			clientID: config.GOOGLE_CLIENT_ID,
+			clientSecret: config.GOOGLE_CLIENT_SECRET,
+			callbackURL: app.get('app urlRoot') + 'auth/google/return'
 		},
-		function(identifier, profile, done) {
+		function(accessToken, refreshToken, profile, done) {
 			graph.query(graph.queries.addUser, {
-				id: identifier,
+				id: profile.id,
 				email: profile.emails[0].value,
 				name: profile.displayName,
 				realm: app.get('app urlRoot'),
@@ -71,6 +72,7 @@ function setupRoutes(app) {
 		res.redirect('/auth/google');
 	});
 
+	var googleAuthSettings = { scope: ['email'], failureRedirect: '/login' };
 	app.get('/auth/google',
 		function skipLogin(req, res, next) {
 			if (req.isAuthenticated()) {
@@ -80,10 +82,10 @@ function setupRoutes(app) {
 				next();
 			}
 		},
-		passport.authenticate('google', { failureRedirect: '/login' })
+		passport.authenticate('google', googleAuthSettings)
 	);
 	app.get('/auth/google/return',
-		passport.authenticate('google', { failureRedirect: '/login' }),
+		passport.authenticate('google', googleAuthSettings),
 		function successfulLogin(req, res) {
 			log.trace({user: req.user}, 'Successful login: %s.', req.user.id);
 			res.redirect('/');

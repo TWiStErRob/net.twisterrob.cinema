@@ -1,4 +1,6 @@
 {
 	"NEO4J_REST_PATH": "db/data/",
-	"NEO4J_CYPHER_PATH": "cypher/"
+	"NEO4J_CYPHER_PATH": "cypher/",
+	"GOOGLE_CLIENT_ID": "8667575547-2lo4q727muiehokkdvtgcflounmnclnq.apps.googleusercontent.com",
+	"GOOGLE_CLIENT_SECRET": "Vu8iAcNG-1LpeEEO1JZCFu3U"
 }
