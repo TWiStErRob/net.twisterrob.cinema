@@ -2,7 +2,6 @@ var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/bl
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var passport = require('passport');   // http://passportjs.org/guide/
 var GoogleStrategy = require('passport-google-oauth20').Strategy; // http://passportjs.org/docs/google
-var package = require('./package.json');
 var config = require('./config');
 var moment = require('moment');
 var graph;

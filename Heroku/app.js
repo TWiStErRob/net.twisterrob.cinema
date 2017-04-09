@@ -12,7 +12,6 @@ var async = require('async');         // https://github.com/caolan/async
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var auth = require('./auth');
-var package = require('./package.json');
 var config = require('./config');
 var graph;
 require('./neo4j').init(function(error, connected) {
@@ -53,7 +52,7 @@ function addView(req, res) {
 			res.jsonp(_.extend({}, result.view.data, {
 				film: result.film.data,
 				cinema: result.cinema.data,
-				user: result.user.data,
+				user: result.user.data
 			}));
 		}
 	});
@@ -80,7 +79,7 @@ function ignore(req, res) {
 	};
 	//graph.query(graph.queries.addIgnore, params, function (error, results) {
 	//	if(error) throw error;
-		res.jsonp({ film: { edi: param.sfilmEDI }, reason: params.reason, date: new Date() });
+		res.jsonp({ film: { edi: params.filmEDI }, reason: params.reason, date: new Date() });
 	//});
 }
 
@@ -177,7 +176,7 @@ function getFilms(req, res) {
 		var params = {
 			filmEDIs: _.pluck(body.films, 'edi')
 		};
-		if(params.filmEDIs.length == 0) {
+		if(params.filmEDIs.length === 0) {
 			res.jsonp([]);
 			return;
 		}
@@ -192,11 +191,11 @@ function getFilms(req, res) {
 					var result = results[i];
 					var f = _.clone(result.film.data);
 					if(!_.isEmpty(result.view) && !_.isEmpty(result.view.data)
-							&& result.view.data.class != 'Film') { // workaround for neo4j wrapper not liking nulls
+							&& result.view.data.class !== 'Film') { // workaround for neo4j wrapper not liking nulls
 						f.view = _.extend({}, result.view.data, {
 							film: result.film.data, // using f would be circular
 							cinema: result.cinema.data,
-							user: result.user.data,
+							user: result.user.data
 						});
 					} else {
 						f.view = null;
@@ -225,7 +224,7 @@ function getPerformances(req, res) {
 		key: "9qfgpF7B",
 		date: req.param('date'),
 		cinema: req.paramArr('cinemaIDs'),
-		film: req.paramArr('filmEDIs'),
+		film: req.paramArr('filmEDIs')
 	};
 	if(perfParams.date   === undefined
 	|| perfParams.cinema === undefined || perfParams.cinema.length === 0

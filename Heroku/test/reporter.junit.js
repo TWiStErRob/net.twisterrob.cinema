@@ -162,7 +162,7 @@ exports.run = function(files, options, callback) {
 				var stack = e.stack.split('\n');
 				var l = stack.length;
 				for(var i = stack.length - 1, prev = true; 0 < i /* skip message */; --i) {
-					if(prev && /    at .*node_modules[\/\\]nodeunit[\/\\].*/.test(stack[i])) {
+					if(prev && / {4}at .*node_modules[\/\\]nodeunit[\/\\].*/.test(stack[i])) {
 						stack.splice(i, 1);
 						prev &= true;
 					} else {
@@ -172,7 +172,7 @@ exports.run = function(files, options, callback) {
 				var dirname = __dirname.replace(/(.*[\/\\]).*/, "$1");
 				stack = _.map(stack, function(stackElem) {
 					stackElem = stackElem.replace(dirname, "");
-					stackElem = stackElem.replace(/    at (.*\.|)(.*) \((.*):(\d+):(\d+)\)/,
+					stackElem = stackElem.replace(/ {4}at (.*\.|)(.*) \((.*):(\d+):(\d+)\)/,
 							color(options.exception,
 								"    at " + color(options.module, "$1") + color(options.method, "$2")
 								+ " (" + color(options.file, "$3") + ":" + color(options.success, "$4") + ":$5)"));
