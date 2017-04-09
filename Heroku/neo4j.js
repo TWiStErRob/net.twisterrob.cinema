@@ -50,6 +50,9 @@ module.exports = {
 		});
 	},
 	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, allDone) {
+		data = _.map(data, function(datum) {
+			return _.omit(datum, _.isNull);
+		});
 		graph.query(queryAll, function (error, results) {
 			if(error) {
 				allDone(error, [], [], []);
