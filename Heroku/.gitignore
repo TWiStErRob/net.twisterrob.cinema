@@ -1,5 +1,8 @@
-/node_modules
-/npm-debug.log
-/.git
-/cinema.sublime-project
-/cinema.sublime-workspace
+.svn/
+node_modules/
+static/scripts/libs/angular/docs/
+*.iml
+*.ipr
+*.iws
+.idea
+*.sublime-workspace
