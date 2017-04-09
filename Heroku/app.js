@@ -72,6 +72,7 @@ function removeView(req, res) {
 	});
 }
 
+// TODO not implemented
 function ignore(req, res) {
 	var params = {
 		filmEDI: parseInt(req.param('edi'), 10),

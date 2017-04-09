@@ -146,12 +146,12 @@ module.controller('FilmsController', [
 				films.each(function(film) { film.processingView = false; });
 			});
 		}
-		$scope.removeViewPopup = function(film) {
+		$scope.removeViewPopup = function(view) {
 			$dialog
-				.prompt("Deleting a View", "Are you sure you want to delete this view of " + film.title + "?")
+				.prompt("Deleting a View", "Are you sure you want to delete this view of " + view.film.title + "?")
 				.then(function(result) {
 				if(result === 'yes') {
-					removeView(film);
+					removeView(view);
 				}
 			});
 		};
