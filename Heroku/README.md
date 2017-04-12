@@ -10,7 +10,13 @@
 
 ## Developing
 
+Entry points:
 
+ * `app.js`: web server; static content and backend for planner
+ * `updateFromCineworldCinemas.js`: scheduled updater for database
+ * `updateFromCineworldFilms.js`: scheduled updater for database
+ 
+`NEO4J_URL` and `PORT` can be configured.
 
 ### Tools
 
