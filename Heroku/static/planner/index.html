@@ -123,11 +123,11 @@
 				<accordion-group is-open="isOpen_films">
 					<accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_films, 'glyphicon-chevron-right': !isOpen_films}"></i>
-						New Films ({{(cineworld.films | filter: { view: null }).length}})
+						New Films ({{(cineworld.films | filter: { view: '!' }).length}})
 					</accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
-						<li class="film" ng-repeat="film in cineworld.films | filter: {view: null} | orderBy:['title']">
+						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime + "'": "???"}}</span>
 							<div class="checkbox">
@@ -142,11 +142,11 @@
 				<accordion-group is-open="isOpen_watched">
 					<accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_watched, 'glyphicon-chevron-right': !isOpen_watched}"></i>
-						Watched ({{(cineworld.films | filter: { view: {} }).length}})
+						Watched ({{(cineworld.films | filter: { view: '!!' }).length}})
 					</accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
-						<li class="film" ng-repeat="film in cineworld.films | filter: {view: {}} | orderBy:['title']">
+						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime + "'": "???"}}</span>
 							<div class="checkbox">
