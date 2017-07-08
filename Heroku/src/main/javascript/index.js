@@ -326,32 +326,6 @@ app.configure(function configure_use() {
 
 auth.init(app);
 
-var cacheLength = 0 * 60 * 60;
-app.get('/planner', function(req, res) {
-	res.sendfile('src/main/static/planner/index.html');
-});
-app.get('/film', cacher(cacheLength), getFilms);
-app.get('/film/:edi', getFilm);
-app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
-app.get('/cinema', cacher(cacheLength), getCinemas);
-app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
-app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
-app.get('/performance', cacher(cacheLength), getPerformances);
-app.get('/film/:edi/view', ensureAuthenticated, addView);
-app.get('/film/:edi/unview', ensureAuthenticated, removeView);
-app.get('/film/:edi/ignore', ensureAuthenticated, ignore);
-
-app.initialized = true;
-listen();
-function listen() {
-	if(app.initialized && graph) {
-		delete app.initialized;
-		app.listen(process.env.PORT, function() {
-			log.info("Express listening on %d", process.env.PORT);
-		});
-	}
-}
-
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
 	res.send(401, 'Please log in first to access this feature.');
@@ -368,3 +342,30 @@ function cacher(length) {
 		return function(req, res, next) { return next(); };
 	}
 }
+
+var cacheLength = 0 * 60 * 60;
+app.get('/planner', function(req, res) {
+	res.sendfile('src/main/static/planner/index.html');
+});
+app.get('/film', cacher(cacheLength), getFilms);
+app.get('/film/:edi', getFilm);
+app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
+app.get('/cinema', cacher(cacheLength), getCinemas);
+app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
+app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
+app.get('/performance', cacher(cacheLength), getPerformances);
+app.get('/film/:edi/view', ensureAuthenticated, addView);
+app.get('/film/:edi/unview', ensureAuthenticated, removeView);
+app.get('/film/:edi/ignore', ensureAuthenticated, ignore);
+
+function listen() { //jshint ignore:line
+	if(app.initialized && graph) {
+		delete app.initialized;
+		app.listen(process.env.PORT, function() {
+			log.info("Express listening on %d", process.env.PORT);
+		});
+	}
+}
+
+app.initialized = true;
+listen();

@@ -31,7 +31,7 @@
 	// with different skill levels.
 	 
 	"bitwise" : true, // Prohibit bitwise operators (&, |, ^, etc.).
-	"curly" : true, // Require {} for every new block or scope.
+	"curly" : false, // Require {} for every new block or scope.
 	"eqeqeq" : true, // Require triple equals i.e. `===`.
 	"forin" : true, // Tolerate `for in` loops without `hasOwnPrototype`.
 	"immed" : true, // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
@@ -62,7 +62,7 @@
 	"globalstrict" : false, // Allow global "use strict" (also enables 'strict').
 	"iterator" : false, // Allow usage of __iterator__ property.
 	"lastsemic" : false, // Tolerat missing semicolons when the it is omitted for the last statement in a one-line block.
-	"laxbreak" : false, // Tolerate unsafe line breaks e.g. `return [\n] x` without semicolons.
+	"laxbreak" : true, // Tolerate unsafe line breaks e.g. `return [\n] x` without semicolons.
 	"laxcomma" : false, // Suppress warnings about comma-first coding style.
 	"loopfunc" : false, // Allow functions to be defined within loops.
 	"multistr" : false, // Tolerate multi-line strings.

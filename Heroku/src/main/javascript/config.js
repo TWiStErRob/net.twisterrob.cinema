@@ -1,7 +1,7 @@
 var assert = require('assert');       // http://nodejs.org/api/assert.html
 var extend = require('node.extend');
 
-var config = require('../../../config.json');
+var config = require('../../../config/default-env.json');
 
 // d:\Programming>heroku config --app twisterrob-cinema --shell
 // NEO4J_URL=http://cinema-dev:QSMIvHhWJLKLbrE6B0IK@cinemadev.sb01.stations.graphenedb.com:24789

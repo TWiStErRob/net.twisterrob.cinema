@@ -21,7 +21,9 @@
 	},
 	"scripts": {
 		"start": "node src/main/javascript",
-		"test": "node src/test/javascript"
+		"test": "npm run test:nodeunit & npm run test:jshint",
+		"test:nodeunit": "node src/test/javascript",
+		"test:jshint": "jshint --config config/quality/.jshintrc --verbose src/main/javascript"
 	},
 
 	"engines": {
