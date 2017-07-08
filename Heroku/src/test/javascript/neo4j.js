@@ -1,6 +1,6 @@
 var request = require('request');     // https://github.com/mikeal/request
-var log = require('../logs').test;
-var neo4j = require('../neo4j');
+var log = require('../../main/javascript/logs').test;
+var neo4j = require('../../main/javascript/neo4j');
 
 exports.testLifeCycle = {
 	setUp: function (callback) {

@@ -312,7 +312,7 @@ app.configure(function configure_use() {
 		return next();
 	});
 	app.use(express.compress());
-	app.use(express.static(__dirname + '/static/'));
+	app.use(express.static('src/main/static'));
 	if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
 		app.use(express.logger());
 	}
@@ -328,7 +328,7 @@ auth.init(app);
 
 var cacheLength = 0 * 60 * 60;
 app.get('/planner', function(req, res) {
-	res.sendfile(__dirname + '/static/planner/index.html');
+	res.sendfile('src/main/static/planner/index.html');
 });
 app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);

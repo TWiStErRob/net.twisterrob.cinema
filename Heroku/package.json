@@ -15,13 +15,13 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 
-	"main": "app.js",
+	"main": "src/main/javascript/index.js",
 	"bin": {
-		"app": "./app.js"
+		"app": "src/main/javascript/index.js"
 	},
 	"scripts": {
-		"start": "node ./app.js",
-		"test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+		"start": "node src/main/javascript",
+		"test": "node src/test/javascript"
 	},
 
 	"engines": {

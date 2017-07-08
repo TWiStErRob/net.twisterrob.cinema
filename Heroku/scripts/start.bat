@@ -1,1 +1,1 @@
-node app.js | bunyan
+npm start | bunyan

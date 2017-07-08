@@ -1,2 +1,2 @@
-node updateFromCineworldCinemas
-node updateFromCineworldFilms
+node src/main/javascript/updateFromCineworldCinemas
+node src/main/javascript/updateFromCineworldFilms

@@ -1,4 +1,4 @@
-var utils = require('../utils');
+var utils = require('../../main/javascript/utils');
 var fs = require('fs');          // http://nodejs.org/api/fs.html
 var path = require('path');      // http://nodejs.org/api/path.html
 
