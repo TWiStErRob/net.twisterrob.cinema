@@ -292,49 +292,50 @@ function getPerformances(req, res) {
 	});
 }
 
+var env = process.env.NODE_ENV || 'development';
 var app = express();
-app.configure(function configure_all() {
-	// global app.set
+switch (env) {
+	case 'development':
+		app.set('app urlRoot', 'http://localhost:' + config.port + '/');
+		break;
+	case 'production':
+		app.set('app urlRoot', 'http://cinema.twisterrob.net/');
+		break;
+}
+app.use(function extendReq(req, res, next) {
+	req.paramArr = function(name) {
+		var param = this.param(name);
+		return param === undefined? [] : (_.isArray(param)? param : [param]);
+	};
+	return next();
 });
-app.configure('development', function configure_dev() {
-	app.set('app urlRoot', 'http://localhost:' + config.port + '/');
-});
-app.configure('production', function configure_prod() {
-	app.set('app urlRoot', 'http://cinema.twisterrob.net/');
-});
-
-app.configure(function configure_use() {
-	app.use(function extendReq(req, res, next) {
-		req.paramArr = function(name) {
-			var param = this.param(name);
-			return param === undefined? [] : (_.isArray(param)? param : [param]);
-		};
-		return next();
-	});
-	app.use(express.compress());
-	app.use(express.static('src/main/static'));
-	if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
-		app.use(express.logger());
-	}
+app.use(express.compress());
+app.use(express.static('src/main/static'));
+if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
+	app.use(express.logger());
+}
+if (env === 'development') {
 	var fakes = express.static('src/test/fake');
 	// resolve specific `/cinema?foo=bar` paths including their queries (file names must be url encoded)
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		var originalPathname = req._parsedUrl.pathname;
 		// double-encode pathname so that the decode in SendStream.prototype.pipe resolves to a still url-encoded path
 		req._parsedUrl.pathname = encodeURIComponent(encodeURIComponent(req._parsedUrl.href));
-		return fakes(req, res, function(err) {
+		return fakes(req, res, function (err) {
 			req._parsedUrl.pathname = originalPathname;
 			next(err);
 		});
 	});
 	app.use(fakes); // resolve normal `/cinema` or `/film` paths without queries
-	app.use(express.cookieParser());
-	app.use(express.bodyParser());
-	app.use(express.cookieSession({
-		key: 'session',
-		secret: 'twister'
-	}));
-});
+}
+app.use(express.cookieParser());
+app.use(express.urlencoded());
+app.use(express.json());
+//app.use(require('connect-multiparty')());
+app.use(express.cookieSession({
+	key: 'session',
+	secret: 'twister'
+}));
 
 auth.init(app);
 
@@ -355,7 +356,7 @@ function cacher(length) {
 	}
 }
 
-var cacheLength = 0 * 60 * 60;
+var cacheLength = env === 'development' ? 0 : 10 * 60 * 60;
 app.get('/planner', function(req, res) {
 	res.sendfile('src/main/static/planner/index.html');
 });
