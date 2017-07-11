@@ -5,7 +5,7 @@ var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var moment = require('moment');       // http://momentjs.com/docs/
 var _ = require('underscore');        // http://underscorejs.org/
-process.env.NODE_DEBUG = ''; // request neo4j express
+//process.env.NODE_DEBUG = 'request neo4j express';
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var async = require('async');         // https://github.com/caolan/async
@@ -169,7 +169,7 @@ function getFilms(req, res) {
 	}
 	request.get({
 		// need to build url manually because visionmedia's qs (used by request) adds indices to arrays (cinema)
-		uri: 'http://www.cineworld.com/api/quickbook/films?' + qs.stringify(cineParams),
+		uri: 'https://www.cineworld.com/api/quickbook/films?' + qs.stringify(cineParams),
 		json: true
 	}, function (err, response, body) {
 		if(err) throw err;
@@ -249,7 +249,7 @@ function getPerformances(req, res) {
 	}
 	var reqs = _.map(combinations, function(combo) {
 		return {
-			uri: 'http://www.cineworld.com/api/quickbook/performances',
+			uri: 'https://www.cineworld.com/api/quickbook/performances',
 			json: true,
 			qs: {
 				key: perfParams.key,
@@ -316,6 +316,18 @@ app.configure(function configure_use() {
 	if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
 		app.use(express.logger());
 	}
+	var fakes = express.static('src/test/fake');
+	// resolve specific `/cinema?foo=bar` paths including their queries (file names must be url encoded)
+	app.use(function(req, res, next) {
+		var originalPathname = req._parsedUrl.pathname;
+		// double-encode pathname so that the decode in SendStream.prototype.pipe resolves to a still url-encoded path
+		req._parsedUrl.pathname = encodeURIComponent(encodeURIComponent(req._parsedUrl.href));
+		return fakes(req, res, function(err) {
+			req._parsedUrl.pathname = originalPathname;
+			next(err);
+		});
+	});
+	app.use(fakes); // resolve normal `/cinema` or `/film` paths without queries
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.cookieSession({
