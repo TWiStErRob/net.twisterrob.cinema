@@ -124,10 +124,10 @@ module.service('Planner', [
 							return current;
 						});
 
-						var workEnd = plan.range.start.clone().startOf('day').add(params.endOfWork);
+						plan.endOfWork = plan.range.start.clone().local().startOf('day').add(params.endOfWork);
 						plan.offenses = {
 							fewMovies: !(films.length + 1 == node.watched.length && node.watched.length != 1),
-							early: plan.range.start.isBefore(workEnd),
+							early: plan.range.start.isBefore(plan.endOfWork),
 							shortBreak: _.find(plan, function(performance) {
 								return performance.breakBefore < params.minWaitBetweenMovies;
 							}) !== undefined,

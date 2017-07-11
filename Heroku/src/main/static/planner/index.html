@@ -234,7 +234,7 @@
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
 							<span class="plan-header" title="{{plan | json}}">
-								<span class="film-start" ng-class="{offense: (plan.range.start | moment:'valueOf') < (plan.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
+								<span class="film-start" ng-class="{offense: plan.range.start < plan.endOfWork}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">
 									(offends: {{offenseCount(plan)}}, prio: {{offensePriority(plan)}})
 								</span>
@@ -247,7 +247,7 @@
 									<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}">
-									<span class="film-start" ng-class="{offense: (movie.range.start | moment:'valueOf') < (movie.range.start | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: (movie.range.end | moment:'valueOf') < (plan.range.end | moment:'clone' | moment:'startOf':'day') + options.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
+									<span class="film-start" ng-class="{offense: movie.range.start < plan.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.range.end < plan.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
 									<span class="film-runtime">{{movie.film().runtime}}</span>:
 									<span class="film-title">{{movie.film().title}}</span>
 								</li>
