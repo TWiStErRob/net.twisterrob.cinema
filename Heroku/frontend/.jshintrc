@@ -1,6 +1,7 @@
 {
 	"esversion": 6,
 	"indent" : 4,
+	"laxbreak": true,
 	// TODO remove these once converted to modules
 	"strict": "global",
 	"globals": {

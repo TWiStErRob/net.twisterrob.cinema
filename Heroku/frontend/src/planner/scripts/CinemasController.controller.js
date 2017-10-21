@@ -56,8 +56,9 @@ module.controller('CinemasController', [
 						cinema.favLoading = false;
 						$rootScope.$broadcast('CinemaUnFavorited', cinema);
 					},
-					function(error) {
-						$rootScope.$broadcast('ResourceError', error);
+					function(httpResponse) {
+						cinema.favLoading = false;
+						$rootScope.$broadcast('ResourceError', httpResponse);
 					}
 				);
 			} else {
@@ -67,8 +68,9 @@ module.controller('CinemasController', [
 						cinema.favLoading = false;
 						$rootScope.$broadcast('CinemaFavorited', cinema);
 					},
-					function(error) {
-						$rootScope.$broadcast('ResourceError', error);
+					function(httpResponse) {
+						cinema.favLoading = false;
+						$rootScope.$broadcast('ResourceError', httpResponse);
 					}
 				);
 			}

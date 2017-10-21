@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('FilmsController', [
-	        '$scope', '$modal', '$dialog', '_', 'moment', 'Film',
-	function($scope,   $modal,   $dialog,   _,   moment,   Film) {
+	        '$rootScope','$scope', '$modal', '$dialog', '_', 'moment', 'Film',
+	function($rootScope,  $scope,   $modal,   $dialog,   _,   moment,   Film) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -47,14 +47,15 @@ module.controller('FilmsController', [
 			if(film.processingView) return;
 			film.processingView = true;
 			Film.addView({
-				edi: film.edi,
+				edi: film.edi
+			}, {
 				cinema: cinema.cineworldID,
 				date: moment(date).utc().valueOf()
-			}, function(view) {
+			}).$promise.then(function(view) {
 				var existing = _($scope.cineworld.films).find(function(film) {
 					return film.view
 						&& film.view.cinema.cineworldID === view.cinema.cineworldID
-						&& film.view.film.cineworldID === view.film.cineworldID
+						&& film.view.film.edi === view.film.edi
 						&& film.view.date === view.date
 					;
 				});
@@ -68,6 +69,9 @@ module.controller('FilmsController', [
 					$scope.cineworld.films.push(existing);
 				}
 				film.processingView = false;
+			}, function(httpResponse) {
+				film.processingView = false;
+				$rootScope.$broadcast('ResourceError', httpResponse);
 			});
 		}
 		function ignore(film, reason) {
@@ -76,11 +80,14 @@ module.controller('FilmsController', [
 			Film.ignore({
 				edi: film.edi,
 				reason: reason
-			}, function(ignore) {
+			}).$promise.then(function(ignore) {
 				film.ignore = ignore;
 				film.processingView = false;
-			})
-		};
+			}, function(httpResponse) {
+				film.processingView = false;
+				$rootScope.$broadcast('ResourceError', httpResponse);
+			});
+		}
 		$scope.addViewPopup = function(cinema, film) {
 			var modalInstance = $modal.open({
 				templateUrl: 'templates/viewPopup.html',
@@ -124,9 +131,10 @@ module.controller('FilmsController', [
 			films.each(function(film) { film.processingView = true; });
 			Film.removeView({
 				edi: view.film.edi,
+			}, {
 				cinema: view.cinema.cineworldID,
 				date: view.date // not conversion, it's already UTC
-			}, function() {
+			}).$promise.then(function() {
 				if(films.size() === 1) {
 					films.first().view = null;
 				} else {
@@ -144,6 +152,9 @@ module.controller('FilmsController', [
 					}
 				}
 				films.each(function(film) { film.processingView = false; });
+			}, function(httpResponse) {
+				films.each(function(film) { film.processingView = false; });
+				$rootScope.$broadcast('ResourceError', httpResponse);
 			});
 		}
 		$scope.removeViewPopup = function(view) {

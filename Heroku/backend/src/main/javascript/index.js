@@ -370,9 +370,9 @@ app.get('/cinema', cacher(cacheLength), getCinemas);
 app.get('/cinema/:cinema/fav', ensureAuthenticated, favCinema);
 app.get('/cinema/:cinema/unfav', ensureAuthenticated, unFavCinema);
 app.get('/performance', cacher(cacheLength), getPerformances);
-app.get('/film/:edi/view', ensureAuthenticated, addView);
-app.get('/film/:edi/unview', ensureAuthenticated, removeView);
-app.get('/film/:edi/ignore', ensureAuthenticated, ignore);
+app.post('/film/:edi/view', ensureAuthenticated, addView);
+app.delete('/film/:edi/view', ensureAuthenticated, removeView);
+app.put('/film/:edi/ignore', ensureAuthenticated, ignore);
 
 function listen() { //jshint ignore:line
 	if(app.initialized && graph) {
