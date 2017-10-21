@@ -19,6 +19,9 @@ module.controller('AppController', [
 		}, function(cinemaIDs) {
 			cinemaIDs = _.ensureArray(cinemaIDs);
 			cinemaIDs = _.map(cinemaIDs, _.fn.parseInt);
+			if (cinemaIDs.length) {
+				$scope.cineworld.pendingSelectedCinemas.length = 0;
+			}
 			_.push($scope.cineworld.pendingSelectedCinemas, cinemaIDs);
 		});
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
@@ -31,6 +34,9 @@ module.controller('AppController', [
 		}, function(filmEDIs) {
 			filmEDIs = _.ensureArray(filmEDIs);
 			filmEDIs = _.map(filmEDIs, _.fn.parseInt);
+			if (filmEDIs.length) {
+				$scope.cineworld.pendingSelectedFilms.length = 0;
+			}
 			_.push($scope.cineworld.pendingSelectedFilms, filmEDIs);
 		});
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
