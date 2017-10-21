@@ -3,16 +3,20 @@
 	</div>
 	<div class="modal-body row">
 		<div class="col-xs-12 col-sm-6 col-md-5">
-			<img ng-src="{{film.poster_url}}" style="float: left; margin-right: 1em;" />
 			<span><em>Actors</em>: {{film.actors}}</span><br/>
 			<span><em>Release</em>: <span class="time">{{film.release | date:'fullDate'}}</span></span><br/>
 			<span><em>Length</em>: <span class="film-runtime">{{film.runtime > 0? film.runtime : "???"}}</span> minutes</span>
+			<img ng-src="{{film.poster_url}}" style="float: left; width:100%; margin-right: 1em;" />
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-7">
-			<video id="trailer" ng-src="{{film.trailer}}" tw-poster="{{film.still_url}}" controls>
-				Sorry, your browser doesn't support video, try downloading:
-				<a ng-href="{{film.trailer}}"><img ng-src="{{film.still_url}}" /></a>
-			</video>
+			<div class="aspect-ratio">
+				<img ng-src="{{film.still_url || 'https://www.cineworld.co.uk/xmedia/img/10108/missing-trailer.png'}}" ng-if="!film.trailer" />
+				<iframe id="trailer" ng-if="film.trailer && hasYouTubeTrailer()" ng-src="{{buildYouTubeEmbedUrl(getYouTubeTrailerId())}}" frameborder="0" allowfullscreen></iframe>
+				<video id="trailer" ng-if="film.trailer && !hasYouTubeTrailer()" ng-src="" tw-poster="{{film.still_url}}" controls>
+					Sorry, your browser doesn't support video, try downloading:
+					<a ng-href="{{film.trailer}}"><img ng-src="{{film.still_url}}" /></a>
+				</video>
+			</div>
 		</div>
 	</div>
 	<div class="modal-footer">

@@ -155,18 +155,5 @@ module.controller('FilmsController', [
 				}
 			});
 		};
-
-		$scope.filmDetailsPopup = function(film) {
-			var modalInstance = $modal.open({
-				templateUrl: 'templates/filmPopup.html',
-				windowClass: 'modal-lg',
-				controller: 'FilmPopupController',
-				resolve: {
-					film: function() {
-						return film;
-					}
-				}
-			});
-		};
 	}
 ]);

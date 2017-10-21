@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', '_', '$window', 'moment', 'Cineworld', '$location',
-	function($scope,       _,   $window,   moment,   cineworld,   $location) {
+	        '$rootScope', '_', '$window', '$modal', 'moment', 'Cineworld', '$location',
+	function($scope,       _,   $window,   $modal,   moment,   cineworld,   $location) {
 		$scope.Math = $window.Math;
 		var search = {
 			film: 'f',
@@ -49,5 +49,18 @@ module.controller('AppController', [
 		$scope.$watch('cineworld.date', function (newValue, oldValue, scope) {
 			$location.search(search.date, moment(newValue).format(search.dateFormat)).replace();
 		}, true);
+
+		$scope.filmDetailsPopup = function(film) {
+			var modalInstance = $modal.open({
+				templateUrl: 'templates/filmPopup.html',
+				windowClass: 'modal-lg',
+				controller: 'FilmPopupController',
+				resolve: {
+					film: function() {
+						return film;
+					}
+				}
+			});
+		};
 	}
 ]);

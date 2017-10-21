@@ -201,7 +201,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'">
-						<td class="film" title="{{film | json}}">
+						<td class="film" title="{{film | json}}" ng-click="filmDetailsPopup(film)">
 							<span class="film-title">{{film.title}}</span>
 							<span ng-show="film.runtime > 0" class="film-runtime">{{film.runtime}}</span>
 						 </td>
