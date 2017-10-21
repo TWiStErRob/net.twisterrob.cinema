@@ -1,0 +1,31 @@
+{
+	"name": "twisterrob-cinema-web-backend",
+	"description": "Web backend for Neo4J connections and serving frontend files",
+	"license": "UNLICENCED",
+	"repository": "local",
+	"main": "src/main/javascript/index.js",
+	"bin": {
+		"app": "src/main/javascript/index.js"
+	},
+	"scripts": {
+		"preinstall": "echo Installing Backend dependencies",
+		"postinstall": "echo Installed Backend dependencies",
+		"start": "node src/main/javascript",
+		"test": "npm run test:nodeunit & npm run test:jshint",
+		"test:nodeunit": "node src/test/javascript",
+		"test:jshint": "jshint --verbose src/main/javascript"
+	},
+	"dependencies": {
+		"express": "3.21.2",
+		"node.extend": "1.0.8",
+		"bunyan": "1.8.10",
+		"neo4j-js": "0.0.7",
+		"request": "2.30.0",
+		"underscore": "1.8.3",
+		"nodeunit": "0.8.2",
+		"passport": "0.3.2",
+		"passport-google-oauth20": "1.0.0",
+		"moment": "2.4.0",
+		"async": "0.2.9"
+	}
+}

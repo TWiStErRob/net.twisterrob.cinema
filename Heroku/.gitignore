@@ -6,3 +6,7 @@ static/scripts/libs/angular/docs/
 *.iws
 .idea
 *.sublime-workspace
+.npm-debug.log
+package-lock.json
+/deploy/static/*
+!/deploy/static/lib/

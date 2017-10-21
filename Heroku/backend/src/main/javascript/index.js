@@ -1,6 +1,7 @@
 var fs = require('fs');               // http://nodejs.org/api/fs.html
 var http = require('http');           // http://nodejs.org/api/http.html
 var url = require('url');             // http://nodejs.org/api/url.html
+var path = require('path');           // http://nodejs.org/api/path.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var moment = require('moment');       // http://momentjs.com/docs/
@@ -292,6 +293,8 @@ function getPerformances(req, res) {
 	});
 }
 
+// . is /backend, not the folder of this file
+var contentRoot = process.argv[2] || path.resolve('../deploy/');
 var env = process.env.NODE_ENV || 'development';
 var app = express();
 switch (env) {
@@ -310,7 +313,7 @@ app.use(function extendReq(req, res, next) {
 	return next();
 });
 app.use(express.compress());
-app.use(express.static('src/main/static'));
+app.use(express.static(path.resolve(contentRoot, 'static')));
 if(process.env.NODE_DEBUG && /\bexpress\b/g.test(process.env.NODE_DEBUG)) {
 	app.use(express.logger());
 }
@@ -358,7 +361,7 @@ function cacher(length) {
 
 var cacheLength = env === 'development' ? 0 : 10 * 60 * 60;
 app.get('/planner', function(req, res) {
-	res.sendfile('src/main/static/planner/index.html');
+	res.sendfile(path.resolve(contentRoot, 'static/planner/index.html'));
 });
 app.get('/film', cacher(cacheLength), getFilms);
 app.get('/film/:edi', getFilm);

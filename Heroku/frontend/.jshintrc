@@ -1,0 +1,14 @@
+{
+	"esversion": 6,
+	"indent" : 4,
+	// TODO remove these once converted to modules
+	"strict": "global",
+	"globals": {
+		"window": false,
+		"console": false,
+		"$": false,
+		"angular": false,
+		"moment": false,
+		"twister": false
+	}
+}
