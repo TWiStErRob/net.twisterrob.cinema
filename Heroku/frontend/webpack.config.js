@@ -42,6 +42,8 @@ module.exports = {
 	plugins: [
 		new CopyWebpackPlugin([
 			{ from: 'src/planner/scripts', to: 'scripts', ignore: 'todo/**' },
+			{ from: 'src/planner/templates', to: 'planner/templates' },
+			{ from: 'src/planner/images', to: 'planner/images', ignore: 'descript.ion' },
 			{ from: 'src/planner/styles/planner.css', to: 'planner/planner.css' }
 		]),
 		new CopyWebpackPlugin([

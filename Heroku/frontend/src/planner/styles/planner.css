@@ -113,8 +113,8 @@ video {
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {
-    background-image: url('../images/icon-loading-white.gif');
-    background-position: 0;
+    background: url('images/icon-loading-white.gif') no-repeat 0;
+	width: 16px;
 }
 .glyphicon.loading:before {
 	content: "";
