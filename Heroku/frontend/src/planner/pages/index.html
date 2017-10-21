@@ -63,12 +63,12 @@
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
 			<script type="text/ng-template" id="cinema.shtml">
-				<div class="checkbox">
-					<i class="glyphicon pull-right" ng-class="{
+				<i class="glyphicon pull-right" ng-class="{
 						'loading'        : cinema.favLoading,
 						'glyphicon-heart'     : cinema.fav,
 						'glyphicon-star-empty': !cinema.fav
-					}" ng-click="favClick(cinema)" tooltip="{{!cinema.fav? 'Add as a Favorite!' : 'Remove from Favorites!'}}" />
+					}" ng-click="favClick(cinema)" tooltip="{{!cinema.fav? 'Add as a Favorite!' : 'Remove from Favorites!'}}"></i>
+				<div class="checkbox">
 					<label for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">
 						<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
 						<span class="cinema-name">{{cinema.name}}</span>
@@ -129,7 +129,8 @@
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
-							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime + "'": "???"}}</span>
+							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
+							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
@@ -148,7 +149,8 @@
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
-							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)">{{film.runtime > 0? film.runtime + "'": "???"}}</span>
+							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
+							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
@@ -248,7 +250,7 @@
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}">
 									<span class="film-start" ng-class="{offense: movie.range.start < plan.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.range.end < plan.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
-									<span class="film-runtime">{{movie.film().runtime}}</span>:
+									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film())">{{movie.film().runtime}}</span>:
 									<span class="film-title">{{movie.film().title}}</span>
 								</li>
 							</ol>

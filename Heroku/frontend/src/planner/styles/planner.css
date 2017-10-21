@@ -93,6 +93,9 @@ input[type="checkbox"] {
 .glyphicon:empty {
 	height: 1em;
 }
+.glyphicon:hover {
+    text-decoration: none;
+}
 
 .close {
 	margin-right: 3px;
@@ -159,6 +162,10 @@ input[type="checkbox"] {
 
 .film > .popover {
 	max-width: inherit;
+}
+.film > .glyphicon, .cinema > .glyphicon {
+    top: 4px;
+    left: 2px;
 }
 
 /*
@@ -296,17 +303,24 @@ a {
 	color: #5587E4;
 }
 
-.film .film-runtime {
+.film-runtime {
 	cursor: pointer;
 }
 
-.film .film-runtime:before {
+.film-runtime:before {
 	color: #CCCCCC;
 	content: '(';
 }
-.film .film-runtime:after {
+.film-runtime:after {
 	color: #CCCCCC;
-	content: ')';
+	content: '\')';
+}
+
+.film-runtime:empty:before {
+    content: '(???)';
+}
+.film-runtime:empty:after {
+    content: '';
 }
 
 .time,
