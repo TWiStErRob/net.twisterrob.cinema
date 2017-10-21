@@ -33,7 +33,7 @@ module.exports = {
 			}
 			global.graph = graph;
 
-			utils.readFiles('backend/src/main/queries', true, function(err, results) {
+			utils.readFiles(path.resolve(__dirname, '../queries'), true, function(err, results) {
 				if(err) throw err;
 				graph.queries = results;
 				var q = graph.query;
