@@ -18,6 +18,9 @@
 	},
 	"scripts": {
 		"start": "cd backend && npm start",
+		"updateFromCineworld": "npm run updateFromCineworldCinemas && npm run updateFromCineworldFilms",
+		"updateFromCineworldCinemas": "node backend/src/main/javascript/updateFromCineworldCinemas",
+		"updateFromCineworldFilms": "node backend/src/main/javascript/updateFromCineworldFilms",
 		"heroku-postbuild": "cd frontend && npm run build",
 		"test": "(cd backend && npm test && cd ..) && (cd frontend && npm test && cd ..)",
 		"install": "(cd backend && npm install && cd ..) && (cd frontend && npm install && cd ..)",
