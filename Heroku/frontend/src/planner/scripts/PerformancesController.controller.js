@@ -39,7 +39,6 @@ module.controller('PerformancesController', [
 		$scope.plan = function() {
 			var plans = Planner.plan($scope.options);
 			_.each(plans, function(plan) {
-				plan.open = plan.valid.length > 0;
 				function More(list, additional) {
 					this.list = list;
 					this._extra = additional;
@@ -53,10 +52,11 @@ module.controller('PerformancesController', [
 				More.prototype.remaining = function() {
 					return this._extra.length;
 				}
-				
+
 				var sorted = orderByFilter(plan.offending, [$scope.offensePriority]);
 				var matcher = { offenses: { count: 1, fewMovies: true } };
 				var initial = _.clone(plan.valid).concat(_.filter(sorted, matcher)); sorted = _.reject(sorted, matcher);
+				plan.open = initial.length > 0;
 				plan.more = new More(initial, sorted);
 			});
 			$scope.plans = plans;
