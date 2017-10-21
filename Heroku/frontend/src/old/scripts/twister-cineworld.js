@@ -39,7 +39,7 @@ twister.cineworld = NS(twister.cineworld, {
 		$('#cinemas').empty();
 		twister.ui.showStatus("Loading cinemas...");
 		return $.ajax({
-			url: 'http://www.cineworld.com/api/quickbook/cinemas',
+			url: 'https://www.cineworld.co.uk/api/quickbook/cinemas',
 			data: {
 				key: twister.cineworld.consts.apiKey,
 				full: true
@@ -81,11 +81,11 @@ twister.cineworld = NS(twister.cineworld, {
 		}
 
 		var quickbookRequest = $.ajax({
-			url: 'http://www.cineworld.com/api/quickbook/films',
+			url: 'https://www.cineworld.co.uk/api/quickbook/films',
 			data: request
 		});
 		var apiRequest = $.ajax({
-			url: 'http://www.cineworld.com/api/film/list',
+			url: 'https://www.cineworld.co.uk/api/film/list',
 			data: request
 		});
 
@@ -133,7 +133,7 @@ twister.cineworld = NS(twister.cineworld, {
 	},
 	parseMergedResponse: function(mergedResponse) {
 		/*
-		http://www.cineworld.com/api/quickbook/films:
+		https://www.cineworld.co.uk/api/quickbook/films:
 		3D: false
 		classification: "15"
 		edi: 63829
@@ -145,7 +145,7 @@ twister.cineworld = NS(twister.cineworld, {
 		title: "This Is The End"
 		+ http://www.cineworld.co.uk/api/film/detail?key=9qfgpF7B&film=6237
 
-		http://www.cineworld.com/api/film/list:
+		https://www.cineworld.co.uk/api/film/list:
 		actors: "Steve Carell, Al Pacino, Kristen Wiig, Ken Jeong, Steve Coogan, Russell Brand, Miranda Cosgrove"
 		cert: "U"
 		edi: 43599
@@ -276,7 +276,7 @@ twister.cineworld = NS(twister.cineworld, {
 					"legends":[{"code":"reg","description":"Regular"}]
 				} */
 			$.ajax({
-				url: 'http://www.cineworld.com/api/quickbook/performances',
+				url: 'https://www.cineworld.co.uk/api/quickbook/performances',
 				data: request
 			})
 			.then(twister.utils.unPackArrayPromise)

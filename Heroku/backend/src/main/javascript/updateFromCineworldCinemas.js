@@ -6,7 +6,7 @@ var _ = require('underscore');
 neo4j.init(function(err, graph) {
 	if(err) throw err;
 	request.get({
-		uri: 'http://www.cineworld.com/api/quickbook/cinemas',
+		uri: 'https://www.cineworld.co.uk/api/quickbook/cinemas',
 		json: true,
 		qs: {
 			key: "9qfgpF7B",
