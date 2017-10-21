@@ -47,8 +47,7 @@ module.controller('FilmsController', [
 			if(film.processingView) return;
 			film.processingView = true;
 			Film.addView({
-				edi: film.edi
-			}, {
+				edi: film.edi,
 				cinema: cinema.cineworldID,
 				date: moment(date).utc().valueOf()
 			}).$promise.then(function(view) {
@@ -131,7 +130,6 @@ module.controller('FilmsController', [
 			films.each(function(film) { film.processingView = true; });
 			Film.removeView({
 				edi: view.film.edi,
-			}, {
 				cinema: view.cinema.cineworldID,
 				date: view.date // not conversion, it's already UTC
 			}).$promise.then(function() {

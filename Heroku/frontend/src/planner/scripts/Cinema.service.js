@@ -5,11 +5,14 @@ module.factory('Cinema', [
 	        '$resource',
 	function($resource) {
 		return $resource('/cinema/:cinemaID/:action',
-			{ action: undefined, cinemaID: undefined },
+			{
+				'action': undefined,
+				'cinemaID': '@cinemaID'
+			},
 			{
 				list: { method: 'GET', isArray: true },
-				fav: { method: 'GET', params: { action: 'fav' } },
-				unFav: { method: 'GET', params: { action: 'unfav' } }
+				fav: { method: 'PUT', params: { action: 'favorite' } },     // cinemaID is input
+				unFav: { method: 'DELETE', params: { action: 'favorite' } } // cinemaID is input
 			}
 		);
 	}

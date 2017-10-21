@@ -4,13 +4,10 @@ var module = angular.module('appServices'); // see app.js
 module.factory('Film', [
 	        '$resource',
 	function($resource) {
-		return $resource('/film/:edi/:action',
+		return $resource('/film/:filmID/:action',
 			{
 				'action': undefined,
-				'edi': undefined,
-				'cinema': undefined,
-				'date': undefined,
-				'reason': undefined
+				'filmID': '@edi'
 			},
 			{
 				list: { method: 'GET', isArray: true },                       // no input required
