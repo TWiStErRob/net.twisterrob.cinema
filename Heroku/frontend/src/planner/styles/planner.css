@@ -57,13 +57,6 @@ input[type="checkbox"] {
 	padding-left: 4px;
 }
 
-#performances td:first-child {
-	white-space: nowrap;
-}
-#performances th.film {
-	width: 150px;
-}
-
 .plans {
 	padding-left: 0;
 }
@@ -280,13 +273,32 @@ a {
 #performances th {
 	border: 1px solid #CCCCCC;
 }
-#performances td.cinema {
-	padding: 2px 6px;
-}
 #performances table {
-	margin-bottom: 6px;
+    margin-bottom: 6px;
 }
-
+#performances th:first-child {
+    white-space: nowrap;
+    padding-left: 5px;
+}
+#performances td:first-child {
+    white-space: nowrap;
+    padding-right: 2px;
+}
+#performances-by-cinema td.cinema {
+    padding-left: 2px;
+    padding-right: 4px;
+}
+#performances-by-cinema th.film {
+    width: 150px;
+}
+#performances-by-film th.cinema {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+#performances td.performances {
+    padding-left: 2px;
+    padding-right: 2px;
+}
 
 #statusmessage {
 	background-color: #CCCCCC;
@@ -333,7 +345,7 @@ a {
 .film-start.offense,
 .film-end.offense,
 .offenseDetails {
-	color: darkslategrey;
+	color: #487a7a;
 	font-size: x-small;
 }
 
