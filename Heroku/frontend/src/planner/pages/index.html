@@ -187,7 +187,7 @@
 							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanName(cinema.name)}}</a>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -210,7 +210,7 @@
 							<span class="film-runtime" ng-click="filmDetailsPopup(film)">{{film.runtime}}</span>
 						 </td>
 						<td class="performances" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><a href="{{performance.booking_url}}" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -237,7 +237,7 @@
 					</accordion-heading>
 					<div class="plans-header" ng-show="cPlan.more.isFiltering()">
 						<span ng-show="cPlan.more.filteredByFilm" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByFilm)">{{cPlan.more.filteredByFilm.title}}</span></span>
-						<span ng-show="cPlan.more.filteredByScreening" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByScreening.film())">{{cPlan.more.filteredByScreening.film().title}}</span> @ <a href="{{cPlan.more.filteredByScreening.booking_url}}" target="_blank" class="time" title="{{cPlan.more.filteredByScreening | json}}">{{cPlan.more.filteredByScreening.scheduledTime | momentLocalFormat:'HH:mm'}}</a></span>
+						<span ng-show="cPlan.more.filteredByScreening" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByScreening.film())">{{cPlan.more.filteredByScreening.film().title}}</span> @ <a href="{{cPlan.more.filteredByScreening.booking_url}}" target="_blank" class="time" title="{{cPlan.more.filteredByScreening | json}}">{{cPlan.more.filteredByScreening.time | momentLocalFormat:'HH:mm'}}</a></span>
 						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.initialState(); $event.preventDefault()">Reset</button>
 					</div>
 					<ul class="plans">

@@ -58,7 +58,6 @@ module.service('Planner', [
 								return this.time === other.time
 								       && this.film() === other.film()
 								       && this.cinema() === other.cinema()
-								       && this.date() === other.date()
 										;
 							},
 							scheduledTime: time,

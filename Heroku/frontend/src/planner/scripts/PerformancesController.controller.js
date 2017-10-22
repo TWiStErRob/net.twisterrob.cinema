@@ -83,7 +83,7 @@ module.controller('PerformancesController', [
 				More.prototype.filterScreening = function (movie) {
 					this.splitBy(function (plan) {
 						return _.any(plan, function (screening) {
-							return movie.equals(screening);
+							return screening.equals(movie);
 						});
 					});
 					this.filteredByScreening = movie;
@@ -104,6 +104,17 @@ module.controller('PerformancesController', [
 		$scope.filterFilm = function(film) {
 			_.each($scope.plans, function(plan) {
 				plan.more.filterFilm(film);
+				plan.open = plan.more.list.length > 0;
+			});
+		};
+		$scope.filterScreening = function(cinema, film, performance) {
+			var movie = { // to satisfy equals() contract
+				cinema: function() { return cinema; },
+				film: function() { return film; },
+				time: performance.time
+			};
+			_.each($scope.plans, function(plan) {
+				plan.more.filterScreening(movie);
 				plan.open = plan.more.list.length > 0;
 			});
 		};
