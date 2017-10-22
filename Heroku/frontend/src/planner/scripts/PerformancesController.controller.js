@@ -101,6 +101,12 @@ module.controller('PerformancesController', [
 				plan.open = plan.cinema === cinema;
 			});
 		};
+		$scope.filterFilm = function(film) {
+			_.each($scope.plans, function(plan) {
+				plan.more.filterFilm(film);
+				plan.open = plan.more.list.length > 0;
+			});
+		};
 
 		$scope.options = _.cloneDeep(Planner.defaults);
 		$scope.optionsPopup = function() {
