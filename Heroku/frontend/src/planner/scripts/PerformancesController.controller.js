@@ -95,6 +95,12 @@ module.controller('PerformancesController', [
 			});
 			$scope.plans = plans;
 		};
+		
+		$scope.focus = function(cinema) {
+			_.each($scope.plans, function(plan) {
+				plan.open = plan.cinema === cinema;
+			});
+		};
 
 		$scope.options = _.cloneDeep(Planner.defaults);
 		$scope.optionsPopup = function() {
