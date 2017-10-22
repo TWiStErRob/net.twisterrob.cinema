@@ -56,7 +56,10 @@ module.controller('PerformancesController', [
 					this._extra = _.reject(this._extra, matcher);
 				};
 				More.prototype.initialState = function() {
-					this.splitBy({ offenses: { count: 1, fewMovies: true } });
+					this.splitBy(function(plan) {
+						return plan.offenses.count === 0
+						       || (plan.offenses.count === 1 && plan.offenses.fewMovies);
+					});
 				};
 				More.prototype.showMore = function(count) {
 					count = Math.max(0, count);
