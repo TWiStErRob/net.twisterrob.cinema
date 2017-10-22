@@ -230,8 +230,14 @@
 								'0': 'no suggestions',
 								'one': '1 suggestion',
 								'other': '{} suggestions'
-							}"></ng-pluralize>)
+							}"></ng-pluralize>;
+						{{cPlan.more.list.length}} out of {{cPlan.more.list.length + cPlan.more.remaining()}} shown) 
 					</accordion-heading>
+					<div class="plans-header" ng-show="cPlan.more.isFiltering()">
+						<span ng-show="cPlan.more.filteredByFilm" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByFilm)">{{cPlan.more.filteredByFilm.title}}</span></span>
+						<span ng-show="cPlan.more.filteredByScreening" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByScreening.film())">{{cPlan.more.filteredByScreening.film().title}}</span> @ <a href="{{cPlan.more.filteredByScreening.booking_url}}" target="_blank" class="time" title="{{cPlan.more.filteredByScreening | json}}">{{cPlan.more.filteredByScreening.scheduledTime | momentLocalFormat:'HH:mm'}}</a></span>
+						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.initialState(); $event.preventDefault()">Reset</button>
+					</div>
 					<ul class="plans">
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
@@ -248,20 +254,22 @@
 									<span class="offenseDetails" ng-show="movie.breakBefore < options.minWaitBetweenMovies">(minimum: {{options.minWaitBetweenMovies}} minutes)</span>
 									<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
 								</li>
-								<li class="plan-film" ng-repeat-end title="{{movie | json}}">
-									<span class="film-start" ng-class="{offense: movie.range.start < plan.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.range.end < plan.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
+								<li class="plan-film" ng-repeat-end title="{{movie | json}}" ng-class="{filtered: movie.equals(cPlan.more.filteredByScreening)}">
+									<button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="cPlan.more.filterScreening(movie)"><i class="glyphicon glyphicon-time"></i>
+									</button><span class="film-start" ng-class="{offense: movie.range.start < plan.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.range.end < plan.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
 									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film())">{{movie.film().runtime}}</span>:
-									<span class="film-title">{{movie.film().title}}</span>
+									<button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this film" ng-click="cPlan.more.filterFilm(movie.film())"><i class="glyphicon glyphicon-film"></i>
+									</button><span class="film-title" ng-class="{filtered: movie.film() === cPlan.more.filteredByFilm}">{{movie.film().title}}</span>
 								</li>
 							</ol>
 						</li>
-						<div class="plans-footer" ng-if="cPlan.more.remaining() > 0">
-							Show more suggestions:
-							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(5)">{{Math.min(5, cPlan.more.remaining())}} of {{cPlan.more.remaining()}} more ...</button>
-							|
-							<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(cPlan.more.remaining())">All!</button>
-						</div>
 					</ul>
+					<div class="plans-footer" ng-if="cPlan.more.remaining() > 0">
+						Show more suggestions:
+						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(5)">{{Math.min(5, cPlan.more.remaining())}} of {{cPlan.more.remaining()}} more ...</button>
+						|
+						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(cPlan.more.remaining())">All!</button>
+					</div>
 				</accordion-group>
 			</accordion>
 		</section>

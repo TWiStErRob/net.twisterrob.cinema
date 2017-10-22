@@ -53,6 +53,14 @@ module.service('Planner', [
 							date: function() { return date; },
 							cinema: function() { return cinema; },
 							film: function() { return film; },
+							equals: function(other) {
+								if (!other) return false;
+								return this.time === other.time
+								       && this.film() === other.film()
+								       && this.cinema() === other.cinema()
+								       && this.date() === other.date()
+										;
+							},
 							scheduledTime: time,
 							adLength: params.estimatedAdvertisementLength,
 							startTime: time.clone()

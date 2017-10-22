@@ -39,25 +39,59 @@ module.controller('PerformancesController', [
 		$scope.plan = function() {
 			var plans = Planner.plan($scope.options);
 			_.each(plans, function(plan) {
-				function More(list, additional) {
-					this.list = list;
+				function More(additional) {
+					this.list = [];
 					this._extra = additional;
 				}
+				More.prototype.reset = function() {
+					var all = this.list.concat(this._extra);
+					this._extra = orderByFilter(all, [$scope.offensePriority]);
+					this.list = [];
+					delete this.filteredByFilm;
+					delete this.filteredByScreening;
+				};
+				More.prototype.splitBy = function(matcher) {
+					this.reset();
+					this.list = _.filter(this._extra, matcher);
+					this._extra = _.reject(this._extra, matcher);
+				};
+				More.prototype.initialState = function() {
+					this.splitBy({ offenses: { count: 1, fewMovies: true } });
+				};
 				More.prototype.showMore = function(count) {
 					count = Math.max(0, count);
 					count = Math.min(count, this._extra.length);
 					var more = this._extra.splice(0, count);
-					return this.list.push.apply(this.list, more);
-				}
+					this.list.push.apply(this.list, more);
+					delete this.filteredByFilm;
+					delete this.filteredByScreening;
+				};
 				More.prototype.remaining = function() {
 					return this._extra.length;
-				}
+				};
+				More.prototype.isFiltering = function() {
+					return this.filteredByFilm || this.filteredByScreening;
+				};
+				More.prototype.filterFilm = function (film) {
+					this.splitBy(function (plan) {
+						return _.any(plan, function (screening) {
+							return screening.film() === film;
+						});
+					});
+					this.filteredByFilm = film;
+				};
+				More.prototype.filterScreening = function (movie) {
+					this.splitBy(function (plan) {
+						return _.any(plan, function (screening) {
+							return movie.equals(screening);
+						});
+					});
+					this.filteredByScreening = movie;
+				};
 
-				var sorted = orderByFilter(plan.offending, [$scope.offensePriority]);
-				var matcher = { offenses: { count: 1, fewMovies: true } };
-				var initial = _.clone(plan.valid).concat(_.filter(sorted, matcher)); sorted = _.reject(sorted, matcher);
-				plan.open = initial.length > 0;
-				plan.more = new More(initial, sorted);
+				plan.more = new More(plan.valid.concat(plan.offending));
+				plan.more.initialState();
+				plan.open = plan.more.list.length > 0;
 			});
 			$scope.plans = plans;
 		};

@@ -367,6 +367,10 @@ a {
 	background-color: #030;
 }
 
+.plan-film.filtered, .plan-film .filtered, .filtered {
+	font-weight: bold;
+}
+
 .plan-header {
 	font-weight: bold;
 }
