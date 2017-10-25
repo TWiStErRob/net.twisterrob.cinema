@@ -1,4 +1,12 @@
 'use strict';
+import 'angular'; // exports angular to global namespace
+import ngResource from 'angular-resource';
+
+import 'angular-ui-bootstrap/ui-bootstrap-tpls';
+import 'bootstrap/dist/css/bootstrap.css';
+import './ui-bootstrap-tpls-0.6+-confirm';
+
+import '../styles/planner.css';
 
 /* App Module */
 var app = angular.module('app', [
@@ -14,7 +22,7 @@ var app = angular.module('app', [
 ]);
 angular.module('appUtils', []);
 angular.module('appControllers', []);
-angular.module('appServices', ['ngResource']);
+angular.module('appServices', [ngResource]);
 angular.module('appFilters', []);
 angular.module('appDirectives', []);
 angular.module('appAnimations', []);

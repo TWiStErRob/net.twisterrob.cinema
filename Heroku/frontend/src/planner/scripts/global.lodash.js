@@ -1,10 +1,8 @@
 'use strict';
+import _ from 'lodash';
 var underscoreModule = angular.module('lodash', []);
 
-underscoreModule.service('_', [
-	        '$window',
-	function($window) {
-		var _ = $window._;
+underscoreModule.service('_', [function() {
 		var __ = {
 			groupBy: _.groupBy
 		};

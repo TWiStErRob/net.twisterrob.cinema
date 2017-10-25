@@ -1,3 +1,4 @@
+'use strict';
 const Webpack = require('webpack'); // https://github.com/webpack/webpack
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // https://github.com/jantimon/html-webpack-plugin#configuration
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/kevlened/copy-webpack-plugin
@@ -35,16 +36,21 @@ module.exports = {
 //			},
 			{ test: /\.json$/, use: ['raw-loader'] },
 			{ test: /\.html$/, use: ['raw-loader'] },
-			{ test: /\.css$/, use: ['raw-loader', 'postcss-loader'] },
-			{ test: /\.less$/, use: ['raw-loader', 'postcss-loader', 'less-loader'] }
+			{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
+			{ test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+				loader: 'url-loader',
+				options: {
+					outputPath: 'planner/',
+					name: '[hash]_[name].[ext]',
+					limit: 1000,
+					useRelativePath: true
+				}
+			},
 		]
 	},
 	plugins: [
 		new CopyWebpackPlugin([
-			{ from: 'src/planner/scripts', to: 'scripts', ignore: 'todo/**' },
 			{ from: 'src/planner/templates', to: 'planner/templates' },
-			{ from: 'src/planner/images', to: 'planner/images', ignore: 'descript.ion' },
-			{ from: 'src/planner/styles/planner.css', to: 'planner/planner.css' }
 		]),
 		new CopyWebpackPlugin([
 			{ from: 'src/old', to: 'planner-old' }

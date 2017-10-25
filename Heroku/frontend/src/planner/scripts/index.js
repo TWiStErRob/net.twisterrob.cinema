@@ -1,3 +1,25 @@
-import _ from 'lodash';
-
-//alert("hello" + _);
+'use strict';
+import './global.app.js';
+import './global.utils.js';
+import './global.lodash.js';
+import './global.moment.js';
+import './global.services.js';
+import './global.controllers.js';
+import './global.filters.js';
+import './global.directives.js';
+import './global.animations.js';
+import './Status.service.js';
+import './Cinema.service.js';
+import './Film.service.js';
+import './Performance.service.js';
+import './Cineworld.service.js';
+import './Planner.service.js';
+import './AppController.controller.js';
+import './StatusController.controller.js';
+import './DateController.controller.js';
+import './CinemasController.controller.js';
+import './FilmsController.controller.js';
+import './PerformancesController.controller.js';
+import './PlanOptionsPopupController.controller.js';
+import './ViewPopupController.controller.js';
+import './FilmPopupController.controller.js';

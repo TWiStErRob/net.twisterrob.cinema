@@ -1,10 +1,12 @@
 'use strict';
+import moment from 'moment';
+import 'moment-range';
+
 var momentModule = angular.module('moment', []);
 
 momentModule.service('moment', [
 	        '$window',
 	function($window) {
-		var moment = $window.moment;
 		moment.noConflict = function() {
 			delete $window.moment;
 			return this;

@@ -118,7 +118,7 @@ input[type="checkbox"] {
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {
-    background: url('images/icon-loading-white.gif') no-repeat 0;
+    background: url('../images/icon-loading-white.gif') no-repeat 0;
 	width: 16px;
 }
 .glyphicon.loading:before {
