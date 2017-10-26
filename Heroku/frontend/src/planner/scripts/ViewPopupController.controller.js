@@ -1,7 +1,9 @@
 'use strict';
 var module = angular.module('appControllers'); // see app.js
 
-module.controller('ViewPopupController', function($scope, $timeout, $modalInstance, cinemas, defaultCinema, films, defaultFilm, defaultDate) {
+module.controller('ViewPopupController', [
+         '$scope', '$timeout', '$modalInstance', 'moment', 'cinemas', 'defaultCinema', 'films', 'defaultFilm', 'defaultDate',
+function( $scope,   $timeout,   $modalInstance,   moment,   cinemas,   defaultCinema,   films,   defaultFilm,   defaultDate) {
 	$scope.cinemas = cinemas;
 	$scope.films = films;
 	$scope.selected = {
@@ -51,4 +53,4 @@ module.controller('ViewPopupController', function($scope, $timeout, $modalInstan
 	$scope.ignore = function(reason) {
 		$scope.ok(reason);
 	}
-});
+}]);

@@ -1,7 +1,9 @@
 'use strict';
 var module = angular.module('appControllers'); // see app.js
 
-module.controller('FilmPopupController', function($scope, $sce, $timeout, $modalInstance, film) {
+module.controller('FilmPopupController', [
+         '$scope', '$sce', '$timeout', '$modalInstance', 'film',
+function( $scope,   $sce,   $timeout,   $modalInstance,   film) {
 	$scope.film = film;
 
 	$scope.dismiss = function () {
@@ -28,4 +30,4 @@ module.controller('FilmPopupController', function($scope, $sce, $timeout, $modal
 	$scope.buildYouTubeEmbedUrl = function (videoId) {
 		return $sce.trustAsResourceUrl('https://www.youtube-nocookie.com/embed/' + videoId + '?rel=0');
 	};
-});
+}]);

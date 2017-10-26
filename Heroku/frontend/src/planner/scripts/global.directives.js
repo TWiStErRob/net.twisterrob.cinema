@@ -7,6 +7,7 @@ module.directive("twPoster", function() {
 		priority: 99, // it needs to run after the attributes are interpolated
 		link: function(scope, element, attr) {
 			attr.$observe('twPoster', function(value) {
+				// TODO MIGRATION 1.3 this may be unnecessary: https://github.com/angular/angular.js/commit/531a8de72c439d8ddd064874bf364c00cedabb11
 				if (!value)
 					return;
 				attr.$set('poster', value);

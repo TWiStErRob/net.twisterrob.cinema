@@ -179,6 +179,6 @@ module.controller('PerformancesController', [
 	}
 ]);
 
-module.run(['$templateCache', function (e) {
-	e.put('templates/planOptionsPopup.html', require('../templates/planOptionsPopup.html'));
+module.run(['$templateCache', function ($templateCache) {
+	$templateCache.put('templates/planOptionsPopup.html', require('../templates/planOptionsPopup.html'));
 }]);

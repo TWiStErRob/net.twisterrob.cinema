@@ -1,7 +1,9 @@
 'use strict';
 var module = angular.module('appControllers'); // see app.js
 
-module.controller('PlanOptionsPopupController', function($scope, moment, $modalInstance, options) {
+module.controller('PlanOptionsPopupController', [
+         '$scope', '$modalInstance', 'options',
+function( $scope,   $modalInstance,   options) {
 	$scope.options = options;
 
 	$scope.ok = function () {
@@ -10,4 +12,4 @@ module.controller('PlanOptionsPopupController', function($scope, moment, $modalI
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
 	};
-});
+}]);

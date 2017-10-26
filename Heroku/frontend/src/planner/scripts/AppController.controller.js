@@ -71,6 +71,6 @@ module.controller('AppController', [
 	}
 ]);
 
-module.run(['$templateCache', function (e) {
-	e.put('templates/filmPopup.html', require('../templates/filmPopup.html'));
+module.run(['$templateCache', function ($templateCache) {
+	$templateCache.put('templates/filmPopup.html', require('../templates/filmPopup.html'));
 }]);
