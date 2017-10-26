@@ -50,9 +50,6 @@ module.exports = {
 	},
 	plugins: [
 		new CopyWebpackPlugin([
-			{ from: 'src/planner/templates', to: 'planner/templates' },
-		]),
-		new CopyWebpackPlugin([
 			{ from: 'src/old', to: 'planner-old' }
 		]),
 		// FIXME new ExtractTextPlugin("styles.css"),

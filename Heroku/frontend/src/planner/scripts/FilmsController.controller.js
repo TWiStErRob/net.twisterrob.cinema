@@ -166,3 +166,7 @@ module.controller('FilmsController', [
 		};
 	}
 ]);
+
+module.run(['$templateCache', function (e) {
+	e.put('templates/viewPopup.html', require('../templates/viewPopup.html'));
+}]);
