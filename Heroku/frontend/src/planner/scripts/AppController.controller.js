@@ -57,7 +57,7 @@ module.controller('AppController', [
 		}, true);
 
 		$scope.filmDetailsPopup = function(film) {
-			var modalInstance = $uibModal.open({
+			$uibModal.open({
 				templateUrl: 'templates/filmPopup.html',
 				windowClass: 'modal-lg',
 				controller: 'FilmPopupController',

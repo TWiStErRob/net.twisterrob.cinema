@@ -52,5 +52,5 @@ function( $scope,   $timeout,   $uibModalInstance,   moment,   cinemas,   defaul
 	};
 	$scope.ignore = function(reason) {
 		$scope.ok(reason);
-	}
+	};
 }]);

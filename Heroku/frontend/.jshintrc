@@ -5,6 +5,8 @@
 	"globals": {
 		"window": false,
 		"console": false,
+		"document": false,
+		"require": false,
 		"$": false,
 		"angular": false,
 		"moment": false,

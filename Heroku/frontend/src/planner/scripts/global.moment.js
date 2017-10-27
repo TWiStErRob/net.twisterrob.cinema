@@ -12,7 +12,7 @@ momentModule.service('moment', [
 			return this;
 		};
 		moment.range = moment.fn.range;
-		return moment//.noConflict();
+		return moment;//.noConflict();
 	}
 ]);
 

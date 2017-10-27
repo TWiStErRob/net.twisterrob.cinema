@@ -38,7 +38,7 @@ underscoreModule.service('_', [function() {
 						byFirst[prop] = _groupByMulti(byFirst[prop], rest, context);
 					}
 					return byFirst;
-				} 
+				}
 			}
 		});
 		_.fn = {
@@ -54,6 +54,6 @@ underscoreModule.service('_', [function() {
 				};
 			}
 		};
-		return _//.noConflict();
+		return _;//.noConflict();
 	}
 ]);

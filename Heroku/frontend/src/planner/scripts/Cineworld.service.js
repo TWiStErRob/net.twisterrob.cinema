@@ -24,13 +24,14 @@ module.service('Cineworld', [
 				// no params for cinemas
 			};
 			$rootScope.$broadcast('CinemasLoading', data.cinemas);
-			return data.cinemas = Cinema.list(params, function(cinemas) {
+			data.cinemas = Cinema.list(params, function(cinemas) {
 				angular.forEach(cinemas, function(cinema) {
 					cinema.selected = _.contains(data.pendingSelectedCinemas, cinema.cineworldID);
 				});
 				data.pendingSelectedCinemas.length = 0;
 				$rootScope.$broadcast('CinemasLoaded', cinemas);
 			});
+			return data.cinemas;
 		}, config.cinemaWait);
 
 		this.updateFilms = _.debounce(function() {
@@ -42,7 +43,7 @@ module.service('Cineworld', [
 				return;
 			}
 			$rootScope.$broadcast('FilmsLoading', data.films);
-			return data.films = Film.list(params, function(films) {
+			data.films = Film.list(params, function(films) {
 				angular.forEach(films, function(film) {
 					film.selected = _.contains(data.pendingSelectedFilms, film.edi);
 					// TODO view.date<UTC> = moment(view.date).local().toDate()
@@ -50,6 +51,7 @@ module.service('Cineworld', [
 				data.pendingSelectedFilms.length = 0;
 				$rootScope.$broadcast('FilmsLoaded', films);
 			});
+			return data.films;
 		}, config.filmWait);
 		
 		this.updatePerformances = _.debounce(function() {
@@ -62,10 +64,11 @@ module.service('Cineworld', [
 				return;
 			}
 			$rootScope.$broadcast('PerformancesLoading', data.performances);
-			return data.performances = Performance.list(params, function(performances) {
+			data.performances = Performance.list(params, function(performances) {
 				$rootScope.$broadcast('PerformancesLoaded', performances);
 			});
-		}, config.performanceWait);		
+			return data.performances;
+		}, config.performanceWait);
 
 		Object.defineProperty(data, 'selectedCinemas', {
 			get: function() { return _.filter(data.cinemas, _.fn.prop('selected')); }
