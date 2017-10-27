@@ -1,6 +1,7 @@
 'use strict';
 import 'angular'; // exports angular to global namespace
 import ngResource from 'angular-resource';
+import ngAnimate from 'angular-animate';
 
 import 'angular-ui-bootstrap/ui-bootstrap-tpls';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,7 +26,7 @@ angular.module('appControllers', []);
 angular.module('appServices', [ngResource]);
 angular.module('appFilters', []);
 angular.module('appDirectives', []);
-angular.module('appAnimations', []);
+angular.module('appAnimations', [ngAnimate]);
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.html5Mode(true);
