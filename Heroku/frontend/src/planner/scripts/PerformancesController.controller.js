@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('PerformancesController', [
-	        '$scope', '_', '$modal', 'Planner', 'orderByFilter',
-	function($scope,   _,   $modal,   Planner,   orderByFilter) {
+	        '$scope', '_', '$uibModal', 'Planner', 'orderByFilter',
+	function($scope,   _,   $uibModal,   Planner,   orderByFilter) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -124,7 +124,7 @@ module.controller('PerformancesController', [
 
 		$scope.options = _.cloneDeep(Planner.defaults);
 		$scope.optionsPopup = function() {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				templateUrl: 'templates/planOptionsPopup.html',
 				controller: 'PlanOptionsPopupController',
 				resolve: {

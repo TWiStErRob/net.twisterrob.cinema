@@ -9,7 +9,7 @@
 					<select name="film" class="form-control"
 						ng-model="selected.film" required
 						ng-options="c.title group by filmGroup(c) for c in films | orderBy:[filmGroup, 'title']"
-						popover="Which film have you seen?" popover-trigger="focus" popover-placement="top">
+						uib-popover="Which film have you seen?" popover-trigger="focus" popover-placement="top">
 					</select>
 					<span ng-show="viewForm.film.$error.required" class="help-inline">Please select a film!</span>
 				</div>
@@ -20,7 +20,7 @@
 					<select name="cinema" class="form-control"
 						ng-model="selected.cinema" required
 						ng-options="c.name group by cinemaGroup(c) for c in cinemas | orderBy:[cinemaGroup, 'name']"
-						popover="Where did you watch this film?" popover-trigger="focus" popover-placement="top">
+						uib-popover="Where did you watch this film?" popover-trigger="focus" popover-placement="top">
 					</select>
 					<span ng-show="viewForm.cinema.$error.required" class="help-inline">Please select a cinema!</span>
 				</div>
@@ -32,8 +32,8 @@
 					<div class="input-group">
 						<input name="date" type="text"
 							ng-model="selected.date" required
-							class="form-control" datepicker-popup="shortDate" is-open="uiState.datePickerDisplayed"
-							popover="When did you watch this film?" popover-trigger="focus" popover-placement="top" />
+							class="form-control" uib-datepicker-popup="shortDate" is-open="uiState.datePickerDisplayed"
+							uib-popover="When did you watch this film?" popover-trigger="focus" popover-placement="top" />
 						<span class="input-group-btn">
 							<button class="btn btn-default" type="button" ng-click="uiState.displayDatePicker()">
 								<i class="glyphicon glyphicon-calendar"></i>&nbsp;
@@ -48,9 +48,9 @@
 				<div class="col-sm-9">
 					<!-- workaround to not being able to get $invalid state of the timepicker directive nor the child inputs are named -->
 					<input name="time" type="hidden" required ng-model="selected.time" />
-					<timepicker hour-step="1" minute-step="5" show-meridian="false"
+					<uib-timepicker hour-step="1" minute-step="5" show-meridian="false"
 						ng-model="selected.time" required
-						popover="Which screening did you go to?" popover-trigger="focus" popover-placement="top"></timepicker>
+						uib-popover="Which screening did you go to?" popover-trigger="focus" popover-placement="top"></uib-timepicker>
 					<span ng-show="viewForm.time.$error.required" class="help-inline">Please select a time!</span>
 				</div>
 			</div>
@@ -65,7 +65,7 @@
 								<div class="input-group">
 									<input name="friend-{{$index}}" type="text" class="form-control input-sm"
 											ng-model="selected.friends[$index]" required
-											popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
+											uib-popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
 									<span class="input-group-btn">
 										<button class="btn btn-default btn-sm" type="button" title="Remove"
 												ng-click="selected.friends.splice($index, 1)">

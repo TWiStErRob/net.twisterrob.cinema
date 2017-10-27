@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('ViewPopupController', [
-         '$scope', '$timeout', '$modalInstance', 'moment', 'cinemas', 'defaultCinema', 'films', 'defaultFilm', 'defaultDate',
-function( $scope,   $timeout,   $modalInstance,   moment,   cinemas,   defaultCinema,   films,   defaultFilm,   defaultDate) {
+         '$scope', '$timeout', '$uibModalInstance', 'moment', 'cinemas', 'defaultCinema', 'films', 'defaultFilm', 'defaultDate',
+function( $scope,   $timeout,   $uibModalInstance,   moment,   cinemas,   defaultCinema,   films,   defaultFilm,   defaultDate) {
 	$scope.cinemas = cinemas;
 	$scope.films = films;
 	$scope.selected = {
@@ -39,7 +39,7 @@ function( $scope,   $timeout,   $modalInstance,   moment,   cinemas,   defaultCi
 		var sel = $scope.selected;
 		var date = moment(sel.date).startOf('day').valueOf(); // strip time
 		var time = sel.time - moment(sel.time).startOf('day'); // strip date
-		$modalInstance.close({
+		$uibModalInstance.close({
 			cinema: sel.cinema,
 			film: sel.film,
 			date: date + time,
@@ -48,7 +48,7 @@ function( $scope,   $timeout,   $modalInstance,   moment,   cinemas,   defaultCi
 		});
 	};
 	$scope.cancel = function() {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	};
 	$scope.ignore = function(reason) {
 		$scope.ok(reason);

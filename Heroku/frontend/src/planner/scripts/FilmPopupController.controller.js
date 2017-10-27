@@ -2,12 +2,12 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('FilmPopupController', [
-         '$scope', '$sce', '$timeout', '$modalInstance', 'film',
-function( $scope,   $sce,   $timeout,   $modalInstance,   film) {
+         '$scope', '$sce', '$timeout', '$uibModalInstance', 'film',
+function( $scope,   $sce,   $timeout,   $uibModalInstance,   film) {
 	$scope.film = film;
 
 	$scope.dismiss = function () {
-		$modalInstance.dismiss();
+		$uibModalInstance.dismiss();
 	};
 
 	$scope.hasYouTubeTrailer = function () {

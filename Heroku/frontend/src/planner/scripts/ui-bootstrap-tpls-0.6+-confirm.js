@@ -14,7 +14,9 @@
  */
 var module = angular.module('ui.bootstrap.modal');
 
-module.factory('$dialog', ['$rootScope', '$modal', function ($rootScope, $modal) {
+module.factory('$dialog', [
+          '$rootScope', '$uibModal',
+function ( $rootScope,   $uibModal) {
     var prompt = function(title, message, buttons) {
         if(typeof buttons === 'undefined') {
             buttons = [
@@ -23,17 +25,17 @@ module.factory('$dialog', ['$rootScope', '$modal', function ($rootScope, $modal)
             ];
         }
 
-        var ModalCtrl = function($scope, $modalInstance) {
+        var ModalCtrl = function($scope, $uibModalInstance) {
             $scope.title = title;
             $scope.message = message;
             $scope.buttons = buttons;
 
             $scope.close = function(result) {
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             };
         };
 
-        return $modal.open({
+        return $uibModal.open({
             templateUrl: 'template/dialog/message.html',
             controller: ModalCtrl
         }).result;
@@ -51,8 +53,8 @@ module.factory('$dialog', ['$rootScope', '$modal', function ($rootScope, $modal)
     };
 }]);
 
-module.run(["$templateCache", function (e) {
-	e.put("template/dialog/message.html", ''
+module.run(['$templateCache', function ($templateCache) {
+	$templateCache.put("template/dialog/message.html", ''
 		+ '<div class="modal-header">\n'
 		+ '	<h1>{{ title }}</h1>\n'
 		+ '</div>\n'

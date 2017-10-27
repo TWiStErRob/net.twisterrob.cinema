@@ -22,7 +22,7 @@
 				<div class="col-sm-9">
 					<!-- workaround to not being able to get $invalid state of the timepicker directive nor the child inputs are named -->
 					<input name="endOfWork" type="hidden" required ng-model="options.endOfWork" ng-change="fixTime('endOfWork')" />
-					<timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="options.endOfWork"></timepicker>
+					<uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="options.endOfWork"></uib-timepicker>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.adLength.$invalid, 'has-success': !plannerOptionsForm.adLength.$invalid}">

@@ -2,14 +2,14 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('PlanOptionsPopupController', [
-         '$scope', '$modalInstance', 'options',
-function( $scope,   $modalInstance,   options) {
+         '$scope', '$uibModalInstance', 'options',
+function( $scope,   $uibModalInstance,   options) {
 	$scope.options = options;
 
 	$scope.ok = function () {
-		$modalInstance.close(options);
+		$uibModalInstance.close(options);
 	};
 	$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	};
 }]);

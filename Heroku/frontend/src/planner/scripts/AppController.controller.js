@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('AppController', [
-	        '$rootScope', '_', '$window', '$modal', 'moment', 'Cineworld', '$location',
-	function($scope,       _,   $window,   $modal,   moment,   cineworld,   $location) {
+	        '$rootScope', '_', '$window', '$uibModal', 'moment', 'Cineworld', '$location',
+	function($scope,       _,   $window,   $uibModal,   moment,   cineworld,   $location) {
 		$scope.Math = $window.Math;
 		var search = {
 			film: 'f',
@@ -57,7 +57,7 @@ module.controller('AppController', [
 		}, true);
 
 		$scope.filmDetailsPopup = function(film) {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				templateUrl: 'templates/filmPopup.html',
 				windowClass: 'modal-lg',
 				controller: 'FilmPopupController',

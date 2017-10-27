@@ -31,7 +31,7 @@
 				<div class="form-group">
 					<label for="cineworldDate">Date</label>
 					<input id="cineworldDate" name="cineworldDate" type="text" ng-model="cineworld.date" class="form-control"
-						datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" />
+						uib-datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" />
 				</div>
 				<button class="btn btn-default" ng-click="displayCineworldDatePicker()">
 					<i class="glyphicon glyphicon-calendar"></i>
@@ -65,7 +65,7 @@
 						'loading'        : cinema.favLoading,
 						'glyphicon-heart'     : cinema.fav,
 						'glyphicon-star-empty': !cinema.fav
-					}" ng-click="favClick(cinema)" tooltip="{{!cinema.fav? 'Add as a Favorite!' : 'Remove from Favorites!'}}"></i>
+					}" ng-click="favClick(cinema)" uib-tooltip="{{!cinema.fav? 'Add as a Favorite!' : 'Remove from Favorites!'}}"></i>
 				<div class="checkbox">
 					<label for="cinema-{{cinema.cineworldID}}" title="{{cinema | json}}">
 						<input id="cinema-{{cinema.cineworldID}}" type="checkbox" class="check" value="{{cinema.cineworldID}}" ng-model="cinema.selected" />
@@ -78,55 +78,55 @@
 					<button ng-click="buttonClick(button)" id="cinema-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading">{{button.label}}</button>
 				</li>
 			</ul>
-			<accordion close-others="false" ng-init="isOpen_favs=true; isOpen_london=true" >
-				<accordion-group is-open="isOpen_favs">
-					<accordion-heading>
+			<uib-accordion close-others="false" ng-init="isOpen_favs=true; isOpen_london=true" >
+				<uib-accordion-group is-open="isOpen_favs">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_favs, 'glyphicon-chevron-right': !isOpen_favs}"></i>
 						Favorite Cinemas ({{(cineworld.cinemas | filter:{fav: true}).length}})
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in cineworld.cinemas | filter:{fav: true} | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
-				</accordion-group>
-				<accordion-group is-open="isOpen_london">
-					<accordion-heading>
+				</uib-accordion-group>
+				<uib-accordion-group is-open="isOpen_london">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_london, 'glyphicon-chevron-right': !isOpen_london}"></i>
 						London Cinemas ({{(cineworld.cinemas | filter:{name:'London'}).length}})
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter:{name:'London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
-				</accordion-group>
-				<accordion-group is-open="isOpen_others">
-					<accordion-heading>
+				</uib-accordion-group>
+				<uib-accordion-group is-open="isOpen_others">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_others, 'glyphicon-chevron-right': !isOpen_others}"></i>
 						Other Cinemas ({{(cineworld.cinemas | filter:{name:'!London'}).length}})
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter:{name:'!London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
-				</accordion-group>
-			</accordion>
+				</uib-accordion-group>
+			</uib-accordion>
 		</section>
 		<section id="films" class="ui-stretch" ng-controller="FilmsController">
 			<ul class="list-inline">
 				<li ng-repeat="(id, button) in buttons" ng-hide="button.hidden">
-					<button ng-click="buttonClick(button)" id="film-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading" tooltip="{{options | json}}">{{button.label}}</button>
+					<button ng-click="buttonClick(button)" id="film-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading" uib-tooltip="{{options | json}}">{{button.label}}</button>
 				</li>
 			</ul>
-			<accordion close-others="false" ng-init="isOpen_films=true" >
-				<accordion-group is-open="isOpen_films">
-					<accordion-heading>
+			<uib-accordion close-others="false" ng-init="isOpen_films=true" >
+				<uib-accordion-group is-open="isOpen_films">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_films, 'glyphicon-chevron-right': !isOpen_films}"></i>
 						New Films ({{(cineworld.films | filter: { view: '!' }).length}})
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!'} | orderBy:['title']">
-							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" tooltip="Click to add view!"></i>
+							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" uib-tooltip="Click to add view!"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
 							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox">
@@ -137,16 +137,16 @@
 							</div>
 						</li>
 					</ul>
-				</accordion-group>
-				<accordion-group is-open="isOpen_watched">
-					<accordion-heading>
+				</uib-accordion-group>
+				<uib-accordion-group is-open="isOpen_watched">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_watched, 'glyphicon-chevron-right': !isOpen_watched}"></i>
 						Watched ({{(cineworld.films | filter: { view: '!!' }).length}})
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div ng-show="loading">Loading films...</div>
 					<ul class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!!'} | orderBy:['title']">
-							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
+							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" uib-tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
 							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox">
@@ -157,8 +157,8 @@
 							</div>
 						</li>
 					</ul>
-				</accordion-group>
-			</accordion>
+				</uib-accordion-group>
+			</uib-accordion>
 		</section>
 		<section id="performances" class="ui-stretch" ng-controller="PerformancesController">
 			<ul class="list-inline">
@@ -213,9 +213,9 @@
 					</tr>
 				</tbody>
 			</table>
-			<accordion id="plan-results" ng-show="!loading" close-others="false">
-				<accordion-group id="cinema-plan-{{cPlan.cinema.cineworldID}}" ng-repeat="cPlan in plans | orderBy:[planRank, 'cinema.name']" is-open="cPlan.open">
-					<accordion-heading>
+			<uib-accordion id="plan-results" ng-show="!loading" close-others="false">
+				<uib-accordion-group id="cinema-plan-{{cPlan.cinema.cineworldID}}" ng-repeat="cPlan in plans | orderBy:[planRank, 'cinema.name']" is-open="cPlan.open">
+					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cPlan.open, 'glyphicon-chevron-right': !cPlan.open}"></i>
 						<span class="cinema-name">{{cPlan.cinema.name}}</span>
 						(<ng-pluralize count="cPlan.valid.length"
@@ -232,7 +232,7 @@
 								'other': '{} suggestions'
 							}"></ng-pluralize>;
 						{{cPlan.more.list.length}} out of {{cPlan.more.list.length + cPlan.more.remaining()}} shown) 
-					</accordion-heading>
+					</uib-accordion-heading>
 					<div class="plans-header" ng-show="cPlan.more.isFiltering()">
 						<span ng-show="cPlan.more.filteredByFilm" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByFilm)">{{cPlan.more.filteredByFilm.title}}</span></span>
 						<span ng-show="cPlan.more.filteredByScreening" class="filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByScreening.film())">{{cPlan.more.filteredByScreening.film().title}}</span> @ <a href="{{cPlan.more.filteredByScreening.booking_url}}" target="_blank" class="time" title="{{cPlan.more.filteredByScreening | json}}">{{cPlan.more.filteredByScreening.time | momentLocalFormat:'HH:mm'}}</a></span>
@@ -270,8 +270,8 @@
 						|
 						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(cPlan.more.remaining())">All!</button>
 					</div>
-				</accordion-group>
-			</accordion>
+				</uib-accordion-group>
+			</uib-accordion>
 		</section>
 	</section>
 	<div id="statusmessage" ng-show="stati.length > 0" ng-controller="StatusController">

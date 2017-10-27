@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('FilmsController', [
-	        '$rootScope','$scope', '$modal', '$dialog', '_', 'moment', 'Film',
-	function($rootScope,  $scope,   $modal,   $dialog,   _,   moment,   Film) {
+	        '$rootScope','$scope', '$uibModal', '$dialog', '_', 'moment', 'Film',
+	function($rootScope,  $scope,   $uibModal,   $dialog,   _,   moment,   Film) {
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updateFilms();
 		}, true);
@@ -88,7 +88,7 @@ module.controller('FilmsController', [
 			});
 		}
 		$scope.addViewPopup = function(cinema, film) {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				templateUrl: 'templates/viewPopup.html',
 				controller: 'ViewPopupController',
 				resolve: {
