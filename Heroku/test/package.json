@@ -1,0 +1,20 @@
+{
+	"name": "twisterrob-cinema-web-tests",
+	"description": "AngularJS end-to-end tests for twisterrob-cinema",
+	"license": "UNLICENCED",
+	"repository": "local",
+	"scripts": {
+		"postinstall": "webdriver-manager update",
+		"start": "npm-run-all -p -r selenium protractor",
+		"selenium": "webdriver-manager start",
+		"protractor": "protractor conf.js"
+	},
+	"dependencies": {
+		"protractor": "5.2.0"
+	},
+	"devDependencies": {
+		"npm-run-all": "4.1.1",
+		"@types/jasmine": "2.5.45",
+		"@types/jasminewd2": "2.0.2"
+	}
+}
