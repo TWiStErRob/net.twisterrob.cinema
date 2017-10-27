@@ -25,19 +25,18 @@ function ( $rootScope,   $uibModal) {
             ];
         }
 
-        var ModalCtrl = function($scope, $uibModalInstance) {
-            $scope.title = title;
-            $scope.message = message;
-            $scope.buttons = buttons;
-
-            $scope.close = function(result) {
-                $uibModalInstance.close(result);
-            };
-        };
-
         return $uibModal.open({
             templateUrl: 'template/dialog/message.html',
-            controller: ModalCtrl
+            controller: ['$scope', '$uibModalInstance',
+            function(     $scope,   $uibModalInstance) {
+                $scope.title = title;
+                $scope.message = message;
+                $scope.buttons = buttons;
+    
+                $scope.close = function(result) {
+                    $uibModalInstance.close(result);
+                };
+            }]
         }).result;
     };
 

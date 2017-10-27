@@ -134,7 +134,7 @@ module.controller('FilmsController', [
 				date: view.date // not conversion, it's already UTC
 			}).$promise.then(function() {
 				if(films.size() === 1) {
-					films.first().view = null;
+					delete films.first().view;
 				} else {
 					var film = _($scope.cineworld.films).find(function(film) {
 						return film.view
