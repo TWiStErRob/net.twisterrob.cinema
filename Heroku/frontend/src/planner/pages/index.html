@@ -85,7 +85,7 @@
 						Favorite Cinemas ({{(cineworld.cinemas | filter:{fav: true}).length}})
 					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
-					<ul class="list-unstyled" ng-show="!loading">
+					<ul id="cinemas-list-favs" class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in cineworld.cinemas | filter:{fav: true} | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
 				</uib-accordion-group>
@@ -95,7 +95,7 @@
 						London Cinemas ({{(cineworld.cinemas | filter:{name:'London'}).length}})
 					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
-					<ul class="list-unstyled" ng-show="!loading">
+					<ul id="cinemas-list-london" class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter:{name:'London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
 				</uib-accordion-group>
@@ -105,7 +105,7 @@
 						Other Cinemas ({{(cineworld.cinemas | filter:{name:'!London'}).length}})
 					</uib-accordion-heading>
 					<div ng-show="loading">Loading cinemas...</div>
-					<ul class="list-unstyled" ng-show="!loading">
+					<ul id="cinemas-list-other" class="list-unstyled" ng-show="!loading">
 						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter:{name:'!London'}) | orderBy:'name'" ng-include="'cinema.shtml'" />
 					</ul>
 				</uib-accordion-group>
@@ -124,7 +124,7 @@
 						New Films ({{(cineworld.films | filter: { view: '!' }).length}})
 					</uib-accordion-heading>
 					<div ng-show="loading">Loading films...</div>
-					<ul class="list-unstyled" ng-show="!loading">
+					<ul id="films-list" class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-open pull-right" ng-click="addViewPopup(null, film)" ng-class="{ 'loading': film.processingView }" uib-tooltip="Click to add view!"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
@@ -144,7 +144,7 @@
 						Watched ({{(cineworld.films | filter: { view: '!!' }).length}})
 					</uib-accordion-heading>
 					<div ng-show="loading">Loading films...</div>
-					<ul class="list-unstyled" ng-show="!loading">
+					<ul id="films-list-watched" class="list-unstyled" ng-show="!loading">
 						<li class="film" ng-repeat="film in cineworld.films | filter: {view: '!!'} | orderBy:['title']">
 							<i class="glyphicon glyphicon-eye-close pull-right" ng-click="removeViewPopup(film.view)" ng-class="{ 'loading': film.processingView }" uib-tooltip="{{'Watched at ' + film.view.cinema.name + ' on ' + (film.view.date | date:'shortDate') + ' at ' + (film.view.date | date:'shortTime')}}"></i>
 							<span class="film-runtime pull-right" ng-click="filmDetailsPopup(film)"
