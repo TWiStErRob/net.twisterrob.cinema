@@ -33,7 +33,6 @@ export const cinemas = {
 
 export const films = {
 	wait() {
-		cinemas.wait();
 		waitFor('.films-loading');
 	},
 	buttons: {
@@ -48,7 +47,6 @@ export const films = {
 
 export const performances = {
 	wait() {
-		films.wait();
 		waitFor('.performances-loading');
 	},
 	buttons: {
@@ -58,6 +56,27 @@ export const performances = {
 };
 
 export default {
+	wait() {
+		cinemas.wait();
+		element(by.id('cinemas'))
+				.all(by.css('.cinema'))
+				.filter((cinema) => cinema.element(by.css('[type="checkbox"]')).getAttribute('checked'))
+				.count()
+				.then((count) => {
+					if (count > 0) {
+						films.wait();
+					}
+				});
+		element(by.id('films'))
+				.all(by.css('.film'))
+				.filter((film) => film.element(by.css('[type="checkbox"]')).getAttribute('checked'))
+				.count()
+				.then((count) => {
+					if (count > 0) {
+						performances.wait();
+					}
+				});
+	},
 	goToPlanner: function () {
 		browser.get('/planner');
 	},

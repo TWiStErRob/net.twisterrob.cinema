@@ -4,9 +4,9 @@ describe('Films display', function () {
 
 	beforeEach(function () {
 		app.goToPlanner();
-		app.cinemas.wait();
+		app.wait();
 		app.cinemas.buttons.all.click();
-		films.wait();
+		app.wait();
 		films.buttons.none.click();
 	});
 

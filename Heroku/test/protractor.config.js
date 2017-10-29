@@ -18,10 +18,18 @@ exports.config = {
 		require('babel-core/register'); // eslint-disable-line
 		jasmine.getEnv().beforeAll(function () {
 			//jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
-			
+
 			jasmine.addMatchers(require('./src/matchers/generic').default);
 			jasmine.addMatchers(require('./src/matchers/app').default);
 			browser.driver.manage().window().maximize();
+			browser.addMockModule('disableNgAnimate', function () {
+				/* global angular: false // do not require() angular, we need the one in the browser */
+				angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
+					$animate.enabled(false);
+				}]);
+			});
+			// TODO consider also https://declara.com/content/J1J2Gkk1
+			//element('body').allowAnimations(false);
 		});
 	},
 };
