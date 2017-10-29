@@ -1,3 +1,8 @@
+function describe(actual) {
+	const locator = actual.locator();
+	return !locator ? "" + locator : locator.message || locator.toString();
+}
+
 /**
  * Matches the element to have all the passed in classes in order.
  * @param {ElementFinder} actual
@@ -8,8 +13,7 @@ export function toContainClasses(actual, expectedClasses) {
 	const verification = {
 		message: "unknown failure",
 		pass: expect(actual.getAttribute('class').then(function (actualClasses) {
-			const element = actual.locator().message || actual.locator().toString();
-			verification.message = `Expected to have class '${expectedClasses}', but had '${actualClasses}' on ${element}`;
+			verification.message = `Expected to have class '${expectedClasses}', but had '${actualClasses}' on ${describe(actual)}`;
 			return actualClasses;
 		})).toContain(expectedClasses),
 	};
@@ -30,8 +34,7 @@ export function toHaveClass(actual, expectedClass) {
 	};
 	actual.getAttribute('class').then(function (classes) {
 		const hasClass = classes.split(/\s+/).indexOf(expectedClass) >= 0;
-		const element = actual.locator().message || actual.locator().toString();
-		verification.message = `Missing class '${expectedClass}' from '${classes}' on ${element}`;
+		verification.message = `Missing class '${expectedClass}' from '${classes}' on ${describe(actual)}`;
 		deferred.fulfill(hasClass);
 		return hasClass;
 	});
@@ -53,8 +56,7 @@ export function toBeSelected(actual, expectedClass) {
 	const checkbox = actual.element(by.css('[type="checkbox"]'));
 	checkbox.getAttribute('checked').then(function (checkedAttr) {
 		const isChecked = !!checkedAttr;
-		const element = actual.locator().message || actual.locator().toString();
-		verification.message = `Expected ${element} to be checked, but was not`;
+		verification.message = `Expected ${describe(actual)} to be checked, but was not`;
 		deferred.fulfill(isChecked);
 		return isChecked;
 	});
