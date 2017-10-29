@@ -1,4 +1,5 @@
 // Run from IDEA via NodeJS run configuration: `node_modules\protractor\built\cli.js protractor.config.js`
+// Additional useful node arguments: --trace-warnings
 
 // https://github.com/angular/protractor/blob/5.2.0/lib/config.ts
 exports.config = {
@@ -9,16 +10,21 @@ exports.config = {
 		{ browserName: 'chrome' },
 	],
 	specs: [
+		'src/app.spec.js',
+		'src/cinemas.spec.js',
+		'src/films.spec.js',
+		'src/performances.spec.js',
+		'src/cinemas-auth.spec.js',
 		'src/*.spec.js',
 	],
+	// TODO useBlockingProxy: true, // needs Node 8 to see what's wrong
 	onPrepare: function () {
 		require('jasmine-expect');
 		require('protractor-helpers');
 		// support ES6, need to put this line in onPrepare to make line number in error report correct
 		require('babel-core/register'); // eslint-disable-line
 		jasmine.getEnv().beforeAll(function () {
-			//jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
-
+			jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 			jasmine.addMatchers(require('./src/matchers/generic').default);
 			jasmine.addMatchers(require('./src/matchers/app').default);
 			browser.driver.manage().window().maximize();
