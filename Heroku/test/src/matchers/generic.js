@@ -38,7 +38,31 @@ export function toHaveClass(actual, expectedClass) {
 	return verification;
 }
 
+/**
+ * Matches the element to have a single class among others.
+ * @param {ElementFinder} actual
+ * @param {string} expectedClass single class to check for
+ * @returns {{message: string, pass: boolean|Promise<boolean>}}
+ */
+export function toBeSelected(actual, expectedClass) {
+	const deferred = protractor.promise.defer();
+	const verification = {
+		message: "unknown failure",
+		pass: deferred.promise,
+	};
+	const checkbox = actual.element(by.css('[type="checkbox"]'));
+	checkbox.getAttribute('checked').then(function (checkedAttr) {
+		const isChecked = !!checkedAttr;
+		const element = actual.locator().message || actual.locator().toString();
+		verification.message = `Expected ${element} to be checked, but was not`;
+		deferred.fulfill(isChecked);
+		return isChecked;
+	});
+	return verification;
+}
+
 export default {
 	toHaveClass: () => ({ compare: toHaveClass }),
 	toContainClasses: () => ({ compare: toContainClasses }),
+	toBeSelected: () => ({ compare: toBeSelected }),
 };

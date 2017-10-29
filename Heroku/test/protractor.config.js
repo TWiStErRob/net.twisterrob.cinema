@@ -13,6 +13,7 @@ exports.config = {
 	],
 	onPrepare: function () {
 		require('jasmine-expect');
+		require('protractor-helpers');
 		// support ES6, need to put this line in onPrepare to make line number in error report correct
 		require('babel-core/register'); // eslint-disable-line
 		jasmine.getEnv().beforeAll(function () {
@@ -20,6 +21,7 @@ exports.config = {
 			
 			jasmine.addMatchers(require('./src/matchers/generic').default);
 			jasmine.addMatchers(require('./src/matchers/app').default);
+			browser.driver.manage().window().maximize();
 		});
 	},
 };

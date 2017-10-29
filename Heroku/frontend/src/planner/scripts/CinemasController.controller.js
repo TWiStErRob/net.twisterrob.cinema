@@ -32,16 +32,17 @@ module.controller('CinemasController', [
 			}, hidden: true },
 			london: { label: "London", selector: function(cinema) {
 				cinema.selected = /London/.test(cinema.name);
-			} },
+			}, isOpen: { london: true } },
 			favs: { label: "Favorites", selector: function(cinema) {
 				cinema.selected = !!cinema.fav;
-			} }
+			}, isOpen: { favs: true } }
 		};
 		$scope.buttonClick = function(button) {
 			if(button.handle) {
 				return button.handle();
 			} else {
 				_.forEach($scope.cineworld.cinemas, button.selector);
+				_.extend($scope.isOpen, button.isOpen);
 			}
 		};
 

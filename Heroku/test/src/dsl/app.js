@@ -1,23 +1,8 @@
-import { until } from 'selenium-webdriver';
+import helpers from 'protractor-helpers';
 import { ElementFinder } from 'protractor';
-
-const driver = browser.driver;
-
-function delayedExecute(locator, action) {
-	driver.wait(until.elementLocated(locator));
-	const element = driver.findElement(locator);
-	driver.wait(until.elementIsVisible(element));
-	action(element);
-}
-
-let nonAngular = function (action) {
-	browser.waitForAngularEnabled(false);
-	try {
-		action(browser);
-	} finally {
-		browser.waitForAngularEnabled(true);
-	}
-};
+import { login, logout } from './non-app';
+import CinemaGroup from './CinemaGroup';
+import FilmGroup from './FilmGroup';
 
 ElementFinder.prototype.iconEl = function () {
 	return this.element(by.css('.glyphicon'));
@@ -25,38 +10,60 @@ ElementFinder.prototype.iconEl = function () {
 ElementFinder.prototype.nameEl = function () {
 	return this.element(by.css('.cinema-name'));
 };
-const cinemaLocatorInList = by.css('.cinema');
+
+function waitFor(classNameToWaitFor) {
+	const elemToWaitFor = element.all(by.css(classNameToWaitFor)).first();
+	helpers.waitForElementToDisappear(elemToWaitFor, jasmine.DEFAULT_TIMEOUT_INTERVAL);
+}
+
 export const cinemas = {
-	londonList: element(by.id('cinemas-list-london')).all(cinemaLocatorInList),
-	favoriteList: element(by.id('cinemas-list-favs')).all(cinemaLocatorInList),
-	otherList: element(by.id('cinemas-list-other')).all(cinemaLocatorInList),
+	wait() {
+		waitFor('.cinemas-loading');
+	},
+	buttons: {
+		all: element(by.id('cinemas-all')),
+		favorites: element(by.id('cinemas-favs')),
+		london: element(by.id('cinemas-london')),
+		none: element(by.id('cinemas-none')),
+	},
+	london: new CinemaGroup('cinemas-group-london', 'cinemas-list-london'),
+	favorites: new CinemaGroup('cinemas-group-favs', 'cinemas-list-favs'),
+	other: new CinemaGroup('cinemas-group-other', 'cinemas-list-other'),
+};
+
+export const films = {
+	wait() {
+		cinemas.wait();
+		waitFor('.films-loading');
+	},
+	buttons: {
+		addView: element(by.id('films-addView')),
+		all: element(by.id('films-all')),
+		new: element(by.id('films-new')),
+		none: element(by.id('films-none')),
+	},
+	new: new FilmGroup('films-group', 'films-list'),
+	watched: new FilmGroup('films-group-watched', 'films-list-watched'),
+};
+
+export const performances = {
+	wait() {
+		films.wait();
+		waitFor('.performances-loading');
+	},
+	buttons: {
+		plan: element(by.id('plan-plan')),
+		options: element(by.id('plan-options')),
+	},
 };
 
 export default {
 	goToPlanner: function () {
 		browser.get('/planner');
 	},
-	login: function () {
-		nonAngular((browser) => browser.get('/login'));
-		expect(browser.driver.getCurrentUrl()).toMatch(/^https:\/\/accounts\.google\.com\/.*/);
-
-		delayedExecute(By.name('identifier'), (identifier) => identifier.sendKeys('papprs@gmail.com'));
-		delayedExecute(By.id('identifierNext'), (next) => next.click());
-
-		// Semi-transparent blocker is shown above the form, wait for it to disappear.
-		driver.wait(until.stalenessOf(driver.findElement(By.css('#initialView > footer ~ div'))));
-
-		delayedExecute(By.name('password'), (password) => password.sendKeys('papprspapprs'));
-		delayedExecute(By.id('passwordNext'), (next) => next.click());
-
-		driver.wait(until.urlMatches(/\/#$/), jasmine.DEFAULT_TIMEOUT_INTERVAL,
-				"Google OAuth Login should redirect to home page");
-	},
-	logout: function () {
-		nonAngular((browser) => browser.get('/logout'));
-
-		driver.wait(until.urlMatches(/\//), jasmine.DEFAULT_TIMEOUT_INTERVAL,
-				"Logout should redirect to home page");
-	},
-	cinemas: cinemas,
+	login,
+	logout,
+	cinemas,
+	films,
+	performances,
 };
