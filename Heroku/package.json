@@ -13,7 +13,7 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"engines": {
-		"node": "6.11.4",
+		"node": "6.11.x",
 		"npm": "5.5.1"
 	},
 	"scripts": {

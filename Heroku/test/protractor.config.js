@@ -17,7 +17,7 @@ exports.config = {
 		'src/cinemas-auth.spec.js',
 		'src/*.spec.js',
 	],
-	// TODO useBlockingProxy: true, // needs Node 8 to see what's wrong
+	// TODO useBlockingProxy: true, // needs a new protractor (5.2 is breaking)
 	onPrepare: function () {
 		require('jasmine-expect');
 		require('protractor-helpers');

@@ -7,7 +7,8 @@
 		"postinstall": "webdriver-manager update",
 		"start": "npm-run-all -p -r selenium protractor",
 		"selenium": "webdriver-manager start",
-		"protractor": "protractor protractor.config.js"
+		"protractor": "protractor protractor.config.js",
+		"inspect": "protractor --directConnect --elementExplorer protractor.config.js"
 	},
 	"dependencies": {
 		"jasmine-expect": "3.7.1",
