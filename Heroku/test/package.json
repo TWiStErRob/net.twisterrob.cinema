@@ -5,7 +5,7 @@
 	"repository": "local",
 	"scripts": {
 		"postinstall": "webdriver-manager update",
-		"start": "npm-run-all -p -r selenium protractor",
+		"start": "npm-run-all --race --parallel selenium protractor",
 		"selenium": "webdriver-manager start",
 		"protractor": "protractor protractor.config.js",
 		"inspect": "protractor --directConnect --elementExplorer protractor.config.js"

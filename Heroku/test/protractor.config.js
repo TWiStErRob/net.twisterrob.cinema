@@ -21,8 +21,8 @@ exports.config = {
 	onPrepare: function () {
 		require('jasmine-expect');
 		require('protractor-helpers');
-		// support ES6, need to put this line in onPrepare to make line number in error report correct
-		require('babel-core/register'); // eslint-disable-line
+		require('babel-core/register'); // import/export/class/etc only works after this
+		require('./src/helpers/protractor-shortcuts');
 		jasmine.getEnv().beforeAll(function () {
 			jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 			jasmine.addMatchers(require('./src/matchers/generic').default);

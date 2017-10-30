@@ -23,20 +23,14 @@ describe('Cinemas display', function () {
 
 	it('should show some London cinemas', function () {
 		expect(cinemas.london.list).not.toBeEmptyArray();
-
-		cinemas.london.list
-				.filter(notFavoritedCinema)
-				.each((cinema) => expect(cinema).toHaveIcon('star-empty'));
-		cinemas.london.list
-				.filter(favoritedCinema)
-				.each((cinema) => expect(cinema).toHaveIcon('heart'));
+		expectEach(cinemas.london.list.filter(notFavoritedCinema)).toHaveIcon('star-empty');
+		expectEach(cinemas.london.list.filter(favoritedCinema)).toHaveIcon('heart');
 	});
 
 	it('should show some favorite cinemas', function () {
 		expect(cinemas.favorites.list).not.toBeEmptyArray();
 
-		cinemas.favorites.list
-				.each((cinema) => expect(cinema).toHaveIcon('heart'));
+		expectEach(cinemas.favorites.list).toHaveIcon('heart');
 	});
 
 	it('should show no other cinemas', function () {
@@ -51,34 +45,24 @@ describe('Cinemas display', function () {
 		it('should select all', function () {
 			cinemas.buttons.all.click();
 
-			cinemas.favorites.list
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.london.list
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.other.list
-					.each((cinema) => expect(cinema).toBeSelected());
+			expectEach(cinemas.favorites.list).toBeSelected();
+			expectEach(cinemas.london.list).toBeSelected();
+			expectEach(cinemas.other.list).toBeSelected();
 		});
 
 		it('should select none', function () {
 			cinemas.buttons.none.click();
 
-			cinemas.favorites.list
-					.each((cinema) => expect(cinema).not.toBeSelected());
+			expectEach(cinemas.favorites.list).not.toBeSelected();
 		});
 
 		it('should select London cinemas only', function () {
 			cinemas.buttons.london.click();
 
-			cinemas.london.list
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.favorites.list
-					.filter(londonCinema)
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.favorites.list
-					.filter(notLondonCinema)
-					.each((cinema) => expect(cinema).not.toBeSelected());
-			cinemas.other.list
-					.each((cinema) => expect(cinema).not.toBeSelected());
+			expectEach(cinemas.london.list).toBeSelected();
+			expectEach(cinemas.favorites.list.filter(londonCinema)).toBeSelected();
+			expectEach(cinemas.favorites.list.filter(notLondonCinema)).not.toBeSelected();
+			expectEach(cinemas.other.list).not.toBeSelected();
 		});
 
 		it('should display London cinemas', function () {
@@ -88,28 +72,19 @@ describe('Cinemas display', function () {
 
 			cinemas.buttons.london.click();
 
-			cinemas.london.list.each((cinema) => expect(cinema).toBeDisplayed());
-			cinemas.favorites.list.each((cinema) => expect(cinema).not.toBeDisplayed());
-			cinemas.other.list.each((cinema) => expect(cinema).not.toBeDisplayed());
+			expectEach(cinemas.london.list).toBeDisplayed();
+			expectEach(cinemas.favorites.list).not.toBeDisplayed();
+			expectEach(cinemas.other.list).not.toBeDisplayed();
 		});
 
 		it('should select favorite cinemas only', function () {
 			cinemas.buttons.favorites.click();
 
-			cinemas.favorites.list
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.london.list
-					.filter(favoritedCinema)
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.london.list
-					.filter(notFavoritedCinema)
-					.each((cinema) => expect(cinema).not.toBeSelected());
-			cinemas.other.list
-					.filter(favoritedCinema)
-					.each((cinema) => expect(cinema).toBeSelected());
-			cinemas.other.list
-					.filter(notFavoritedCinema)
-					.each((cinema) => expect(cinema).not.toBeSelected());
+			expectEach(cinemas.favorites.list).toBeSelected();
+			expectEach(cinemas.london.list.filter(favoritedCinema)).toBeSelected();
+			expectEach(cinemas.london.list.filter(notFavoritedCinema)).not.toBeSelected();
+			expectEach(cinemas.other.list.filter(favoritedCinema)).toBeSelected();
+			expectEach(cinemas.other.list.filter(notFavoritedCinema)).not.toBeSelected();
 		});
 
 		it('should display favorite cinemas', function () {
@@ -119,9 +94,9 @@ describe('Cinemas display', function () {
 
 			cinemas.buttons.favorites.click();
 
-			cinemas.london.list.each((cinema) => expect(cinema).not.toBeDisplayed());
-			cinemas.favorites.list.each((cinema) => expect(cinema).toBeDisplayed());
-			cinemas.other.list.each((cinema) => expect(cinema).not.toBeDisplayed());
+			expectEach(cinemas.london.list).not.toBeDisplayed();
+			expectEach(cinemas.favorites.list).toBeDisplayed();
+			expectEach(cinemas.other.list).not.toBeDisplayed();
 		});
 
 		function cinemaListSanityCheck() {

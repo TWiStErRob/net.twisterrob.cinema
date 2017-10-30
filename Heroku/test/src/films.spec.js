@@ -12,17 +12,13 @@ describe('Films display', function () {
 
 	it('should show some new films', function () {
 		expect(films.new.list).not.toBeEmptyArray();
-
-		films.new.list
-				.each((film) => expect(film).toHaveIcon('eye-open'));
+		expectEach(films.new.list).toHaveIcon('eye-open');
 	});
 
 	it('should show some watched films', function () {
 		films.watched.expand();
 
 		expect(films.watched.list).not.toBeEmptyArray();
-
-		films.watched.list
-				.each((film) => expect(film).toHaveIcon('eye-close'));
+		expectEach(films.watched.list).toHaveIcon('eye-close');
 	});
 });

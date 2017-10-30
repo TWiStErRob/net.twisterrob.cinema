@@ -26,7 +26,6 @@ describe('Cinemas display as authenticated user', function () {
 		cinema.iconEl().click();
 
 		expect(cinemas.favorites.list).toBeEmptyArray();
-		cinemas.london.list.each(cinema => expect(cinema)
-				.not.toHaveIcon('heart'));
+		expectEach(cinemas.london.list).not.toHaveIcon('heart');
 	});
 });
