@@ -5,10 +5,10 @@ import CinemaGroup from './CinemaGroup';
 import FilmGroup from './FilmGroup';
 
 ElementFinder.prototype.iconEl = function () {
-	return this.element(by.css('.glyphicon'));
+	return this.element(by.className('glyphicon'));
 };
 ElementFinder.prototype.nameEl = function () {
-	return this.element(by.css('.cinema-name'));
+	return this.element(by.className('cinema-name'));
 };
 
 function waitFor(classNameToWaitFor) {
@@ -59,7 +59,7 @@ export default {
 	wait() {
 		cinemas.wait();
 		element(by.id('cinemas'))
-				.all(by.css('.cinema'))
+				.all(by.className('cinema'))
 				.filter((cinema) => cinema.element(by.css('[type="checkbox"]')).getAttribute('checked'))
 				.count()
 				.then((count) => {
@@ -68,7 +68,7 @@ export default {
 					}
 				});
 		element(by.id('films'))
-				.all(by.css('.film'))
+				.all(by.className('film'))
 				.filter((film) => film.element(by.css('[type="checkbox"]')).getAttribute('checked'))
 				.count()
 				.then((count) => {
@@ -76,6 +76,7 @@ export default {
 						performances.wait();
 					}
 				});
+		browser.waitForAngular();
 	},
 	goToPlanner: function () {
 		browser.get('/planner');

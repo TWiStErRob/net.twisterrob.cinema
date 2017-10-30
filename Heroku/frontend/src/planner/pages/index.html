@@ -117,10 +117,10 @@
 					<button ng-click="buttonClick(button)" id="films-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading" uib-tooltip="{{options | json}}">{{button.label}}</button>
 				</li>
 			</ul>
-			<uib-accordion close-others="false" ng-init="isOpen_films=true" >
-				<uib-accordion-group id="films-group" is-open="isOpen_films">
+			<uib-accordion close-others="false" ng-init="isOpen = { films: true }">
+				<uib-accordion-group id="films-group" is-open="isOpen.films">
 					<uib-accordion-heading>
-						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_films, 'glyphicon-chevron-right': !isOpen_films}"></i>
+						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen.films, 'glyphicon-chevron-right': !isOpen.films}"></i>
 						New Films ({{(cineworld.films | filter: { view: '!' }).length}})
 					</uib-accordion-heading>
 					<div class="films-loading" ng-show="loading">Loading films...</div>
@@ -138,9 +138,9 @@
 						</li>
 					</ul>
 				</uib-accordion-group>
-				<uib-accordion-group id="films-group-watched" is-open="isOpen_watched">
+				<uib-accordion-group id="films-group-watched" is-open="isOpen.watched">
 					<uib-accordion-heading>
-						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen_watched, 'glyphicon-chevron-right': !isOpen_watched}"></i>
+						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen.watched, 'glyphicon-chevron-right': !isOpen.watched}"></i>
 						Watched ({{(cineworld.films | filter: { view: '!!' }).length}})
 					</uib-accordion-heading>
 					<div class="films-loading" ng-show="loading">Loading films...</div>

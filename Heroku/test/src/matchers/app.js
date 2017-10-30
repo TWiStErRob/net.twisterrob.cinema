@@ -7,7 +7,7 @@ import { toHaveClass } from './generic';
  * @returns {{message: string, pass: boolean|Promise<boolean>}}
  */
 export function toHaveIcon(actual, iconName) {
-	const iconElement = actual.element(by.css('.glyphicon'));
+	const iconElement = actual.element(by.className('glyphicon'));
 	const iconClass = 'glyphicon-' + iconName;
 	return toHaveClass(iconElement, iconClass);
 }

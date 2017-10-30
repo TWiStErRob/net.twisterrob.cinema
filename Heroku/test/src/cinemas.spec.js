@@ -1,4 +1,4 @@
-import app, { cinemas as cinemas } from './dsl/app';
+import app, { cinemas as cinemas, films } from './dsl/app';
 import { anyWithText, noneWithText } from './helpers/protractor-filters';
 
 function notFavoritedCinema(cinema) {
@@ -21,20 +21,52 @@ describe('Cinemas display', function () {
 
 	beforeEach(app.goToPlanner);
 
-	it('should show some London cinemas', function () {
-		expect(cinemas.london.list).not.toBeEmptyArray();
-		expectEach(cinemas.london.list.filter(notFavoritedCinema)).toHaveIcon('star-empty');
-		expectEach(cinemas.london.list.filter(favoritedCinema)).toHaveIcon('heart');
+	describe('', function () {
+
+		it('should show some London cinemas', function () {
+			expect(cinemas.london.list).not.toBeEmptyArray();
+			expectEach(cinemas.london.list.filter(notFavoritedCinema)).toHaveIcon('star-empty');
+			expectEach(cinemas.london.list.filter(favoritedCinema)).toHaveIcon('heart');
+		});
+
+		it('should show some favorite cinemas', function () {
+			expect(cinemas.favorites.list).not.toBeEmptyArray();
+
+			expectEach(cinemas.favorites.list).toHaveIcon('heart');
+		});
+
+		it('should show no other cinemas', function () {
+			expect(cinemas.other.list).toBeEmptyArray();
+		});
 	});
 
-	it('should show some favorite cinemas', function () {
-		expect(cinemas.favorites.list).not.toBeEmptyArray();
+	describe('accordions', function () {
 
-		expectEach(cinemas.favorites.list).toHaveIcon('heart');
-	});
+		it('favorites should expand', function () {
+			cinemas.favorites.expand();
 
-	it('should show no other cinemas', function () {
-		expect(cinemas.other.list).toBeEmptyArray();
+			expect(cinemas.favorites.list).not.toBeEmptyArray();
+			expectEach(cinemas.favorites.list).toBeDisplayed();
+		});
+
+		it('favorites should collapse', function () {
+			cinemas.favorites.collapse();
+
+			expectEach(cinemas.favorites.list).not.toBeDisplayed();
+		});
+
+		it('london should expand', function () {
+			cinemas.london.expand();
+
+			expect(cinemas.london.list).not.toBeEmptyArray();
+			expectEach(cinemas.london.list).toBeDisplayed();
+		});
+
+		it('london should collapse', function () {
+			cinemas.london.collapse();
+
+			expectEach(cinemas.london.list).not.toBeDisplayed();
+		});
 	});
 
 	describe('selection buttons', function () {

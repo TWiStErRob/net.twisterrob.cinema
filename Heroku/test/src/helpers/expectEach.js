@@ -11,13 +11,13 @@ export default function expectEach(list, filter = undefined) {
 		return new Proxy(expect(element(by.id('dummy'))), {
 			get(target, key) {
 				if (key === 'not') {
-					return proxy(function (arg) {
+					return proxy(function negatedExpect(arg) {
 						return expect(arg).not;
 					});
 				}
 				if (target[key]) {
-					return function (...args) {
-						list.each(function (item) {
+					return function forwardingCall(...args) {
+						list.each(function iterator(item) {
 							expect(item)[key](args);
 						});
 					};

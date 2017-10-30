@@ -1,8 +1,9 @@
 export default class Group {
 
 	constructor(groupID, listID, itemClass) {
-		this.header = element(by.id(groupID)).element(by.css('.panel-heading'));
-		this.list = element(by.id(listID)).all(by.css(itemClass));
+		this.header = element(by.id(groupID)).element(by.className('panel-heading'));
+		this._list = element(by.id(listID));
+		this.list = this._list.all(by.className(itemClass));
 	}
 
 	click() {
@@ -10,10 +11,10 @@ export default class Group {
 	}
 
 	collapse() {
-		this.list.isDisplayed().then((isDisplayed) => {
+		this._list.isDisplayed().then((isDisplayed) => {
 			if (isDisplayed) {
 				// displayed means it's expanded, so click to collapse
-				this.header.click();
+				this.click();
 			} else {
 				// not displayed, so it's already collapsed
 			}
@@ -21,12 +22,12 @@ export default class Group {
 	}
 
 	expand() {
-		this.list.isDisplayed().then((isDisplayed) => {
+		this._list.isDisplayed().then((isDisplayed) => {
 			if (isDisplayed) {
 				// displayed means it's already expanded
 			} else {
 				// not displayed means it's expanded, so click to collapse
-				this.header.click();
+				this.click();
 			}
 		});
 	}
