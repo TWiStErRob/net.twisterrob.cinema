@@ -1,13 +1,13 @@
 export default class Group {
 
 	constructor(groupID, listID, itemClass) {
-		this.header = element(by.id(groupID)).element(by.className('panel-heading'));
+		this._header = element(by.id(groupID)).element(by.className('accordion-toggle'));
 		this._list = element(by.id(listID));
 		this.list = this._list.all(by.className(itemClass));
 	}
 
 	click() {
-		this.header.click();
+		this._header.click();
 	}
 
 	collapse() {
