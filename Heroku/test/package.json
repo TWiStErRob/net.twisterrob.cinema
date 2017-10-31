@@ -4,13 +4,17 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"scripts": {
-		"postinstall": "webdriver-manager update",
+		"postinstall": "npm-run-all --serial selenium:update blocking-proxy-hack",
+		"postupdate": "npm-run-all --serial blocking-proxy-hack",
 		"start": "npm-run-all --race --parallel selenium protractor",
 		"selenium": "webdriver-manager start",
+		"selenium:update": "webdriver-manager update",
 		"protractor": "protractor protractor.config.js",
-		"inspect": "protractor --directConnect --elementExplorer protractor.config.js"
+		"inspect": "protractor --directConnect --elementExplorer protractor.config.js",
+		"blocking-proxy-hack": "rimraf node_modules/protractor/node_modules/blocking-proxy"
 	},
 	"dependencies": {
+		"blocking-proxy": "^1.0.1",
 		"jasmine-expect": "3.7.1",
 		"protractor": "5.2.0",
 		"protractor-helpers": "^1.1.0",
@@ -19,6 +23,7 @@
 	"devDependencies": {
 		"@types/jasminewd2": "2.0.3",
 		"babel-core": "^5.8.38",
-		"npm-run-all": "4.1.1"
+		"npm-run-all": "4.1.1",
+		"rimraf": "2.6.2"
 	}
 }

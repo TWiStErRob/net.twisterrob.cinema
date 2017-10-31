@@ -9,17 +9,17 @@ function delayedExecute(locator, action) {
 	action(element);
 }
 
-let nonAngular = function (action) {
+function nonAngular(action) {
 	browser.waitForAngularEnabled(false);
 	try {
-		action(browser);
+		action();
 	} finally {
 		browser.waitForAngularEnabled(true);
 	}
-};
+}
 
-export function login() {
-	nonAngular((browser) => browser.get('/login'));
+function _login() {
+	browser.get('/login');
 	expect(driver.getCurrentUrl()).toMatch(/^https:\/\/accounts\.google\.com\/.*/);
 
 	delayedExecute(By.name('identifier'), (identifier) => identifier.sendKeys(browser.params.user.name));
@@ -35,9 +35,17 @@ export function login() {
 			"Google OAuth Login should redirect to home page");
 }
 
-export function logout() {
-	nonAngular((browser) => browser.get('/logout'));
+export function login() {
+	nonAngular(_login);
+}
+
+function _logout() {
+	browser.get('/logout');
 
 	driver.wait(until.urlMatches(/\//), jasmine.DEFAULT_TIMEOUT_INTERVAL,
 			"Logout should redirect to home page");
+}
+
+export function logout() {
+	nonAngular(_logout);
 }
