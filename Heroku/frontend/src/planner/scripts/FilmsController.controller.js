@@ -27,7 +27,7 @@ module.controller('FilmsController', [
 			}, hidden: true },
 			new: { label: "New", selector: function(film) {
 				film.selected = !film.view; // doesn't have a View
-			} },
+			}, isOpen: { films: true } },
 			watched: { label: "Watched", selector: function(film) {
 				film.selected = !!film.view; // has view
 			}, hidden: true },
@@ -40,6 +40,7 @@ module.controller('FilmsController', [
 				return button.handle();
 			} else {
 				_.forEach($scope.cineworld.films, button.selector);
+				_.extend($scope.isOpen, button.isOpen);
 			}
 		};
 

@@ -114,6 +114,7 @@ describe('Films display', function () {
 			expect(films.watched.list).not.toBeEmptyArray();
 
 			// distinct films
+			// TODO this fails weirdly if neither list is visible (accordions collapsed)
 			expect(films.new.list.filter(watchedFilm)).toBeEmptyArray();
 			expect(films.watched.list.filter(newFilm)).toBeEmptyArray();
 

@@ -56,6 +56,7 @@
 
 			<h6>Combo</h6>
 			<select ng-model="cinema" class="form-control" required ng-options="c.name group by !c.fav for c in cineworld.cinemas | orderBy:'name'">
+				<!-- TODO is this intentionally not value? -->
 				<option vlaue="">-- choose a cinema</option>
 			</select>
 		</aside>
@@ -78,7 +79,7 @@
 					<button ng-click="buttonClick(button)" id="cinemas-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading">{{button.label}}</button>
 				</li>
 			</ul>
-			<uib-accordion close-others="false" ng-init="isOpen = { favs: true, london: true }" >
+			<uib-accordion close-others="false" ng-init="isOpen = { favs: true, london: true, others: false }" >
 				<uib-accordion-group id="cinemas-group-favs" is-open="isOpen.favs">
 					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen.favs, 'glyphicon-chevron-right': !isOpen.favs}"></i>
@@ -117,7 +118,7 @@
 					<button ng-click="buttonClick(button)" id="films-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading" uib-tooltip="{{options | json}}">{{button.label}}</button>
 				</li>
 			</ul>
-			<uib-accordion close-others="false" ng-init="isOpen = { films: true }">
+			<uib-accordion close-others="false" ng-init="isOpen = { films: true, watched: false }">
 				<uib-accordion-group id="films-group" is-open="isOpen.films">
 					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': isOpen.films, 'glyphicon-chevron-right': !isOpen.films}"></i>

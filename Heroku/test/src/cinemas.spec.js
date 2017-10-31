@@ -31,7 +31,7 @@ describe('Cinemas display', function () {
 
 		it('should show some favorite cinemas', function () {
 			expect(cinemas.favorites.list).not.toBeEmptyArray();
-
+			expectEach(cinemas.favorites.list).toBeDisplayed();
 			expectEach(cinemas.favorites.list).toHaveIcon('heart');
 		});
 
