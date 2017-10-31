@@ -17,6 +17,12 @@ exports.config = {
 		'src/cinemas-auth.spec.js',
 		'src/*.spec.js',
 	],
+	params: {
+		user: {
+			name: 'papprs@gmail.com',
+			password: 'papprspapprs',
+		},
+	},
 	// TODO useBlockingProxy: true, // needs a new protractor (5.2 is breaking)
 	onPrepare: function () {
 		require('jasmine-expect');

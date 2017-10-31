@@ -22,13 +22,13 @@ export function login() {
 	nonAngular((browser) => browser.get('/login'));
 	expect(driver.getCurrentUrl()).toMatch(/^https:\/\/accounts\.google\.com\/.*/);
 
-	delayedExecute(By.name('identifier'), (identifier) => identifier.sendKeys('papprs@gmail.com'));
+	delayedExecute(By.name('identifier'), (identifier) => identifier.sendKeys(browser.params.user.name));
 	delayedExecute(By.id('identifierNext'), (next) => next.click());
 
 	// Semi-transparent blocker is shown above the form, wait for it to disappear.
 	driver.wait(until.stalenessOf(driver.findElement(By.css('#initialView > footer ~ div'))));
 
-	delayedExecute(By.name('password'), (password) => password.sendKeys('papprspapprs'));
+	delayedExecute(By.name('password'), (password) => password.sendKeys(browser.params.user.password));
 	delayedExecute(By.id('passwordNext'), (next) => next.click());
 
 	driver.wait(until.urlMatches(/\/#$/), jasmine.DEFAULT_TIMEOUT_INTERVAL,
