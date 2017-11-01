@@ -1,17 +1,17 @@
 export default class Group {
 
 	constructor(groupID, listID, itemClass) {
-		this._header = element(by.id(groupID)).element(by.className('accordion-toggle'));
-		this._list = element(by.id(listID));
-		this.list = this._list.all(by.className(itemClass));
+		this.header = element(by.id(groupID)).element(by.className('accordion-toggle'));
+		this.list = element(by.id(listID));
+		this.items = this.list.all(by.className(itemClass));
 	}
 
 	click() {
-		this._header.click();
+		this.header.click();
 	}
 
 	collapse() {
-		this._list.isDisplayed().then((isDisplayed) => {
+		this.list.isDisplayed().then((isDisplayed) => {
 			if (isDisplayed) {
 				// displayed means it's expanded, so click to collapse
 				this.click();
@@ -22,7 +22,7 @@ export default class Group {
 	}
 
 	expand() {
-		this._list.isDisplayed().then((isDisplayed) => {
+		this.list.isDisplayed().then((isDisplayed) => {
 			if (isDisplayed) {
 				// displayed means it's already expanded
 			} else {

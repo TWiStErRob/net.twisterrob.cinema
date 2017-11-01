@@ -2,19 +2,19 @@ import app, { films as films } from './dsl/app';
 import { anyWithText, noneWithText } from './helpers/protractor-filters';
 
 function notWatchedFilm(film) {
-	return noneWithText(films.watched.list, film.getText());
+	return noneWithText(films.watched.items, film.getText());
 }
 
 function watchedFilm(film) {
-	return anyWithText(films.watched.list, film.getText());
+	return anyWithText(films.watched.items, film.getText());
 }
 
 function notNewFilm(film) {
-	return noneWithText(films.new.list, film.getText());
+	return noneWithText(films.new.items, film.getText());
 }
 
 function newFilm(film) {
-	return anyWithText(films.new.list, film.getText());
+	return anyWithText(films.new.items, film.getText());
 }
 
 describe('Films display', function () {
@@ -27,15 +27,15 @@ describe('Films display', function () {
 	describe('', function () {
 
 		it('should show some new films', function () {
-			expect(films.new.list).not.toBeEmptyArray();
-			expectEach(films.new.list).toHaveIcon('eye-open');
+			expect(films.new.items).not.toBeEmptyArray();
+			expectEach(films.new.items).toHaveIcon('eye-open');
 		});
 
 		it('should show some watched films', function () {
 			films.watched.expand();
 
-			expect(films.watched.list).not.toBeEmptyArray();
-			expectEach(films.watched.list).toHaveIcon('eye-close');
+			expect(films.watched.items).not.toBeEmptyArray();
+			expectEach(films.watched.items).toHaveIcon('eye-close');
 		});
 	});
 
@@ -44,27 +44,27 @@ describe('Films display', function () {
 		it('new should expand', function () {
 			films.new.expand();
 
-			expect(films.new.list).not.toBeEmptyArray();
-			expectEach(films.new.list).toBeDisplayed();
+			expect(films.new.items).not.toBeEmptyArray();
+			expectEach(films.new.items).toBeDisplayed();
 		});
 
 		it('new should collapse', function () {
 			films.new.collapse();
 
-			expectEach(films.new.list).not.toBeDisplayed();
+			expectEach(films.new.items).not.toBeDisplayed();
 		});
 
 		it('watched should expand', function () {
 			films.watched.expand();
 
-			expect(films.watched.list).not.toBeEmptyArray();
-			expectEach(films.watched.list).toBeDisplayed();
+			expect(films.watched.items).not.toBeEmptyArray();
+			expectEach(films.watched.items).toBeDisplayed();
 		});
 
 		it('watched should collapse', function () {
 			films.watched.collapse();
 
-			expectEach(films.watched.list).not.toBeDisplayed();
+			expectEach(films.watched.items).not.toBeDisplayed();
 		});
 	});
 
@@ -76,8 +76,8 @@ describe('Films display', function () {
 		it('should select all', function () {
 			films.buttons.all.click();
 
-			expectEach(films.watched.list).toBeSelected();
-			expectEach(films.new.list).toBeSelected();
+			expectEach(films.watched.items).toBeSelected();
+			expectEach(films.new.items).toBeSelected();
 		});
 
 		it('should select none', function () {
@@ -85,8 +85,8 @@ describe('Films display', function () {
 
 			films.buttons.none.click();
 
-			expectEach(films.watched.list).not.toBeSelected();
-			expectEach(films.new.list).not.toBeSelected();
+			expectEach(films.watched.items).not.toBeSelected();
+			expectEach(films.new.items).not.toBeSelected();
 		});
 
 		it('should select new films only', function () {
@@ -94,8 +94,8 @@ describe('Films display', function () {
 
 			films.buttons.new.click();
 
-			expectEach(films.new.list).toBeSelected();
-			expectEach(films.watched.list).not.toBeSelected();
+			expectEach(films.new.items).toBeSelected();
+			expectEach(films.watched.items).not.toBeSelected();
 		});
 
 		it('should display new films', function () {
@@ -104,23 +104,23 @@ describe('Films display', function () {
 
 			films.buttons.new.click();
 
-			expectEach(films.new.list).toBeDisplayed();
-			expectEach(films.watched.list).not.toBeDisplayed();
+			expectEach(films.new.items).toBeDisplayed();
+			expectEach(films.watched.items).not.toBeDisplayed();
 		});
 
 		function filmListSanityCheck() {
 			// not empty test data
-			expect(films.new.list).not.toBeEmptyArray();
-			expect(films.watched.list).not.toBeEmptyArray();
+			expect(films.new.items).not.toBeEmptyArray();
+			expect(films.watched.items).not.toBeEmptyArray();
 
 			// distinct films
 			// TODO this fails weirdly if neither list is visible (accordions collapsed)
-			expect(films.new.list.filter(watchedFilm)).toBeEmptyArray();
-			expect(films.watched.list.filter(newFilm)).toBeEmptyArray();
+			expect(films.new.items.filter(watchedFilm)).toBeEmptyArray();
+			expect(films.watched.items.filter(newFilm)).toBeEmptyArray();
 
 			// correct icons
-			expectEach(films.new.list).toHaveIcon('eye-open');
-			expectEach(films.watched.list).toHaveIcon('eye-close');
+			expectEach(films.new.items).toHaveIcon('eye-open');
+			expectEach(films.watched.items).toHaveIcon('eye-close');
 		}
 	});
 });
