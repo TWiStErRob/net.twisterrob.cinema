@@ -20,7 +20,10 @@ exports.config = {
 	highlightDelay: 0,
 	webDriverLogDir: 'logs',
 	multiCapabilities: [
-		{ browserName: 'chrome' },
+		{
+			browserName: 'chrome',
+			loggingPrefs: { browser: 'ALL' },
+		},
 	],
 	specs: [
 		'src/app.spec.js',
@@ -36,6 +39,10 @@ exports.config = {
 			password: 'papprspapprs',
 		},
 	},
+	jasmineNodeOpts: {
+		// Disable the "....F....x.." logging in favor of custom reporters
+		print: () => void 0,
+	},
 	onPrepare: function () {
 		require('jasmine-expect');
 		require('protractor-helpers');
@@ -48,6 +55,8 @@ exports.config = {
 			browser.driver.manage().window().maximize();
 			disableAnimations();
 		});
+		printTestingProgress();
+		verifyLogsAroundEachTest();
 	},
 };
 
@@ -60,4 +69,75 @@ function disableAnimations() {
 	});
 	// TODO consider also https://declara.com/content/J1J2Gkk1
 	//element('body').allowAnimations(false);
+}
+
+function printTestingProgress() {
+	const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+	//noinspection JSCheckFunctionSignatures
+	jasmine.getEnv().addReporter(new SpecReporter({
+		colors: {
+			enabled: true,
+		},
+		suite: {
+			displayNumber: true,
+		},
+		spec: {
+			displaySuccessful: true,
+			displayFailed: true,
+			displayPending: true,
+			displayDuration: true,
+			displayErrorMessages: true,
+			displayStacktrace: true,
+		},
+		summary: {
+			displaySuccessful: false,
+			displayFailed: true,
+			displayPending: false,
+			displayDuration: false,
+			displayErrorMessages: true,
+			displayStacktrace: false,
+		},
+	}));
+}
+
+function verifyLogsAroundEachTest() {
+	if (global.logs) {
+		throw new Error('Cannot set up protractor logging checks, name is already in use by someone!');
+	}
+	// better than protractor/protractor-console-plugin@0.1.1 because it actually fails individual tests
+	global.logs = require('protractor-browser-logs')(browser, {
+		reporters: [
+			logEntries,
+		],
+	});
+	logs.byText = text => entry => entry.message.indexOf(text) !== -1;
+
+	jasmine.getEnv().beforeEach(function () {
+		logs.reset();
+		logs.ignore('favicon');
+		logs.ignore(logs.or(logs.INFO, logs.DEBUG));
+		// everything else is unexpected and fails the test
+		// Custom ignores: logs.expect(logs.and(logs.WARNING, logs.byText("message")));
+	});
+
+	jasmine.getEnv().afterEach(function () {
+		return logs.verify();
+	});
+
+	const COLORS = { magenta: 35, yellow: 33, red: 31, grey: 37 };
+	const LOG_COLORS = { INFO: COLORS.magenta, WARNING: COLORS.yellow, SEVERE: COLORS.red };
+	const LOG_METHODS = { INFO: "log", WARNING: "warn", SEVERE: "error" };
+	const logging = require('selenium-webdriver').logging;
+
+	function logEntries(entries) {
+		entries
+				.filter(function (entry) {
+					return logging.Level.DEBUG.value < entry.level.value;
+				})
+				.forEach(function (entry) {
+					const color = LOG_COLORS[entry.level.name] || COLORS.grey;
+					const method = LOG_METHODS[entry.level.name] || entry.level.name.toLowerCase();
+					console.log(`console.\u001b[${color}m${method} - ${entry.message}\u001b[39m`);
+				});
+	}
 }

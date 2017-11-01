@@ -373,6 +373,11 @@ app.get('/performance', cacher(cacheLength), getPerformances);
 app.post('/film/:edi/view', ensureAuthenticated, addView);
 app.delete('/film/:edi/view', ensureAuthenticated, removeView);
 app.put('/film/:edi/ignore', ensureAuthenticated, ignore);
+app.get('/favicon.ico', function (req, res) {
+	res.statusCode = 302;
+	res.setHeader("Location", "https://www.google.com/s2/favicons?domain=www.cineworld.co.uk");
+	res.end();
+});
 
 function listen() { //jshint ignore:line
 	if(app.initialized && graph) {
