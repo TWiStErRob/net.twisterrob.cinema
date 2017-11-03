@@ -1,4 +1,4 @@
-import app, { cinemas as cinemas, films } from './dsl/app';
+import app, { cinemas as cinemas } from './dsl/app';
 import { anyWithText, noneWithText } from './helpers/protractor-filters';
 
 function notFavoritedCinema(cinema) {
@@ -42,30 +42,96 @@ describe('Cinemas display', function () {
 
 	describe('accordions', function () {
 
-		it('favorites should expand', function () {
-			cinemas.favorites.expand();
+		describe('favorites', function () {
 
-			expect(cinemas.favorites.items).not.toBeEmptyArray();
-			expectEach(cinemas.favorites.items).toBeDisplayed();
+			it('should have header', function () {
+				expect(cinemas.favorites.header).toMatchRegex(/^Favorite Cinemas \(\d+\)$/);
+				cinemas.favorites.items.count().then((count) =>
+						expect(cinemas.favorites.header.getText()).toContain(count.toString()));
+			});
+
+			it('should expand', function () {
+				cinemas.favorites.expand();
+
+				expect(cinemas.favorites.items).not.toBeEmptyArray();
+				expectEach(cinemas.favorites.items).toBeDisplayed();
+			});
+
+			it('should collapse', function () {
+				cinemas.favorites.collapse();
+
+				expectEach(cinemas.favorites.items).not.toBeDisplayed();
+			});
+
+			it('should toggle', function () {
+				cinemas.favorites.expand();
+				expectEach(cinemas.favorites.items).toBeDisplayed();
+				cinemas.favorites.collapse();
+				expectEach(cinemas.favorites.items).not.toBeDisplayed();
+				cinemas.favorites.expand();
+				expectEach(cinemas.favorites.items).toBeDisplayed();
+			});
 		});
 
-		it('favorites should collapse', function () {
-			cinemas.favorites.collapse();
+		describe('london', function () {
 
-			expectEach(cinemas.favorites.items).not.toBeDisplayed();
+			it('should have header', function () {
+				expect(cinemas.london.header).toMatchRegex(/^London Cinemas \(\d+\)$/);
+				cinemas.london.items.count().then((count) =>
+						expect(cinemas.london.header.getText()).toContain(count.toString()));
+			});
+
+			it('should expand', function () {
+				cinemas.london.expand();
+
+				expect(cinemas.london.items).not.toBeEmptyArray();
+				expectEach(cinemas.london.items).toBeDisplayed();
+			});
+
+			it('should collapse', function () {
+				cinemas.london.collapse();
+
+				expectEach(cinemas.london.items).not.toBeDisplayed();
+			});
+
+			it('should toggle', function () {
+				cinemas.london.expand();
+				expectEach(cinemas.london.items).toBeDisplayed();
+				cinemas.london.collapse();
+				expectEach(cinemas.london.items).not.toBeDisplayed();
+				cinemas.london.expand();
+				expectEach(cinemas.london.items).toBeDisplayed();
+			});
 		});
 
-		it('london should expand', function () {
-			cinemas.london.expand();
+		describe('other', function () {
 
-			expect(cinemas.london.items).not.toBeEmptyArray();
-			expectEach(cinemas.london.items).toBeDisplayed();
-		});
+			it('should have header', function () {
+				expect(cinemas.other.header).toMatchRegex(/^Other Cinemas \(\d+\)$/);
+				cinemas.other.items.count().then((count) =>
+						expect(cinemas.other.header.getText()).toContain(count.toString()));
+			});
 
-		it('london should collapse', function () {
-			cinemas.london.collapse();
+			it('should expand', function () {
+				cinemas.other.expand();
 
-			expectEach(cinemas.london.items).not.toBeDisplayed();
+				expectEach(cinemas.other.items).toBeDisplayed();
+			});
+
+			it('should collapse', function () {
+				cinemas.other.collapse();
+
+				expectEach(cinemas.other.items).not.toBeDisplayed();
+			});
+
+			it('should toggle', function () {
+				cinemas.other.expand();
+				expectEach(cinemas.other.items).toBeDisplayed();
+				cinemas.other.collapse();
+				expectEach(cinemas.other.items).not.toBeDisplayed();
+				cinemas.other.expand();
+				expectEach(cinemas.other.items).toBeDisplayed();
+			});
 		});
 	});
 

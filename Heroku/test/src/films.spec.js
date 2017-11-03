@@ -38,30 +38,66 @@ describe('Films display', function () {
 
 	describe('accordions', function () {
 
-		it('new should expand', function () {
-			films.new.expand();
+		describe('new', function () {
 
-			expect(films.new.items).not.toBeEmptyArray();
-			expectEach(films.new.items).toBeDisplayed();
+			it('should have header', function () {
+				expect(films.new.header).toMatchRegex(/^New Films \(\d+\)$/);
+				films.new.items.count().then((count) =>
+						expect(films.new.header.getText()).toContain(count.toString()));
+			});
+
+			it('should expand', function () {
+				films.new.expand();
+
+				expect(films.new.items).not.toBeEmptyArray();
+				expectEach(films.new.items).toBeDisplayed();
+			});
+
+			it('should collapse', function () {
+				films.new.collapse();
+
+				expectEach(films.new.items).not.toBeDisplayed();
+			});
+
+			it('should toggle', function () {
+				films.new.expand();
+				expectEach(films.new.items).toBeDisplayed();
+				films.new.collapse();
+				expectEach(films.new.items).not.toBeDisplayed();
+				films.new.expand();
+				expectEach(films.new.items).toBeDisplayed();
+			});
 		});
 
-		it('new should collapse', function () {
-			films.new.collapse();
+		describe('watched', function () {
 
-			expectEach(films.new.items).not.toBeDisplayed();
-		});
+			it('should have header', function () {
+				expect(films.watched.header).toMatchRegex(/^Watched \(\d+\)$/);
+				films.watched.items.count().then((count) =>
+						expect(films.watched.header.getText()).toContain(count.toString()));
+			});
 
-		it('watched should expand', function () {
-			films.watched.expand();
+			it('should expand', function () {
+				films.watched.expand();
 
-			expect(films.watched.items).not.toBeEmptyArray();
-			expectEach(films.watched.items).toBeDisplayed();
-		});
+				expect(films.watched.items).not.toBeEmptyArray();
+				expectEach(films.watched.items).toBeDisplayed();
+			});
 
-		it('watched should collapse', function () {
-			films.watched.collapse();
+			it('should collapse', function () {
+				films.watched.collapse();
 
-			expectEach(films.watched.items).not.toBeDisplayed();
+				expectEach(films.watched.items).not.toBeDisplayed();
+			});
+
+			it('should toggle', function () {
+				films.watched.expand();
+				expectEach(films.watched.items).toBeDisplayed();
+				films.watched.collapse();
+				expectEach(films.watched.items).not.toBeDisplayed();
+				films.watched.expand();
+				expectEach(films.watched.items).toBeDisplayed();
+			});
 		});
 	});
 
