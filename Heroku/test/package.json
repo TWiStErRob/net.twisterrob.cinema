@@ -16,6 +16,9 @@
 	"dependencies": {
 		"blocking-proxy": "^1.0.1",
 		"jasmine-expect": "3.7.1",
+		"jasmine-expect-moment": "0.1.1",
+		"lodash": "^4.17.4",
+		"moment": "^2.19.1",
 		"protractor": "5.2.0",
 		"protractor-helpers": "^1.1.0",
 		"protractor-browser-logs": "1.0.351",
@@ -26,6 +29,7 @@
 		"babel-core": "^5.8.38",
 		"jasmine-spec-reporter": "4.2.1",
 		"npm-run-all": "4.1.1",
+		"protractor-screenshoter-plugin": "0.3.2",
 		"rimraf": "2.6.2"
 	}
 }

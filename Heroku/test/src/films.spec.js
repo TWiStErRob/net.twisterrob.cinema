@@ -19,10 +19,7 @@ function newFilm(film) {
 
 describe('Films display', function () {
 
-	beforeEach(function () {
-		app.goToPlanner();
-		app.wait();
-	});
+	beforeEach(app.goToPlanner);
 
 	describe('', function () {
 

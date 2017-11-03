@@ -36,7 +36,6 @@ export function toHaveClass(actual, expectedClass) {
 		const hasClass = classes.split(/\s+/).indexOf(expectedClass) >= 0;
 		verification.message = `Missing class '${expectedClass}' from '${classes}' on ${describe(actual)}`;
 		deferred.fulfill(hasClass);
-		return hasClass;
 	});
 	return verification;
 }
@@ -58,7 +57,39 @@ export function toBeSelected(actual, expectedClass) {
 		const isChecked = !!checkedAttr;
 		verification.message = `Expected ${describe(actual)} to be checked, but was not`;
 		deferred.fulfill(isChecked);
-		return isChecked;
+	});
+	return verification;
+}
+
+/**
+ * @param {protractor.ProtractorBrowser|WebDriver} browser
+ * @param {string} queryKey
+ * @param {function(jasmine.Matchers): Promise<void>} matcher
+ * @returns {{message: string, pass: boolean|Promise<boolean>}}
+ */
+export function toHaveUrlQuery(browser, queryKey, matcher) {
+	const url = require('url');
+	const deferred = protractor.promise.defer();
+	const verification = {
+		message: "unknown failure",
+		pass: deferred.promise,
+	};
+	browser.getCurrentUrl().then(function (currentUrl) {
+		const urlObj = url.parse(currentUrl, true);
+
+		if (!urlObj) {
+			verification.message = `Url '${currentUrl}' could not be parsed`;
+			deferred.fulfill(false);
+		} else if (!urlObj.query) {
+			verification.message = `Url '${currentUrl}' does not have a query string`;
+			deferred.fulfill(false);
+		} else if (!urlObj.query[queryKey]) {
+			verification.message = `Url '${currentUrl}' does not have a query string param named ${queryKey}.`;
+			deferred.fulfill(false);
+		} else {
+			deferred.fulfill(true);
+			matcher(urlObj.query[queryKey]);
+		}
 	});
 	return verification;
 }
@@ -67,4 +98,5 @@ export default {
 	toHaveClass: () => ({ compare: toHaveClass }),
 	toContainClasses: () => ({ compare: toContainClasses }),
 	toBeSelected: () => ({ compare: toBeSelected }),
+	toHaveUrlQuery: () => ({ compare: toHaveUrlQuery }),
 };

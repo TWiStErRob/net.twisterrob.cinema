@@ -4,7 +4,6 @@
 // https://github.com/angular/protractor/blob/5.2.0/lib/config.ts
 exports.config = {
 	baseUrl: `http://localhost:${process.env.PORT}`,
-	framework: 'jasmine',
 	seleniumAddress: 'http://localhost:4444/wd/hub',
 	// is broken in protractor@5.2: E/BlockingProxy - (node:2484) TypeError: Cannot read property 'toString' of null
 	// but forcing protractor to use blocking-proxy@1.0.1 instead of 0.0.5 via blocking-proxy-hack works.
@@ -27,9 +26,11 @@ exports.config = {
 	],
 	specs: [
 		'src/app.spec.js',
+		'src/date.spec.js',
 		'src/cinemas.spec.js',
 		'src/films.spec.js',
 		'src/performances.spec.js',
+		'src/url.spec.js',
 		'src/cinemas-auth.spec.js',
 		'src/*.spec.js',
 	],
@@ -39,12 +40,25 @@ exports.config = {
 			password: 'papprspapprs',
 		},
 	},
+	framework: 'jasmine2',
 	jasmineNodeOpts: {
 		// Disable the "....F....x.." logging in favor of custom reporters
 		print: () => void 0,
 	},
+	plugins: [
+		{
+			package: 'protractor-screenshoter-plugin',
+			screenshotPath: 'logs/reports',
+			screenshotOnExpect: 'failure+success',
+			screenshotOnSpec: 'failure+success',
+			withLogs: 'true',
+			writeReportFreq: 'asap',
+			clearFoldersBeforeTest: true,
+		},
+	],
 	onPrepare: function () {
 		require('jasmine-expect');
+		require('jasmine-expect-moment');
 		require('protractor-helpers');
 		require('babel-core/register'); // import/export/class/etc only works after this
 		require('./src/helpers/protractor-shortcuts');

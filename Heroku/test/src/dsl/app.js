@@ -3,6 +3,7 @@ import { ElementFinder } from 'protractor';
 import { login, logout } from './non-app';
 import CinemaGroup from './CinemaGroup';
 import FilmGroup from './FilmGroup';
+import moment from 'moment/moment';
 
 ElementFinder.prototype.iconEl = function () {
 	return this.element(by.className('glyphicon'));
@@ -16,6 +17,35 @@ function waitFor(classNameToWaitFor) {
 	helpers.waitForElementToDisappear(elemToWaitFor, jasmine.DEFAULT_TIMEOUT_INTERVAL);
 }
 
+export const date = {
+	buttons: {
+		change: element(by.id('date')).element(by.css('button')),
+		today: element(by.id('date')).element(by.buttonText('Today')),
+		clear: element(by.id('date')).element(by.buttonText('Clear')),
+		done: element(by.id('date')).element(by.buttonText('Done')),
+		day(day) {
+			return element(by.id('date')).element(by.buttonText(day.toString()));
+		},
+	},
+	editor: {
+		element: element(by.id('cineworldDate')),
+		getText: function () {
+			return this.element.getAttribute('value');
+		},
+		getTextAsMoment: function () {
+			return this.getText().then(t => moment(t, 'M/D/YY'));
+		},
+	},
+	label: {
+		element: element(by.id('date')).element(by.css('em.ng-binding')),
+		getText: function () {
+			return this.element.getText();
+		},
+		getTextAsMoment: function () {
+			return this.getText().then(t => moment(t, 'dddd, MMMM D, YYYY'));
+		},
+	},
+};
 export const cinemas = {
 	wait() {
 		waitFor('.cinemas-loading');
@@ -55,34 +85,37 @@ export const performances = {
 	},
 };
 
+function wait() {
+	cinemas.wait();
+	element(by.id('cinemas'))
+			.all(by.className('cinema'))
+			.filter((cinema) => cinema.element(by.css('[type="checkbox"]')).getAttribute('checked'))
+			.count()
+			.then((count) => {
+				if (count > 0) {
+					films.wait();
+				}
+			});
+	element(by.id('films'))
+			.all(by.className('film'))
+			.filter((film) => film.element(by.css('[type="checkbox"]')).getAttribute('checked'))
+			.count()
+			.then((count) => {
+				if (count > 0) {
+					performances.wait();
+				}
+			});
+	browser.waitForAngular();
+}
+
 export default {
-	wait() {
-		cinemas.wait();
-		element(by.id('cinemas'))
-				.all(by.className('cinema'))
-				.filter((cinema) => cinema.element(by.css('[type="checkbox"]')).getAttribute('checked'))
-				.count()
-				.then((count) => {
-					if (count > 0) {
-						films.wait();
-					}
-				});
-		element(by.id('films'))
-				.all(by.className('film'))
-				.filter((film) => film.element(by.css('[type="checkbox"]')).getAttribute('checked'))
-				.count()
-				.then((count) => {
-					if (count > 0) {
-						performances.wait();
-					}
-				});
-		browser.waitForAngular();
-	},
-	goToPlanner: function () {
-		browser.get('/planner');
+	wait,
+	goToPlanner: function (url = '') {
+		browser.get('/planner' + url);
 	},
 	login,
 	logout,
+	date,
 	cinemas,
 	films,
 	performances,

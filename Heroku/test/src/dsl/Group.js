@@ -31,4 +31,18 @@ export default class Group {
 			}
 		});
 	}
+
+	/**
+	 * @param {string|RegExp} text
+	 * @param {boolean} inverse
+	 */
+	filter(text, inverse = false) {
+		const matcher = typeof text === 'string'
+				? (label) => label.indexOf(text) !== -1
+				: (label) => text.test(label);
+		const filter = inverse ? (x) => !matcher(x) : matcher;
+		return this.items.filter(function (item) {
+			return item.getText().then(filter);
+		});
+	}
 }
