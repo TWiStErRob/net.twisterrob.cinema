@@ -75,6 +75,8 @@ export const films = {
 	watched: new FilmGroup('films-group-watched', 'films-list-watched'),
 };
 
+const byFilmRoot = element(by.id('performances-by-film'));
+const byCinemaRoot = element(by.id('performances-by-cinema'));
 export const performances = {
 	wait() {
 		waitFor('.performances-loading');
@@ -83,6 +85,44 @@ export const performances = {
 		plan: element(by.id('plan-plan')),
 		options: element(by.id('plan-options')),
 	},
+	byFilm: {
+		table: byFilmRoot,
+		cinemas: byFilmRoot.element(by.tagName('thead')).all(by.repeater('cinema in cineworld.cinemas')),
+		films: byFilmRoot.all(by.repeater('film in cineworld.films')),
+		performances(filmName, cinemaName) {
+			return this
+					.films
+					// find the row for the film
+					.filterByText(filmName).first()
+					// in all columns
+					.all(by.repeater('cinema in cineworld.cinemas'))
+					// pick the one that has the same index as the cinema
+					.get(this.cinemas.indexOf((element) => element.filterByText(cinemaName)))
+					// get the cell contents
+					.all(by.repeater('performance in performances'))
+					// and drill down into the performance (the separating comma is just outside this)
+					.all(by.css('.performance'));
+		},
+	},
+	byCinema: {
+		table: byCinemaRoot,
+		cinemas: byCinemaRoot.all(by.repeater('cinema in cineworld.cinemas')),
+		films: byCinemaRoot.element(by.tagName('thead')).all(by.repeater('film in cineworld.films')),
+		performances(cinemaName, filmName) {
+			return this
+					.cinemas
+					// find the row for the cinema
+					.filterByText(cinemaName).first()
+					// in all columns
+					.all(by.repeater('film in cineworld.films'))
+					// pick the one that has the same index as the film
+					.get(this.films.indexOf((element) => element.filterByText(filmName)))
+					// get the cell contents
+					.all(by.repeater('performance in performances'))
+					// and drill down into the performance (the separating comma is just outside this)
+					.all(by.css('.performance'));
+		},
+	}
 };
 
 function wait() {
