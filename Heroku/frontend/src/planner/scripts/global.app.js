@@ -23,10 +23,10 @@ var app = angular.module('app', [
 ]);
 angular.module('appUtils', []);
 angular.module('appControllers', []);
-angular.module('appServices', [ngResource]);
+angular.module('appServices', ['ngResource']);
 angular.module('appFilters', []);
 angular.module('appDirectives', []);
-angular.module('appAnimations', [ngAnimate]);
+angular.module('appAnimations', ['ngAnimate']);
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.html5Mode(true);
