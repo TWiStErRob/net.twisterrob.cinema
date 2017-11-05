@@ -167,7 +167,8 @@
 					<button ng-click="buttonClick(button)" id="plan-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading">{{button.label}}</button>
 				</li>
 			</ul>
-			<div class="performances-loading" ng-show="loading">Loading performances...</div>
+			<div class="performances-loading" ng-show="loading && (cineworld.films | filter: {selected: true}).length === 0">Please select a film...</div>
+			<div class="performances-loading" ng-show="loading && (cineworld.films | filter: {selected: true}).length !== 0">Loading performances...</div>
 			<table id="performances-by-cinema" ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length <= (cineworld.cinemas | filter: {selected: true}).length">
 				<thead>
 					<tr>

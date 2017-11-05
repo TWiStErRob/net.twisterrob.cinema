@@ -44,6 +44,16 @@ ElementFinder.prototype.filterByText = function (text, inverse = false) {
 };
 
 /**
+ * Creates a filter function to match that the element has a class.
+ * @return {Promise<boolean>}
+ */
+ElementFinder.prototype.filterByClass = function (className) {
+	return this
+			.getAttribute('class')
+			.then((classes) => (classes || '').split(/\s+/).indexOf(className) !== -1);
+};
+
+/**
  *
  * @param {function(ElementFinder): Promise<boolean>} filter
  * @return {Promise<int>}

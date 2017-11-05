@@ -51,15 +51,15 @@ exports.config = {
 		{
 			package: 'protractor-screenshoter-plugin',
 			screenshotPath: 'logs/reports',
-			screenshotOnExpect: 'failure+success',
-			screenshotOnSpec: 'failure+success',
+			screenshotOnExpect: 'failure',
+			screenshotOnSpec: 'failure',
 			withLogs: 'true',
 			writeReportFreq: 'asap',
 			clearFoldersBeforeTest: true,
 		},
 	],
 	onPrepare: function () {
-		patchPrettyPrint();
+		patchJasmineMethods();
 		require('jasmine-expect');
 		require('jasmine-expect-moment');
 		require('protractor-helpers');
@@ -162,7 +162,17 @@ function verifyLogsAroundEachTest() {
 	}
 }
 
-function patchPrettyPrint() {
+function patchJasmineMethods() {
+	patchPendingToIncludeSpace();
+	patchPrettyPrintNotDeepPrintElementFinders();
+}
+function patchPendingToIncludeSpace() {
+	const originalPending = global.pending;
+	global.pending =  function (message) {
+		originalPending(": " + message);
+	};
+}
+function patchPrettyPrintNotDeepPrintElementFinders() {
 	const originalPP = jasmine.pp;
 	jasmine.pp = function (arg) {
 		// better alternative to: jasmine.MAX_PRETTY_PRINT_DEPTH = 1;
