@@ -1,7 +1,7 @@
 import Group from './Group';
 
 export default class FilmGroup extends Group {
-	constructor(groupID, listID) {
-		super(groupID, listID, 'film');
+	constructor(groupCSS, listCSS) {
+		super(groupCSS, listCSS, '.film');
 	}
 }

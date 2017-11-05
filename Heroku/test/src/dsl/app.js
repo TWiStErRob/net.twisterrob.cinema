@@ -3,6 +3,7 @@ import { ElementFinder } from 'protractor';
 import { login, logout } from './non-app';
 import CinemaGroup from './CinemaGroup';
 import FilmGroup from './FilmGroup';
+import PlanGroup from './PlanGroup';
 import moment from 'moment/moment';
 
 ElementFinder.prototype.iconEl = function () {
@@ -56,9 +57,9 @@ export const cinemas = {
 		london: element(by.id('cinemas-london')),
 		none: element(by.id('cinemas-none')),
 	},
-	london: new CinemaGroup('cinemas-group-london', 'cinemas-list-london'),
-	favorites: new CinemaGroup('cinemas-group-favs', 'cinemas-list-favs'),
-	other: new CinemaGroup('cinemas-group-other', 'cinemas-list-other'),
+	london: new CinemaGroup('#cinemas-group-london', '#cinemas-list-london'),
+	favorites: new CinemaGroup('#cinemas-group-favs', '#cinemas-list-favs'),
+	other: new CinemaGroup('#cinemas-group-other', '#cinemas-list-other'),
 };
 
 export const films = {
@@ -71,8 +72,8 @@ export const films = {
 		new: element(by.id('films-new')),
 		none: element(by.id('films-none')),
 	},
-	new: new FilmGroup('films-group', 'films-list'),
-	watched: new FilmGroup('films-group-watched', 'films-list-watched'),
+	new: new FilmGroup('#films-group', '#films-list'),
+	watched: new FilmGroup('#films-group-watched', '#films-list-watched'),
 };
 
 const byFilmRoot = element(by.id('performances-by-film'));
@@ -122,7 +123,27 @@ export const performances = {
 					// and drill down into the performance (the separating comma is just outside this)
 					.all(by.css('.performance'));
 		},
-	}
+	},
+};
+
+export const plans = {
+	/**
+	 * @member {ElementArrayFinder}
+	 */
+	groups: element(by.id('plan-results')).all(by.repeater('cPlan in plans')),
+	/**
+	 * @returns {PlanGroup}
+	 */
+	groupForCinema(cinemaName) {
+		/**
+		 * @param {ElementFinder} group
+		 * @returns {Promise<boolean>}
+		 */
+		function byCinemaName(group) {
+			return group.element(by.className('cinema-name')).filterByText(cinemaName);
+		}
+		return new PlanGroup(this.groups.filter(byCinemaName).first()); // TODO only() === firstOrFail
+	},
 };
 
 function wait() {
@@ -159,4 +180,5 @@ export default {
 	cinemas,
 	films,
 	performances,
+	plans,
 };

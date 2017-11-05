@@ -30,6 +30,7 @@ exports.config = {
 		'src/cinemas.spec.js',
 		'src/films.spec.js',
 		'src/performances.spec.js',
+		'src/plans.spec.js',
 		'src/url.spec.js',
 		'src/cinemas-auth.spec.js',
 		'src/*.spec.js',

@@ -1,9 +1,22 @@
 export default class Group {
 
-	constructor(groupID, listID, itemClass) {
-		this.header = element(by.id(groupID)).element(by.className('accordion-toggle'));
-		this.list = element(by.id(listID));
-		this.items = this.list.all(by.className(itemClass));
+	/**
+	 * @param {ElementFinder|string} root root element or CSS selector
+	 * @param {ElementFinder|string} content content element or CSS selector inside root
+	 * @param {ElementArrayFinder|string} items elements or CSS selector in content
+	 */
+	constructor(root, content, items) {
+		/** @member {ElementFinder} */
+		this.root = typeof root !== 'string' ? root
+				: element(by.css(root));
+		/** @member {ElementFinder} */
+		this.header = this.root.element(by.className('accordion-toggle'));
+		/** @member {ElementFinder} */
+		this.list = typeof  content !== 'string' ? content
+				: this.root.element(by.css(content));
+		/** @member {ElementArrayFinder} */
+		this.items = typeof items !== 'string' ? items
+				: this.list.all(by.css(items));
 	}
 
 	click() {
