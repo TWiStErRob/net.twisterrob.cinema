@@ -45,9 +45,6 @@ module.service('Planner', [
 						film: film.edi
 					};
 					var performances = _.where(params.performances, filter);
-					if (performances.length === 0) {
-						console.warn(`No performances for ${filter.date}`, params.performances, filter);
-					}
 					performances = _(performances).pluck('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {
