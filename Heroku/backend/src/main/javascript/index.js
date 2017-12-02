@@ -4,9 +4,8 @@ var url = require('url');             // http://nodejs.org/api/url.html
 var path = require('path');           // http://nodejs.org/api/path.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
-var moment = require('moment');       // http://momentjs.com/docs/
+var moment = require('moment-timezone'); // http://momentjs.com/docs/
 var _ = require('underscore');        // http://underscorejs.org/
-//process.env.NODE_DEBUG = 'request neo4j express';
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var async = require('async');         // https://github.com/caolan/async
@@ -170,7 +169,7 @@ function getFilms(req, res) {
 	}
 	request.get({
 		// need to build url manually because visionmedia's qs (used by request) adds indices to arrays (cinema)
-		uri: 'https://www.cineworld.com/api/quickbook/films?' + qs.stringify(cineParams),
+		uri: 'https://www.cineworld.co.uk/api/quickbook/films?' + qs.stringify(cineParams),
 		json: true
 	}, function (err, response, body) {
 		if(err) throw err;
@@ -250,7 +249,7 @@ function getPerformances(req, res) {
 	}
 	var reqs = _.map(combinations, function(combo) {
 		return {
-			uri: 'https://www.cineworld.com/api/quickbook/performances',
+			uri: 'https://www.cineworld.co.uk/api/quickbook/performances',
 			json: true,
 			qs: {
 				key: perfParams.key,
@@ -284,10 +283,13 @@ function getPerformances(req, res) {
 			};
 		});
 		_.each(responseArr, function(response) {
-			response.date = moment.utc(response.date, 'YYYYMMDD');
+			const cinemaTimeZone = 'Europe/London';
 			_.each(response.performances, function(performance) {
-				performance.time = response.date.clone().add(moment.duration(performance.time, 'HH:mm')).subtract(1, 'hours');
+				const time = `${response.date} ${performance.time}`;
+				performance.time = moment.tz(time, 'YYYYMMDD HH:mm', cinemaTimeZone).utc();
 			});
+			// frontend filters on this in planner
+			response.date = moment.tz(response.date, 'YYYYMMDD', cinemaTimeZone).utc();
 		});
 		res.send(responseArr);
 	});

@@ -33,7 +33,7 @@ module.service('Planner', [
 		 * }
 		 */
 		function plan(params) {
-			var date = moment.utc(params.date).add(-moment(params.date).zone(), 'minutes').toISOString();
+			var date = moment(params.date).utc().toISOString();
 			var cache = {};
 			_.each(params.cinemas, function(cinema) {
 				cache[cinema.cineworldID] = {};
@@ -45,6 +45,9 @@ module.service('Planner', [
 						film: film.edi
 					};
 					var performances = _.where(params.performances, filter);
+					if (performances.length === 0) {
+						console.warn(`No performances for ${filter.date}`, params.performances, filter);
+					}
 					performances = _(performances).pluck('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {

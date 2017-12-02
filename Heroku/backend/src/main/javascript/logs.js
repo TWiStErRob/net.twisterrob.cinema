@@ -1,3 +1,4 @@
+process.env.NODE_DEBUG = 'request neo4j express app auth audit task test';
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var bunyan = require('bunyan');       // https://github.com/trentm/node-bunyan
 
@@ -23,7 +24,7 @@ extend(exports, {
 		level: 'TRACE'
 	}),
 	test: bunyan.createLogger({
-		name: 'task',
+		name: 'test',
 		stream: process.stdout,
 		level: 'TRACE'
 	})

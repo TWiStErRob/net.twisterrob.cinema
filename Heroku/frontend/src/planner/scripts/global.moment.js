@@ -1,6 +1,7 @@
 'use strict';
-import moment from 'moment';
-import 'moment-range';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
+const moment = extendMoment(Moment);
 
 var momentModule = angular.module('moment', []);
 
