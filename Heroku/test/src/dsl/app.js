@@ -12,6 +12,9 @@ ElementFinder.prototype.iconEl = function () {
 ElementFinder.prototype.nameEl = function () {
 	return this.element(by.className('cinema-name'));
 };
+ElementFinder.prototype.nameEl2 = function () {
+	return this.element(by.className('film-title'));
+};
 
 function waitFor(classNameToWaitFor) {
 	const elemToWaitFor = element.all(by.css(classNameToWaitFor)).first();
@@ -74,6 +77,22 @@ export const films = {
 	},
 	new: new FilmGroup('#films-group', '#films-list'),
 	watched: new FilmGroup('#films-group-watched', '#films-list-watched'),
+	addViewDialog: {
+		element: element(by.className('modal-dialog')),
+		header: element(by.className('modal-dialog')).element(by.tagName('h3')),
+		buttons: {
+			add: element(by.className('modal-dialog')).element(by.buttonText('Add')),
+			cancel: element(by.className('modal-dialog')).element(by.buttonText('Cancel')),
+		},
+	},
+	removeViewDialog: {
+		element: element(by.className('modal-dialog')),
+		header: element(by.className('modal-dialog')).element(by.tagName('h1')),
+		buttons: {
+			ok: element(by.className('modal-dialog')).element(by.buttonText('Yes')),
+			cancel: element(by.className('modal-dialog')).element(by.buttonText('Cancel')),
+		},
+	},
 };
 
 const byFilmRoot = element(by.id('performances-by-film'));
@@ -122,6 +141,14 @@ export const performances = {
 					.all(by.repeater('performance in performances'))
 					// and drill down into the performance (the separating comma is just outside this)
 					.all(by.css('.performance'));
+		},
+	},
+	optionsDialog: {
+		element: element(by.className('modal-dialog')),
+		header: element(by.className('modal-dialog')).element(by.tagName('h3')),
+		buttons: {
+			plan: element(by.className('modal-dialog')).element(by.buttonText('Plan')),
+			cancel: element(by.className('modal-dialog')).element(by.buttonText('Cancel')),
 		},
 	},
 };

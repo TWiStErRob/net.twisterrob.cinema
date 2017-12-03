@@ -33,6 +33,7 @@ exports.config = {
 		'src/plans.spec.js',
 		'src/url.spec.js',
 		'src/cinemas-auth.spec.js',
+		'src/dialogs.spec.js',
 		'src/*.spec.js',
 	],
 	params: {
@@ -49,7 +50,7 @@ exports.config = {
 		defaultTimeoutInterval: 30 * 1000,
 	},
 	plugins: [
-		{
+		/*{ // Warning: protractor-browser-logs cannot work together with this
 			package: 'protractor-screenshoter-plugin',
 			screenshotPath: 'logs/reports',
 			screenshotOnExpect: 'failure',
@@ -57,7 +58,7 @@ exports.config = {
 			withLogs: 'true',
 			writeReportFreq: 'asap',
 			clearFoldersBeforeTest: true,
-		},
+		},*/
 	],
 	onPrepare: function () {
 		patchJasmineMethods();

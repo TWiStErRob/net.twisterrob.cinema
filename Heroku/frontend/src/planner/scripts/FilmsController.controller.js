@@ -106,7 +106,7 @@ module.controller('FilmsController', [
 						return film || _($scope.cineworld.films).sortBy('title').find('selected');
 					},
 					defaultDate: function() {
-						return moment().startOf('day').add('hours', 18).toDate(); // today at 6 pm
+						return moment().startOf('day').add(18, 'hours').toDate(); // today at 6 pm
 					}
 				}
 			});
