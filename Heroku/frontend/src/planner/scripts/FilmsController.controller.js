@@ -26,10 +26,10 @@ module.controller('FilmsController', [
 				film.selected = !film.selected;
 			}, hidden: true },
 			new: { label: "New", selector: function(film) {
-				film.selected = !film.view; // doesn't have a View
+				film.selected = !$scope.hasView(film);
 			}, isOpen: { films: true } },
 			watched: { label: "Watched", selector: function(film) {
-				film.selected = !!film.view; // has view
+				film.selected = $scope.hasView(film);
 			}, hidden: true },
 			addView: { label: "Add View", handle: function() {
 				$scope.addViewPopup(null, null);
@@ -61,7 +61,7 @@ module.controller('FilmsController', [
 				});
 				if(existing) {
 					existing.view = view;
-				} else if (_($scope.cineworld.films).filter({ edi: view.film.edi, view: null }).size() === 1) {
+				} else if (_($scope.cineworld.films).filter({ edi: view.film.edi }).filter($scope.not($scope.hasView)).size() === 1) {
 					film.view = view;
 				} else {
 					existing = _.cloneDeep(view.film);
@@ -164,6 +164,9 @@ module.controller('FilmsController', [
 					removeView(view);
 				}
 			});
+		};
+		$scope.hasView = function(film) {
+			return _.isObject(film.view);
 		};
 	}
 ]);

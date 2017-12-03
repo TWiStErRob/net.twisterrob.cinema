@@ -5,6 +5,11 @@ module.controller('AppController', [
 	        '$rootScope', '_', '$window', '$uibModal', 'moment', 'Cineworld', '$location',
 	function($scope,       _,   $window,   $uibModal,   moment,   cineworld,   $location) {
 		$scope.Math = $window.Math;
+		$scope.not = function(func) { // TODO replace with _.negate
+			return function (item) { 
+				return !func(item); 
+			}
+		};
 		var search = {
 			film: 'f',
 			cinema:'c',
