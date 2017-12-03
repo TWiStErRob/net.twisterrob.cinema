@@ -5,7 +5,7 @@ var path = require('path');           // http://nodejs.org/api/path.html
 var express = require('express');     // http://expressjs.com/api.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var moment = require('moment-timezone'); // http://momentjs.com/docs/
-var _ = require('underscore');        // http://underscorejs.org/
+var _ = require('lodash');            // https://lodash.com/docs
 var request = require('request');     // https://github.com/mikeal/request
 var qs = require('querystring');      // http://nodejs.org/api/querystring.html
 var async = require('async');         // https://github.com/caolan/async
@@ -174,7 +174,7 @@ function getFilms(req, res) {
 	}, function (err, response, body) {
 		if(err) throw err;
 		var params = {
-			filmEDIs: _.pluck(body.films, 'edi')
+			filmEDIs: _.map(body.films, 'edi')
 		};
 		if(params.filmEDIs.length === 0) {
 			res.jsonp([]);
@@ -232,8 +232,8 @@ function getPerformances(req, res) {
 		res.jsonp([]);
 		return;
 	}
-	perfParams.cinema = _.map(perfParams.cinema, function(x) { return parseInt(x, 10); });
-	perfParams.film = _.map(perfParams.film, function(x) { return parseInt(x, 10); });
+	perfParams.cinema = _.map(perfParams.cinema, _.parseInt);
+	perfParams.film = _.map(perfParams.film, _.parseInt);
 	
 	var combinations = [];
 	for(var c = 0, cLen = perfParams.cinema.length; c < cLen; c++) {
@@ -267,13 +267,13 @@ function getPerformances(req, res) {
 	async.parallelLimit(tasks, 3, function (err, results) {
 		if(err) throw err;
 		// [ [req, body], [req, body], [req, body], ... ]
-		results = _.pluck(results, 1);
+		results = _.map(results, 1);
 		// [ /* body */{ errors: [], performances: [] }, /* body */{ errors: [], performances: [] }, ... ]
-		var errors = _.flatten(_.pluck(results, 'errors'));
+		var errors = _.flatten(_.map(results, 'errors'));
 		if(_.compact(errors).length > 0) { // ignore empty arrays and undefineds
 			res.send(500, errors.join("\n"));
 		}
-		var performances = _.pluck(results, 'performances');
+		var performances = _.map(results, 'performances');
 		var responseArr = _.map(_.zip(combinations, performances), function(pair) {
 			return {
 				date: pair[0].date,

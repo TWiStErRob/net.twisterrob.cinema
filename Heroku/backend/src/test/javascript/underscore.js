@@ -1,4 +1,4 @@
-var _ = require('underscore');        // http://underscorejs.org/
+var _ = require('lodash');        // https://lodash.com/docs
 
 exports.changeSetsNum = {
 	setUp: function (callback) {
@@ -12,7 +12,7 @@ exports.changeSetsNum = {
 	incoming: function (test) {
 		test.data = this;
 		var incoming = _.reject(test.data.ajax, function(num) {
-			return _.contains(test.data.db, num);
+			return _.includes(test.data.db, num);
 		});
 		test.deepEqual(incoming, [5,6]);
 		test.done();
@@ -20,7 +20,7 @@ exports.changeSetsNum = {
 	existing: function (test) {
 		test.data = this;
 		var existing = _.filter(test.data.ajax, function(num) {
-			return _.contains(test.data.db, num);
+			return _.includes(test.data.db, num);
 		});
 		test.deepEqual(existing, [3,4]);
 		test.done();
@@ -28,7 +28,7 @@ exports.changeSetsNum = {
 	existing2: function (test) {
 		test.data = this;
 		var existing = _.filter(test.data.db, function(num) {
-			return _.contains(test.data.ajax, num);
+			return _.includes(test.data.ajax, num);
 		});
 		test.deepEqual(existing, [3,4]);
 		test.done();
@@ -36,7 +36,7 @@ exports.changeSetsNum = {
 	deleted: function (test) {
 		test.data = this;
 		var deleted = _.reject(test.data.db, function(num) {
-			return _.contains(test.data.ajax, num);
+			return _.includes(test.data.ajax, num);
 		});
 		test.deepEqual(deleted, [1,2]);
 		test.done();
@@ -51,7 +51,7 @@ exports.changeSetsObj = {
 			{ idDB: 3, name: "Name 3"},
 			{ idDB: 4, name: "Name 4"}
 		];
-		this.dbByID = _.indexBy(this.db, "idDB");
+		this.dbByID = _.keyBy(this.db, "idDB");
 		this.dbIDs = _.keys(this.dbByID);
 
 		this.ajax = [
@@ -60,7 +60,7 @@ exports.changeSetsObj = {
 			{ idAjax: 5, name: "Name 5"},
 			{ idAjax: 6, name: "Name 6"}
 		];
-		this.ajaxByID = _.indexBy(this.ajax, "idAjax");
+		this.ajaxByID = _.keyBy(this.ajax, "idAjax");
 		this.ajaxIDs = _.keys(this.ajaxByID);
 
 		callback();

@@ -1,7 +1,7 @@
 var async = require('async');    // https://github.com/caolan/async
 var fs = require('fs');          // http://nodejs.org/api/fs.html
 var path = require('path');      // http://nodejs.org/api/path.html
-var _ = require('underscore');
+var _ = require('lodash');       // https://lodash.com/docs
 
 exports.remap = function(arr, map) {
 	var result = {};

@@ -21,7 +21,7 @@
 		"bunyan": "1.8.10",
 		"neo4j-js": "0.0.7",
 		"request": "2.30.0",
-		"underscore": "1.8.3",
+		"lodash": "4.17.4",
 		"nodeunit": "0.8.2",
 		"passport": "0.3.2",
 		"passport-google-oauth20": "1.0.0",

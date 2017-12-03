@@ -3,7 +3,7 @@ var path = require('path');           // http://nodejs.org/api/path.html
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
-var _ = require('underscore');        // http://underscorejs.org/
+var _ = require('lodash');            // https://lodash.com/docs
 var assert = require('assert');       // http://nodejs.org/api/assert.html
 var config = require('./config');
 var utils = require('./utils');
@@ -51,17 +51,17 @@ module.exports = {
 	},
 	createNodes: function(graph, clazz, data, queryAll, nodeProperty, nodeIDProperty, dataIDProperty, allDone) {
 		data = _.map(data, function(datum) {
-			return _.omit(datum, _.isNull);
+			return _.omitBy(datum, _.isNull);
 		});
 		graph.query(queryAll, function (error, results) {
 			if(error) {
 				allDone(error, [], [], []);
 				return;
 			}
-			var nodes = _.pluck(results, nodeProperty);
-			var nodesByID = _.indexBy(nodes, nodeIDProperty),
+			var nodes = _.map(results, nodeProperty);
+			var nodesByID = _.keyBy(nodes, nodeIDProperty),
 			    nodeIDs = _.keys(nodesByID);
-			var dataByID = _.indexBy(data, dataIDProperty),
+			var dataByID = _.keyBy(data, dataIDProperty),
 			    dataIDs = _.keys(dataByID);
 			var newContent = _.omit(_.clone(dataByID), nodeIDs),
 			    newLength = _.size(newContent);
@@ -116,7 +116,7 @@ module.exports = {
 				if(existingLength > 0) {
 					_.each(existingContent, function(node) {
 						assert.equal(node.data.class, clazz);
-						var id = _.keys(_.indexBy([node], nodeIDProperty))[0];
+						var id = _.keys(_.keyBy([node], nodeIDProperty))[0];
 						var newProperties = extend(true, {}, dataByID[id], {
 							_updated: now
 						});
@@ -128,7 +128,7 @@ module.exports = {
 				if(deletedLength > 0) {
 					_.each(deletedContent, function(node) {
 						assert.equal(node.data.class, clazz);
-						var id = _.keys(_.indexBy([node], nodeIDProperty))[0];
+						var id = _.keys(_.keyBy([node], nodeIDProperty))[0];
 						var data = nodesByID[id].data;
 						if(!("_deleted" in data)) {
 							var newProperties = extend(true, {}, data, {

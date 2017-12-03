@@ -1,7 +1,7 @@
 var request = require('request');     // https://github.com/mikeal/request
 var log = require('./logs').task;
 var neo4j = require('./neo4j');
-var _ = require('underscore');        // http://underscorejs.org/
+var _ = require('lodash');            // https://lodash.com/docs
 var moment = require('moment');       // http://momentjs.com/docs/
 var async = require('async');         // https://github.com/caolan/async
 

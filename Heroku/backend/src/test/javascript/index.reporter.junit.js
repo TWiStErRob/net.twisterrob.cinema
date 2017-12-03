@@ -2,7 +2,7 @@ var nodeunit = require('nodeunit');
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
-var _ = require('underscore');
+var _ = require('lodash');        // https://lodash.com/docs
 var extend = require('node.extend');
 var AssertionError = nodeunit.assert.AssertionError;
 
@@ -67,11 +67,11 @@ exports.run = function(files, options, callback) {
 		if (unfinished > 0) {
 			//console.log('INCONCLUSIVE: Undone tests (or their setUp/tearDown-s):');
 			_.each(tracker.modules, function(m) {
-				if(!_.contains(tracker.modulesDone, m)) {
+				if(!_.includes(tracker.modulesDone, m)) {
 					console.log(color(options.error, "UNDONE module ") + color(options.module, m.name));
 				} else {
 					_.each(m.tests, function(t) {
-						if(!_.contains(m.tests, t)) {
+						if(!_.includes(m.tests, t)) {
 							console.log(color(options.error, "UNDONE test ") + color(options.test, t.name));
 						}
 					});

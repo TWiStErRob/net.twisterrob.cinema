@@ -1,7 +1,7 @@
 var request = require('request');     // https://github.com/mikeal/request
 var log = require('./logs').task;
 var neo4j = require('./neo4j');
-var _ = require('underscore');
+var _ = require('lodash');            // https://lodash.com/docs
 
 neo4j.init(function(err, graph) {
 	if(err) throw err;
