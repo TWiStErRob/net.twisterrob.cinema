@@ -26,8 +26,8 @@ input[type="checkbox"] {
 
 /** Site layout */
 #main > header {
-	height: 39px;
 	border-bottom: 1px solid white;
+	padding: 4px 0;
 }
 
 #cinemas, #films, #performances, #debug {
