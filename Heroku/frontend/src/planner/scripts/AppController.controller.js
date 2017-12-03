@@ -5,11 +5,7 @@ module.controller('AppController', [
 	        '$rootScope', '_', '$window', '$uibModal', 'moment', 'Cineworld', '$location',
 	function($scope,       _,   $window,   $uibModal,   moment,   cineworld,   $location) {
 		$scope.Math = $window.Math;
-		$scope.not = function(func) { // TODO replace with _.negate
-			return function (item) { 
-				return !func(item); 
-			}
-		};
+		$scope.not = _.negate;
 		var search = {
 			film: 'f',
 			cinema:'c',
@@ -23,7 +19,7 @@ module.controller('AppController', [
 			return $location.search()[search.cinema];
 		}, function(cinemaIDs) {
 			cinemaIDs = _.ensureArray(cinemaIDs);
-			cinemaIDs = _.map(cinemaIDs, _.fn.parseInt);
+			cinemaIDs = _.map(cinemaIDs, _.parseInt);
 			if (cinemaIDs.length) {
 				$scope.cineworld.pendingSelectedCinemas.length = 0;
 			}
@@ -38,7 +34,7 @@ module.controller('AppController', [
 			return $location.search()[search.film];
 		}, function(filmEDIs) {
 			filmEDIs = _.ensureArray(filmEDIs);
-			filmEDIs = _.map(filmEDIs, _.fn.parseInt);
+			filmEDIs = _.map(filmEDIs, _.parseInt);
 			if (filmEDIs.length) {
 				$scope.cineworld.pendingSelectedFilms.length = 0;
 			}

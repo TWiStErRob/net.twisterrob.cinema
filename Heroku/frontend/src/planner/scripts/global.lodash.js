@@ -7,16 +7,10 @@ underscoreModule.service('_', [function() {
 			groupBy: _.groupBy
 		};
 		_.mixin({
-			partialRight: function(func) {
-				var slice = Array.prototype.slice, args = slice.call(arguments, 1).reverse();
-				return function() {
-					return func.apply(this, slice.call(arguments, 0).concat(args));
-				};
-			},
-			push: function(arr /*, ... otherArrays*/) {
-				var args = Array.prototype.slice.call(arguments, 1); // ignore arr
-				args = Array.prototype.concat.apply([], args);
-				Array.prototype.push.apply(arr, args);
+			push: function(arr /*, ... rest*/) {
+				var rest = Array.prototype.slice.call(arguments, 1); // ignore arr
+				rest = Array.prototype.concat.apply([], rest);
+				Array.prototype.push.apply(arr, rest);
 				return arr;
 			},
 			ensureArray: function(objOrArr) {
@@ -39,21 +33,14 @@ underscoreModule.service('_', [function() {
 					}
 					return byFirst;
 				}
+			},
+			isTrue: function(obj) {
+				return obj === true;
+			},
+			isFalse: function(obj) {
+				return obj === false;
 			}
 		});
-		_.fn = {
-			parseInt: function(stuff) {
-				return parseInt(stuff, 10);
-			},
-			/**
-			 * Reusable function like in _.pluck to get the property.
-			 */
-			prop: function(propName) {
-				return function(obj) {
-					return obj[propName];
-				};
-			}
-		};
-		return _;//.noConflict();
+		return _;
 	}
 ]);

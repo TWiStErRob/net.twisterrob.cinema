@@ -71,16 +71,16 @@ module.service('Cineworld', [
 		}, config.performanceWait);
 
 		Object.defineProperty(data, 'selectedCinemas', {
-			get: function() { return _.filter(data.cinemas, _.fn.prop('selected')); }
+			get: function() { return _.filter(data.cinemas, 'selected'); }
 		});
 		Object.defineProperty(data, 'selectedCinemaIDs', {
-			get: function() { return _.map(data.selectedCinemas, _.fn.prop('cineworldID')); }
+			get: function() { return _.map(data.selectedCinemas, 'cineworldID'); }
 		});
 		Object.defineProperty(data, 'selectedFilms', {
-			get: function() { return _.filter(data.films, _.fn.prop('selected')); }
+			get: function() { return _.filter(data.films, 'selected'); }
 		});
 		Object.defineProperty(data, 'selectedFilmEDIs', {
-			get: function() { return _.map(data.selectedFilms, _.fn.prop('edi')); }
+			get: function() { return _.map(data.selectedFilms, 'edi'); }
 		});
 		Object.defineProperty(data, 'formattedDate', {
 			get: function() { return moment(data.date).format("YYYYMMDD"); }

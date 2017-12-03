@@ -158,7 +158,7 @@ module.controller('PerformancesController', [
 		};
 		$scope.offensePriority = function(plan) {
 			return _(plan.offenses)
-					.pick(function(offense) { return offense === true; })
+					.pickBy(_.isTrue)
 					.keys()
 					.reduce(aggregateOffensePriority, 0);
 
