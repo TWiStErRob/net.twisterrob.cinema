@@ -1,3 +1,5 @@
+/* global protractor */
+
 function describe(actual) {
 	const locator = actual.locator();
 	return !locator ? "" + locator : locator.message || locator.toString();

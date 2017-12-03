@@ -22,7 +22,7 @@
 		"updateFromCineworldCinemas": "node backend/src/main/javascript/updateFromCineworldCinemas",
 		"updateFromCineworldFilms": "node backend/src/main/javascript/updateFromCineworldFilms",
 		"heroku-postbuild": "cd frontend && npm run build",
-		"test": "(cd backend && npm test && cd ..) && (cd frontend && npm test && cd ..) && (cd test && npm start && cd ..)",
+		"test": "(cd backend && npm test && cd ..) && (cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
 		"install": "(cd backend && npm install && cd ..) && (cd frontend && npm install && cd ..)",
 		"update": "(cd backend && npm update && cd ..) && (cd frontend && npm update && cd ..)",
 		"devTest": "npm-run-all --race --parallel devTest:selenium devTest:frontend devTest:backend",

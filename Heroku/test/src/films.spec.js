@@ -1,16 +1,8 @@
 import app, { films as films } from './dsl/app';
 import { anyWithText, noneWithText } from './helpers/protractor-filters';
 
-function notWatchedFilm(film) {
-	return noneWithText(films.watched.items, film.getText());
-}
-
 function watchedFilm(film) {
 	return anyWithText(films.watched.items, film.getText());
-}
-
-function notNewFilm(film) {
-	return noneWithText(films.new.items, film.getText());
 }
 
 function newFilm(film) {

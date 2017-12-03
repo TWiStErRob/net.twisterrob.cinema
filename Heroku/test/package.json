@@ -11,7 +11,9 @@
 		"selenium:update": "webdriver-manager update",
 		"protractor": "protractor protractor.config.js",
 		"inspect": "protractor --directConnect --elementExplorer protractor.config.js",
-		"blocking-proxy-hack": "rimraf node_modules/protractor/node_modules/blocking-proxy"
+		"blocking-proxy-hack": "rimraf node_modules/protractor/node_modules/blocking-proxy",
+		"test": "npm run test:jshint",
+		"test:jshint": "jshint --verbose --show-non-errors src"
 	},
 	"dependencies": {
 		"blocking-proxy": "^1.0.1",
@@ -30,6 +32,8 @@
 		"jasmine-spec-reporter": "4.2.1",
 		"npm-run-all": "4.1.1",
 		"protractor-screenshoter-plugin": "0.3.2",
-		"rimraf": "2.6.2"
+		"rimraf": "2.6.2",
+
+		"jshint": "2.9.5"
 	}
 }

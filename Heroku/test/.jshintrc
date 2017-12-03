@@ -1,4 +1,13 @@
 {
 	"extends": "../.jshintrc",
-	"jasmine": true
+	"jasmine": true,
+	"mocha": true,
+	"browser": false,
+	"node": true,
+	"globals": {
+		"by": false,
+		"element": false,
+		"browser": false,
+		"expectEach": false
+	}
 }

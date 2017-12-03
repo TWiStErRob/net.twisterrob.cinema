@@ -1,15 +1,9 @@
 {
 	"extends": "../.jshintrc",
-	// TODO remove these once converted to modules
 	"strict": "global",
 	"globals": {
-		"window": false,
 		"console": false,
-		"document": false,
 		"require": false,
-		"$": false,
-		"angular": false,
-		"moment": false,
-		"twister": false
+		"angular": false
 	}
 }

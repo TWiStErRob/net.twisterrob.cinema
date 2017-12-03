@@ -1,5 +1,5 @@
 import { until } from 'selenium-webdriver';
-
+/* global By */
 const driver = browser.driver;
 
 function delayedExecute(locator, action) {
