@@ -136,12 +136,24 @@ input[type="checkbox"] {
 	margin-left: 2px;
 }
 
-.cinema .checkbox,
-.film .checkbox {
+.cinema .checkbox-inline label,
+.film .checkbox-inline label {
 	margin: 0;
+	font-weight: 400;
+	display: inline;
+	cursor: pointer;
+	/* moved from .checkbox-inline, the input[checkbox] has to be positioned within */
+	position: relative;
+}
+.cinema .checkbox-inline,
+.film .checkbox-inline {
+	/* make the wrapped long label position itself to the left of floating right things, not below */
+    display: block;
+    /* make the part of bounding box overlapping the floating right things clickable */
+    position: static;
 }
 
-.cinema .checkbox {
+.cinema .checkbox-inline {
 	white-space: nowrap;
 }
 
@@ -238,7 +250,7 @@ body, .panel-body {
 	}
 }
 
-.panel-default > .panel-heading {
+.panel > .panel-heading {
 	background-color: #333333;
 	color: #CCCCCC;
 }

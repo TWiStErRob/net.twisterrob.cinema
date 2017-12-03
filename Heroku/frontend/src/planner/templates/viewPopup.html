@@ -48,9 +48,9 @@
 				<div class="col-sm-9">
 					<!-- workaround to not being able to get $invalid state of the timepicker directive nor the child inputs are named -->
 					<input name="time" type="hidden" required ng-model="selected.time" />
-					<uib-timepicker hour-step="1" minute-step="5" show-meridian="false"
+					<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false"
 						ng-model="selected.time" required
-						uib-popover="Which screening did you go to?" popover-trigger="focus" popover-placement="top"></uib-timepicker>
+						uib-popover="Which screening did you go to?" popover-trigger="focus" popover-placement="top"></div>
 					<span ng-show="viewForm.time.$error.required" class="help-inline">Please select a time!</span>
 				</div>
 			</div>
