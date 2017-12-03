@@ -127,7 +127,7 @@ module.controller('FilmsController', [
 
 		function removeView(view) {
 			var films = _($scope.cineworld.films).filter({ edi: view.film.edi });
-			if(films.any('processingView')) return;
+			if (_.some(films, 'processingView')) return;
 			films.each(function(film) { film.processingView = true; });
 			Film.removeView({
 				edi: view.film.edi,

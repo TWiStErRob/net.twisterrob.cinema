@@ -44,8 +44,8 @@ module.service('Planner', [
 						cinema: cinema.cineworldID,
 						film: film.edi
 					};
-					var performances = _.where(params.performances, filter);
-					performances = _(performances).pluck('performances').flatten(true).value();
+					var performances = _.filter(params.performances, filter);
+					performances = _(performances).map('performances').flatten(true).value();
 					if(performances.length === 0) return;
 					cache[cinema.cineworldID][film.edi] = _.map(performances, function(performance) {
 						var time = moment.utc(performance.time);
@@ -101,7 +101,7 @@ module.service('Planner', [
 				_.each(graph, function(node) {
 					// calculate possible next movies
 					_.each(films, function(film) {
-						if(!_.contains(node.watched, film.edi)) { // didn't watch it already
+						if(!_.includes(node.watched, film.edi)) { // didn't watch it already
 							var performances = cache[cinema.cineworldID][film.edi];
 							_.each(performances, function(perf) {
 								if(node.performance.endTime < perf.startTime) { // starts after the other finishes

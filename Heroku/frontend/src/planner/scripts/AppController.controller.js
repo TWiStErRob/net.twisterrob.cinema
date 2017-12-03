@@ -30,7 +30,7 @@ module.controller('AppController', [
 			_.push($scope.cineworld.pendingSelectedCinemas, cinemaIDs);
 		});
 		$scope.$watch('cineworld.cinemas | filter: { selected: true }', function (newValue, oldValue, scope) {
-			$location.search(search.cinema, _.pluck(newValue, 'cineworldID')).replace();
+			$location.search(search.cinema, _.map(newValue, 'cineworldID')).replace();
 		}, true);
 
 		// Two-way binding for films
@@ -45,7 +45,7 @@ module.controller('AppController', [
 			_.push($scope.cineworld.pendingSelectedFilms, filmEDIs);
 		});
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
-			$location.search(search.film, _.pluck(newValue, 'edi')).replace();
+			$location.search(search.film, _.map(newValue, 'edi')).replace();
 		}, true);
 
 		// Two-way binding for date, order of watches are important, first takes precedence on load

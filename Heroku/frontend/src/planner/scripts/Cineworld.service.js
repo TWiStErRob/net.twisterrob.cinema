@@ -26,7 +26,7 @@ module.service('Cineworld', [
 			$rootScope.$broadcast('CinemasLoading', data.cinemas);
 			data.cinemas = Cinema.list(params, function(cinemas) {
 				angular.forEach(cinemas, function(cinema) {
-					cinema.selected = _.contains(data.pendingSelectedCinemas, cinema.cineworldID);
+					cinema.selected = _.includes(data.pendingSelectedCinemas, cinema.cineworldID);
 				});
 				data.pendingSelectedCinemas.length = 0;
 				$rootScope.$broadcast('CinemasLoaded', cinemas);
@@ -45,7 +45,7 @@ module.service('Cineworld', [
 			$rootScope.$broadcast('FilmsLoading', data.films);
 			data.films = Film.list(params, function(films) {
 				angular.forEach(films, function(film) {
-					film.selected = _.contains(data.pendingSelectedFilms, film.edi);
+					film.selected = _.includes(data.pendingSelectedFilms, film.edi);
 					// TODO view.date<UTC> = moment(view.date).local().toDate()
 				});
 				data.pendingSelectedFilms.length = 0;

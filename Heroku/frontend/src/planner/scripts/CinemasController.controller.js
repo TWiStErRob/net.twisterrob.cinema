@@ -9,8 +9,8 @@ module.controller('CinemasController', [
 			$scope.loading = true;
 		});
 		$scope.$on('CinemasLoaded', function(event, cinemas) {
-			if(!_.any(cinemas, 'selected')) {
-				if(_.any(cinemas, 'fav')) {
+			if(!_.some(cinemas, 'selected')) {
+				if(_.some(cinemas, 'fav')) {
 					$scope.buttonClick($scope.buttons.favs);
 				} else {
 					$scope.buttonClick($scope.buttons.london);

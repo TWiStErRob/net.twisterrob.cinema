@@ -77,7 +77,7 @@ module.controller('PerformancesController', [
 				};
 				More.prototype.filterFilm = function (film) {
 					this.splitBy(function (plan) {
-						return _.any(plan, function (screening) {
+						return _.some(plan, function (screening) {
 							return screening.film() === film;
 						});
 					});
@@ -85,7 +85,7 @@ module.controller('PerformancesController', [
 				};
 				More.prototype.filterScreening = function (movie) {
 					this.splitBy(function (plan) {
-						return _.any(plan, function (screening) {
+						return _.some(plan, function (screening) {
 							return screening.equals(movie);
 						});
 					});
