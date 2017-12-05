@@ -5,10 +5,10 @@ module.service('Planner', [
 	        '$rootScope', '_', 'moment', 'Cineworld',
 	function($rootScope,   _,   moment,   Cineworld) {
 		this.defaults = {
-			minWaitBetweenMovies: moment.duration({minutes: 5}).as('minutes'),
-			maxWaitBetweenMovies: moment.duration({minutes: 45}).as('minutes'),
-			estimatedAdvertisementLength: moment.duration({minutes: 15}).as('minutes'),
-			endOfWork: moment.duration({hours:17, minutes:30}).as('milliseconds')
+			minWaitBetweenMovies: moment.duration({minutes: 5}),
+			maxWaitBetweenMovies: moment.duration({minutes: 45}),
+			estimatedAdvertisementLength: moment.duration({minutes: 15}),
+			endOfWork: moment.duration({hours:17, minutes:30})
 		};
 
 		this.plan = function(options) {
@@ -29,7 +29,11 @@ module.service('Planner', [
 		 * 	date: new Date(),
 		 * 	cinemas: [1,2,3, ...],
 		 *  films: [12345, 12346, ...],
-		 * 	performances: [ { cinema: 1, film: 12345, date: "20131230", performances: [] }, ...]
+		 * 	performances: [ { cinema: 1, film: 12345, date: "20131230", performances: [] }, ...],
+		 *  minWaitBetweenMovies: duration (minutes),
+		 *  maxWaitBetweenMovies: duration (minutes),
+		 *  estimatedAdvertisementLength: duration (minutes),
+		 *  endOfWork: duration (within a day),
 		 * }
 		 */
 		function plan(params) {
@@ -63,9 +67,9 @@ module.service('Planner', [
 							scheduledTime: time,
 							adLength: params.estimatedAdvertisementLength,
 							startTime: time.clone()
-							               .add(params.estimatedAdvertisementLength, 'minutes'),
+							               .add(params.estimatedAdvertisementLength),
 							endTime: time.clone()
-							             .add(params.estimatedAdvertisementLength, 'minutes')
+							             .add(params.estimatedAdvertisementLength)
 							             .add(film.runtime, 'minutes'),
 						});
 						plan.range = moment.range(plan.startTime, plan.endTime);
@@ -125,22 +129,27 @@ module.service('Planner', [
 						plan.last = plan[plan.length - 1];
 						plan.range = moment.range(plan.first.range.start, plan.last.range.end);
 						_.reduce(plan, function(prev, current) {
-							var breakLength = Math.floor((current.range.start - prev.range.end) / 60 / 1000);
+							var breakLength = moment.duration(current.range.start - prev.range.end);
 							current.breakBefore = breakLength;
 							prev.breakAfter = breakLength;
 							return current;
 						});
 
 						plan.endOfWork = plan.range.start.clone().local().startOf('day').add(params.endOfWork);
+						_.each(plan, function(performance) {
+							performance.offenses = {
+								shortBreak: performance.breakBefore < params.minWaitBetweenMovies,
+								longBreak: performance.breakBefore > params.maxWaitBetweenMovies,
+								earlyStart: performance.range.start.isBefore(plan.endOfWork),
+								earlyFinish: performance.range.end.isBefore(plan.endOfWork),
+							};
+						})
 						plan.offenses = {
 							fewMovies: !(films.length + 1 == node.watched.length && node.watched.length != 1),
-							early: plan.range.start.isBefore(plan.endOfWork),
-							shortBreak: _.find(plan, function(performance) {
-								return performance.breakBefore < params.minWaitBetweenMovies;
-							}) !== undefined,
-							longBreak: _.find(plan, function(performance) {
-								return performance.breakBefore > params.maxWaitBetweenMovies;
-							}) !== undefined
+							earlyStart: plan.range.start.isBefore(plan.endOfWork),
+							earlyFinish: plan.range.end.isBefore(plan.endOfWork),
+							shortBreak: _.some(plan, 'offenses.shortBreak'),
+							longBreak: _.some(plan, 'offenses.longBreak')
 						};
 
 						plan.offenses.count = _.reduce(plan.offenses, function(offenseCount, offense) { return offenseCount + (offense ? 1 : 0); }, 0);

@@ -162,7 +162,7 @@
 			</uib-accordion>
 		</section>
 		<section id="performances" class="ui-stretch" ng-controller="PerformancesController">
-			<ul class="list-inline">
+			<ul class="list-inline" title="{{options | json}}">
 				<li ng-repeat="(id, button) in buttons" ng-hide="button.hidden">
 					<button ng-click="buttonClick(button)" id="plan-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading">{{button.label}}</button>
 				</li>
@@ -187,7 +187,7 @@
 							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanName(cinema.name)}}</a>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') < cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -210,7 +210,7 @@
 							<span class="film-runtime" ng-click="filmDetailsPopup(film)">{{film.runtime}}</span>
 						 </td>
 						<td class="performances" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
-							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') <= cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
+							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') < cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
 						</td>
 					</tr>
 				</tbody>
@@ -244,21 +244,21 @@
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
 							<span class="plan-header" title="{{plan | json}}">
-								<span class="film-start" ng-class="{offense: plan.range.start < plan.endOfWork}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
+								<span class="film-start" ng-class="{offense: plan.offenses.earlyStart}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: plan.offenses.earlyFinish}">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">
 									(offends: {{offenseCount(plan)}}, prio: {{offensePriority(plan)}})
 								</span>
 							</span>
 							<ol class="plan-films">
 								<li class="plan-film-break" ng-repeat-start="movie in plan" ng-if="movie.breakBefore" value="{{$index}}">
-									<span class="length" ng-class="{offense: movie.breakBefore < options.minWaitBetweenMovies || movie.breakBefore > options.maxWaitBetweenMovies}">{{movie.breakBefore}}</span>
-									minutes break
-									<span class="offenseDetails" ng-show="movie.breakBefore < options.minWaitBetweenMovies">(minimum: {{options.minWaitBetweenMovies}} minutes)</span>
-									<span class="offenseDetails" ng-show="movie.breakBefore > options.maxWaitBetweenMovies">(maximum: {{options.maxWaitBetweenMovies}} minutes)</span>
+									<span class="length" ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak}" title="{{movie.breakBefore}}">{{movie.breakBefore | humanizeDuration}}</span>
+									break
+									<span class="offenseDetails" ng-show="movie.offenses.shortBreak" title="{{options.minWaitBetweenMovies}}">(minimum: {{options.minWaitBetweenMovies | humanizeDuration}})</span>
+									<span class="offenseDetails" ng-show="movie.offenses.longBreak" title="{{options.maxWaitBetweenMovies}}">(maximum: {{options.maxWaitBetweenMovies | humanizeDuration}})</span>
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}" ng-class="{filtered: movie.equals(cPlan.more.filteredByScreening)}">
 									<button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="cPlan.more.filterScreening(movie)"><i class="glyphicon glyphicon-time"></i>
-									</button><span class="film-start" ng-class="{offense: movie.range.start < plan.endOfWork}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.range.end < plan.endOfWork}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
+									</button><span class="film-start" ng-class="{offense: movie.offenses.earlyStart}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.offenses.earlyFinish}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
 									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film())">{{movie.film().runtime
 									}}</span><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this film" ng-click="cPlan.more.filterFilm(movie.film())"><i class="glyphicon glyphicon-film"></i>
 									</button><span class="film-title" ng-class="{filtered: movie.film() === cPlan.more.filteredByFilm}">{{movie.film().title}}</span>

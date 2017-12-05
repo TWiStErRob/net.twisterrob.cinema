@@ -163,7 +163,7 @@ module.controller('PerformancesController', [
 					.reduce(aggregateOffensePriority, 0);
 
 			function aggregateOffensePriority(sum, offense) {
-				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']; // lower is better
+				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'earlyStart', 'earlyFinish']; // lower is better
 				// Given var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']:
 				// if I used the index of each element conflicts would arise: shortBreak(1) + longBreak(2) != early(3).
 				// So use shifting to produce a bitmap and add them to create a non-conflicting result.
