@@ -67,10 +67,65 @@ input[type="checkbox"] {
 	margin: 2px;
 }
 
-.plan .plan-film-break {
+.plan .plan-films .plan-film-break {
 	list-style-type: none;
 }
 
+.plan .plan-vis {
+	white-space: nowrap;
+	width: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-size: 0 !important;
+	/* make ticks (background gradient) larger than contents and vertical-align them */
+	line-height: 14px;
+	/*background-image: linear-gradient(...); // set from angular */
+}
+.plan .plan-vis .plan-vis-film,
+.plan .plan-vis .plan-vis-break,
+.plan .plan-vis .plan-vis-group,
+.plan .plan-vis .plan-vis-spacer
+{
+	display: inline-block;
+	vertical-align: middle;
+	transition: width 0.5s ease 0.2s;
+}
+.plan .plan-vis .plan-vis-film {
+	background: #89D531;
+	height: 8px;
+	font-size: 9px;
+	line-height: 8px;
+	color: black;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.plan .plan-vis .plan-vis-spacer {
+	background: #333333;
+	height: 1px;
+}
+.plan .plan-vis .plan-vis-break {
+	background: #333333;
+	height: 4px;
+	font-size: 10px;
+	line-height: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+.plan-vis-break {
+	color: #36BBCE;
+}
+
+.plan .plan-vis:hover {
+	background-image: none !important;
+}
+.plan .plan-vis:hover .plan-vis-spacer {
+	width: 0 !important;
+}
+.plan .plan-vis:hover .plan-vis-group {
+	width: 100% !important;
+}
 #statusmessage {
 	display: block;
 	position: fixed;
@@ -405,7 +460,10 @@ a {
 	background-color: #030;
 }
 
-.plan-film.filtered, .plan-film .filtered, .filtered {
+.plan-films .plan-film.filtered,
+.plan-films .plan-film .filtered,
+.plan-filtered-by-film.filtered,
+.plan-filtered-by-screening.filtered {
 	font-weight: bold;
 }
 

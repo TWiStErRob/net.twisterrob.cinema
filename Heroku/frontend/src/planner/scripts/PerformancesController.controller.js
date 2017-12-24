@@ -2,8 +2,8 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('PerformancesController', [
-	        '$scope', '_', '$uibModal', 'Planner', 'orderByFilter',
-	function($scope,   _,   $uibModal,   Planner,   orderByFilter) {
+	        '$scope', '_', '$uibModal', 'moment', 'Planner', 'orderByFilter',
+	function($scope,   _,   $uibModal,   moment,   Planner,   orderByFilter) {
 		$scope.$watch('cineworld.films | filter: { selected: true }', function (newValue, oldValue, scope) {
 			$scope.cineworld.updatePerformances();
 		}, true);
@@ -175,6 +175,76 @@ module.controller('PerformancesController', [
 
 		$scope.cleanName = function(cinemaName) {
 			return cinemaName.replace("London - ", "");
+		};
+
+		const visOffset = moment.duration(6, 'hours');
+		$scope.fullDay = moment.duration(1, 'day');
+		/**
+		 * @param {duration|int} part
+		 * @param {duration|int} full
+		 * @returns {string} percentage
+		 */
+		$scope.widthOf = function (part, full) {
+			return `${moment.duration(part) / moment.duration(full) * 100}%`;
+		};
+		/**
+		 * @param {DateRange} range
+		 * @returns {string} percentage
+		 */
+		$scope.widthOfBefore = function (range) {
+			const time = range.start.clone().local();
+			const startOfDay = time.clone().startOf('day').add(visOffset);
+			const sinceStartOfDay = moment.duration(time - startOfDay);
+			return $scope.widthOf(sinceStartOfDay, $scope.fullDay);
+		};
+		/**
+		 * @param {DateRange} range
+		 * @returns {string} percentage
+		 */
+		$scope.widthOfAfter = function (range) {
+			const time = range.end.clone().local();
+			const endOfDay = range.start.clone().local().endOf('day').add(visOffset);
+			const tillEndOfDay = moment.duration(endOfDay - time);
+			return $scope.widthOf(tillEndOfDay, $scope.fullDay);
+		};
+
+		$scope.ticks = function () {
+			const ticks = [];
+			// hours
+			for (var i = visOffset.asHours(); i < visOffset.asHours() + 24; i += 1) {
+				ticks.push({ time: i * 60, width: 2, color: '#222222' });
+			}
+			// quarter days
+			ticks.push({ time: 12 * 60, width: 5, color: '#666666' });
+			ticks.push({ time: 18 * 60, width: 5, color: '#666666' });
+			ticks.push({ time: 24 * 60, width: 5, color: 'white' });
+			// time
+			ticks.push({ time: $scope.options.endOfWork.asMinutes(), width: 5, color: '#487a7a' });
+
+			const steps = _(ticks)
+					.sortBy(['time', 'width'])
+					.map(tick => {
+						tick.time -= visOffset.asMinutes();
+						return tick;
+					})
+					.flatMap(function (tick) {
+						const toPercentOfDay = 1 / (24 * 60) * 100;
+						const time = tick.time * toPercentOfDay;
+						const girth = tick.width * toPercentOfDay;
+						return [
+							`transparent ${time - girth}%`,
+							`${tick.color} ${time - girth}%`,
+							`${tick.color} ${time + girth}%`,
+							`transparent ${time + girth}%`,
+						];
+					})
+					.value();
+			return `linear-gradient(
+				to right,
+				transparent 0%,
+				${steps.join(',')},
+				transparent 100%
+			)`;
 		};
 	}
 ]);
