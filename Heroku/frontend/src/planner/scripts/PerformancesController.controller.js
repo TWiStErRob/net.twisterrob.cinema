@@ -210,15 +210,18 @@ module.controller('PerformancesController', [
 
 		$scope.ticks = function () {
 			const ticks = [];
-			// hours
-			for (var i = visOffset.asHours(); i < visOffset.asHours() + 24; i += 1) {
-				ticks.push({ time: i * 60, width: 2, color: '#222222' });
+			console.assert(visOffset.asHours() === Math.floor(visOffset.asHours()), visOffset);
+			// (visOffset, visOffset + 24) open-interval, so there are no markers near edges
+			for (var i = visOffset.asHours() + 1; i < visOffset.asHours() + 24; i += 1) {
+				if (i % 24 === 0) { // end of day mark
+					ticks.push({ time: i * 60, width: 5, color: '#ffffff' });
+				} else if (i % 6 === 0) { // quarter days
+					ticks.push({ time: i * 60, width: 5, color: '#666666' });
+				} else { // normal hours
+					ticks.push({ time: i * 60, width: 2, color: '#222222' });
+				}
 			}
-			// quarter days
-			ticks.push({ time: 12 * 60, width: 5, color: '#666666' });
-			ticks.push({ time: 18 * 60, width: 5, color: '#666666' });
-			ticks.push({ time: 24 * 60, width: 5, color: 'white' });
-			// time
+			// special times time
 			ticks.push({ time: $scope.options.endOfWork.asMinutes(), width: 5, color: '#487a7a' });
 
 			const steps = _(ticks)
