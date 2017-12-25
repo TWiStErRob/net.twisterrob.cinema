@@ -60,6 +60,9 @@ module.controller('PerformancesController', [
 						return plan.offenses.count === 0
 						       || (plan.offenses.count === 1 && plan.offenses.fewMovies);
 					});
+					if (plan.scheduleExplorer) {
+						this.showMore(15 - plan.more.list.length);
+					}
 				};
 				More.prototype.showMore = function(count) {
 					count = Math.max(0, count);
@@ -93,9 +96,9 @@ module.controller('PerformancesController', [
 				};
 
 				plan.more = new More(plan.valid.concat(plan.offending));
+				plan.scheduleExplorer = true;
 				plan.more.initialState();
 				plan.open = plan.more.list.length > 0;
-				plan.scheduleExplorer = false;
 			});
 			$scope.plans = plans;
 		};
@@ -171,6 +174,16 @@ module.controller('PerformancesController', [
 				// Also ECMA-262§11.7.1.7-8: (2 << -1) === (2 << 0xFFFFFFFFFF & 0x1F) === (2 << 31) === (0b10 << 31) === 0b10...0 [32 zeros],
 				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1), hence it's safe to use _.indexOf without any checks.
 				return sum + (2 << _.indexOf(prio, offense));
+			}
+		};
+		$scope.offenseDisplay = function(offender, offenses) {
+			const offending = _.filter(offenses, (offense) => offender.offenses[offense]);
+			if (_.includes(offending, 'earlyFinish') && _.includes(offending, 'earlyStart')) {
+				return 'starts and ends too early';
+			} else if (_.includes(offending, 'earlyFinish')) {
+				return 'ends too early';
+			} else if (_.includes(offending, 'earlyStart')) {
+				return 'starts too early';
 			}
 		};
 

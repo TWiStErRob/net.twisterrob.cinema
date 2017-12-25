@@ -219,7 +219,7 @@
 				<div uib-accordion-group id="cinema-plan-{{cPlan.cinema.cineworldID}}" ng-repeat="cPlan in plans | orderBy: [planRank, 'cinema.name']" is-open="cPlan.open">
 					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cPlan.open, 'glyphicon-chevron-right': !cPlan.open}"></i>
-						<input type="checkbox" title="Schedule explorer" class="pull-right" ng-click="$event.stopPropagation(); cPlan.scheduleExplorer = !cPlan.scheduleExplorer"/>
+						<input type="checkbox" title="Schedule explorer" ng-model="cPlan.scheduleExplorer" class="pull-right" ng-click="$event.stopPropagation()"/>
 						<span class="cinema-name">{{cPlan.cinema.name}}</span>
 						(<ng-pluralize count="cPlan.valid.length"
 							when="{
@@ -242,11 +242,19 @@
 						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.initialState(); $event.preventDefault()">Reset</button>
 					</div>
 					<ul class="plans" ng-if="!cPlan.scheduleExplorer">
-						<li class="plan" ng-repeat="plan in cPlan.more.list">
+						<li class="plan" ng-repeat="plan in cPlan.more.list" title="{{plan | json}}">
 							<div class="plan-vis" ng-style=" { 'background-image': ticks() }" ng-include="'../templates/plan-vis.html'"></div>
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
-							<span class="plan-header" title="{{plan | json}}">
-								<span class="film-start" ng-class="{offense: plan.offenses.earlyStart}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: plan.offenses.earlyFinish}">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
+							<span class="plan-header">
+								<span class="film-start"
+								      ng-class="{offense: plan.offenses.earlyStart}"
+								      title="{{offenseDisplay(plan, ['earlyStart'])}}"
+								>{{plan.range.start | momentLocalFormat:'HH:mm'}}</span><!--
+								-->&mdash;<!--
+								--><span class="film-end"
+                                         ng-class="{offense: plan.offenses.earlyFinish}"
+                                         title="{{offenseDisplay(plan, ['earlyFinish'])}}"
+								>{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
 								<span title="{{plan.offenses | json}}" class="offenseDetails" data-priority="{{offensePriority(plan)}}" ng-show="plan.offenses.count > 0">
 									(offends: {{offenseCount(plan)}}, prio: {{offensePriority(plan)}})
 								</span>
@@ -260,16 +268,28 @@
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}" ng-class="{filtered: movie.equals(cPlan.more.filteredByScreening)}">
 									<button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="cPlan.more.filterScreening(movie)"><i class="glyphicon glyphicon-time"></i>
-									</button><span class="film-start" ng-class="{offense: movie.offenses.earlyStart}">{{movie.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: movie.offenses.earlyFinish}">{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
+									</button><!--
+									--><span class="film-start"
+                                           ng-class="{offense: movie.offenses.earlyStart}"
+                                           title="{{offenseDisplay(movie, ['earlyStart'])}}"
+                                           >{{movie.range.start | momentLocalFormat:'HH:mm'}}</span><!--
+									-->&mdash;<!--
+									--><span class="film-end"
+                                             ng-class="{offense: movie.offenses.earlyFinish}"
+                                             title="{{offenseDisplay(movie, ['earlyFinish'])}}"
+                                             >{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
 									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film())">{{movie.film().runtime
 									}}</span><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this film" ng-click="cPlan.more.filterFilm(movie.film())"><i class="glyphicon glyphicon-film"></i>
-									</button><span class="film-title" ng-class="{filtered: movie.film() === cPlan.more.filteredByFilm}">{{movie.film().title}}</span>
+									</button><span class="film-title" ng-class="{
+									filtered: movie.film() === cPlan.more.filteredByFilm,
+									offense: movie.offenses.earlyStart || movie.offenses.earlyFinish
+									}" title="{{offenseDisplay(movie, ['earlyStart', 'earlyFinish'])}}">{{movie.film().title}}</span>
 								</li>
 							</ol>
 						</li>
 					</ul>
 					<div class="plan-vis" ng-style=" { 'background-image': ticks() }" ng-if="cPlan.scheduleExplorer">
-						<div ng-include="'../templates/plan-vis.html'" ng-repeat="plan in cPlan.more.list"></div>
+						<div ng-include="'../templates/plan-vis.html'" ng-repeat="plan in cPlan.more.list" title="{{plan | json}}"></div>
 					</div>
 					<div class="plans-footer" ng-if="cPlan.more.remaining() > 0">
 						Show more suggestions:

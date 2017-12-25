@@ -10,7 +10,13 @@
 	      ng-style="{ width: widthOf(movie.breakBefore, plan.range.end - plan.range.start) }"
 	>{{movie.breakBefore.asMinutes()}}</span>
 	<span class="plan-vis-film" ng-repeat-end
-	      title="{{movie.film().title}}"
+	      title="{{movie.range.start | momentLocalFormat:'HH:mm'}}&mdash;{{movie.range.end | momentLocalFormat:'HH:mm'}} ({{movie.film().runtime}}) {{movie.film().title}}
+{{offenseDisplay(movie, ['earlyStart', 'earlyFinish'])}}"
+	      ng-click="filmDetailsPopup(movie.film())"
+	      ng-class="{
+		      offense: movie.offenses.earlyStart || movie.offenses.earlyFinish,
+		      filtered: movie.film() === cPlan.more.filteredByFilm
+	      }"
 	      ng-style="{ width: widthOf(movie.film().runtime * 60 * 1000 || 0, plan.range.end - plan.range.start) }"
 	>{{movie.film().title}}</span>
 </span>

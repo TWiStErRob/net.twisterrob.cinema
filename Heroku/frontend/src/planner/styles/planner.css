@@ -92,29 +92,22 @@ input[type="checkbox"] {
 	transition: width 0.5s ease 0.2s;
 }
 .plan-vis .plan-vis-film {
-	background: #89D531;
 	height: 8px;
 	font-size: 9px;
 	line-height: 8px;
-	color: black;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 }
 .plan-vis .plan-vis-spacer {
-	background: #333333;
 	height: 1px;
 }
 .plan-vis .plan-vis-break {
-	background: #333333;
 	height: 4px;
 	font-size: 10px;
 	line-height: 5px;
 	text-align: center;
 	font-weight: bold;
-}
-.plan-vis-break {
-	color: #36BBCE;
 }
 
 .plan .plan-vis:hover {
@@ -421,8 +414,14 @@ a {
 .film-end {
 	color: #36BBCE;
 }
+.plan-vis-break {
+	background: #333333;
+	color: #36BBCE;
+}
+
 .time.offense,
 .length.offense,
+.film-title.offense,
 .film-start.offense,
 .film-end.offense,
 .offenseDetails {
@@ -433,7 +432,17 @@ a {
 .film-title {
 	color: #89D531;
 }
+.plan-vis-film {
+	background: #89D531;
+	color: black;
+}
+.plan-vis-film.offense {
+	background: #487a7a;
+}
 
+.plan-vis-spacer {
+	background: #333333;
+}
 .cinema-name {
 	color: #EE2021;
 }
