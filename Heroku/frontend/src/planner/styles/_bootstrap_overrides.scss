@@ -29,10 +29,6 @@
 	text-align: initial;
 }
 
-.glyphicon[ng-click] {
-	cursor: pointer;
-}
-
 [class^="icon-"].loading,
 [class*=" icon-"].loading,
 .glyphicon.loading {
@@ -42,10 +38,6 @@
 
 .glyphicon.loading:before {
 	content: "";
-}
-
-.accordion-toggle {
-	cursor: pointer;
 }
 
 .accordion-toggle:hover {

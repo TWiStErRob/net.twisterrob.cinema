@@ -37,7 +37,27 @@ module.exports = {
 			{ test: /\.json$/, use: ['raw-loader'] },
 			{ test: /\.html$/, use: ['raw-loader'] },
 			{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
-			{ test: /\.(sass|scss)/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+			{
+				test: /\.(sass|scss)/,
+				use: [
+					{
+						loader: 'style-loader'
+					},
+					{
+						loader: 'css-loader',
+						options: {
+							sourceMap: true,
+						},
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							sourceMap: true,
+							outputStyle: 'expanded',
+						},
+					},
+				],
+			},
 			{ test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
 				loader: 'url-loader',
 				options: {

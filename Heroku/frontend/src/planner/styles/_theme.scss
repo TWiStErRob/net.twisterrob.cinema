@@ -1,14 +1,17 @@
-/*
-#121215; // Cineworld Black BG
-#F7F7F7; // Cineworld light text
-#CCCCCC; // Cineworld dark text
-#89D531; // MyCineworld green
-#D70011; // Cineworld red
-*/
+$cineworld-background: #121215;
+$cineworld-light_text: #F7F7F7;
+$cineworld-dark_text: #CCCCCC;
+$cineworld-mycineworld: #89D531;
+$cineworld-accent: #D70011; // from logo
+
+$color-background: $cineworld-background;
+$color-copy: $cineworld-dark_text;
+$color-copy-important: $cineworld-light_text;
 
 $color-film: #89D531;
 $color-film-highlight: greenyellow;
 $color-cinema: #EE2021;
 $color-cinema-highlight: red;
 $color-time: #36BBCE;
+$color-runtime: #5587E4;
 $color-offense: #487a7a;

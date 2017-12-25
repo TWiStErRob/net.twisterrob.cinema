@@ -1,14 +1,14 @@
 .plans {
 	padding-left: 0;
-}
 
-.plans .plan {
-	display: inline-block;
-	width: 395px;
-	border: 1px solid gray;
-	margin: 2px;
-}
+	.plan {
+		display: inline-block;
+		width: 395px;
+		border: 1px solid gray;
+		margin: 2px;
 
-.plan .plan-films .plan-film-break {
-	list-style-type: none;
+		.plan-films .plan-film-break {
+			list-style-type: none;
+		}
+	}
 }

@@ -1,22 +1,26 @@
 @import '_theme.scss';
 
 body, .panel-body {
-	background-color: #121215;
-	color: #CCCCCC;
+	background-color: $color-background;
+	color: $color-copy;
 }
 
 .modal-content {
-	background-color: #121215;
+	background-color: $color-background;
 	border: 1px solid #999999;
 }
 
 .panel > .panel-heading {
 	background-color: #333333;
-	color: #CCCCCC;
+	color: $color-copy-important;
 }
 
 a {
-	color: #F7F7F7;
+	color: $color-copy-important;
+}
+
+[ng-click] {
+	cursor: pointer;
 }
 
 ::-webkit-scrollbar {
@@ -40,7 +44,6 @@ a {
 	color: red;
 }
 
-
 #statusmessage {
 	background-color: #CCCCCC;
 	color: #0794DD;
@@ -51,31 +54,35 @@ a {
 	color: gray;
 }
 
-.length,
-.film-runtime {
-	color: #5587E4;
+.length {
+	color: $color-runtime;
 }
 
 .film-runtime {
-	cursor: pointer;
-}
 
-.film-runtime:before {
-	color: #CCCCCC;
-	content: '(';
-}
+	color: $color-runtime;
 
-.film-runtime:after {
-	color: #CCCCCC;
-	content: '\')';
-}
+	&:before, &:after {
+		color: $color-copy;
+	}
+	&:before {
+		content: '(';
+	}
+	&:after {
+		content: '\')';
+	}
 
-.film-runtime:empty:before {
-	content: '(???)';
-}
-
-.film-runtime:empty:after {
-	content: '';
+	&:empty {
+		&:before, &:after {
+			color: $color-offense;
+		}
+		&:before {
+			content: '(???)';
+		}
+		&:after {
+			content: '';
+		}
+	}
 }
 
 .time,
@@ -103,13 +110,18 @@ a {
 	color: $color-film;
 }
 
+a, [ng-click] {
+	&.film-title:hover {
+		color: $color-film-highlight;
+	}
+}
+
 .plan-vis-film {
 	background: $color-film;
 	color: black;
-}
-
-.plan-vis-film.offense {
-	background: $color-offense;
+	&.offense {
+		background: $color-offense;
+	}
 }
 
 .plan-vis-spacer {
@@ -120,32 +132,38 @@ a {
 	color: $color-cinema;
 }
 
-.cinema input:checked {
-	outline: 2px outset $color-cinema-highlight;
+a, [ng-click] {
+	&.cinema-name:hover {
+		color: $color-cinema-highlight;
+	}
 }
 
-.cinema input:checked + * {
-	background-color: #400;
+.cinema {
+	input:checked {
+		outline: 2px outset $color-cinema-highlight;
+
+		+ * {
+			background-color: #400;
+		}
+	}
+
+	.glyphicon-heart {
+		color: $color-cinema-highlight;
+	}
 }
 
-.cinema .glyphicon-heart {
-	color: $color-cinema-highlight;
-}
+.film {
 
-.film .glyphicon-eye-close {
-	color: $color-film-highlight;
-}
+	input:checked {
+		outline: 2px outset $color-film-highlight;
+		+ * {
+			background-color: #030;
+		}
+	}
 
-.film input:checked {
-	outline: 2px outset $color-film-highlight;
-}
-
-.film input:checked + * {
-	background-color: #030;
-}
-
-.plan-film .film-title {
-	cursor: pointer;
+	.glyphicon-eye-close {
+		color: $color-film-highlight;
+	}
 }
 
 .plan-films .plan-film.filtered,
