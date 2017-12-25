@@ -57,17 +57,19 @@ module.controller('AppController', [
 			$location.search(search.date, moment(newValue).format(search.dateFormat)).replace();
 		}, true);
 
-		$scope.filmDetailsPopup = function(film) {
+		$scope.filmDetailsPopup = function(film, performance) {
 			$uibModal.open({
 				templateUrl: 'templates/filmPopup.html',
 				windowClass: 'modal-lg',
 				controller: 'FilmPopupController',
 				resolve: {
-					film: function() {
-						return film;
-					}
+					film: () => film,
+					performance: () => performance,
 				}
 			});
+		};
+		$scope.cleanCinemaName = function(cinemaName) {
+			return cinemaName.replace("London - ", "");
 		};
 	}
 ]);

@@ -12,7 +12,7 @@
 	<span class="plan-vis-film" ng-repeat-end
 	      title="{{movie.range.start | momentLocalFormat:'HH:mm'}}&mdash;{{movie.range.end | momentLocalFormat:'HH:mm'}} ({{movie.film().runtime}}) {{movie.film().title}}
 {{offenseDisplay(movie, ['earlyStart', 'earlyFinish'])}}"
-	      ng-click="filmDetailsPopup(movie.film())"
+	      ng-click="filmDetailsPopup(movie.film(), movie)"
 	      ng-class="{
 		      offense: movie.offenses.earlyStart || movie.offenses.earlyFinish,
 		      filtered: movie.film() === cPlan.more.filteredByFilm

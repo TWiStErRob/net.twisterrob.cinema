@@ -187,10 +187,6 @@ module.controller('PerformancesController', [
 			}
 		};
 
-		$scope.cleanName = function(cinemaName) {
-			return cinemaName.replace("London - ", "");
-		};
-
 		const visOffset = moment.duration(6, 'hours');
 		$scope.fullDay = moment.duration(1, 'day');
 		/**

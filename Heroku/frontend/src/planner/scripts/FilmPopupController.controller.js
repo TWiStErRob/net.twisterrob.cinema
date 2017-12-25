@@ -2,9 +2,10 @@
 var module = angular.module('appControllers'); // see app.js
 
 module.controller('FilmPopupController', [
-         '$scope', '$sce', '$timeout', '$uibModalInstance', 'film',
-function( $scope,   $sce,   $timeout,   $uibModalInstance,   film) {
+         '$scope', '$sce', '$timeout', '$uibModalInstance', 'film', 'performance',
+function( $scope,   $sce,   $timeout,   $uibModalInstance,   film,   performance) {
 	$scope.film = film;
+	$scope.selectedPerformance = performance;
 
 	$scope.dismiss = function () {
 		$uibModalInstance.dismiss();

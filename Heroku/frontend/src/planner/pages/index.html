@@ -170,7 +170,7 @@
 			</ul>
 			<div class="performances-loading" ng-show="loading && (cineworld.films | filter: {selected: true}).length === 0">Please select a film...</div>
 			<div class="performances-loading" ng-show="loading && (cineworld.films | filter: {selected: true}).length !== 0">Loading performances...</div>
-			<table id="performances-by-cinema" ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length <= (cineworld.cinemas | filter: {selected: true}).length">
+			<table id="performances-by-cinema" class="performance-details" ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length <= (cineworld.cinemas | filter: {selected: true}).length">
 				<thead>
 					<tr>
 						<th class="cinema">Cinema \ Film</th>
@@ -185,7 +185,7 @@
 					<tr ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'">
 						<td class="cinema" title="{{cinema | json}}">
 							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}" class="glyphicon glyphicon-globe pull-right"></a>
-							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanName(cinema.name)}}</a>
+							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanCinemaName(cinema.name)}}</a>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
 							<span ng-repeat="performance in performances[cinema.cineworldID][film.edi]"><span class="performance"><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this screening" ng-click="filterScreening(cinema, film, performance)"><i class="glyphicon glyphicon-time"></i></button><a href="{{performance.booking_url}}" target="_blank" class="time" title="{{performance | json}}" ng-class="{offense: (performance.time | moment:'utc') < cineworld.date.valueOf() + options.endOfWork}">{{performance.time | momentLocalFormat:'HH:mm'}}</a></span>{{$last? "" : ", "}}</span>
@@ -193,13 +193,13 @@
 					</tr>
 				</tbody>
 			</table>
-			<table id="performances-by-film" ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length > (cineworld.cinemas | filter: {selected: true}).length">
+			<table id="performances-by-film" class="performance-details" ng-show="!loading" ng-if="(cineworld.films | filter: {selected: true}).length > (cineworld.cinemas | filter: {selected: true}).length">
 				<thead>
 					<tr>
 						<th class="film">Film \ Cinema</th>
 						<th class="cinema" ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'" title="{{cinema | json}}">
 							<a href="http://maps.google.com/?q={{cinema.postcode}}" target="_blank" title="{{cinema.postcode}}" class="glyphicon glyphicon-globe pull-right"></a>
-							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanName(cinema.name)}}</a>
+							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanCinemaName(cinema.name)}}</a>
 						</th>
 					</tr>
 				</thead>
@@ -279,12 +279,16 @@
                                              ng-class="{offense: movie.offenses.earlyFinish}"
                                              title="{{offenseDisplay(movie, ['earlyFinish'])}}"
                                              >{{movie.range.end | momentLocalFormat:'HH:mm'}}</span>
-									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film())">{{movie.film().runtime
+									<span class="film-runtime" ng-click="filmDetailsPopup(movie.film(), movie)">{{movie.film().runtime
 									}}</span><button type="button" class="btn btn-link btn-xs" title="Filter suggestions with this film" ng-click="cPlan.more.filterFilm(movie.film())"><i class="glyphicon glyphicon-film"></i>
-									</button><span class="film-title" ng-class="{
-									filtered: movie.film() === cPlan.more.filteredByFilm,
-									offense: movie.offenses.earlyStart || movie.offenses.earlyFinish
-									}" title="{{offenseDisplay(movie, ['earlyStart', 'earlyFinish'])}}">{{movie.film().title}}</span>
+									</button><!--
+									--><span class="film-title" ng-class="{
+										filtered: movie.film() === cPlan.more.filteredByFilm,
+										offense: movie.offenses.earlyStart || movie.offenses.earlyFinish
+									}"
+                                             title="{{offenseDisplay(movie, ['earlyStart', 'earlyFinish'])}}"
+                                             ng-click="filmDetailsPopup(movie.film(), movie)"
+									>{{movie.film().title}}</span>
 								</li>
 							</ol>
 						</li>
