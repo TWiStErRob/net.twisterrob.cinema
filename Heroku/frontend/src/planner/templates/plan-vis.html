@@ -1,0 +1,19 @@
+<span class="plan-vis-spacer"
+      ng-style="{ width: widthOfBefore(plan.range) }"
+>before</span>
+<span class="plan-vis-group"
+      ng-style="{ width: widthOf(plan.range.end - plan.range.start, fullDay) }">
+	<span ng-repeat-start="movie in plan" ng-if="movie.breakBefore"
+	      class="plan-vis-break length"
+	      ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak}"
+	      title="{{movie.breakBefore | humanizeDuration}} break"
+	      ng-style="{ width: widthOf(movie.breakBefore, plan.range.end - plan.range.start) }"
+	>{{movie.breakBefore.asMinutes()}}</span>
+	<span class="plan-vis-film" ng-repeat-end
+	      title="{{movie.film().title}}"
+	      ng-style="{ width: widthOf(movie.film().runtime * 60 * 1000 || 0, plan.range.end - plan.range.start) }"
+	>{{movie.film().title}}</span>
+</span>
+<span class="plan-vis-spacer"
+      ng-style="{ width: widthOfAfter(plan.range) }"
+>after</span>

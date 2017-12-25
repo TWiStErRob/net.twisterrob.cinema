@@ -95,6 +95,7 @@ module.controller('PerformancesController', [
 				plan.more = new More(plan.valid.concat(plan.offending));
 				plan.more.initialState();
 				plan.open = plan.more.list.length > 0;
+				plan.scheduleExplorer = false;
 			});
 			$scope.plans = plans;
 		};

@@ -39,3 +39,7 @@ app.config(['$sceDelegateProvider', function($sceDelegateProvider) {
 		'http://webcache1.bbccustomerpublishing.com/cineworld/trailers/**'
 	]);
 }]);
+
+app.run(['$templateCache', function ($templateCache) {
+	$templateCache.put('../templates/plan-vis.html', require('../templates/plan-vis.html'));
+}]);

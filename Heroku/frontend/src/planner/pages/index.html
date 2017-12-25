@@ -219,6 +219,7 @@
 				<div uib-accordion-group id="cinema-plan-{{cPlan.cinema.cineworldID}}" ng-repeat="cPlan in plans | orderBy: [planRank, 'cinema.name']" is-open="cPlan.open">
 					<uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cPlan.open, 'glyphicon-chevron-right': !cPlan.open}"></i>
+						<input type="checkbox" title="Schedule explorer" class="pull-right" ng-click="$event.stopPropagation(); cPlan.scheduleExplorer = !cPlan.scheduleExplorer"/>
 						<span class="cinema-name">{{cPlan.cinema.name}}</span>
 						(<ng-pluralize count="cPlan.valid.length"
 							when="{
@@ -240,29 +241,9 @@
 						<span ng-show="cPlan.more.filteredByScreening" class="plan-filtered-by-screening filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByScreening.film())">{{cPlan.more.filteredByScreening.film().title}}</span> @ <a href="{{cPlan.more.filteredByScreening.booking_url}}" target="_blank" class="time" title="{{cPlan.more.filteredByScreening | json}}">{{cPlan.more.filteredByScreening.time | momentLocalFormat:'HH:mm'}}</a></span>
 						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.initialState(); $event.preventDefault()">Reset</button>
 					</div>
-					<ul class="plans">
+					<ul class="plans" ng-if="!cPlan.scheduleExplorer">
 						<li class="plan" ng-repeat="plan in cPlan.more.list">
-							<div class="plan-vis" ng-style=" { 'background-image': ticks() }">
-								<span class="plan-vis-spacer"
-								      ng-style="{ width: widthOfBefore(plan.range) }"
-								>before</span>
-								<span class="plan-vis-group"
-								      ng-style="{ width: widthOf(plan.range.end - plan.range.start, fullDay) }">
-									<span ng-repeat-start="movie in plan" ng-if="movie.breakBefore"
-									      class="plan-vis-break length"
-									      ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak}"
-									      title="{{movie.breakBefore | humanizeDuration}} break"
-									      ng-style="{ width: widthOf(movie.breakBefore, plan.range.end - plan.range.start) }"
-									>{{movie.breakBefore.asMinutes()}}</span>
-									<span class="plan-vis-film" ng-repeat-end
-									      title="{{movie.film().title}}"
-									      ng-style="{ width: widthOf(movie.film().runtime * 60 * 1000 || 0, plan.range.end - plan.range.start) }"
-									>{{movie.film().title}}</span>
-								</span>
-								<span class="plan-vis-spacer"
-								      ng-style="{ width: widthOfAfter(plan.range) }"
-								>after</span>
-							</div>
+							<div class="plan-vis" ng-style=" { 'background-image': ticks() }" ng-include="'../templates/plan-vis.html'"></div>
 							<button type="button" class="close" ng-click="cPlan.more.list.splice($index, 1)" title="Remove plan">&times;</button>
 							<span class="plan-header" title="{{plan | json}}">
 								<span class="film-start" ng-class="{offense: plan.offenses.earlyStart}">{{plan.range.start | momentLocalFormat:'HH:mm'}}</span>&mdash;<span class="film-end" ng-class="{offense: plan.offenses.earlyFinish}">{{plan.range.end | momentLocalFormat:'HH:mm'}}</span>
@@ -287,6 +268,9 @@
 							</ol>
 						</li>
 					</ul>
+					<div class="plan-vis" ng-style=" { 'background-image': ticks() }" ng-if="cPlan.scheduleExplorer">
+						<div ng-include="'../templates/plan-vis.html'" ng-repeat="plan in cPlan.more.list"></div>
+					</div>
 					<div class="plans-footer" ng-if="cPlan.more.remaining() > 0">
 						Show more suggestions:
 						<button type="button" class="btn btn-link btn-xs" ng-click="cPlan.more.showMore(5)">{{Math.min(5, cPlan.more.remaining())}} of {{cPlan.more.remaining()}} more ...</button>
