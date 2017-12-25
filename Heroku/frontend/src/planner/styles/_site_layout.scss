@@ -41,17 +41,16 @@
 	z-index: 99;
 
 	padding: 0 5px;
-}
 
-/** Angular specific */
-#statusmessage {
-	margin-bottom: 0px;
-	line-height: 25px; /* same as hidden margin-bottom */
-	-webkit-transition: all linear 0.2s;
-	transition: all linear 0.2s;
-}
-
-#statusmessage.ng-hide {
-	display: block !important;
-	margin-bottom: -25px;
+	& { // Angular specific
+		margin-bottom: 0px;
+		line-height: 25px; /* same as hidden margin-bottom */
+		-webkit-transition: all linear 0.2s;
+		transition: all linear 0.2s;
+		
+		&.ng-hide {
+			display: block !important;
+			margin-bottom: -25px;
+		}
+	}
 }
