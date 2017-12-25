@@ -133,7 +133,15 @@ module.service('Planner', [
 					if (node.next.length !== 0) {
 						// recurse, try to watch next movies
 						planCinema(results, cache, cinema, films, node.next);
-					} else if (node.watched.length > 2) { // we're on a graph leaf, process results
+					} else // we're on a graph leaf, process results 
+					if (node.watched.length < 2 || (node.watched.length === 2 && films.length > 1)) {
+						// don't care about these:
+						// node.watched.length === 0 => errors?
+						// node.watched.length === 1 => "travel" only, no film
+						// node.watched.length === 2 => "travel" + a film
+						//                              (but only last occurrence if films.length > 1)
+					} else {
+						// node.watched.length > 2   => "travel" + a plan (multiple films) 
 						const plan = unfold(node);
 						plan.first = plan[0];
 						plan.last = plan[plan.length - 1];
@@ -169,8 +177,6 @@ module.service('Planner', [
 						} else {
 							results.offending.push(plan);
 						}
-					} else {
-						// node.watched.length == 0 | 1 ==> don't care about these (last single movies (1), and errors(0?) )
 					}
 
 					function unfold(node) {
