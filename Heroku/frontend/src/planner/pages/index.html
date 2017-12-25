@@ -228,7 +228,7 @@
 				<div uib-accordion-group id="cinema-plan-{{cPlan.cinema.cineworldID}}" ng-repeat="cPlan in plans | orderBy: [planRank, 'cinema.name']" is-open="cPlan.open">
 					<div uib-accordion-heading>
 						<i class="glyphicon pull-right" ng-class="{'glyphicon-chevron-down': cPlan.open, 'glyphicon-chevron-right': !cPlan.open}"></i>
-						<input type="checkbox" title="Schedule explorer" ng-model="cPlan.scheduleExplorer" class="pull-right" ng-click="$event.stopPropagation()"/>
+						<input type="checkbox" title="Schedule explorer" ng-model="cPlan.scheduleExplorer" class="schedule-explorer pull-right" ng-click="$event.stopPropagation()"/>
 						<span class="cinema-name">{{cPlan.cinema.name}}</span>
 						(<ng-pluralize count="cPlan.valid.length"
 							when="{

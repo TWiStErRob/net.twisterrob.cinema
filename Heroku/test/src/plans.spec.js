@@ -9,6 +9,7 @@ describe('Planner display', function () {
 			app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
 
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
 
@@ -19,6 +20,7 @@ describe('Planner display', function () {
 		it('should be collapsible', function () {
 			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
 
 			cinemaPlan.collapse();
@@ -29,6 +31,7 @@ describe('Planner display', function () {
 		it('should be expandable', function () {
 			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Wood Green");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).not.toBeDisplayed();
 
 			cinemaPlan.expand();
@@ -39,6 +42,7 @@ describe('Planner display', function () {
 		it('should toggle', function () {
 			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
 
 			cinemaPlan.expand();
@@ -57,6 +61,7 @@ describe('Planner display', function () {
 		it('should show more', function () {
 			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
 
 			cinemaPlan.moreN.click();
@@ -67,6 +72,7 @@ describe('Planner display', function () {
 		it('should show all', function () {
 			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
 
 			cinemaPlan.moreAll.click();
@@ -84,6 +90,7 @@ describe('Planner display', function () {
 			app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
 
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
+			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
 			return cinemaPlan.get(0);

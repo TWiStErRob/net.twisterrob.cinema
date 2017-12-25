@@ -53,6 +53,7 @@ describe('Dialogs', function () {
 		expect(films.buttons.all).not.toBeDisabled();
 		films.buttons.all.click();
 		app.wait();
+		app.wait();
 		app.wait(); // TODO something's wrong here, one wait doesn't wait for performances to load
 		expect(performances.buttons.options).not.toBeDisabled();
 
