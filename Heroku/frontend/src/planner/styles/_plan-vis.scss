@@ -1,0 +1,55 @@
+
+.plan-vis {
+	white-space: nowrap;
+	width: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-size: 0 !important;
+	/* make ticks (background gradient) larger than contents and vertical-align them */
+	line-height: 14px;
+	/*background-image: linear-gradient(...); // set from angular */
+}
+
+.plan-vis .plan-vis-film,
+.plan-vis .plan-vis-break,
+.plan-vis .plan-vis-group,
+.plan-vis .plan-vis-spacer {
+	display: inline-block;
+	vertical-align: middle;
+	transition: width 0.5s ease 0.2s;
+}
+
+.plan-vis .plan-vis-film {
+	height: 8px;
+	font-size: 9px;
+	line-height: 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.plan-vis .plan-vis-spacer {
+	height: 1px;
+}
+
+.plan-vis .plan-vis-break {
+	height: 4px;
+	font-size: 10px;
+	line-height: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.plan .plan-vis:hover {
+	background-image: none !important;
+}
+
+.plan .plan-vis:hover .plan-vis-spacer {
+	width: 0 !important;
+}
+
+.plan .plan-vis:hover .plan-vis-group {
+	width: 100% !important;
+}

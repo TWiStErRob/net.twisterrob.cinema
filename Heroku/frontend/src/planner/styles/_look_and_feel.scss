@@ -1,0 +1,160 @@
+@import '_theme.scss';
+
+body, .panel-body {
+	background-color: #121215;
+	color: #CCCCCC;
+}
+
+.modal-content {
+	background-color: #121215;
+	border: 1px solid #999999;
+}
+
+.panel > .panel-heading {
+	background-color: #333333;
+	color: #CCCCCC;
+}
+
+a {
+	color: #F7F7F7;
+}
+
+::-webkit-scrollbar {
+	width: 12px; /* for vertical scrollbars */
+	height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(192, 192, 192, .4);
+}
+
+::-webkit-scrollbar-corner {
+	background: transparent;
+}
+
+#status {
+	color: red;
+}
+
+
+#statusmessage {
+	background-color: #CCCCCC;
+	color: #0794DD;
+	font-weight: bold;
+}
+
+.id {
+	color: gray;
+}
+
+.length,
+.film-runtime {
+	color: #5587E4;
+}
+
+.film-runtime {
+	cursor: pointer;
+}
+
+.film-runtime:before {
+	color: #CCCCCC;
+	content: '(';
+}
+
+.film-runtime:after {
+	color: #CCCCCC;
+	content: '\')';
+}
+
+.film-runtime:empty:before {
+	content: '(???)';
+}
+
+.film-runtime:empty:after {
+	content: '';
+}
+
+.time,
+.film-start,
+.film-end {
+	color: $color-time;
+}
+
+.plan-vis-break {
+	background: #333333;
+	color: $color-time;
+}
+
+.time.offense,
+.length.offense,
+.film-title.offense,
+.film-start.offense,
+.film-end.offense,
+.offenseDetails {
+	color: $color-offense;
+	font-size: x-small;
+}
+
+.film-title {
+	color: $color-film;
+}
+
+.plan-vis-film {
+	background: $color-film;
+	color: black;
+}
+
+.plan-vis-film.offense {
+	background: $color-offense;
+}
+
+.plan-vis-spacer {
+	background: #333333;
+}
+
+.cinema-name {
+	color: $color-cinema;
+}
+
+.cinema input:checked {
+	outline: 2px outset $color-cinema-highlight;
+}
+
+.cinema input:checked + * {
+	background-color: #400;
+}
+
+.cinema .glyphicon-heart {
+	color: $color-cinema-highlight;
+}
+
+.film .glyphicon-eye-close {
+	color: $color-film-highlight;
+}
+
+.film input:checked {
+	outline: 2px outset $color-film-highlight;
+}
+
+.film input:checked + * {
+	background-color: #030;
+}
+
+.plan-film .film-title {
+	cursor: pointer;
+}
+
+.plan-films .plan-film.filtered,
+.plan-films .plan-film .filtered,
+.plan-filtered-by-film.filtered,
+.plan-filtered-by-screening.filtered {
+	font-weight: bold;
+}
+
+.plan-header {
+	font-weight: bold;
+}

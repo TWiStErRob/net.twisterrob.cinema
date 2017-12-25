@@ -1,0 +1,96 @@
+.glyphicon:empty {
+	height: 1em;
+}
+
+.glyphicon:hover {
+	text-decoration: none;
+}
+
+.close {
+	margin-right: 3px;
+	color: gray;
+	opacity: 1;
+}
+
+.close:hover {
+	color: white;
+	opacity: 1;
+}
+
+@media (min-width: 768px) {
+	/* fixes wrapping when it shouldn't https://github.com/twbs/bootstrap/issues/8732 */
+	.form-inline .form-control {
+		width: auto;
+	}
+}
+
+.modal-footer .dropdown-menu {
+	/* https://github.com/twbs/bootstrap/issues/13037 */
+	text-align: initial;
+}
+
+.glyphicon[ng-click] {
+	cursor: pointer;
+}
+
+[class^="icon-"].loading,
+[class*=" icon-"].loading,
+.glyphicon.loading {
+	background: url('../images/icon-loading-white.gif') no-repeat 0;
+	width: 16px;
+}
+
+.glyphicon.loading:before {
+	content: "";
+}
+
+.accordion-toggle {
+	cursor: pointer;
+}
+
+.accordion-toggle:hover {
+	text-decoration: none;
+}
+
+.glyphicon.pull-right {
+	margin-left: 2px;
+}
+
+.cinema .checkbox-inline label,
+.film .checkbox-inline label {
+	margin: 0;
+	font-weight: 400;
+	display: inline;
+	cursor: pointer;
+	/* moved from .checkbox-inline, the input[checkbox] has to be positioned within */
+	position: relative;
+}
+
+.cinema .checkbox-inline,
+.film .checkbox-inline {
+	/* make the wrapped long label position itself to the left of floating right things, not below */
+	display: block;
+	/* make the part of bounding box overlapping the floating right things clickable */
+	position: static;
+}
+
+.cinema .checkbox-inline {
+	white-space: nowrap;
+}
+
+.panel-body {
+	padding: 10px;
+}
+
+.list-unstyled {
+	margin: 0;
+}
+
+.film > .popover {
+	max-width: inherit;
+}
+
+.film > .glyphicon, .cinema > .glyphicon {
+	top: 4px;
+	left: 2px;
+}

@@ -1,0 +1,61 @@
+
+table.performance-details,
+table.performance-details tr,
+table.performance-details td,
+table.performance-details th {
+	border: 1px solid #CCCCCC;
+}
+
+table.performance-details {
+	margin-bottom: 6px;
+}
+
+table.performance-details th:first-child {
+	white-space: nowrap;
+	padding-left: 5px;
+}
+
+table.performance-details td:first-child {
+	padding-right: 2px;
+	font-weight: bold;
+}
+
+table.performance-details#performances-by-cinema td.cinema {
+	padding-left: 2px;
+	padding-right: 4px;
+}
+
+table.performance-details th {
+	max-width: 150px;
+	font-weight: bold;
+}
+
+@media screen and (min-width: 1200px) {
+	#performances th {
+		max-width: 250px;
+	}
+}
+
+table.performance-details th:not(:first-child) {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+table.performance-details td.performances {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+table.performance-details td.performances button {
+	font-size: xx-small;
+	padding: 0;
+	margin-right: 1px;
+}
+
+table.performance-details td.performances .performance {
+	white-space: nowrap;
+}
+
+table.performance-details td.performances .performance.selected {
+	font-weight: bold;
+}

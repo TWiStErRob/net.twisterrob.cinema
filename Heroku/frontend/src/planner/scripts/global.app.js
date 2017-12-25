@@ -7,7 +7,7 @@ import 'angular-ui-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import './ui-bootstrap-tpls-0.6+-confirm';
 
-import '../styles/planner.css';
+import '../styles/planner.scss';
 
 /* App Module */
 var app = angular.module('app', [

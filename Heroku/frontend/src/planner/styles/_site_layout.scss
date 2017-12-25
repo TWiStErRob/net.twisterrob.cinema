@@ -1,0 +1,120 @@
+#main > header {
+	border-bottom: 1px solid white;
+	padding: 4px 0;
+}
+
+#cinemas, #films, #performances, #debug {
+	float: left;
+	height: calc(100% - 40px - 8px);
+	margin: 0;
+	padding: 4px;
+	overflow-y: scroll;
+}
+
+#cinemas {
+	width: 275px;
+}
+
+#films {
+	width: 275px;
+}
+
+#performances {
+	width: auto;
+	overflow-x: scroll;
+}
+
+#debug {
+	display: none;
+	float: right;
+	width: 250px;
+	border-left: 1px solid black;
+	padding-left: 4px;
+}
+
+#statusmessage {
+	display: block;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99;
+
+	padding: 0 5px;
+}
+
+/** Angular specific */
+#statusmessage {
+	margin-bottom: 0px;
+	line-height: 25px; /* same as hidden margin-bottom */
+	-webkit-transition: all linear 0.2s;
+	transition: all linear 0.2s;
+}
+
+#statusmessage.ng-hide {
+	display: block !important;
+	margin-bottom: -25px;
+}
+
+/*@media screen and (max-width: 480px) {*/
+.modal-xs .modal-dialog {
+	width: auto;
+}
+
+.modal-sm .modal-dialog {
+	width: auto;
+}
+
+.modal-md .modal-dialog {
+	width: auto;
+}
+
+.modal-lg .modal-dialog {
+	width: auto;
+}
+
+/*}*/
+@media screen and (min-width: 768px) {
+	.modal-xs .modal-dialog {
+		width: 50%;
+	}
+	.modal-sm .modal-dialog {
+		width: 60%;
+	}
+	.modal-md .modal-dialog {
+		width: 80%;
+	}
+	.modal-lg .modal-dialog {
+		width: 90%;
+	}
+}
+
+@media screen and (min-width: 992px) {
+	.modal-xs .modal-dialog {
+		width: 40%;
+	}
+	.modal-sm .modal-dialog {
+		width: 50%;
+	}
+	.modal-md .modal-dialog {
+		width: 60%;
+	}
+	.modal-lg .modal-dialog {
+		width: 70%;
+	}
+}
+
+@media screen and (min-width: 1200px) {
+	.modal-xs .modal-dialog {
+		width: 30%;
+	}
+	.modal-sm .modal-dialog {
+		width: 40%;
+	}
+	.modal-md .modal-dialog {
+		width: 50%;
+	}
+	.modal-lg .modal-dialog {
+		width: 70%;
+	}
+}
