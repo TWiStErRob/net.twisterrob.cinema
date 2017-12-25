@@ -56,8 +56,7 @@
 
 			<h6>Combo</h6>
 			<select ng-model="cinema" class="form-control" required ng-options="c.name group by !c.fav for c in cineworld.cinemas | orderBy: 'name'">
-				<!-- TODO is this intentionally not value? -->
-				<option vlaue="">-- choose a cinema</option>
+				<option value="">-- choose a cinema</option>
 			</select>
 		</aside>
 		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
@@ -87,7 +86,7 @@
 					</uib-accordion-heading>
 					<div class="cinemas-loading" ng-show="loading">Loading cinemas...</div>
 					<ul id="cinemas-list-favs" class="list-unstyled" ng-show="!loading">
-						<li class="cinema" ng-repeat="cinema in cineworld.cinemas | filter: {fav: true} | orderBy: 'name'" ng-include="'cinema.shtml'" />
+						<li class="cinema" ng-repeat="cinema in cineworld.cinemas | filter: {fav: true} | orderBy: 'name'" ng-include="'cinema.shtml'"></li>
 					</ul>
 				</div>
 				<div uib-accordion-group id="cinemas-group-london" is-open="isOpen.london">
@@ -97,7 +96,7 @@
 					</uib-accordion-heading>
 					<div class="cinemas-loading" ng-show="loading">Loading cinemas...</div>
 					<ul id="cinemas-list-london" class="list-unstyled" ng-show="!loading">
-						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter: {name:'London'}) | orderBy: 'name'" ng-include="'cinema.shtml'" />
+						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter: {name:'London'}) | orderBy: 'name'" ng-include="'cinema.shtml'"></li>
 					</ul>
 				</div>
 				<div uib-accordion-group id="cinemas-group-other" is-open="isOpen.others">
@@ -107,7 +106,7 @@
 					</uib-accordion-heading>
 					<div class="cinemas-loading" ng-show="loading">Loading cinemas...</div>
 					<ul id="cinemas-list-other" class="list-unstyled" ng-show="!loading">
-						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter: {name:'!London'}) | orderBy: 'name'" ng-include="'cinema.shtml'" />
+						<li class="cinema" ng-repeat="cinema in (cineworld.cinemas | filter: {name:'!London'}) | orderBy: 'name'" ng-include="'cinema.shtml'"></li>
 					</ul>
 				</div>
 			</uib-accordion>
@@ -132,6 +131,7 @@
 							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox-inline">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
+									<!--suppress XmlDuplicatedId generated ID, will be different -->
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
 									<span class="film-title">{{film.title}}</span>
 								</label>
@@ -152,6 +152,7 @@
 							>{{film.runtime > 0? film.runtime : ""}}</span>
 							<div class="checkbox-inline">
 								<label for="film-{{film.edi}}" title="{{film | json}}">
+									<!--suppress XmlDuplicatedId generated ID, will be different -->
 									<input id="film-{{film.edi}}" type="checkbox" class="check" value="{{film.edi}}" ng-model="film.selected" />
 									<span class="film-title">{{film.title}}</span>
 								</label>
