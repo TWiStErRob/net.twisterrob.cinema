@@ -1,11 +1,45 @@
+@import '_theme';
+@import 'bootstrap_breakpoints';
+
+$card-distance: 4px;
+
+#plan-results {
+	.panel-body {
+		// remove padding from accordion so the .plans list can fill it
+		padding: 0;
+	}
+	.plans-header, .plans-footer {
+		// align with plan cards (.plans padding + .plan margin + visual flick)
+		padding: 10px 2 * $card-distance + 2px;
+	}
+}
+
 .plans {
-	padding-left: 0;
+	margin: 0;
+	padding: $card-distance;
+	// lighter background, so the cards' shadow is visible
+	background: lighten($color-background, 10%);
 
 	.plan {
 		display: inline-block;
-		width: 395px;
-		border: 1px solid gray;
-		margin: 2px;
+		vertical-align: top;
+		margin: $card-distance;
+		border-radius: $card-distance * 1.5;
+		background: $color-background;
+		box-shadow: 3px 4px 8px 0 rgba(0, 0, 0, 0.4);
+
+		@include media-breakpoint-down(xs) { // mobile-port
+			width: calc(100% - #{2 * $card-distance});
+		}
+		@include media-breakpoint-between(sm, md) { // mobile-land, tablet-port
+			width: calc(50% - #{2 * $card-distance});
+		}
+		@include media-breakpoint-only(lg) { // tablet-land
+			width: calc(33% - #{2 * $card-distance});
+		}
+		@include media-breakpoint-up(xl) { // desktop
+			width: 365px;
+		}
 
 		.plan-films .plan-film-break {
 			list-style-type: none;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="ui-stretch" ng-app="app" ng-strict-di>
+<html lang="en" ng-app="app" ng-strict-di>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,19 +24,22 @@
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 	<![endif]-->
 </head>
-<body class="ui-stretch" ng-controller="AppController">
-	<section id="main" class="ui-stretch">
+<body ng-controller="AppController">
+	<section id="main">
 		<header id="date" ng-controller="DateController">
 			<form name="cineworldDateForm" class="form-inline" role="form">
-				<div class="form-group">
-					<label for="cineworldDate">Date</label>
-					<input id="cineworldDate" name="cineworldDate" type="text" ng-model="cineworld.date" class="form-control"
-						uib-datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed" />
+				<label for="cineworldDate">Date</label>
+				<div id="cineworldDate-editor" class="input-group">
+					<input id="cineworldDate" name="cineworldDate" type="text" ng-model="cineworld.date"
+					       class="form-control"
+					       uib-datepicker-popup="shortDate" is-open="cineworldDatePickerDisplayed"/>
+					<span class="input-group-btn">
+						<button class="btn btn-default" ng-click="displayCineworldDatePicker()">
+							<i class="glyphicon glyphicon-calendar"></i>
+						</button>
+					</span>
 				</div>
-				<button class="btn btn-default" ng-click="displayCineworldDatePicker()">
-					<i class="glyphicon glyphicon-calendar"></i>
-				</button>
-				Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
+				<span id="cineworldDate-display">Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em></span>
 			</form>
 		</header>
 		<aside id="debug" ng-controller="DebugController">
@@ -59,7 +62,7 @@
 				<option value="">-- choose a cinema</option>
 			</select>
 		</aside>
-		<section id="cinemas" class="ui-stretch" ng-controller="CinemasController">
+		<section id="cinemas" ng-controller="CinemasController">
 			<script type="text/ng-template" id="cinema.shtml">
 				<i class="glyphicon pull-right" ng-class="{
 						'loading'        : cinema.favLoading,
@@ -117,7 +120,7 @@
 				</div>
 			</div>
 		</section>
-		<section id="films" class="ui-stretch" ng-controller="FilmsController">
+		<section id="films" ng-controller="FilmsController">
 			<ul class="list-inline">
 				<li ng-repeat="(id, button) in buttons" ng-hide="button.hidden">
 					<button ng-click="buttonClick(button)" id="films-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading" uib-tooltip="{{options | json}}">{{button.label}}</button>
@@ -170,7 +173,7 @@
 				</div>
 			</div>
 		</section>
-		<section id="performances" class="ui-stretch" ng-controller="PerformancesController">
+		<section id="performances" ng-controller="PerformancesController">
 			<ul class="list-inline" title="{{options | json}}">
 				<li ng-repeat="(id, button) in buttons" ng-hide="button.hidden">
 					<button ng-click="buttonClick(button)" id="plan-{{id}}" type="button" class="btn btn-primary btn-xs" ng-disabled="loading">{{button.label}}</button>

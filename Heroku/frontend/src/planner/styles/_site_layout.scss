@@ -1,27 +1,82 @@
+@import '_theme';
+@import 'bootstrap_breakpoints';
+
 #main > header {
 	border-bottom: 1px solid white;
 	padding: 4px 0;
+	margin-bottom: 4px;
+
+	// force non-mobile styles for all sizes
+	#cineworldDate-editor {
+		display: inline-table;
+		vertical-align: middle;
+		.input-group-btn {
+			// allows breaking the label and the input on one line
+			// yes, it is weird that this element controls that, but Bootstrap
+			width: auto;
+		}
+	}
+	// don't allow wrapping the sentence (this breaks the whole element as one)
+	#cineworldDate-display {
+		white-space: nowrap;
+	}
 }
 
-#cinemas, #films, #performances, #debug {
-	float: left;
-	height: calc(100% - 40px - 8px);
-	margin: 0;
-	padding: 4px;
-	overflow-y: scroll;
+#main {
+	// set and reset font-size so that inline-block children
+	// can be laid out with proper percent sizes
+	font-size: 0;
+	> * {
+		font-size: 14px; // from Bootstrap <body> rule
+	}
 }
 
-#cinemas {
-	width: 275px;
-}
-
-#films {
-	width: 275px;
+#cinemas, #films {
+	@include media-breakpoint-between(md, lg) {
+		display: inline-block;
+		width: 50%;
+		vertical-align: top;
+	}
+	@include media-breakpoint-only(sm) {
+		[uib-accordion] ul {
+			column-count: 2;
+			column-gap: 32px;
+			column-rule: 1px solid;
+		}
+	}
+	@include media-breakpoint-only(lg) {
+		[uib-accordion] ul {
+			column-count: 2;
+			column-gap: 32px;
+			column-rule: 1px solid;
+		}
+	}
+	@include media-breakpoint-up(xl) {
+		display: inline-block;
+		width: 275px;
+		vertical-align: top;
+		max-height: calc(100% - 40px - 8px);
+		overflow-y: auto;
+	}
 }
 
 #performances {
-	width: auto;
-	overflow-x: scroll;
+	@include media-breakpoint-up(xl) {
+		display: inline-block;
+		vertical-align: top;
+	}
+}
+
+// center-align stuff on small screens
+@include media-breakpoint-down(sm) {
+	[name='cineworldDateForm'] {
+		text-align: center;
+	}
+	#films, #cinemas, #performances {
+		> ul.list-inline {
+			text-align: center;
+		}
+	}
 }
 
 #debug {
@@ -47,7 +102,7 @@
 		line-height: 25px; /* same as hidden margin-bottom */
 		-webkit-transition: all linear 0.2s;
 		transition: all linear 0.2s;
-		
+
 		&.ng-hide {
 			display: block !important;
 			margin-bottom: -25px;

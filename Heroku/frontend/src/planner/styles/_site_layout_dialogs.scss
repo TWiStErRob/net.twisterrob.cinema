@@ -1,4 +1,6 @@
-/*@media screen and (max-width: 480px) {*/
+@import 'bootstrap_breakpoints';
+
+//@include media-breakpoint-up(xs) {
 .modal-xs .modal-dialog {
 	width: auto;
 }
@@ -15,8 +17,9 @@
 	width: auto;
 }
 
-/*}*/
-@media screen and (min-width: 768px) {
+//}
+
+@include media-breakpoint-up(md) {
 	.modal-xs .modal-dialog {
 		width: 50%;
 	}
@@ -31,7 +34,7 @@
 	}
 }
 
-@media screen and (min-width: 992px) {
+@include media-breakpoint-up(lg) {
 	.modal-xs .modal-dialog {
 		width: 40%;
 	}
@@ -46,7 +49,7 @@
 	}
 }
 
-@media screen and (min-width: 1200px) {
+@include media-breakpoint-up(xl) {
 	.modal-xs .modal-dialog {
 		width: 30%;
 	}
