@@ -8,9 +8,10 @@ table.performance-details {
 	td:first-child {
 		padding-right: 2px;
 		font-weight: bold;
+		vertical-align: top;
 	}
 
-	&#performances-by-cinema td.cinema {
+	&#performances-by-cinema td:first-child.cinema {
 		padding-left: 2px;
 		padding-right: 4px;
 	}
@@ -37,17 +38,16 @@ table.performance-details {
 		padding-left: 2px;
 		padding-right: 2px;
 
-		button {
-			font-size: xx-small;
-			padding: 0;
-			margin-right: 1px;
-		}
-
 		.performance {
 			white-space: nowrap;
 
 			&.selected {
 				font-weight: bold;
+			}
+
+			button {
+				padding: 0;
+				margin-right: 1px;
 			}
 		}
 	}
