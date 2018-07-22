@@ -120,6 +120,10 @@ module.exports = {
 						var newProperties = extend(true, {}, dataByID[id], {
 							_updated: now
 						});
+						if (newProperties._deleted) {
+							delete newProperties._deleted;
+							node.deleteProperties(batch, true, "_deleted");
+						}
 						node.setProperties(batch, true, newProperties, nodeUpdater(updatedNodes, node));
 					});
 				} else {
