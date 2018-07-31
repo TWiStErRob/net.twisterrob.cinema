@@ -1,5 +1,6 @@
 .svn/
 node_modules/
+.gradle
 static/scripts/libs/angular/docs/
 *.iml
 *.ipr
@@ -11,3 +12,4 @@ package-lock.json
 /deploy/static/*
 !/deploy/static/lib/
 /test/logs/
+/temp/
