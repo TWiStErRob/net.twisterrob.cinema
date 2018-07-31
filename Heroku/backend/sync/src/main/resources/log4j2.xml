@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	strict="true"
+	status="WARN"
+	xsi:noNamespaceSchemaLocation="https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=blob_plain;f=log4j-core/src/main/resources/Log4j-config.xsd"
+>
+	<Properties>
+		<Property name="pattern">%highlight{%date{ISO8601} %-5level [%thread] %message%n%throwable</Property>
+		<!-- See org.apache.logging.log4j.core.pattern.AnsiEscape for keywords  -->
+		<!-- %highlight separates keywords by spaces, %style separates keywords by commas! -->
+		<Property name="pattern_level_colors">
+			<!-- Change to "DEBUG=bright black, TRACE=cyan" once this issue is fixed:
+			     https://github.com/krasa/GrepConsole/issues/60 -->
+			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=green, TRACE=cyan
+		</Property>
+		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
+		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
+		pattern_level_colors}} %style{%message}{bright white}%n%style{%throwable}{BG_red,white}
+		</Property>
+	</Properties>
+
+	<ThresholdFilter level="TRACE" onMatch="neutral" onMismatch="deny" />
+	<Appenders>
+		<Appender type="Console" name="console">
+			<Layout type="PatternLayout" pattern="${pattern}" />
+		</Appender>
+		<Appender type="Console" name="color-console">
+			<Layout type="PatternLayout" pattern="${pattern_styled}" />
+		</Appender>
+	</Appenders>
+
+	<Loggers>
+		<Root level="ALL">
+			<AppenderRef ref="color-console" />
+		</Root>
+
+		<!-- tighten spamming logs -->
+		<Logger name="org.neo4j.ogm" level="TRACE" />
+		<Logger name="io.mockk" level="WARN" />
+
+		<!-- Application specific logs. -->
+		<Logger name="net.twisterrob" level="ALL" />
+	</Loggers>
+</Configuration>

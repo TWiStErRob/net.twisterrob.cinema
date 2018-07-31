@@ -1,0 +1,249 @@
+package net.twisterrob.cinema.cineworld.sync.syndication
+
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import java.net.URI
+import java.time.LocalDate
+import java.time.OffsetDateTime
+
+fun feedReader() = XmlMapper().apply {
+	registerModule(KotlinModule())
+	registerModule(JavaTimeModule())
+	// don't add, want to know when new things are added to syndication
+	//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+}
+
+/**
+ * Jackson format for
+ *  * [weekly_film_times.xml](https://www.cineworld.co.uk/syndication/weekly_film_times.xml)
+ *  * [weekly_film_times_ie.xml](https://www.cineworld.co.uk/syndication/weekly_film_times_ie.xml)
+ *
+ * ## Tricky bits
+ *
+ * ### `@JacksonXmlText` in Kotlin
+ * See https://github.com/FasterXML/jackson-module-kotlin/issues/138
+ * `@JacksonXmlText` cannot be applied to constructor parameters, which is the only way to instantiate data classes.
+ * So to work around the limitation the content from an XML element with attributes has to be parsed into a property.
+ * See [Feed.Attribute.title] for an example.
+ *
+ * ### `@JsonIdentityInfo` in Kotlin
+ * At the first instantiation of the object the ObjectId field is set as null,
+ * and then later it's set via reflection, so it should be a `lateinit val`, which is not possible.
+ * To work around this, the IDs are made nullable, but should never be null.
+ */
+@JacksonXmlRootElement(localName = "feed")
+data class Feed(
+	@JacksonXmlElementWrapper(localName = "attributes")
+	val attributes: List<Attribute>,
+
+	@JacksonXmlElementWrapper(localName = "cinemas")
+	val cinemas: List<Cinema>,
+
+	@JacksonXmlElementWrapper(localName = "films")
+	val films: List<Film>,
+
+	@JacksonXmlElementWrapper(localName = "performances")
+	val performances: List<Screening>
+) {
+
+	data class Attribute(
+		/**
+		 * @sample `"2D"`
+		 * @sample `"gn:movies-for-juniors"`
+		 */
+		@JacksonXmlProperty(isAttribute = true)
+		val code: String
+	) {
+
+		/**
+		 * @sample `"2D"`
+		 * @sample `"Movies for Juniors"`
+		 */
+		// TOFIX lateinit var reason: https://github.com/FasterXML/jackson-module-kotlin/issues/138
+		// tried many JsonAlias("") and JsonProperty("title") combinations, but same error
+		@JacksonXmlText
+		lateinit var title: String
+			private set
+
+		override fun toString() = "$code->$title"
+	}
+
+	@JsonIdentityInfo(
+		scope = Cinema::class,
+		generator = ObjectIdGenerators.PropertyGenerator::class,
+		property = "id"
+	)
+	data class Cinema(
+		/**
+		 * @sample `"1"`
+		 */
+		@JacksonXmlProperty(isAttribute = true)
+		val id: Long,
+
+		/**
+		 * @sample `"http://www1.cineworld.co.uk/cinemas/aberdeen-queens-links"`
+		 */
+		val url: URI,
+
+		/**
+		 * @sample `"Cineworld Aberdeen - Queens Links"`
+		 */
+		val name: String,
+
+		/**
+		 * @sample `"Queens Links Leisure Park, Links Road, Aberdeen"`
+		 */
+		val address: String,
+
+		/**
+		 * @sample `"AB24 5EN"`
+		 */
+		val postcode: String,
+
+		/**
+		 * Nullable: Leicester Square and Middlesbrough doesn't have a phone number.
+		 * @sample `"0871 200 2000"`
+		 */
+		val phone: String?,
+
+		/**
+		 * @sample `"con,ns,park,vh,dba,3d,dbp,sb,hfr,etx,ad,dig,m4j,bas,bar,gdog,adv"`
+		 */
+		val services: String
+	) {
+
+		val serviceList = services.split(",")
+
+		@JsonManagedReference("cinema")
+		lateinit var performances: List<Screening>
+			private set
+	}
+
+	@JsonIdentityInfo(
+		scope = Film::class,
+		generator = ObjectIdGenerators.PropertyGenerator::class,
+		property = "id"
+	)
+	data class Film(
+		/**
+		 * @sample `"163254"`
+		 */
+		@JacksonXmlProperty(isAttribute = true)
+		val id: Long,
+
+		/**
+		 * @sample `"Deadpool 2"`
+		 */
+		val title: String,
+
+		/**
+		 * @sample `"http://www1.cineworld.co.uk/films/deadpool-2"`
+		 */
+		val url: URI,
+
+		/**
+		 * @sample `15`
+		 * @sample `U`
+		 */
+		val classification: String,
+
+		/**
+		 * @sample `"2018-05-16T00:00:00Z"`
+		 */
+		val releaseDate: LocalDate,
+
+		/**
+		 * In minutes.
+		 *
+		 * @sample `120`
+		 */
+		val runningTime: Int,
+
+		/**
+		 * @sample `"David Leitch"`
+		 */
+		val director: String,
+
+		/**
+		 * @sample `"Brianna Hildebrand, Eddie Marsan, Josh Brolin, Morena Baccarin, Ryan Reynolds, T.J. Miller"`
+		 */
+		val cast: String,
+
+		/**
+		 * @sample `"long text ..."`
+		 */
+		val synopsis: String,
+
+		/**
+		 * @sample `"http://www1.cineworld.co.uk/xmedia-cw/repo/feats/posters/HO00005093.jpg"`
+		 */
+		val posterUrl: URI,
+
+		/**
+		 * Note: never seen it non-empty
+		 * @sample `""`
+		 */
+		val reasonToSee: String?,
+
+		/**
+		 * @sample `"ST,2D,AD,gn:action,gn:fantasy"`
+		 */
+		val attributes: String,
+
+		/**
+		 * @sample `"https://www.youtube.com/watch?v=45MzzFoEASQ"`
+		 */
+		val trailerUrl: URI?
+	) {
+
+		val attributeList = attributes.split(",")
+
+		@JsonManagedReference("film")
+		lateinit var performances: List<Screening>
+			private set
+	}
+
+	data class Screening(
+		/**
+		 * @sample `"163254"`
+		 */
+		@JsonBackReference("film")
+		@JacksonXmlProperty(isAttribute = true)
+		val film: Film,
+
+		/**
+		 * @sample `"1"`
+		 */
+		@JsonBackReference("cinema")
+		@JacksonXmlProperty(isAttribute = true)
+		val cinema: Cinema,
+
+		/**
+		 * @sample `"https://booking.cineworld.co.uk/booking/8014/101536"`
+		 */
+		val url: URI,
+
+		@JacksonXmlProperty(localName = "date")
+		/**
+		 * @sample `"2018-07-21T10:00:00Z"`
+		 */
+		val time: OffsetDateTime,
+
+		/**
+		 * @sample `"2D,AD"`
+		 */
+		val attributes: String
+	) {
+
+		val attributeList = attributes.split(",")
+	}
+}

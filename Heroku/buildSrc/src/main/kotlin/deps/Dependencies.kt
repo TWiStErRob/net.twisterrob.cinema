@@ -59,6 +59,10 @@ object Kotlin {
 	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
 }
 
+/**
+ * http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
+ * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
+ */
 object Ktor {
 	const val version = "0.9.3"
 

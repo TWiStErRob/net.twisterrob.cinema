@@ -1,0 +1,31 @@
+plugins {
+	id 'java-library'
+	id 'org.jetbrains.kotlin.jvm' version '1.2.51'
+	id 'org.jetbrains.kotlin.kapt' version '1.2.51'
+}
+
+dependencies {
+	implementation Deps.Kotlin.core
+	implementation Deps.Kotlin.reflect
+
+	implementation Deps.Dagger2.core
+	kapt Deps.Dagger2.apt
+}
+
+dependencies { // Graph database
+	api Deps.Jackson.databind // override to equalize versions
+	api(Deps.Neo4JOGM.core) {
+		exclude module: 'neo4j-kernel'
+	}
+	runtimeOnly(Deps.Neo4JOGM.neo4j_kernel) { transitive = true }
+	runtimeOnly Deps.Neo4JOGM.driver_bolt
+	runtimeOnly Deps.Neo4JOGM.driver_http
+
+	testImplementation(Deps.Neo4JOGM.test) {
+		exclude module: 'neo4j-security-enterprise'
+		exclude module: 'neo4j-kernel'
+		exclude module: 'logback-classic'
+	}
+	testImplementation Deps.Neo4JOGM.harness
+	testRuntimeOnly Deps.Neo4JOGM.driver_http
+}
