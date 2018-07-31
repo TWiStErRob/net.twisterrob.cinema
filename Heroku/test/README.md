@@ -33,3 +33,9 @@ to fix it, change `bpRunner.js` this way:
 +this.bpProcess = child_process_1.fork(BP_PATH, args, { silent: true, execArgv });
 ```
 
+## Upgrade to new Babel
+
+These may be helpful:
+
+ * https://github.com/antonybudianto/angular-webpack-starter/commit/bdd3567ed7c60347d0f8df96c641e4cf33d2c06b
+ * https://github.com/TypeStrong/ts-node/issues/51
