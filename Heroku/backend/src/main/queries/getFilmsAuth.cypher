@@ -2,7 +2,7 @@
 // {filmEDIs}: films to return
 // {userID}: User.id
 MATCH (f:Film)
-WHERE //not has(f._deleted) and
+WHERE //not exists(f._deleted) and
 f.edi in {filmEDIs}
 OPTIONAL MATCH (f)<-[w:WATCHED]-(v:View)
 OPTIONAL MATCH (v)<-[a:ATTENDED]-(u:User { id:{userID} })

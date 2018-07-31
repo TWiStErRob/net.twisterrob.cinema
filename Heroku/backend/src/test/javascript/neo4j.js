@@ -6,7 +6,7 @@ exports.testLifeCycle = {
 	setUp: function (callback) {
 		var test = this;
 		test.class = 'Test';
-		test.queryAll = 'MATCH (n:' + test.class + ') WHERE not has(n._deleted) RETURN n as nodeAlias';
+		test.queryAll = 'MATCH (n:' + test.class + ') WHERE not exists(n._deleted) RETURN n as nodeAlias';
 		test.queryClean = 'MATCH (n:' + test.class + ') DELETE n';
 		test.nodeSelector = "nodeAlias";
 		test.nodeID = function(result) { return result.data.namedID; };
