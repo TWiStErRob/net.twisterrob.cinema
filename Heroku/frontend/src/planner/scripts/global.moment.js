@@ -3,11 +3,11 @@ import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 const moment = extendMoment(Moment);
 
-var momentModule = angular.module('moment', []);
+var momentModule = angular.module('moment', ['lodash']);
 
 momentModule.service('moment', [
-	        '$window',
-	function($window) {
+	        '$window', '_',
+	function($window ,  _) {
 		//moment.relativeTimeRounding(value => Math.round(value * 100) / 100);
 		//TODO localize this once https://github.com/moment/moment/issues/4295 lands
 		moment.relativeTimeThreshold('s', 60);
@@ -16,11 +16,12 @@ momentModule.service('moment', [
 		moment.relativeTimeThreshold('h', 24);
 		moment.relativeTimeThreshold('d', 31);
 		moment.relativeTimeThreshold('M', 12);
+		// noinspection JSCommentMatchesSignature
 		/**
 		 * Return a precize human readable string representing the given moment duration.
 		 *
-		 * @param {Moment.Duration} duration
-		 * @param {{mostPreciseUnit: string, numberOfSignificantParts: integer}} options
+		 * @param {Moment.Duration} this duration
+		 * @param {{mostPreciseUnit: string, numberOfSignificantParts: int}} options
 		 * @see https://github.com/moment/moment/issues/348#issuecomment-348944860
 		 */
 		moment.duration.fn.humanizePrecisely = function(options = {}) {
@@ -48,7 +49,7 @@ momentModule.service('moment', [
 				// format each part
 				.map((part) => moment.duration(part.value, part.unit).locale(this.locale()).humanize())
 				.join(' ');
-		}
+		};
 		return moment;
 	}
 ]);
