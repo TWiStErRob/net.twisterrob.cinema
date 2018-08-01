@@ -2,11 +2,12 @@ var request = require('request');     // https://github.com/mikeal/request
 var log = require('../../main/javascript/logs').test;
 var neo4j = require('../../main/javascript/neo4j');
 
+// NB: this tests runs in one go, latter tests depend on previous methods
 exports.testLifeCycle = {
 	setUp: function (callback) {
 		var test = this;
 		test.class = 'Test';
-		test.queryAll = 'MATCH (n:' + test.class + ') WHERE not exists(n._deleted) RETURN n as nodeAlias';
+		test.queryAll = 'MATCH (n:' + test.class + ') RETURN n as nodeAlias';
 		test.queryClean = 'MATCH (n:' + test.class + ') DELETE n';
 		test.nodeSelector = "nodeAlias";
 		test.nodeID = function(result) { return result.data.namedID; };
@@ -169,6 +170,41 @@ exports.testLifeCycle = {
 				test.equal(createdNodes.length, 0);
 				test.equal(updatedNodes.length, 0);
 				test.equal(deletedNodes.length, 0);
+				test.done();
+			}
+		);
+	},
+	testUndelete: function(test) {
+		test.data = this;
+		var data = [
+			{ namedID: 11, name: "Name 1" },
+			{ namedID: 222, name: "Name 222" },
+			{ namedID: 3333, name: "Name 3333" }
+		];
+		neo4j.createNodes(test.data.graph, test.data.class, data, test.data.queryAll,
+			test.data.nodeSelector,
+			test.data.nodeID,
+			test.data.dataID,
+			function done(error, createdNodes, updatedNodes, deletedNodes) {
+				test.ifError(error);
+				test.equal(createdNodes.length, 0);
+				test.equal(deletedNodes.length, 0);
+				test.ok(0 < updatedNodes.length, "No nodes updated.");
+				test.equal(updatedNodes.length, data.length);
+
+				var firstCreated = updatedNodes[0].data._created,
+						firstUpdated = updatedNodes[0].data._updated;
+				test.ok(firstCreated, "No creation date");
+				test.ok(firstUpdated, "No update date");
+
+				for(var i = 0, len = updatedNodes.length; i < len; i++) {
+					test.equal(updatedNodes[i].data.namedID, data[i].namedID);
+					test.equal(updatedNodes[i].data.name, data[i].name);
+					test.equal(updatedNodes[i].data.class, test.data.class);
+					test.equal(updatedNodes[i].data._created, firstCreated);
+					test.equal(updatedNodes[i].data._updated, firstUpdated);
+					test.equal(updatedNodes[i].data._deleted, undefined);
+				}
 				test.done();
 			}
 		);
