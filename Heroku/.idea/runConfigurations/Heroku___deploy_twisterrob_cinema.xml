@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Heroku - deploy twisterrob-cinema" type="heroku-deploy" factoryName="Heroku Deployment" server-name="Heroku">
+    <deployment type="module" name="Heroku">
+      <settings>
+        <option name="defaultDeploymentName" value="false" />
+        <option name="deploymentName" value="twisterrob-cinema" />
+        <option name="host" value="" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>
