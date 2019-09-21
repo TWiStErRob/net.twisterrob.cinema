@@ -273,10 +273,10 @@
 							</span>
 							<ol class="plan-films">
 								<li class="plan-film-break" ng-repeat-start="movie in plan" ng-if="movie.breakBefore" value="{{$index}}">
+									<span class="break-label">break</span>
 									<span class="length" ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak || movie.offenses.dealBreak}" title="{{movie.breakBefore}}">{{movie.breakBefore | humanizeDuration}}</span>
-									break
 									<span class="offenseDetails" ng-show="movie.offenses.shortBreak" title="{{options.minWaitBetweenMovies}}">(minimum: {{options.minWaitBetweenMovies | humanizeDuration}})</span>
-									<span class="offenseDetails" ng-show="movie.offenses.longBreak" title="{{options.maxWaitBetweenMovies}}">(maximum: {{options.maxWaitBetweenMovies | humanizeDuration}})</span>
+									<span class="offenseDetails" ng-show="movie.offenses.longBreak && !movie.offenses.dealBreak" title="{{options.maxWaitBetweenMovies}}">(maximum: {{options.maxWaitBetweenMovies | humanizeDuration}})</span>
 									<span class="offenseDetails" ng-show="movie.offenses.dealBreak" title="{{options.dealbreakingWaitBetweenMovies}}">(deal-breaker: {{options.dealbreakingWaitBetweenMovies | humanizeDuration}})</span>
 								</li>
 								<li class="plan-film" ng-repeat-end title="{{movie | json}}" ng-class="{filtered: movie.equals(cPlan.more.filteredByScreening)}">

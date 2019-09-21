@@ -12,7 +12,7 @@ $card-distance: 4px;
 		// align with plan cards (.plans padding + .plan margin + visual flick)
 		padding: 10px 2 * $card-distance + 2px;
 	}
-	
+
 	.schedule-explorer {
 		top: -2px;
 		position: relative;
@@ -50,6 +50,16 @@ $card-distance: 4px;
 
 		.plan-films .plan-film-break {
 			list-style-type: none;
+
+			& > .break-label {
+				position: relative;
+				left: -18px;
+			}
+
+			& > .length {
+				position: relative;
+				left: -15px;
+			}
 		}
 	}
 }
