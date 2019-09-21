@@ -11,10 +11,17 @@
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.maxWait.$invalid, 'has-success': !plannerOptionsForm.maxWait.$invalid}">
-				<label for="maxWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies</label>
+				<label for="maxWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (still considered)</label>
 				<div class="col-sm-9">
-					<input name="maxWait" type="range" min="{{options.minWaitBetweenMovies}}" max="120" ng-model="options.maxWaitBetweenMovies" class="form-control" />
-					<p class="form-control-static">{{options.minWaitBetweenMovies}} &lt;= {{options.maxWaitBetweenMovies}} minutes &lt;= 120</p>
+					<input name="maxWait" type="range" min="{{options.minWaitBetweenMovies}}" max="{{options.dealbreakingWaitBetweenMovies}}" ng-model="options.maxWaitBetweenMovies" class="form-control" />
+					<p class="form-control-static">{{options.minWaitBetweenMovies}} &lt;= {{options.maxWaitBetweenMovies}} minutes &lt;= {{options.dealbreakingWaitBetweenMovies}} minutes</p>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.breakingWait.$invalid, 'has-success': !plannerOptionsForm.breakingWait.$invalid}">
+				<label for="breakingWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (dealbreaker)</label>
+				<div class="col-sm-9">
+					<input name="breakingWait" type="range" min="{{options.maxWaitBetweenMovies}}" max="600" ng-model="options.dealbreakingWaitBetweenMovies" class="form-control" />
+					<p class="form-control-static">{{options.maxWaitBetweenMovies}} &lt;= {{options.dealbreakingWaitBetweenMovies}} minutes &lt;= 10 hours</p>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.endOfWork.$invalid, 'has-success': !plannerOptionsForm.endOfWork.$invalid}">

@@ -7,6 +7,7 @@ module.service('Planner', [
 		this.defaults = {
 			minWaitBetweenMovies: moment.duration({ minutes: 5 }),
 			maxWaitBetweenMovies: moment.duration({ minutes: 45 }),
+			dealbreakingWaitBetweenMovies: moment.duration({ minutes: 120 }),
 			estimatedAdvertisementLength: moment.duration({ minutes: 15 }),
 			endOfWork: moment.duration({ hours: 17, minutes: 30 }),
 		};
@@ -40,6 +41,7 @@ module.service('Planner', [
 		 * @param {Performance[]} params.performances list of performances from server
 		 * @param {Moment.Duration} params.minWaitBetweenMovies minimum wait between movies
 		 * @param {Moment.Duration} params.maxWaitBetweenMovies maximum wait between movies
+		 * @param {Moment.Duration} params.dealbreakingWaitBetweenMovies wait between movies that means plan is not viable
 		 * @param {Moment.Duration} params.estimatedAdvertisementLength
 		 *         estimated length of advertisements (used for schedule planning)
 		 * @param {Moment.Duration} params.endOfWork time offset from midnight (within a day)
@@ -133,7 +135,7 @@ module.service('Planner', [
 					if (node.next.length !== 0) {
 						// recurse, try to watch next movies
 						planCinema(results, cache, cinema, films, node.next);
-					} else // we're on a graph leaf, process results 
+					} else // we're on a graph leaf, process results
 					if (node.watched.length < 2 || (node.watched.length === 2 && films.length > 1)) {
 						// don't care about these:
 						// node.watched.length === 0 => errors?
@@ -141,7 +143,7 @@ module.service('Planner', [
 						// node.watched.length === 2 => "travel" + a film
 						//                              (but only last occurrence if films.length > 1)
 					} else {
-						// node.watched.length > 2   => "travel" + a plan (multiple films) 
+						// node.watched.length > 2   => "travel" + a plan (multiple films)
 						const plan = unfold(node);
 						plan.first = plan[0];
 						plan.last = plan[plan.length - 1];
@@ -158,6 +160,7 @@ module.service('Planner', [
 							performance.offenses = {
 								shortBreak: performance.breakBefore < params.minWaitBetweenMovies,
 								longBreak: performance.breakBefore > params.maxWaitBetweenMovies,
+								dealBreak: performance.breakBefore > params.dealbreakingWaitBetweenMovies,
 								earlyStart: performance.range.start.isBefore(plan.endOfWork),
 								earlyFinish: performance.range.end.isBefore(plan.endOfWork),
 							};
@@ -168,8 +171,10 @@ module.service('Planner', [
 							earlyFinish: plan.range.end.isBefore(plan.endOfWork),
 							shortBreak: _.some(plan, 'offenses.shortBreak'),
 							longBreak: _.some(plan, 'offenses.longBreak'),
+							dealBreak: _.some(plan, 'offenses.dealBreak'),
 						};
 
+						if (plan.offenses.dealBreak) return;
 						const increaseIfOffending = (offenseCount, offense) => offenseCount + (offense ? 1 : 0);
 						plan.offenses.count = _.reduce(plan.offenses, increaseIfOffending, 0);
 						if (plan.offenses.count === 0) {
