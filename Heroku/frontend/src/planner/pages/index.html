@@ -195,7 +195,7 @@
 				<tbody>
 					<tr ng-repeat="cinema in cineworld.cinemas | filter: {selected: true} | orderBy: 'name'">
 						<td class="cinema" title="{{cinema | json}}">
-							<a href="http://maps.google.com/?q={{cinema.postcode}}" title="{{cinema.postcode}}" class="glyphicon glyphicon-globe pull-right"></a>
+							<a href="http://maps.google.com/?q={{cinema.postcode}}" target="_blank" title="{{cinema.postcode}}" class="glyphicon glyphicon-globe pull-right"></a>
 							<a href="#cinema-plan-{{cinema.cineworldID}}" class="cinema-name" ng-click="focus(cinema)">{{cleanCinemaName(cinema.name)}}</a>
 						 </td>
 						<td class="performances" ng-repeat="film in cineworld.films | filter: {selected: true} | orderBy: 'title'" title="{{performances[cinema.cineworldID][film.edi] | json}}">
@@ -246,7 +246,7 @@
 								'one': '1 suggestion',
 								'other': '{} suggestions'
 							}"></ng-pluralize>;
-						{{cPlan.more.list.length}} out of {{cPlan.more.list.length + cPlan.more.remaining()}} shown) 
+						{{cPlan.more.list.length}} out of {{cPlan.more.list.length + cPlan.more.remaining()}} shown)
 					</div>
 					<div class="plans-header" ng-show="cPlan.more.isFiltering()">
 						<span ng-show="cPlan.more.filteredByFilm" class="plan-filtered-by-film filtered">Filtering <span class="film-title" ng-click="filmDetailsPopup(cPlan.more.filteredByFilm)">{{cPlan.more.filteredByFilm.title}}</span></span>
