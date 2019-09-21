@@ -1,11 +1,22 @@
 ## Development
 
-## Running
+### Setup
+ * git
+    * `git init .`
+    * `git remote add heroku https://git.heroku.com/twisterrob-cinema.git`
+    * `git fetch -a`
+ * node (`nvm use <version from package.json>`)
+ 	* npm (`npm install --global npm@<version from package.json>`)
+ * heroku (`npm install --global heroku`)
+    * `heroku keys:add ~/.ssh/id_rsa.pub` (see https://stackoverflow.com/a/6059231)
+ * `scripts/env.bat`
+
+### Running
 
 `frontend` continuously builds into `deploy` via `npm start`
 `backend` serves from `deploy` via `npm start`
 
-## Entry points
+### Entry points
 
  * `backend/src/main/javascript/index.js`: web server; backend for planner, serving deploy folder as content
  * `frontend/src/planner/pages/index.html`: root of planner page
@@ -22,6 +33,10 @@
 Use `scripts/deploy*`
 
 `heroku config:set NPM_CONFIG_PRODUCTION=false` was set in order to install `devDependencies` on Heroku, so `npm build` runs `webpack` correctly.
+`heroku config:set NODE_ENV=production` was set automatically by Heroku
+`heroku config:set NEO4J_URL=https://production:password@....dbs.graphenedb.com:24780` was set to use the right database
+
+see also https://dashboard.heroku.com/apps/twisterrob-cinema/settings
 
 ## Debug Production
 
