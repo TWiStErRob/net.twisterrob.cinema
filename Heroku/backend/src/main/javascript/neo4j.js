@@ -80,7 +80,7 @@ module.exports = {
 					if(true && createdNodes.length === newLength
 							&& updatedNodes.length === existingLength
 							&& deletedNodes.length + ignoredDeleteNodes.length === deletedLength) {
-						log.info("Finished insering %d new and updating %d and deleting %d (%d ignored) existing %ss for %s.",
+						log.info("Finished inserting %d new and updating %d and deleting %d (%d ignored) existing %ss for %s.",
 								createdNodes.length, updatedNodes.length, deletedNodes.length, ignoredDeleteNodes.length, clazz, now);
 						allDone(undefined, createdNodes, updatedNodes, deletedNodes, ignoredDeleteNodes);
 					}
