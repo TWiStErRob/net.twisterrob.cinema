@@ -174,7 +174,6 @@ module.service('Planner', [
 							dealBreak: _.some(plan, 'offenses.dealBreak'),
 						};
 
-						if (plan.offenses.dealBreak) return;
 						const increaseIfOffending = (offenseCount, offense) => offenseCount + (offense ? 1 : 0);
 						plan.offenses.count = _.reduce(plan.offenses, increaseIfOffending, 0);
 						if (plan.offenses.count === 0) {

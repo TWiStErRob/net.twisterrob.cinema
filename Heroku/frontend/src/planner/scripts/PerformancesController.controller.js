@@ -102,7 +102,7 @@ module.controller('PerformancesController', [
 			});
 			$scope.plans = plans;
 		};
-		
+
 		$scope.focus = function(cinema) {
 			_.each($scope.plans, function(plan) {
 				plan.open = plan.cinema === cinema;
@@ -167,9 +167,9 @@ module.controller('PerformancesController', [
 					.reduce(aggregateOffensePriority, 0);
 
 			function aggregateOffensePriority(sum, offense) {
-				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'earlyStart', 'earlyFinish']; // lower is better
-				// Given var prio = ['fewMovies', 'shortBreak', 'longBreak', 'early']:
-				// if I used the index of each element conflicts would arise: shortBreak(1) + longBreak(2) != early(3).
+				var prio = ['fewMovies', 'shortBreak', 'longBreak', 'earlyStart', 'earlyFinish', 'dealBreak']; // lower is better
+				// Given var prio = ['a', 'b', 'c', 'd']:
+				// if I used the index of each element conflicts would arise: b(1) + c(2) != d(3).
 				// So use shifting to produce a bitmap and add them to create a non-conflicting result.
 				// Also ECMA-262§11.7.1.7-8: (2 << -1) === (2 << 0xFFFFFFFFFF & 0x1F) === (2 << 31) === (0b10 << 31) === 0b10...0 [32 zeros],
 				// which is 1 bit bigger than 32 bit, so it's truncated as 0 === (2 << -1), hence it's safe to use _.indexOf without any checks.

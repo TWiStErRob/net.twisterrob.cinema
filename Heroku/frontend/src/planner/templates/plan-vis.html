@@ -5,7 +5,7 @@
       ng-style="{ width: widthOf(plan.range.end - plan.range.start, fullDay) }">
 	<span ng-repeat-start="movie in plan" ng-if="movie.breakBefore"
 	      class="plan-vis-break length"
-	      ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak}"
+	      ng-class="{offense: movie.offenses.shortBreak || movie.offenses.longBreak || movie.offenses.dealBreak}"
 	      title="{{movie.breakBefore | humanizeDuration}} break"
 	      ng-style="{ width: widthOf(movie.breakBefore, plan.range.end - plan.range.start) }"
 	>{{movie.breakBefore.asMinutes()}}</span>
