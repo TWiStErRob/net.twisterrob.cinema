@@ -9,7 +9,7 @@
  	* npm (`npm install --global npm@<version from package.json>`)
  * heroku (`npm install --global heroku`)
     * `heroku keys:add ~/.ssh/id_rsa.pub` (see https://stackoverflow.com/a/6059231)
- * `scripts/env.bat`
+ * `scripts/env.bat` (or copy contents to global vars)
 
 ### Running
 
