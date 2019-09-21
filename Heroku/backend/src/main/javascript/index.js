@@ -234,7 +234,7 @@ function getPerformances(req, res) {
 	}
 	perfParams.cinema = _.map(perfParams.cinema, _.parseInt);
 	perfParams.film = _.map(perfParams.film, _.parseInt);
-	
+
 	var combinations = [];
 	for(var c = 0, cLen = perfParams.cinema.length; c < cLen; c++) {
 		var cinema = perfParams.cinema[c];
@@ -365,7 +365,7 @@ var cacheLength = env === 'development' ? 0 : 10 * 60 * 60;
 app.get('/planner', function(req, res) {
 	res.sendfile(path.resolve(contentRoot, 'static/planner/index.html'));
 });
-app.get('/film', cacher(cacheLength), getFilms);
+app.get('/film', getFilms); // can't cache because of "view" property
 app.get('/film/:edi', getFilm);
 app.get('/cinema/favs', ensureAuthenticated, getFavCinemas);
 app.get('/cinema', cacher(cacheLength), getCinemas);
