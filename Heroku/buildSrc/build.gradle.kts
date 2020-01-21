@@ -1,6 +1,6 @@
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.2.51"
+	id("org.jetbrains.kotlin.jvm") version "1.3.61"
 }
 
 repositories {
@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
-//	implementation(kotlin("gradle-plugin", "1.2.51"))
+	implementation(kotlin("stdlib-jdk8", "1.3.61"))
+//	implementation(kotlin("gradle-plugin", "1.3.61"))
 //	implementation(kotlin("dsl", "0.17.5"))
 }

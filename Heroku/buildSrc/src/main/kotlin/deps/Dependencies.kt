@@ -3,7 +3,7 @@
 package deps
 
 private object Versions {
-	const val kotlin = "1.2.51"
+	const val kotlin = "1.3.61"
 	const val okhttp3 = "3.10.0"
 	const val dagger = "2.16"
 	const val hamcrest2 = "2.0.0.0"
@@ -52,7 +52,7 @@ object RxJava2 {
 }
 
 object Kotlin {
-	const val version = "1.2.51"
+	const val version = "1.3.61"
 
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect"
@@ -93,7 +93,7 @@ object Log4J2 {
 }
 
 object Dagger2 {
-	const val version = "2.16"
+	const val version = "2.25.4"
 
 	const val inject = "javax.inject:javax.inject:1"
 	const val core = "com.google.dagger:dagger:${version}"
@@ -134,10 +134,10 @@ object Neo4JOGM {
 }
 
 object Jackson {
-	const val version = "2.9.6"
+	const val version = "2.10.2"
 
-	const val databind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
-	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.4"
-	const val module_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1"
-	const val datatype_java8 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6"
+	const val databind = "com.fasterxml.jackson.core:jackson-databind:2.10.1"
+	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1"
+	const val module_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2"
+	const val datatype_java8 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2"
 }
