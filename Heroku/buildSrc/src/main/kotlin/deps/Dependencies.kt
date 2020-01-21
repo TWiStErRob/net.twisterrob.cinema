@@ -3,14 +3,8 @@
 package deps
 
 private object Versions {
-	const val kotlin = "1.3.61"
 	const val okhttp3 = "3.10.0"
-	const val dagger = "2.16"
 	const val hamcrest2 = "2.0.0.0"
-	const val junit4 = "4.13-20180505.160251-147"
-	const val junitVintage = "5.2.0"
-	const val junitPlatform = "1.2.0"
-	const val junitJupiter = "5.2.0"
 	const val mockito2 = "2.18.3"
 }
 
@@ -49,6 +43,15 @@ object RxJava2 {
 	const val version = "2.1.13"
 
 	const val core = "io.reactivex.rxjava2:rxjava:${version}"
+}
+
+object JUnit {
+	const val version4 = "4.13"
+	const val versionVintage = "5.2.0"
+	const val versionPlatform = "1.2.0"
+	const val versionJupiter = "5.2.0"
+
+	const val junit4 = "junit:junit:${version4}"
 }
 
 object Kotlin {

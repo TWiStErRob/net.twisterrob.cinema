@@ -19,4 +19,5 @@ object Deps {
 	val SLF4J = deps.SLF4J
 	val Log4J2 = deps.Log4J2
 	val Jackson = deps.Jackson
+	val JUnit = deps.JUnit
 }
