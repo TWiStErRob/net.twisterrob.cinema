@@ -1,9 +1,12 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
@@ -15,11 +18,16 @@ import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-fun feedReader() = XmlMapper().apply {
-	registerModule(KotlinModule())
-	registerModule(JavaTimeModule())
-	// don't add, want to know when new things are added to syndication
-	//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+fun feedReader(): XmlMapper {
+	val jackson = JacksonXmlModule().apply {
+		setXMLTextElementName("innerText")
+	}
+	return XmlMapper(jackson).apply {
+		registerModule(KotlinModule())
+		registerModule(JavaTimeModule())
+		// Let's not add it. I want to know when new things are added to syndication.
+		//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+	}
 }
 
 /**
@@ -32,8 +40,16 @@ fun feedReader() = XmlMapper().apply {
  * ### `@JacksonXmlText` in Kotlin
  * See https://github.com/FasterXML/jackson-module-kotlin/issues/138
  * `@JacksonXmlText` cannot be applied to constructor parameters, which is the only way to instantiate data classes.
- * So to work around the limitation the content from an XML element with attributes has to be parsed into a property.
- * See [Feed.Attribute.title] for an example.
+ * Luckily [JacksonXmlModule.setXMLTextElementName] works instead of annotating with [JacksonXmlText].
+ * `@`[JacksonXmlText] is not necessary, but it's good to signal what `@`[JsonProperty]`(innerText)` is meant to represent.
+ *
+ * ```
+ * com.fasterxml.jackson.databind.exc.InvalidDefinitionException:
+ * Invalid definition for property `` (of type `net.twisterrob.cinema.cineworld.sync.syndication.Feed$Attribute`):
+ * Could not find creator property with name '' (known Creator properties: [code, title])
+ * at [Source: (BufferedInputStream); line: 2, column: 1]
+ * ```
+ * Tried many `@`[JsonAlias]`("")` and `@`[JsonProperty]`("title")` combinations, but same error.
  *
  * ### `@JsonIdentityInfo` in Kotlin
  * At the first instantiation of the object the ObjectId field is set as null,
@@ -61,18 +77,15 @@ data class Feed(
 		 * @sample `"gn:movies-for-juniors"`
 		 */
 		@JacksonXmlProperty(isAttribute = true)
-		val code: String
-	) {
+		val code: String,
 
 		/**
 		 * @sample `"2D"`
 		 * @sample `"Movies for Juniors"`
 		 */
-		// TOFIX lateinit var reason: https://github.com/FasterXML/jackson-module-kotlin/issues/138
-		// tried many JsonAlias("") and JsonProperty("title") combinations, but same error
-		@JacksonXmlText
-		lateinit var title: String
-			private set
+		@JacksonXmlProperty(localName = "innerText")
+		val title: String
+	) {
 
 		override fun toString() = "$code->$title"
 	}
