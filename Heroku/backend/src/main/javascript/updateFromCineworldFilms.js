@@ -75,6 +75,10 @@ neo4j.init(function(err, graph) {
 					film.poster_url = body.base_url + film.poster; delete film.poster;
 					film.release = moment(film.release, 'YYYYMMDD').format();
 					film.runtime = film.length; delete film.length;
+					if (film.categories !== null && film.categories.length === 0) {
+						// Jojo rabbit had "categories: []" which breaks Neo4J
+						film.categories = null;
+					}
 				});
 				neo4j.createNodes(graph, 'Film', body.films, graph.queries.getAllFilms,
 					"film",
@@ -98,7 +102,7 @@ neo4j.init(function(err, graph) {
 		if (err) throw err;
 //		var batch = graph.createBatch();
 //		graph.query(batch, "MATCH f:Film, r:Response CREATE UNIQUE r-[:UDPATED]->f", function(err, node) {
-//			
+//
 //		});
 	});
 });
