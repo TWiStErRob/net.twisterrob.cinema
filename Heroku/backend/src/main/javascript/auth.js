@@ -4,11 +4,6 @@ var passport = require('passport');   // http://passportjs.org/guide/
 var GoogleStrategy = require('passport-google-oauth20').Strategy; // http://passportjs.org/docs/google
 var config = require('./config');
 var moment = require('moment');
-var graph;
-require('./neo4j').init(function(error, connected) {
-	if(error) throw error;
-	graph = connected;
-});
 var log = require('./logs').auth;
 
 // TODO add returnUrl handling
@@ -19,7 +14,7 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/login');
 }
 
-function setupPassport(app) {
+function setupPassport(app, graph) {
 	passport.serializeUser(function(user, done) {
 		done(null, user.id);
 	});
@@ -103,8 +98,8 @@ function setupRoutes(app) {
 	});
 }
 
-module.exports.init = function(app) {
-	setupPassport(app);
+module.exports.init = function(app, graph) {
+	setupPassport(app, graph);
 
 	app.use(passport.initialize());
 	app.use(passport.session());

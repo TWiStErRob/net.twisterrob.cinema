@@ -17,6 +17,7 @@ var graph;
 require('./neo4j').init(function(error, connected) {
 	if(error) throw error;
 	graph = connected;
+	auth.init(app, graph);
 	listen();
 });
 var logs = require('./logs');
@@ -341,8 +342,6 @@ app.use(express.cookieSession({
 	key: 'session',
 	secret: 'twister'
 }));
-
-auth.init(app);
 
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
