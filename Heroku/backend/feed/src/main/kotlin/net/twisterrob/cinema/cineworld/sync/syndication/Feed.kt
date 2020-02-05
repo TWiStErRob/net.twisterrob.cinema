@@ -2,7 +2,9 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
@@ -40,9 +42,6 @@ fun feedReader(): XmlMapper {
  * ### `@JacksonXmlText` in Kotlin
  * See https://github.com/FasterXML/jackson-module-kotlin/issues/138
  * `@JacksonXmlText` cannot be applied to constructor parameters, which is the only way to instantiate data classes.
- * Luckily [JacksonXmlModule.setXMLTextElementName] works instead of annotating with [JacksonXmlText].
- * `@`[JacksonXmlText] is not necessary, but it's good to signal what `@`[JsonProperty]`(innerText)` is meant to represent.
- *
  * ```
  * com.fasterxml.jackson.databind.exc.InvalidDefinitionException:
  * Invalid definition for property `` (of type `net.twisterrob.cinema.cineworld.sync.syndication.Feed$Attribute`):
@@ -50,6 +49,10 @@ fun feedReader(): XmlMapper {
  * at [Source: (BufferedInputStream); line: 2, column: 1]
  * ```
  * Tried many `@`[JsonAlias]`("")` and `@`[JsonProperty]`("title")` combinations, but same error.
+ *
+ * Luckily [JacksonXmlModule.setXMLTextElementName] works instead of annotating with [JacksonXmlText].
+ * `@`[JacksonXmlText] is not necessary for deserialization,
+ * but it's good to signal what `@`[JsonProperty]`(innerText)` is meant to represent and required for serialization.
  *
  * ### `@JsonIdentityInfo` in Kotlin
  * At the first instantiation of the object the ObjectId field is set as null,
@@ -84,6 +87,7 @@ data class Feed(
 		 * @sample `"Movies for Juniors"`
 		 */
 		@JacksonXmlProperty(localName = "innerText")
+		@JacksonXmlText
 		val title: String
 	) {
 
@@ -134,6 +138,7 @@ data class Feed(
 		val services: String
 	) {
 
+		@JsonIgnore
 		val serviceList = services.split(",")
 
 		@JsonManagedReference("cinema")
@@ -172,6 +177,7 @@ data class Feed(
 		/**
 		 * @sample `"2018-05-16T00:00:00Z"`
 		 */
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T00:00:00Z'")
 		val releaseDate: LocalDate,
 
 		/**
@@ -218,6 +224,7 @@ data class Feed(
 		val trailerUrl: URI?
 	) {
 
+		@JsonIgnore
 		val attributeList = attributes.split(",")
 
 		@JsonManagedReference("film")
@@ -257,6 +264,7 @@ data class Feed(
 		val attributes: String
 	) {
 
+		@JsonIgnore
 		val attributeList = attributes.split(",")
 	}
 }

@@ -1,9 +1,16 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.flextrade.jfixture.JFixture
+import net.twisterrob.test.get
+import net.twisterrob.test.set
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Test
+import java.net.URI
+import java.time.OffsetDateTime
 
 class FeedIntgTest {
 
@@ -24,6 +31,36 @@ class FeedIntgTest {
 		assertNotNull(feed)
 		feed.verifyAllAttributesAreValid()
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
+	}
+
+	@Ignore("Too much to ask")
+	@Test fun `serialization is reversible`() {
+		val fixture = JFixture()
+		val fixtFeed = fixture.create(Feed::class.java).apply {
+			cinemas.forEach { it["performances"] = emptyList<Feed.Screening>() }
+			films.forEach { it["performances"] = emptyList<Feed.Screening>() }
+			this["performances"] = (1..3).map {
+				val performance = Feed.Screening(
+					film = films.random(),
+					cinema = cinemas.random(),
+					url = fixture.create(URI::class.java),
+					attributes = SCREENING_TYPES.random().code,
+					time = fixture.create(OffsetDateTime::class.java)
+				)
+				performance.film.add("performances", performance)
+				performance.cinema.add("performances", performance)
+				return@map performance
+			}
+		}
+		val serialized = feedReader().writeValueAsString(fixtFeed)
+		println(serialized)
+		val feed = feedReader().readValue<Feed>(serialized)
+		assertEquals(fixtFeed, feed)
+	}
+
+	private fun <T> Any.add(fieldName: String, value: T) {
+		val current: Iterable<T> = this[fieldName]
+		this[fieldName] = current + value
 	}
 
 	private fun Feed.verifyHasAllAttributes(attributes: Set<Feed.Attribute>) {
