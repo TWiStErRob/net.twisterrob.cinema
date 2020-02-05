@@ -4,7 +4,6 @@ package deps
 
 private object Versions {
 	const val okhttp3 = "3.10.0"
-	const val hamcrest2 = "2.0.0.0"
 	const val mockito2 = "2.18.3"
 }
 
@@ -52,6 +51,18 @@ object JUnit {
 	const val versionJupiter = "5.2.0"
 
 	const val junit4 = "junit:junit:${version4}"
+}
+
+object Hamcrest {
+	const val version = "2.2"
+
+	const val core = "org.hamcrest:hamcrest-core:${version}"
+}
+
+object JFixture {
+	const val version = "2.7.2"
+
+	const val jfixture = "com.flextrade.jfixture:jfixture:${version}"
 }
 
 object Kotlin {

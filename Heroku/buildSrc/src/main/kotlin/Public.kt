@@ -20,4 +20,6 @@ object Deps {
 	val Log4J2 = deps.Log4J2
 	val Jackson = deps.Jackson
 	val JUnit = deps.JUnit
+	val Hamcrest = deps.Hamcrest
+	val JFixture = deps.JFixture
 }

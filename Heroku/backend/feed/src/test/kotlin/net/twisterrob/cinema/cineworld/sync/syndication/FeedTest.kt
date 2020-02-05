@@ -1,102 +1,70 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import com.flextrade.jfixture.JFixture
+import net.twisterrob.test.build
+import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.junit.Test
 
 class FeedTest {
 
-	private fun loadFeed(fileName: String) =
-		feedReader().readValue<Feed>(FeedTest::class.java.getResourceAsStream("/$fileName"))
+	@Test fun `plus adds all fields together`() {
+		val fixture = JFixture()
+		val feed1: Feed = fixture.build()
+		val feed2: Feed = generateSequence { fixture.build<Feed>() }
+			.first { feed2 ->
+				val uniqueFilms =
+					feed2.films.map(Feed.Film::id)
+						.intersect(feed1.films.map(Feed.Film::id))
+						.isEmpty()
+				val uniqueAttributes =
+					feed2.attributes.map(Feed.Attribute::code)
+						.intersect(feed1.attributes.map(Feed.Attribute::code))
+						.isEmpty()
+				return@first uniqueFilms && uniqueAttributes
+			}
 
-	@Test fun `read UK weekly film times XML`() {
-		val feed = loadFeed("weekly_film_times.xml")
+		val result = feed1 + feed2
 
-		assertNotNull(feed)
-		feed.verifyAllAttributesAreValid()
-		feed.verifyHasAllAttributes(SCREENING_TYPES + GENRES)
+		assertAdded(result, feed1, feed2, Feed::attributes)
+		assertAdded(result, feed1, feed2, Feed::films)
+		assertAdded(result, feed1, feed2, Feed::performances)
+		assertAdded(result, feed1, feed2, Feed::cinemas)
 	}
 
-	@Test fun `read IE weekly film times XML`() {
-		val feed = loadFeed("weekly_film_times_ie.xml")
+	@Test fun `plus skips duplicate films`() {
+		val feed1: Feed = JFixture().build()
+		val extra: Feed.Film = JFixture().build()
+		val feed2 = feed1.copy(films = feed1.films + extra)
 
-		assertNotNull(feed)
-		feed.verifyAllAttributesAreValid()
-		feed.verifyHasAllAttributes(SCREENING_TYPES)
+		val result = feed1 + feed2
+
+		assertThat(result.films, contains(feed1.films + extra))
 	}
 
-	private fun Feed.verifyHasAllAttributes(attributes: Set<Feed.Attribute>) {
-		attributes.forEach {
-			assertTrue("$it not found in ${this.attributes}", this.attributes.contains(it))
-		}
-	}
+	@Test fun `plus skips duplicate attributes`() {
+		val feed1: Feed = JFixture().build()
+		val extra: Feed.Attribute = JFixture().build()
+		val feed2 = feed1.copy(attributes = feed1.attributes + extra)
 
-	private fun Feed.verifyAllAttributesAreValid() {
-		this.attributes.forEach {
-			assertNotNull(it.code)
-			assertNotNull(it.title)
-		}
-	}
+		val result = feed1 + feed2
 
-	companion object {
-
-		private val SCREENING_TYPES = setOf(
-			Feed.Attribute("2D", "2D"),
-			Feed.Attribute("3D", "3D"),
-			Feed.Attribute("4DX", "4DX"),
-			Feed.Attribute("AC", "AC"),
-			Feed.Attribute("AD", "AD"),
-			Feed.Attribute("AUT", "AUT"),
-			Feed.Attribute("Box", "Box"),
-			Feed.Attribute("CH", "CH"),
-			Feed.Attribute("CINB", "CINB"),
-			Feed.Attribute("DBOX", "DBOX"),
-			Feed.Attribute("EDU", "EDU"),
-			Feed.Attribute("FEV", "FEV"),
-			Feed.Attribute("IMAX", "IMAX"),
-			Feed.Attribute("M4J", "M4J"),
-			Feed.Attribute("MID", "MID"),
-			Feed.Attribute("PRE", "PRE"),
-			Feed.Attribute("QA", "QA"),
-			Feed.Attribute("SC", "SC"),
-			Feed.Attribute("Sen", "Sen"),
-			Feed.Attribute("SKY", "SKY"),
-			Feed.Attribute("SS", "SS"),
-			Feed.Attribute("ST", "ST"),
-			Feed.Attribute("STAR", "STAR"),
-			Feed.Attribute("Strobe", "Strobe"),
-			Feed.Attribute("TS", "TS"),
-			Feed.Attribute("ViP", "ViP"),
-			Feed.Attribute("VIP", "VIP")
-		)
-
-		private val GENRES = setOf(
-			Feed.Attribute("gn:action", "Action"),
-			Feed.Attribute("gn:animation", "Animation"),
-			Feed.Attribute("gn:bollywood", "Bollywood"),
-			Feed.Attribute("gn:comedy", "Comedy"),
-			Feed.Attribute("gn:documentary", "Documentary"),
-			Feed.Attribute("gn:drama", "Drama"),
-			Feed.Attribute("gn:event-cinema", "Event Cinema"),
-			Feed.Attribute("gn:family", "Family"),
-			Feed.Attribute("gn:fantasy", "Fantasy"),
-			Feed.Attribute("gn:hindi", "Hindi"),
-			Feed.Attribute("gn:horror", "Horror"),
-			Feed.Attribute("gn:live", "Live"),
-			Feed.Attribute("gn:malayalam", "Malayalam"),
-			Feed.Attribute("gn:movies-for-juniors", "Movies for Juniors"),
-			Feed.Attribute("gn:musical", "Musical"),
-			Feed.Attribute("gn:national-theatre", "National Theatre"),
-			Feed.Attribute("gn:polish", "Polish"),
-			Feed.Attribute("gn:punjabi", "Punjabi"),
-			Feed.Attribute("gn:romance", "Romance"),
-			Feed.Attribute("gn:sci-fi", "Sci-Fi"),
-			Feed.Attribute("gn:tamil", "Tamil"),
-			Feed.Attribute("gn:telugu", "Telugu"),
-			Feed.Attribute("gn:theatre", "Theatre"),
-			Feed.Attribute("gn:thriller", "Thriller"),
-			Feed.Attribute("gn:unlimited-screening", "Unlimited Screening")
-		)
+		assertThat(result.attributes, contains(feed1.attributes + extra))
 	}
 }
+
+private inline fun <reified T> assertAdded(
+	result: Feed, feed1: Feed, feed2: Feed,
+	property: Feed.() -> List<T>
+) {
+	assertThat(result.property(), hasItems(feed1.property()))
+	assertThat(result.property(), hasItems(feed2.property()))
+	assertThat(result.property(), Matchers.hasSize(feed1.property().size + feed2.property().size))
+}
+
+private inline fun <reified T> hasItems(items: Iterable<T>): Matcher<Iterable<T>> =
+	Matchers.hasItems(*items.toList().toTypedArray())
+
+private inline fun <reified T> contains(items: Iterable<T>): Matcher<Iterable<T>> =
+	Matchers.contains(*items.toList().toTypedArray())

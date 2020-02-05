@@ -20,6 +20,8 @@ dependencies {
 	implementation Deps.Jackson.datatype_java8
 
 	testImplementation Deps.JUnit.junit4
+	testImplementation Deps.JFixture.jfixture
+	testImplementation Deps.Hamcrest.core
 }
 
 dependencies { // Network

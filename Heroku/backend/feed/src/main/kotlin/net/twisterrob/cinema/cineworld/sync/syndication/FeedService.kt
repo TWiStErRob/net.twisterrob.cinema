@@ -17,7 +17,7 @@ class FeedService @Inject constructor(
 		feedReader().readValue<Feed>(File("backend/sync/test/weekly_film_times_ie.xml"))
 }
 
-private operator fun Feed.plus(other: Feed): Feed = Feed(
+internal operator fun Feed.plus(other: Feed): Feed = Feed(
 	// merge the attributes, keep only unique ones
 	attributes = (this.attributes + other.attributes).distinctBy { it.code },
 	// different country -> different cinemas
