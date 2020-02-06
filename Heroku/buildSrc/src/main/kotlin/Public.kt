@@ -22,4 +22,5 @@ object Deps {
 	val JUnit = deps.JUnit
 	val Hamcrest = deps.Hamcrest
 	val JFixture = deps.JFixture
+	val Mockito = deps.Mockito
 }

@@ -6,7 +6,6 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 
 private object Versions {
 	const val okhttp3 = "3.10.0"
-	const val mockito2 = "2.18.3"
 }
 
 object OkHttp3 {
@@ -63,6 +62,18 @@ object JUnit {
 		dependencies.add("testRuntimeOnly", platform)
 		dependencies.add("testRuntimeOnly", jupiterEngine)
 	}
+}
+
+object Mockito {
+	const val version1 = "1.10.19"
+	const val version2 = "2.28.2"
+	const val version3 = "3.2.4"
+	const val versionKotlin = "2.2.0"
+
+	const val core1 = "org.mockito:mockito-core:${version1}"
+	const val core2 = "org.mockito:mockito-core:${version2}"
+	const val core3 = "org.mockito:mockito-core:${version3}"
+	const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionKotlin}"
 }
 
 object Hamcrest {
