@@ -2,6 +2,8 @@
 
 package deps
 
+import org.gradle.api.artifacts.dsl.DependencyHandler
+
 private object Versions {
 	const val okhttp3 = "3.10.0"
 	const val mockito2 = "2.18.3"
@@ -55,6 +57,12 @@ object JUnit {
 	const val jupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${versionJupiter}"
 	const val vintage = junit4
 	const val vintageEngine = "org.junit.vintage:junit-vintage-engine:${versionJupiter}"
+
+	fun junit5(dependencies: DependencyHandler) {
+		dependencies.add("testImplementation", jupiter)
+		dependencies.add("testRuntimeOnly", platform)
+		dependencies.add("testRuntimeOnly", jupiterEngine)
+	}
 }
 
 object Hamcrest {

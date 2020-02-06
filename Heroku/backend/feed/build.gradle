@@ -18,12 +18,6 @@ dependencies {
 	implementation Deps.Jackson.dataformat_xml
 	implementation Deps.Jackson.module_kotlin
 	implementation Deps.Jackson.datatype_java8
-
-	testImplementation Deps.JUnit.jupiter
-	testRuntimeOnly Deps.JUnit.platform
-	testRuntimeOnly Deps.JUnit.jupiterEngine
-	testImplementation Deps.JFixture.jfixture
-	testImplementation Deps.Hamcrest.core
 }
 
 dependencies { // Network
@@ -42,4 +36,10 @@ dependencies { // Network
 
 dependencies { // Logging
 	implementation Deps.SLF4J.core
+}
+
+dependencies { // Test
+	Deps.JUnit.junit5(it)
+	testImplementation Deps.JFixture.jfixture
+	testImplementation Deps.Hamcrest.core
 }
