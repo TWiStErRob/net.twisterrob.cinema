@@ -5,7 +5,8 @@ import net.twisterrob.test.build
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.Test
+import org.hamcrest.Matchers.hasSize
+import org.junit.jupiter.api.Test
 
 class FeedTest {
 
@@ -60,7 +61,7 @@ private inline fun <reified T> assertAdded(
 ) {
 	assertThat(result.property(), hasItems(feed1.property()))
 	assertThat(result.property(), hasItems(feed2.property()))
-	assertThat(result.property(), Matchers.hasSize(feed1.property().size + feed2.property().size))
+	assertThat(result.property(), hasSize(feed1.property().size + feed2.property().size))
 }
 
 private inline fun <reified T> hasItems(items: Iterable<T>): Matcher<Iterable<T>> =

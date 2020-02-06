@@ -17,23 +17,26 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.intellij.lang.annotations.Language
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
+import org.junit.jupiter.api.fail
 import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
 class JacksonSerializationTest {
 
-
 	data class SubelementsAndAttributes(
 		@JacksonXmlProperty(isAttribute = true)
 		val attr1: String,
+
 		val sub1: Int,
+
 		@JacksonXmlProperty(isAttribute = true)
 		val attr2: Int,
+
 		val sub2: String
 	)
 
@@ -148,7 +151,7 @@ class JacksonSerializationTest {
 		}
 	}
 
-	@Ignore("Child.parent insists on duplicating the referenced object during serialization")
+	@Disabled("Child.parent insists on duplicating the referenced object during serialization")
 	@Test fun `References serialization is reversible`() {
 		val sut = jackson()
 		val child = References.Child(42)
@@ -189,7 +192,7 @@ class JacksonSerializationTest {
 		)
 	}
 
-	@Ignore("JacksonXmlProperty localName is used for serialization correctly, but breaks deserialization")
+	@Disabled("JacksonXmlProperty localName is used for serialization correctly, but breaks deserialization")
 	@Test fun `RootElementWithChildren serialization is reversible`() {
 		val sut = jackson()
 		val data = RootElementWithChildren(
@@ -332,40 +335,42 @@ private fun jackson(
 	}
 
 private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
-	val actualXml: String = try {
-		sut.writeValueAsString(expectedData)
-	} catch (e: Throwable) {
-		e.printStackTrace()
-		fail(expectedData.toString())
-	}
-	val actualData: T = try {
-		sut.readValue(expectedXml)
-	} catch (e: Throwable) {
-		e.printStackTrace()
-		fail(expectedXml)
-	}
-	val reRead: T = try {
-		sut.readValue(actualXml)
-	} catch (e: Throwable) {
-		e.printStackTrace()
-		fail(actualXml)
-	}
+	assertAll(
+		{
+			val actualXml: String = try {
+				sut.writeValueAsString(expectedData)
+			} catch (e: Throwable) {
+				fail("Cannot serialize $expectedData", e)
+			}
+			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
+				"Serialized XML doesn't match, input: $expectedData"
+			}
+		},
+		{
+			val actualData: T = try {
+				sut.readValue(expectedXml)
+			} catch (e: Throwable) {
+				fail("Cannot deserialize $expectedXml", e)
+			}
+			assertEquals(expectedData, actualData) {
+				"Deserialized data doesn't match, input: $expectedXml"
+			}
+		},
+		{
+			val actualXml: String = sut.writeValueAsString(expectedData)
+			val reRead: T = try {
+				sut.readValue(actualXml)
+			} catch (e: Throwable) {
+				fail("Cannot deserialize serialized $actualXml", e)
+			}
+			assertEquals(expectedData, reRead) {
+				"Re-read data don't match, input: $expectedData -> $actualXml"
+			}
+		}
+	)
 
-//	println(expectedXml)
-//	println(actualXml)
-//	println(expectedData)
-//	println(actualData)
-//	println(reRead)
-
-	assertEquals("Deserialized data doesn't match", expectedData, actualData)
-	assertEquals("Serialized XML doesn't match", expectedXml.cleanForComparison(), actualXml.cleanForComparison())
-	assertEquals("Re-read data don't match", expectedData, reRead)
-
-	return actualData
+	return sut.readValue(expectedXml)
 }
 
 private fun String.cleanForComparison(): String =
 	trim().replace(Regex("""\r\n?"""), "\n")
-
-@Suppress("CAST_NEVER_SUCCEEDS") // fail will never return
-private fun fail(message: String): Nothing = Assert.fail(message) as Nothing

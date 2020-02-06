@@ -46,11 +46,15 @@ object RxJava2 {
 
 object JUnit {
 	const val version4 = "4.13"
-	const val versionVintage = "5.2.0"
-	const val versionPlatform = "1.2.0"
-	const val versionJupiter = "5.2.0"
+	const val versionPlatform = "1.6.0"
+	const val versionJupiter = "5.6.0"
 
 	const val junit4 = "junit:junit:${version4}"
+	const val platform = "org.junit.platform:junit-platform-launcher:${versionPlatform}"
+	const val jupiter = "org.junit.jupiter:junit-jupiter-api:${versionJupiter}"
+	const val jupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${versionJupiter}"
+	const val vintage = junit4
+	const val vintageEngine = "org.junit.vintage:junit-vintage-engine:${versionJupiter}"
 }
 
 object Hamcrest {

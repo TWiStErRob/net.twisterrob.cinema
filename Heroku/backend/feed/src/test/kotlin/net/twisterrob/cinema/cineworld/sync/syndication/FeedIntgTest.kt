@@ -4,11 +4,11 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.test.get
 import net.twisterrob.test.set
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import java.net.URI
 import java.time.OffsetDateTime
 
@@ -33,7 +33,7 @@ class FeedIntgTest {
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
 	}
 
-	@Ignore("Too much to ask")
+	@Disabled("Too much to ask")
 	@Test fun `serialization is reversible`() {
 		val fixture = JFixture()
 		val fixtFeed = fixture.create(Feed::class.java).apply {
@@ -65,7 +65,9 @@ class FeedIntgTest {
 
 	private fun Feed.verifyHasAllAttributes(attributes: Set<Feed.Attribute>) {
 		attributes.forEach {
-			assertTrue("$it not found in ${this.attributes}", this.attributes.contains(it))
+			assertTrue(this.attributes.contains(it)) {
+				"$it not found in ${this.attributes}"
+			}
 		}
 	}
 

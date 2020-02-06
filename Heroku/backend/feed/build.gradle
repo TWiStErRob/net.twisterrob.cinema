@@ -19,7 +19,9 @@ dependencies {
 	implementation Deps.Jackson.module_kotlin
 	implementation Deps.Jackson.datatype_java8
 
-	testImplementation Deps.JUnit.junit4
+	testImplementation Deps.JUnit.jupiter
+	testRuntimeOnly Deps.JUnit.platform
+	testRuntimeOnly Deps.JUnit.jupiterEngine
 	testImplementation Deps.JFixture.jfixture
 	testImplementation Deps.Hamcrest.core
 }
