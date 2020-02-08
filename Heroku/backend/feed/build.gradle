@@ -42,4 +42,5 @@ dependencies { // Test
 	Deps.JUnit.junit5(it)
 	testImplementation Deps.JFixture.jfixture
 	testImplementation Deps.Hamcrest.core
+	testImplementation project(":test-helpers")
 }
