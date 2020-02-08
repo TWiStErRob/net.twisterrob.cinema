@@ -7,6 +7,7 @@ dependencies {
 	implementation Deps.Kotlin.core
 
 	compileOnly Deps.JFixture.jfixture
+	compileOnly Deps.JFixture.kfixture
 	compileOnly Deps.Hamcrest.core
 	compileOnly Deps.Mockito.core3
 	compileOnly Deps.Mockito.kotlin

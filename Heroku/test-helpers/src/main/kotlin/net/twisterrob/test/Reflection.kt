@@ -1,9 +1,5 @@
 package net.twisterrob.test
 
-import com.flextrade.jfixture.JFixture
-
-inline fun <reified T> JFixture.build(): T = create(T::class.java)
-
 operator fun <T : Any?> Any.get(fieldName: String): T {
 	val field = this::class.java.getDeclaredField(fieldName)!!
 	val accessible = field.isAccessible
