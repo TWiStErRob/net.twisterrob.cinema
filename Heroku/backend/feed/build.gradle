@@ -39,7 +39,7 @@ dependencies { // Logging
 }
 
 dependencies { // Test
-	Deps.JUnit.junit5(it)
+	Deps.JUnit.junit5(project)
 	testImplementation Deps.JFixture.jfixture
 	testImplementation Deps.Hamcrest.core
 	testImplementation project(":test-helpers")
