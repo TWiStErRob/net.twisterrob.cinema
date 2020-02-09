@@ -67,7 +67,7 @@ class CinemaIntgTest {
 
 			assertThat(cinemas, hasSize(1))
 			val cinema = cinemas.elementAt(0)
-			assertThat(cinema.labels.toSet(), equalTo(setOf(label("Cinema"), label("BaseNode"))))
+			assertThat(cinema.labels.toSet(), equalTo(setOf(label("Cinema"))))
 			assertThat(cinema.id, equalTo(fixtCinema.graphId))
 			val expectedProperties = mapOf(
 				"_created" to fixtCinema._created.toString(),
