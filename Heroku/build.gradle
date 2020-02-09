@@ -11,4 +11,11 @@ allprojects {
 	plugins.withId("org.jetbrains.kotlin.kapt") {
 		kapt.includeCompileClasspath = false
 	}
+	plugins.withId("org.jetbrains.kotlin.jvm") {
+		tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+			kotlinOptions {
+				jvmTarget = "1.8"
+			}
+		}
+	}
 }
