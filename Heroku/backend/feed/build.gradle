@@ -4,6 +4,10 @@ plugins {
 	id 'org.jetbrains.kotlin.kapt'
 }
 
+sourceSets {
+	test.resources.srcDir(project(':backend:sync').file('test'))
+}
+
 dependencies {
 	implementation Deps.Kotlin.core
 	implementation Deps.Kotlin.reflect
