@@ -37,6 +37,7 @@
 
 		<!-- tighten spamming logs -->
 		<Logger name="org.neo4j.ogm" level="TRACE" />
+		<Logger name="org.neo4j.driver.internal.shaded" level="INFO" />
 		<Logger name="io.mockk" level="WARN" />
 
 		<!-- Application specific logs. -->
