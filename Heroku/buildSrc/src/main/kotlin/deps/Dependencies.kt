@@ -80,8 +80,10 @@ object Mockito {
 
 object Hamcrest {
 	const val version = "2.2"
+	const val versionShazamcrest = "0.11"
 
 	const val core = "org.hamcrest:hamcrest-core:${version}"
+	const val shazamcrest = "com.shazam:shazamcrest:${versionShazamcrest}"
 }
 
 object JFixture {
@@ -145,8 +147,8 @@ object Dagger2 {
 
 object Neo4JOGM {
 
-	const val version = "3.1.0" // https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
-	const val version_neo4j = "3.3.6"
+	const val version = "3.2.8" // https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+	const val version_neo4j = "3.4.9"
 	/**
 	 * Warning "The following annotation processors were detected on the compile classpath:"
 	 *  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'
@@ -158,15 +160,6 @@ object Neo4JOGM {
 	const val driver_bolt = "org.neo4j:neo4j-ogm-bolt-driver:${version}"
 	const val driver_http = "org.neo4j:neo4j-ogm-http-driver:${version}"
 
-	/**
-	 * Warning: Includes an old version of [harness], so needs:
-	 * ```
-	 * exclude module: 'neo4j-security-enterprise' // to prevent logger conflicts
-	 * exclude module: 'neo4j-kernel' // see neo4j-ogm-core
-	 * exclude module: 'logback-classic'
-	 * ```
-	 */
-	const val test = "org.neo4j:neo4j-ogm-test:${version}"
 	const val harness = "org.neo4j.test:neo4j-harness:${version_neo4j}"
 	/**
 	 * TODO `{ transitive = true }` why?

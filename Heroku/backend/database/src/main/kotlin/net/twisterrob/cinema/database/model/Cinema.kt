@@ -1,16 +1,11 @@
 package net.twisterrob.cinema.database.model
 
-import net.twisterrob.kotlin.getValue
-import net.twisterrob.kotlin.setValue
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
 
 @NodeEntity(label = "Cinema")
 class Cinema(
-	@Property(name = "class")
-	private var `class`: String = "Cinema",
-
 	@Relationship(type = "GOESTO", direction = Relationship.INCOMING)
 	var users: MutableCollection<User> = mutableSetOf(),
 
@@ -20,7 +15,8 @@ class Cinema(
 
 	companion object
 
-	var className: String by ::`class`
+	@Property(name = "class")
+	val className: String = "Cinema"
 
 	@Property(name = "cineworldID")
 	var cineworldID: Long = 0

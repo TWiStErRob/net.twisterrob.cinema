@@ -1,20 +1,16 @@
 package net.twisterrob.cinema.database.model
 
-import net.twisterrob.kotlin.getValue
-import net.twisterrob.kotlin.setValue
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import java.time.OffsetDateTime
 
 @NodeEntity(label = "Film")
-class Film(
-	@Property(name = "class")
-	private var `class`: String = "Film"
-) : Historical() {
+class Film : Historical() {
 
 	companion object
 
-	var className: String by ::`class`
+	@Property(name = "class")
+	var className: String = "Film"
 
 	@Property(name = "edi")
 	var edi: Long = 0

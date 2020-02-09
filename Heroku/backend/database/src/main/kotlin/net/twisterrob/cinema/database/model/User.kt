@@ -1,7 +1,5 @@
 package net.twisterrob.cinema.database.model
 
-import net.twisterrob.kotlin.getValue
-import net.twisterrob.kotlin.setValue
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
@@ -9,9 +7,6 @@ import java.time.OffsetDateTime
 
 @NodeEntity(label = "User")
 class User(
-	@Property(name = "class")
-	private var `class`: String = "User",
-
 	@Property(name = "id")
 	var id: String,
 
@@ -31,7 +26,8 @@ class User(
 	var views: MutableCollection<View> = mutableSetOf()
 ) : BaseNode() {
 
-	var className: String by ::`class`
+	@Property(name = "class")
+	val className: String = "User"
 
 	@Property(name = "_created")
 	lateinit var _created: OffsetDateTime

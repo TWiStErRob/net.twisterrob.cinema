@@ -20,12 +20,17 @@ dependencies { // Graph database
 	runtimeOnly(Deps.Neo4JOGM.neo4j_kernel) { transitive = true }
 	runtimeOnly Deps.Neo4JOGM.driver_bolt
 	runtimeOnly Deps.Neo4JOGM.driver_http
+}
 
-	testImplementation(Deps.Neo4JOGM.test) {
-		exclude module: 'neo4j-security-enterprise'
-		exclude module: 'neo4j-kernel'
-		exclude module: 'logback-classic'
-	}
+dependencies { // Test
+	Deps.JUnit.junit5(project)
+	testImplementation Deps.JFixture.kfixture
+	testImplementation Deps.Hamcrest.core
+	testImplementation Deps.Hamcrest.shazamcrest
+	testImplementation project(":test-helpers")
+
 	testImplementation Deps.Neo4JOGM.harness
-	testRuntimeOnly Deps.Neo4JOGM.driver_http
+	kaptTest Deps.Dagger2.apt
+
+	testRuntimeOnly Deps.Log4J2.slf4j
 }

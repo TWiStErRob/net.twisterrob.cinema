@@ -1,7 +1,5 @@
 package net.twisterrob.cinema.database.model
 
-import net.twisterrob.kotlin.getValue
-import net.twisterrob.kotlin.setValue
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
@@ -10,9 +8,6 @@ import java.time.Instant
 
 @NodeEntity(label = "View")
 class View(
-	@Property(name = "class")
-	private var `class`: String = "View",
-
 	@Property(name = "film")
 	var film: Long,
 
@@ -35,7 +30,8 @@ class View(
 		this.date = time
 	}
 
-	var className: String by ::`class`
+	@Property(name = "class")
+	val className: String = "View"
 
 	@Property(name = "date")
 	@DateLong
