@@ -9,6 +9,7 @@ import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.services.CinemaServices
+import java.time.OffsetDateTime
 import javax.inject.Singleton
 
 @Component(modules = [Neo4JModule::class, SyncAppModule::class])
@@ -18,36 +19,45 @@ interface SyncAppComponent : CinemaServices {
 
 	val cinemaSync: CinemaSync
 	val filmSync: FilmSync
+
+	@Component.Builder
+	interface Builder : Neo4JModule.Dependencies<Builder> {
+
+		fun build(): SyncAppComponent
+	}
 }
 
 @Module
 class SyncAppModule {
 
 	@Provides
-	fun cinemaEntityFactory(): Creator<Feed.Cinema, Cinema> = fun(_): Cinema = Cinema()
+	fun cinemaEntityFactory(): Creator<Feed.Cinema, Cinema> = fun Feed.Cinema.(): Cinema = Cinema()
 
 	@Provides
-	fun filmEntityFactory(): Creator<Feed.Film, Film> = fun(_): Film = Film()
+	fun filmEntityFactory(): Creator<Feed.Film, Film> = fun Feed.Film.(): Film = Film()
 
 	@Provides
-	fun copyCinemaProperties(): Updater<Cinema, Feed.Cinema> = fun(db, feed) {
-		db.cineworldID = feed.id
-		db.name = feed.name.replace("""^Cineworld """.toRegex(), "")
-		db.postcode = feed.postcode
-		db.address = feed.address
-		db.telephone = feed.phone
-		db.cinema_url = feed.url.toString()
+	fun nowProvider(): () -> OffsetDateTime = { OffsetDateTime.now() }
+
+	@Provides
+	fun copyCinemaProperties(): Updater<Cinema, Feed.Cinema> = fun Cinema.(feed) {
+		this.cineworldID = feed.id
+		this.name = feed.name.replace("""^Cineworld """.toRegex(), "")
+		this.postcode = feed.postcode
+		this.address = feed.address
+		this.telephone = feed.phone
+		this.cinema_url = feed.url.toString()
 		// TODO feed.serviceList
 	}
 
 	@Provides
-	fun copyFilmProperties(): Updater<Film, Feed.Film> = fun(db, feed) {
-		db.edi = feed.id
-		db.title = feed.title
-		db.director = feed.director
-		db.film_url = feed.url.toString()
-		db.poster_url = feed.posterUrl.toString()
-		db.runtime = feed.runningTime.toLong()
-		db.trailer = feed.trailerUrl?.toString()
+	fun copyFilmProperties(): Updater<Film, Feed.Film> = fun Film.(feed) {
+		this.edi = feed.id
+		this.title = feed.title
+		this.director = feed.director
+		this.film_url = feed.url.toString()
+		this.poster_url = feed.posterUrl.toString()
+		this.runtime = feed.runningTime.toLong()
+		this.trailer = feed.trailerUrl?.toString()
 	}
 }

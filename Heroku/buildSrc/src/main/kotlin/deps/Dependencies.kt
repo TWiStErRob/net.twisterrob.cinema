@@ -75,6 +75,7 @@ object Mockito {
 	const val core1 = "org.mockito:mockito-core:${version1}"
 	const val core2 = "org.mockito:mockito-core:${version2}"
 	const val core3 = "org.mockito:mockito-core:${version3}"
+	const val core3Inline = "org.mockito:mockito-inline:${version3}"
 	const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionKotlin}"
 }
 

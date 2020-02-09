@@ -5,19 +5,19 @@ import java.time.OffsetDateTime
 import javax.inject.Inject
 
 data class SyncResults<DB>(
-	val insert: Collection<DB>,
-	val restore: Collection<DB>,
-	val delete: Collection<DB>,
-	val alreadyDeleted: Collection<DB>,
-	val update: Collection<DB>
+	val insert: Collection<@JvmSuppressWildcards DB>,
+	val restore: Collection<@JvmSuppressWildcards DB>,
+	val delete: Collection<@JvmSuppressWildcards DB>,
+	val alreadyDeleted: Collection<@JvmSuppressWildcards DB>,
+	val update: Collection<@JvmSuppressWildcards DB>
 )
 
-typealias Creator<Feed, DB> = (@JvmSuppressWildcards Feed) -> @JvmSuppressWildcards DB
-typealias Updater<DB, Feed> = (@JvmSuppressWildcards DB, @JvmSuppressWildcards Feed) -> Unit
+typealias Creator<Feed, DB> = @JvmSuppressWildcards Feed.() -> DB
+typealias Updater<DB, Feed> = @JvmSuppressWildcards DB.(Feed) -> Unit
 
 class NodeSyncer<TFeed, DB : Historical> @Inject constructor(
-	private val entityFactory: Creator<TFeed, DB>,
-	private val updateFromFeed: Updater<DB, TFeed>
+	private val toEntity: Creator<TFeed, DB>,
+	private val setFrom: Updater<DB, TFeed>
 ) {
 
 	fun update(changes: SyncOperations<DB, TFeed>, now: OffsetDateTime): SyncResults<DB> {
@@ -41,18 +41,18 @@ class NodeSyncer<TFeed, DB : Historical> @Inject constructor(
 
 	private fun createNodes(nodesToCreate: Collection<TFeed>, now: OffsetDateTime): List<DB> =
 		nodesToCreate
-			.map {
-				entityFactory(it).apply {
-					updateFromFeed(this, it)
-					_created = now
-				}
+			.map { feed ->
+				val db = feed.toEntity()
+				db.setFrom(feed)
+				return@map db
 			}
+			.onEach { it._created = now }
 
 	private fun updateNodes(nodesToUpdate: Map<DB, TFeed>, now: OffsetDateTime): List<DB> =
 		nodesToUpdate
 			.map { (db, feed) ->
-				updateFromFeed(db, feed)
-				db
+				db.setFrom(feed)
+				return@map db
 			}
 			.onEach { it._updated = now }
 

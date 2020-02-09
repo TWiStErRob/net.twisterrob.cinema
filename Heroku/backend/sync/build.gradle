@@ -1,11 +1,8 @@
 plugins {
 	id 'java'
+	id 'java-test-fixtures'
 	id 'org.jetbrains.kotlin.jvm'
 	id 'org.jetbrains.kotlin.kapt'
-}
-
-repositories {
-	maven { name = "kotlinx"; url = "http://dl.bintray.com/kotlin/kotlinx.html/" }
 }
 
 dependencies {
@@ -25,7 +22,23 @@ dependencies { // Logging
 	runtimeOnly Deps.Log4J2.api
 	runtimeOnly Deps.Log4J2.core
 	runtimeOnly Deps.Log4J2.slf4j
-//	testRuntimeOnly Deps.Log4J2.jul
+}
+
+dependencies { // Test
+	Deps.JUnit.junit5(project)
+	testImplementation Deps.JFixture.kfixture
+	testImplementation Deps.Hamcrest.core
+	testImplementation Deps.Mockito.core3Inline
+	testImplementation Deps.Mockito.kotlin
+	testImplementation project(":test-helpers")
+	testImplementation testFixtures(project(":backend:database"))
+
+	testImplementation Deps.Neo4JOGM.harness
+	kaptTest Deps.Dagger2.apt
+
+	testFixturesImplementation project(":test-helpers")
+	testFixturesImplementation Deps.Kotlin.core
+	testFixturesImplementation Deps.JFixture.jfixture
 }
 
 configurations.all {

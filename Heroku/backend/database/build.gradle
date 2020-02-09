@@ -1,5 +1,6 @@
 plugins {
 	id 'java-library'
+	id 'java-test-fixtures'
 	id 'org.jetbrains.kotlin.jvm'
 	id 'org.jetbrains.kotlin.kapt'
 }
@@ -33,4 +34,7 @@ dependencies { // Test
 	kaptTest Deps.Dagger2.apt
 
 	testRuntimeOnly Deps.Log4J2.slf4j
+
+	testFixturesImplementation Deps.Kotlin.core
+	testFixturesImplementation Deps.JFixture.jfixture
 }
