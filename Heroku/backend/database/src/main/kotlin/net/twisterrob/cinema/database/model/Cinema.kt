@@ -5,13 +5,7 @@ import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
 
 @NodeEntity(label = "Cinema")
-class Cinema(
-	@Relationship(type = "GOESTO", direction = Relationship.INCOMING)
-	var users: MutableCollection<User> = mutableSetOf(),
-
-	@Relationship(type = "AT", direction = Relationship.INCOMING)
-	var views: MutableCollection<View> = mutableSetOf()
-) : Historical() {
+class Cinema : Historical() {
 
 	companion object
 
@@ -35,6 +29,12 @@ class Cinema(
 
 	@Property(name = "cinema_url")
 	lateinit var cinema_url: String
+
+	@Relationship(type = "GOESTO", direction = Relationship.INCOMING)
+	var users: MutableCollection<User> = mutableSetOf()
+
+	@Relationship(type = "AT", direction = Relationship.INCOMING)
+	var views: MutableCollection<View> = mutableSetOf()
 
 	override fun toString(): String {
 		return String.format("Cinema(%d, %s)", cineworldID, name)

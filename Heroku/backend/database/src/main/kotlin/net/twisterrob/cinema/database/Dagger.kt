@@ -27,6 +27,7 @@ annotation class Neo4J
 object Neo4JModule {
 
 	init {
+		// For debugging
 		//nonapi.io.github.classgraph.utils.LogNode.logInRealtime(true)
 	}
 
@@ -62,7 +63,8 @@ object Neo4JModule {
 	fun sessionFactory(config: Configuration): SessionFactory {
 		val modelClasses = OGM_ENTITIES.map { it.qualifiedName!! }
 		return SessionFactory(config, *modelClasses.toTypedArray()).apply {
-			setEntityInstantiator(KotlinReflectionEntityInstantiator())
+			// Disabled for now, let's try to use default Neo4J OGM first
+			//setEntityInstantiator(KotlinReflectionEntityInstantiator())
 			//			register(LoggingEventListener())
 			LOG.debug("Server: {}, packages = {}", config.uri, modelClasses)
 		}

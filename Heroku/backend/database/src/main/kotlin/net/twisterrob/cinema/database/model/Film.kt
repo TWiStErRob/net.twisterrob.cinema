@@ -10,7 +10,7 @@ class Film : Historical() {
 	companion object
 
 	@Property(name = "class")
-	var className: String = "Film"
+	val className: String = "Film"
 
 	@Property(name = "edi")
 	var edi: Long = 0
