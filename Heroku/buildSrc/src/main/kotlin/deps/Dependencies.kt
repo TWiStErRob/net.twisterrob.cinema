@@ -89,10 +89,8 @@ object Hamcrest {
 
 object JFixture {
 	const val version = "2.7.2"
-	const val versionK = "0.2.0"
 
 	const val jfixture = "com.flextrade.jfixture:jfixture:${version}"
-	const val kfixture = "com.flextrade.jfixture:kfixture:${versionK}"
 }
 
 object Kotlin {

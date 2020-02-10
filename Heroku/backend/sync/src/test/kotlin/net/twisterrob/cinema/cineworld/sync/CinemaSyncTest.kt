@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
-import com.flextrade.kfixture.KFixture
+import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -9,9 +9,9 @@ import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.model.validDBData
 import net.twisterrob.cinema.database.services.CinemaService
+import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
-import net.twisterrob.test.customise
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.hasSize
@@ -26,7 +26,7 @@ class CinemaSyncTest {
 	private val dbService: CinemaService = mock()
 	private val now by lazy { OffsetDateTime.now() }
 
-	private val fixture = KFixture()
+	private val fixture = JFixture()
 	private lateinit var sut: CinemaSync
 
 	@BeforeEach fun setUp() {
@@ -34,8 +34,10 @@ class CinemaSyncTest {
 	}
 
 	@Test fun `no cinemas in feed or database result in no data synced`() {
-		fixture.customise(syncResults<DBCinema>())
-		fixture.customise(validDBData())
+		fixture.applyCustomisation {
+			add(syncResults<DBCinema>())
+			add(validDBData())
+		}
 
 		val fixtFeed: Feed = fixture.build()
 		whenever(feedService.getWeeklyFilmTimes())

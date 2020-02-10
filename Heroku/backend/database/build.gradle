@@ -25,7 +25,7 @@ dependencies { // Graph database
 
 dependencies { // Test
 	Deps.JUnit.junit5(project)
-	testImplementation Deps.JFixture.kfixture
+	testImplementation Deps.JFixture.jfixture
 	testImplementation Deps.Hamcrest.core
 	testImplementation Deps.Hamcrest.shazamcrest
 	testImplementation project(":test-helpers")

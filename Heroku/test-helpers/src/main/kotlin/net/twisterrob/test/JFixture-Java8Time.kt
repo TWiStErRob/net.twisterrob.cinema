@@ -1,7 +1,6 @@
 package net.twisterrob.test
 
 import com.flextrade.jfixture.customisation.Customisation
-import com.flextrade.kfixture.KFixture
 import java.time.Clock
 import java.time.Instant
 import java.time.OffsetDateTime

@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
-import com.flextrade.kfixture.KFixture
+import com.flextrade.jfixture.JFixture
 import dagger.Component
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.test.build
@@ -16,7 +16,7 @@ import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
 class CinemaSyncCalculatorFuncTest {
 
-	private val fixture = KFixture()
+	private val fixture = JFixture()
 	private lateinit var sut: CinemaSyncCalculator
 
 	@BeforeEach fun setUp() {
