@@ -76,7 +76,7 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 
 @Component(modules = [Neo4JModule::class])
 @Neo4J
-private interface ModelIntgTestExtensionComponent : CinemaServices {
+private interface ModelIntgTestExtensionComponent {
 
 	val session: Session
 
