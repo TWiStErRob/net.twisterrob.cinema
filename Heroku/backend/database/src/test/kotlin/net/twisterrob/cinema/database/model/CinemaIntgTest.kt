@@ -1,51 +1,28 @@
 package net.twisterrob.cinema.database.model
 
-import com.flextrade.kfixture.KFixture
+import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
-import dagger.Component
-import net.twisterrob.cinema.database.Neo4J
-import net.twisterrob.cinema.database.Neo4JModule
-import net.twisterrob.cinema.database.services.CinemaServices
+import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
+import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
-import net.twisterrob.test.offsetDateTimeRealistic
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Label.label
-import org.neo4j.harness.ServerControls
-import org.neo4j.harness.TestServerBuilders
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 
+@ExtendWith(ModelIntgTestExtension::class)
 class CinemaIntgTest {
 
-	private lateinit var testServer: ServerControls
-	private lateinit var session: Session
+	private lateinit var fixture: JFixture
 
-	@BeforeEach fun setUp() {
-		testServer = TestServerBuilders.newInProcessBuilder().newServer()
-
-		val dagger = DaggerCinemaIntgTestComponent
-			.builder()
-			.graphDBUri(testServer.boltURI())
-			.build()
-
-		session = dagger.session
-	}
-
-	@AfterEach fun tearDown() {
-		testServer.graph().shutdown()
-	}
-
-	@Test fun `new cinema can be loaded back and contains all data`() {
-		val fixtCinema: Cinema = KFixture {
-			add(validDBData())
-			add(offsetDateTimeRealistic())
-		}()
-		session.save(fixtCinema)
+	@Test fun `new cinema can be loaded back and contains all data`(session: Session) {
+		val fixtCinema: Cinema = fixture.build()
+		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
 
 		val cinemas = session.loadAll<Cinema>(depth = -1)
@@ -54,16 +31,13 @@ class CinemaIntgTest {
 		assertThat(cinemas.elementAt(0), sameBeanAs(fixtCinema))
 	}
 
-	@Test fun `new cinema contains the right node information`() {
-		val fixtCinema: Cinema = KFixture {
-			add(validDBData())
-			add(offsetDateTimeRealistic())
-		}()
-		session.save(fixtCinema)
+	@Test fun `new cinema contains the right node information`(session: Session, graph: GraphDatabaseService) {
+		val fixtCinema: Cinema = fixture.build()
+		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
 
-		testServer.graph().beginTx().use {
-			val cinemas = testServer.graph().allNodes.toList()
+		graph.beginTx().use {
+			val cinemas = graph.allNodes.toList()
 
 			assertThat(cinemas, hasSize(1))
 			val cinema = cinemas.elementAt(0)
@@ -84,18 +58,5 @@ class CinemaIntgTest {
 			assertThat(cinema.allProperties, equalTo(expectedProperties))
 			assertThat(cinema.relationships, emptyIterable())
 		}
-	}
-}
-
-@Component(modules = [Neo4JModule::class])
-@Neo4J
-private interface CinemaIntgTestComponent : CinemaServices {
-
-	val session: Session
-
-	@Component.Builder
-	interface Builder : Neo4JModule.Dependencies<Builder> {
-
-		fun build(): CinemaIntgTestComponent
 	}
 }

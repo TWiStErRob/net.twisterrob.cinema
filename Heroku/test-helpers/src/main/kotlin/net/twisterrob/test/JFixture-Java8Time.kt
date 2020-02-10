@@ -18,7 +18,7 @@ fun offsetDateTimeRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_Y
 	Customisation { fixture ->
 		fixture.customise().lazyInstance(OffsetDateTime::class.java) {
 			val now = System.currentTimeMillis()
-			val millis = KFixture(fixture).range((now - minOffset)..(now + maxOffset))
+			val millis = fixture.buildRange((now - minOffset)..(now + maxOffset))
 			val zone = fixture.create().fromList(*ZoneId.getAvailableZoneIds().toTypedArray())
 			OffsetDateTime.now(Clock.fixed(Instant.ofEpochMilli(millis), ZoneId.of(zone)))
 		}

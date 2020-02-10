@@ -1,6 +1,13 @@
 package net.twisterrob.test
 
+import com.flextrade.jfixture.FluentCustomisation
 import com.flextrade.jfixture.JFixture
+import com.flextrade.jfixture.extensions.CreateExtensions
+
+fun JFixture.applyCustomisation(block: FluentCustomisation.() -> Unit): JFixture {
+	this.customise().apply(block)
+	return this
+}
 
 inline fun <reified T> JFixture.build(): T =
 	this.create(T::class.java)
@@ -8,3 +15,13 @@ inline fun <reified T> JFixture.build(): T =
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> JFixture.buildList(size: Int = 3): List<T> =
 	this.collections().createCollection(List::class.java as Class<List<T>>, T::class.java, size)
+
+inline fun <reified T> JFixture.buildRange(range: ClosedRange<T>): T
+		where T : Number,
+		      T : Comparable<T> =
+	this.create().range(range)
+
+inline fun <reified T> CreateExtensions.range(range: ClosedRange<T>): T
+		where T : Number,
+		      T : Comparable<T> =
+	this.inRange(T::class.java, range.start, range.endInclusive)!!
