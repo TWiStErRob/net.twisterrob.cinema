@@ -10,6 +10,7 @@ import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
@@ -54,6 +55,14 @@ class ViewIntgTest {
 					hasRelationship(user, "ATTENDED", view)
 				)
 			)
+		}
+	}
+
+	@Test fun `empty view fails to save`(session: Session) {
+		val view = View()
+
+		assertThrows<UninitializedPropertyAccessException> {
+			session.save(view, -1)
 		}
 	}
 }

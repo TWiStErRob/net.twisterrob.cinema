@@ -9,6 +9,7 @@ import net.twisterrob.test.emptyIterable
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
@@ -44,6 +45,14 @@ class FilmIntgTest {
 			val film = films.single()
 			assertSameData(fixtFilm, film)
 			assertThat(film.relationships, emptyIterable())
+		}
+	}
+
+	@Test fun `empty film fails to save`(session: Session) {
+		val film = Film()
+
+		assertThrows<UninitializedPropertyAccessException> {
+			session.save(film, -1)
 		}
 	}
 }
