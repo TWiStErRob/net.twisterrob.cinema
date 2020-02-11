@@ -36,7 +36,6 @@ class Cinema : Historical() {
 	@Relationship(type = "AT", direction = Relationship.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
-	override fun toString(): String {
-		return String.format("Cinema(%d, %s)", cineworldID, name)
-	}
+	override fun toString() =
+		"Cinema[$graphId](${cineworldID}, ${name})"
 }

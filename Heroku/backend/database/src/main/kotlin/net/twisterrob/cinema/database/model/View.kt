@@ -35,7 +35,6 @@ class View : BaseNode() {
 	@Relationship(type = "ATTENDED", direction = Relationship.INCOMING)
 	lateinit var userRef: User
 
-	//	@Override public String toString() {
-	//		return String.format("View(%d, %s watched %s at %s)", id, user.name, film.title, cinema.name);
-	//	}
+	override fun toString() =
+		"View[$graphId](${userRef.name} watched ${watchedFilm.title} at ${atCinema.name}"
 }

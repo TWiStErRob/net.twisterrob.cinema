@@ -71,7 +71,6 @@ class Film : Historical() {
 	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
-	override fun toString(): String {
-		return String.format("Film(%d, %s)", cineworldID, title)
-	}
+	override fun toString() =
+		"Film[$graphId](${cineworldID}, ${title})"
 }
