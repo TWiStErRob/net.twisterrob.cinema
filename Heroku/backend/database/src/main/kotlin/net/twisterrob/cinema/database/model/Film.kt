@@ -2,6 +2,7 @@ package net.twisterrob.cinema.database.model
 
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
+import org.neo4j.ogm.annotation.Relationship
 import java.time.OffsetDateTime
 
 @NodeEntity(label = "Film")
@@ -67,9 +68,9 @@ class Film : Historical() {
 	@Property(name = "categories")
 	lateinit var categories: List<String>
 
-	//	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
-	//	private lateinit var _views: MutableSet<View>
-	//	val views: Collection<View> get() = _views
+	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
+	var views: MutableCollection<View> = mutableSetOf()
+
 	override fun toString(): String {
 		return String.format("Film(%d, %s)", cineworldID, title)
 	}

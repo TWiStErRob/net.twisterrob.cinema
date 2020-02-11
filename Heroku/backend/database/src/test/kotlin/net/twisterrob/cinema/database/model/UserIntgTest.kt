@@ -11,9 +11,10 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Label.label
+import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
+import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
 
 @ExtendWith(ModelIntgTestExtension::class)
 class UserIntgTest {
@@ -40,19 +41,23 @@ class UserIntgTest {
 			val users = graph.allNodes.toList()
 
 			assertThat(users, hasSize(1))
-			val user = users.elementAt(0)
-			assertThat(user.labels.toSet(), equalTo(setOf(label("User"))))
-			assertThat(user.id, equalTo(fixtUser.graphId))
-			val expectedProperties = mapOf<String, Any?>(
-				"_created" to fixtUser._created.toString(),
-				"class" to fixtUser.className,
-				"id" to fixtUser.id,
-				"name" to fixtUser.name,
-				"realm" to fixtUser.realm,
-				"email" to fixtUser.email
-			)
-			assertThat(user.allProperties, equalTo(expectedProperties))
+			val user = users.single()
+			assertSameData(fixtUser, user)
 			assertThat(user.relationships, emptyIterable())
 		}
 	}
+}
+
+fun assertSameData(expected: User, actual: Node) {
+	assertThat(actual, hasLabels("User"))
+	assertThat(actual.id, equalTo(expected.graphId))
+	val expectedProperties = mapOf<String, Any?>(
+		"_created" to expected._created.toString(),
+		"class" to expected.className,
+		"id" to expected.id,
+		"name" to expected.name,
+		"realm" to expected.realm,
+		"email" to expected.email
+	)
+	assertThat(actual.allProperties, sameBeanAs(expectedProperties))
 }

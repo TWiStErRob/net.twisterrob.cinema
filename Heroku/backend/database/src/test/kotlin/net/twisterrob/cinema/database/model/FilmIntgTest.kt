@@ -11,9 +11,10 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Label.label
+import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
+import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
 
 @ExtendWith(ModelIntgTestExtension::class)
 class FilmIntgTest {
@@ -40,47 +41,51 @@ class FilmIntgTest {
 			val films = graph.allNodes.toList()
 
 			assertThat(films, hasSize(1))
-			val film = films.elementAt(0)
-			assertThat(film.labels.toSet(), equalTo(setOf(label("Film"))))
-			assertThat(film.id, equalTo(fixtFilm.graphId))
-			val expectedProperties = mapOf<String, Any?>(
-				"_created" to fixtFilm._created.toString(),
-				"_updated" to fixtFilm._updated.toString(),
-				"_deleted" to fixtFilm._deleted.toString(),
-				"class" to fixtFilm.className,
-				"edi" to fixtFilm.edi,
-				"cineworldID" to fixtFilm.cineworldID,
-				"cineworldInternalID" to fixtFilm.cineworldInternalID,
-
-				"title" to fixtFilm.title,
-				"originalTitle" to fixtFilm.originalTitle,
-
-				"advisory" to fixtFilm.advisory,
-				"classification" to fixtFilm.classification,
-				"cert" to fixtFilm.cert,
-				"actors" to fixtFilm.actors,
-				"director" to fixtFilm.director,
-				"imax" to fixtFilm.imax,
-				"3D" to fixtFilm.`3D`,
-
-				"runtime" to fixtFilm.runtime,
-				"weighted" to fixtFilm.weighted,
-
-				"slug" to fixtFilm.slug,
-				"group" to fixtFilm.group,
-				"format" to fixtFilm.format,
-				"still_url" to fixtFilm.still_url,
-				"film_url" to fixtFilm.film_url,
-				"poster_url" to fixtFilm.poster_url,
-				"poster" to fixtFilm.poster,
-				"trailer" to fixtFilm.trailer,
-
-				"release" to fixtFilm.release.toString(),
-
-				"categories" to fixtFilm.categories.toTypedArray()
-			)
-			assertThat(film.allProperties.toSortedMap(), equalTo(expectedProperties.toSortedMap()))
+			val film = films.single()
+			assertSameData(fixtFilm, film)
 			assertThat(film.relationships, emptyIterable())
 		}
 	}
+}
+
+fun assertSameData(expected: Film, actual: Node) {
+	assertThat(actual, hasLabels("Film"))
+	assertThat(actual.id, equalTo(expected.graphId))
+	val expectedProperties = mapOf<String, Any?>(
+		"_created" to expected._created.toString(),
+		"_updated" to expected._updated.toString(),
+		"_deleted" to expected._deleted.toString(),
+		"class" to expected.className,
+		"edi" to expected.edi,
+		"cineworldID" to expected.cineworldID,
+		"cineworldInternalID" to expected.cineworldInternalID,
+
+		"title" to expected.title,
+		"originalTitle" to expected.originalTitle,
+
+		"advisory" to expected.advisory,
+		"classification" to expected.classification,
+		"cert" to expected.cert,
+		"actors" to expected.actors,
+		"director" to expected.director,
+		"imax" to expected.imax,
+		"3D" to expected.`3D`,
+
+		"runtime" to expected.runtime,
+		"weighted" to expected.weighted,
+
+		"slug" to expected.slug,
+		"group" to expected.group,
+		"format" to expected.format,
+		"still_url" to expected.still_url,
+		"film_url" to expected.film_url,
+		"poster_url" to expected.poster_url,
+		"poster" to expected.poster,
+		"trailer" to expected.trailer,
+
+		"release" to expected.release.toString(),
+
+		"categories" to expected.categories.toTypedArray()
+	)
+	assertThat(actual.allProperties, sameBeanAs(expectedProperties))
 }

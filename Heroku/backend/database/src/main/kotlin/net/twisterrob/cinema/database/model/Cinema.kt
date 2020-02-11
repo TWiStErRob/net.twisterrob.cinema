@@ -39,20 +39,4 @@ class Cinema : Historical() {
 	override fun toString(): String {
 		return String.format("Cinema(%d, %s)", cineworldID, name)
 	}
-
-	//	@Relationship(type = "CREATED", direction = Relationship.INCOMING)
-	//	public Advertiser owner;
-	//
-	//	@Convert(InstantConverter.class)
-	//	@Property(name = "created")
-	//	public Instant created;
-	//
-	//	@Relationship(type = "PORTRAYS", direction = Relationship.INCOMING)
-	//	public Set<Image> images = new HashSet<>();
-	//
-	//	@Relationship(type = "SHOWS", direction = Relationship.INCOMING)
-	//	public Set<Video> videos = new HashSet<>();
-	//
-	//	@Convert(value = ExtrasConverter.class)
-	//	public final Map<String, ?> extras = new HashMap<>();
 }

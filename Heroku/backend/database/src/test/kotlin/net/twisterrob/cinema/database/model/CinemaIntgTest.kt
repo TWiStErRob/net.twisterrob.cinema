@@ -11,9 +11,10 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Label.label
+import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
+import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
 
 @ExtendWith(ModelIntgTestExtension::class)
 class CinemaIntgTest {
@@ -40,23 +41,27 @@ class CinemaIntgTest {
 			val cinemas = graph.allNodes.toList()
 
 			assertThat(cinemas, hasSize(1))
-			val cinema = cinemas.elementAt(0)
-			assertThat(cinema.labels.toSet(), equalTo(setOf(label("Cinema"))))
-			assertThat(cinema.id, equalTo(fixtCinema.graphId))
-			val expectedProperties = mapOf(
-				"_created" to fixtCinema._created.toString(),
-				"_updated" to fixtCinema._updated.toString(),
-				"_deleted" to fixtCinema._deleted.toString(),
-				"class" to fixtCinema.className,
-				"cineworldID" to fixtCinema.cineworldID,
-				"name" to fixtCinema.name,
-				"postcode" to fixtCinema.postcode,
-				"address" to fixtCinema.address,
-				"telephone" to fixtCinema.telephone,
-				"cinema_url" to fixtCinema.cinema_url
-			)
-			assertThat(cinema.allProperties, equalTo(expectedProperties))
+			val cinema = cinemas.single()
+			assertSameData(fixtCinema, cinema)
 			assertThat(cinema.relationships, emptyIterable())
 		}
 	}
+}
+
+fun assertSameData(expected: Cinema, actual: Node) {
+	assertThat(actual, hasLabels("Cinema"))
+	assertThat(actual.id, equalTo(expected.graphId))
+	val expectedProperties = mapOf(
+		"_created" to expected._created.toString(),
+		"_updated" to expected._updated.toString(),
+		"_deleted" to expected._deleted.toString(),
+		"class" to expected.className,
+		"cineworldID" to expected.cineworldID,
+		"name" to expected.name,
+		"postcode" to expected.postcode,
+		"address" to expected.address,
+		"telephone" to expected.telephone,
+		"cinema_url" to expected.cinema_url
+	)
+	assertThat(actual.allProperties, sameBeanAs(expectedProperties))
 }
