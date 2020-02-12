@@ -4,8 +4,10 @@ import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
+import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
+import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
@@ -57,9 +59,9 @@ class CinemaIntgTest {
 	}
 }
 
-fun assertSameData(expected: Cinema, actual: Node) {
-	assertThat(actual, hasLabels("Cinema"))
-	assertThat(actual.id, equalTo(expected.graphId))
+fun assertSameData(expected: Cinema, actual: Node) = assertAll {
+	that("labels", actual, hasLabels("Cinema"))
+	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf(
 		"_created" to expected._created.toString(),
 		"_updated" to expected._updated.toString(),
@@ -72,5 +74,5 @@ fun assertSameData(expected: Cinema, actual: Node) {
 		"telephone" to expected.telephone,
 		"cinema_url" to expected.cinema_url
 	)
-	assertThat(actual.allProperties, sameBeanAs(expectedProperties))
+	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
 }

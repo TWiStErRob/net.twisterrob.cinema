@@ -5,7 +5,9 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
+import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.that
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -67,12 +69,12 @@ class ViewIntgTest {
 	}
 }
 
-fun assertSameData(expected: View, actual: Node) {
-	assertThat(actual, hasLabels("View"))
-	assertThat(actual.id, equalTo(expected.graphId))
+fun assertSameData(expected: View, actual: Node) = assertAll {
+	that("labels", actual, hasLabels("View"))
+	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf<String, Any?>(
 		"date" to expected.date.toEpochMilli(),
 		"class" to expected.className
 	)
-	assertThat(actual.allProperties, sameBeanAs(expectedProperties))
+	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
 }
