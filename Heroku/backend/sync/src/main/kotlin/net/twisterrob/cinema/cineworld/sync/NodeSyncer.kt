@@ -42,17 +42,14 @@ class NodeSyncer<TFeed, DB : Historical> @Inject constructor(
 	private fun createNodes(nodesToCreate: Collection<TFeed>, now: OffsetDateTime): List<DB> =
 		nodesToCreate
 			.map { feed ->
-				val db = feed.toEntity()
-				db.setFrom(feed)
-				return@map db
+				return@map feed.toEntity()
 			}
 			.onEach { it._created = now }
 
 	private fun updateNodes(nodesToUpdate: Map<DB, TFeed>, now: OffsetDateTime): List<DB> =
 		nodesToUpdate
 			.map { (db, feed) ->
-				db.setFrom(feed)
-				return@map db
+				return@map db.apply { setFrom(feed) }
 			}
 			.onEach { it._updated = now }
 
