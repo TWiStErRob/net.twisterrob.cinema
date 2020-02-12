@@ -31,33 +31,40 @@ interface SyncAppComponent : CinemaServices {
 class SyncAppModule {
 
 	@Provides
-	fun cinemaEntityFactory(): Creator<Feed.Cinema, Cinema> = fun Feed.Cinema.(): Cinema = Cinema()
+	fun cinemaEntityFactory(updater: Updater<Cinema, Feed.Cinema>): Creator<Feed.Cinema, Cinema> =
+		fun Feed.Cinema.(): Cinema =
+			Cinema().also { updater(it, this) }
 
 	@Provides
-	fun filmEntityFactory(): Creator<Feed.Film, Film> = fun Feed.Film.(): Film = Film()
+	fun filmEntityFactory(updater: Updater<Film, Feed.Film>): Creator<Feed.Film, Film> =
+		fun Feed.Film.(): Film =
+			Film().also { updater(it, this) }
 
 	@Provides
-	fun nowProvider(): () -> OffsetDateTime = { OffsetDateTime.now() }
+	fun nowProvider(): () -> OffsetDateTime =
+		{ OffsetDateTime.now() }
 
 	@Provides
-	fun copyCinemaProperties(): Updater<Cinema, Feed.Cinema> = fun Cinema.(feed) {
-		this.cineworldID = feed.id
-		this.name = feed.name.replace("""^Cineworld """.toRegex(), "")
-		this.postcode = feed.postcode
-		this.address = feed.address
-		this.telephone = feed.phone
-		this.cinema_url = feed.url.toString()
-		// TODO feed.serviceList
-	}
+	fun copyCinemaProperties(): Updater<Cinema, Feed.Cinema> =
+		fun Cinema.(feed) {
+			this.cineworldID = feed.id
+			this.name = feed.name.replace("""^Cineworld """.toRegex(), "")
+			this.postcode = feed.postcode
+			this.address = feed.address
+			this.telephone = feed.phone
+			this.cinema_url = feed.url.toString()
+			// TODO feed.serviceList
+		}
 
 	@Provides
-	fun copyFilmProperties(): Updater<Film, Feed.Film> = fun Film.(feed) {
-		this.edi = feed.id
-		this.title = feed.title
-		this.director = feed.director
-		this.film_url = feed.url.toString()
-		this.poster_url = feed.posterUrl.toString()
-		this.runtime = feed.runningTime.toLong()
-		this.trailer = feed.trailerUrl?.toString()
-	}
+	fun copyFilmProperties(): Updater<Film, Feed.Film> =
+		fun Film.(feed) {
+			this.edi = feed.id
+			this.title = feed.title
+			this.director = feed.director
+			this.film_url = feed.url.toString()
+			this.poster_url = feed.posterUrl.toString()
+			this.runtime = feed.runningTime.toLong()
+			this.trailer = feed.trailerUrl?.toString()
+		}
 }
