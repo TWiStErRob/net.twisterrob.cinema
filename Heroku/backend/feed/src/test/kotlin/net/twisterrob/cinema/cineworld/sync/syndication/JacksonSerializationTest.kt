@@ -16,11 +16,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import net.twisterrob.test.assertAll
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.fail
 import java.net.URI
 import java.time.LocalDate
@@ -335,8 +335,8 @@ private fun jackson(
 	}
 
 private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
-	assertAll(
-		{
+	assertAll {
+		o {
 			val actualXml: String = try {
 				sut.writeValueAsString(expectedData)
 			} catch (e: Throwable) {
@@ -345,8 +345,8 @@ private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T
 			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
 				"Serialized XML doesn't match, input: $expectedData"
 			}
-		},
-		{
+		}
+		o {
 			val actualData: T = try {
 				sut.readValue(expectedXml)
 			} catch (e: Throwable) {
@@ -355,8 +355,8 @@ private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T
 			assertEquals(expectedData, actualData) {
 				"Deserialized data doesn't match, input: $expectedXml"
 			}
-		},
-		{
+		}
+		o {
 			val actualXml: String = sut.writeValueAsString(expectedData)
 			val reRead: T = try {
 				sut.readValue(actualXml)
@@ -367,7 +367,7 @@ private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T
 				"Re-read data don't match, input: $expectedData -> $actualXml"
 			}
 		}
-	)
+	}
 
 	return sut.readValue(expectedXml)
 }

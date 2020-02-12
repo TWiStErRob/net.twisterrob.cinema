@@ -6,6 +6,7 @@ plugins {
 dependencies {
 	implementation Deps.Kotlin.core
 
+	compileOnly Deps.JUnit.jupiter
 	compileOnly Deps.JFixture.jfixture
 	compileOnly Deps.Hamcrest.core
 	compileOnly Deps.Mockito.core3
