@@ -13,8 +13,8 @@ inline fun <reified T> JFixture.build(): T =
 	this.create(T::class.java)
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T> JFixture.buildList(size: Int = 3): List<T> =
-	this.collections().createCollection(List::class.java as Class<List<T>>, T::class.java, size)
+inline fun <reified T> JFixture.buildList(size: Int = 3): MutableList<T> =
+	this.collections().createCollection(MutableList::class.java as Class<MutableList<T>>, T::class.java, size)
 
 inline fun <reified T> JFixture.buildRange(range: ClosedRange<T>): T
 		where T : Number,
