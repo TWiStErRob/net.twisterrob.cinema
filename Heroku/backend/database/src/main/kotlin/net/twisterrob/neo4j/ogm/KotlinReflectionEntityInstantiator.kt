@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.database
+package net.twisterrob.neo4j.ogm
 
 import org.neo4j.ogm.exception.core.MappingException
 import org.neo4j.ogm.session.EntityInstantiator

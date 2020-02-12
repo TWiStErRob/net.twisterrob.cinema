@@ -8,6 +8,6 @@
  * <p>
  * Property conversion is done after instantiation so {@link org.neo4j.ogm.annotation.typeconversion.Convert}
  * can only be used on class body {@code vars}, not on primary constructor ones.
- * {@link net.twisterrob.cinema.database.KotlinReflectionEntityInstantiator} will fail with type mismatch otherwise.
+ * {@link net.twisterrob.neo4j.ogm.KotlinReflectionEntityInstantiator} will fail with type mismatch otherwise.
  */
 package net.twisterrob.cinema.database.model;
