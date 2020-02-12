@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.flextrade.jfixture.JFixture
+import net.twisterrob.test.build
 import net.twisterrob.test.get
 import net.twisterrob.test.set
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -36,16 +37,16 @@ class FeedIntgTest {
 	@Disabled("Too much to ask")
 	@Test fun `serialization is reversible`() {
 		val fixture = JFixture()
-		val fixtFeed = fixture.create(Feed::class.java).apply {
+		val fixtFeed = fixture.build<Feed>().apply {
 			cinemas.forEach { it["performances"] = emptyList<Feed.Screening>() }
 			films.forEach { it["performances"] = emptyList<Feed.Screening>() }
 			this["performances"] = (1..3).map {
 				val performance = Feed.Screening(
 					film = films.random(),
 					cinema = cinemas.random(),
-					url = fixture.create(URI::class.java),
+					url = fixture.build(),
 					attributes = SCREENING_TYPES.random().code,
-					time = fixture.create(OffsetDateTime::class.java)
+					time = fixture.build()
 				)
 				performance.film.add("performances", performance)
 				performance.cinema.add("performances", performance)
