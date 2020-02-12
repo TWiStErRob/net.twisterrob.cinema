@@ -1,8 +1,11 @@
 package net.twisterrob.cinema.database.model
 
+import net.twisterrob.neo4j.ogm.URIConverter
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
+import org.neo4j.ogm.annotation.typeconversion.Convert
+import java.net.URI
 import java.time.OffsetDateTime
 
 @NodeEntity(label = "Film")
@@ -42,25 +45,37 @@ class Film : Historical() {
 
 	@Property(name = "runtime")
 	var runtime: Long = 0
+
 	@Property(name = "weighted")
 	var weighted: Long = 0
 
 	@Property(name = "slug")
 	lateinit var slug: String
+
 	@Property(name = "group")
 	var group: Long = 0
+
 	@Property(name = "format")
 	lateinit var format: String
+
+	@Convert(URIConverter::class)
 	@Property(name = "still_url")
-	var still_url: String? = null
+	var still_url: URI? = null
+
+	@Convert(URIConverter::class)
 	@Property(name = "film_url")
-	lateinit var film_url: String
+	lateinit var film_url: URI
+
+	@Convert(URIConverter::class)
 	@Property(name = "poster_url")
-	lateinit var poster_url: String
+	lateinit var poster_url: URI
+
 	@Property(name = "poster")
 	var poster: String? = null
+
+	@Convert(URIConverter::class)
 	@Property(name = "trailer")
-	var trailer: String? = null
+	var trailer: URI? = null
 
 	@Property(name = "release")
 	lateinit var release: OffsetDateTime

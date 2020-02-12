@@ -50,7 +50,7 @@ class CinemaSyncUpdaterTest {
 			that("postcode", targetDB.postcode, equalTo(fixtFeed.postcode))
 			that("address", targetDB.address, equalTo(fixtFeed.address))
 			that("telephone", targetDB.telephone, equalTo(fixtFeed.phone))
-			that("cinema_url", targetDB.cinema_url, equalTo(fixtFeed.url.toString()))
+			that("cinema_url", targetDB.cinema_url, equalTo(fixtFeed.url))
 			// untested
 			that("users", targetDB.users, equalTo(referenceDB.users))
 			that("views", targetDB.views, equalTo(referenceDB.views))

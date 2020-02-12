@@ -43,7 +43,7 @@ class CinemaSyncCreatorTest {
 			that("postcode", actualCinema.postcode, equalTo(fixtCinema.postcode))
 			that("address", actualCinema.address, equalTo(fixtCinema.address))
 			that("telephone", actualCinema.telephone, equalTo(fixtCinema.phone))
-			that("cinema_url", actualCinema.cinema_url, equalTo(fixtCinema.url.toString()))
+			that("cinema_url", actualCinema.cinema_url, equalTo(fixtCinema.url))
 		}
 	}
 }

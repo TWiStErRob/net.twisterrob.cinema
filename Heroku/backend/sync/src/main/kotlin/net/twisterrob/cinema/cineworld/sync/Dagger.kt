@@ -52,7 +52,7 @@ class SyncAppModule {
 			this.postcode = feed.postcode
 			this.address = feed.address
 			this.telephone = feed.phone
-			this.cinema_url = feed.url.toString()
+			this.cinema_url = feed.url
 			// TODO feed.serviceList
 		}
 
@@ -62,9 +62,9 @@ class SyncAppModule {
 			this.edi = feed.id
 			this.title = feed.title
 			this.director = feed.director
-			this.film_url = feed.url.toString()
-			this.poster_url = feed.posterUrl.toString()
+			this.film_url = feed.url
+			this.poster_url = feed.posterUrl
 			this.runtime = feed.runningTime.toLong()
-			this.trailer = feed.trailerUrl?.toString()
+			this.trailer = feed.trailerUrl
 		}
 }

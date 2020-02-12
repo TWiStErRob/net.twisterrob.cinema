@@ -1,8 +1,11 @@
 package net.twisterrob.cinema.database.model
 
+import net.twisterrob.neo4j.ogm.URIConverter
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
+import org.neo4j.ogm.annotation.typeconversion.Convert
+import java.net.URI
 
 @NodeEntity(label = "Cinema")
 class Cinema : Historical() {
@@ -27,8 +30,9 @@ class Cinema : Historical() {
 	@Property(name = "telephone")
 	var telephone: String? = null
 
+	@Convert(URIConverter::class)
 	@Property(name = "cinema_url")
-	lateinit var cinema_url: String
+	lateinit var cinema_url: URI
 
 	@Relationship(type = "GOESTO", direction = Relationship.INCOMING)
 	var users: MutableCollection<User> = mutableSetOf()
