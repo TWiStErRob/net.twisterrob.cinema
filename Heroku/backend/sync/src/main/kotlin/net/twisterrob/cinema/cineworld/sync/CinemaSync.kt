@@ -17,17 +17,19 @@ class CinemaSync @Inject constructor(
 ) {
 
 	fun sync() {
+		val now = now()
 		val sync = calculator.calculate(
-			now = now(),
+			now = now,
 			feed = feedService.getWeeklyFilmTimes(),
 			dbCinemas = dbService.findAll()
 		)
 		log.info(
-			"Inserting {} new, updating {} existing, deleting {} existing ({} already deleted) {}s for {}.",
-			sync.insert.size, sync.update.size, sync.delete.size, sync.alreadyDeleted.size, "Cinema", now
+			"Inserting {} new, updating {} existing ({} restored), deleting {} existing ({} already deleted) {}s for {}.",
+			sync.insert.size, sync.update.size, sync.restore.size, sync.delete.size, sync.alreadyDeleted.size,
+			"Cinema",
+			now
 		)
 		log.debug(sync.toString())
-		// re `justDeleted`: no actual delete, just added _deleted property
-		dbService.save(sync.insert + sync.update + sync.delete)
+		dbService.save(sync.insert + sync.update + sync.delete + sync.restore)
 	}
 }

@@ -13,8 +13,7 @@ import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasItems
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
@@ -33,7 +32,7 @@ class CinemaSyncTest {
 		sut = CinemaSync(calculator, feedService, dbService, ::now)
 	}
 
-	@Test fun `no cinemas in feed or database result in no data synced`() {
+	@Test fun `all changed cinemas are synced properly`() {
 		fixture.applyCustomisation {
 			add(syncResults<DBCinema>())
 			add(validDBData())
@@ -54,10 +53,8 @@ class CinemaSyncTest {
 		argumentCaptor<List<DBCinema>> {
 			verify(dbService).save(capture())
 			val cinemas = allValues.single()
-			assertThat(cinemas, hasSize(fixtResult.insert.size + fixtResult.update.size + fixtResult.delete.size))
-			assertThat(cinemas, hasItems(*fixtResult.insert.toTypedArray()))
-			assertThat(cinemas, hasItems(*fixtResult.update.toTypedArray()))
-			assertThat(cinemas, hasItems(*fixtResult.delete.toTypedArray()))
+			val persistedCinemas = fixtResult.insert + fixtResult.delete + fixtResult.update + fixtResult.restore
+			assertThat(cinemas, containsInAnyOrder(*persistedCinemas.toTypedArray()))
 		}
 	}
 }
