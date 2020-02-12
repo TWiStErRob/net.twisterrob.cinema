@@ -4,6 +4,10 @@ package deps
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.add
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.exclude
+import org.gradle.kotlin.dsl.named
 
 private object Versions {
 	const val okhttp3 = "3.10.0"
@@ -16,6 +20,16 @@ object OkHttp3 {
 	const val interceptor_logging = "com.squareup.okhttp3:logging-interceptor:${version}"
 	/** `exclude module: 'junit'` */
 	const val mockwebserver = "com.squareup.okhttp3:mockwebserver:${version}"
+
+	fun default(project: Project) {
+		project.dependencies {
+			add("implementation", core)
+			add("implementation", interceptor_logging)
+			add("testImplementation", mockwebserver) {
+				exclude(module = "junit")
+			}
+		}
+	}
 }
 
 object Retrofit2 {
@@ -38,6 +52,16 @@ object Retrofit2 {
 	/** `exclude module: 'rxjava'` */
 	const val adapter_rxjava2 = "com.squareup.retrofit2:adapter-rxjava2:${version}"
 	const val adapter_guava = "com.squareup.retrofit2:adapter-guava:${version}"
+
+	fun default(project: Project) {
+		project.dependencies {
+			add("implementation", core) {
+				exclude(module = "okhttp")
+			}
+			add("implementation", converter_scalars)
+			add("testImplementation", mock)
+		}
+	}
 }
 
 object RxJava2 {
@@ -59,10 +83,12 @@ object JUnit {
 	const val vintageEngine = "org.junit.vintage:junit-vintage-engine:${versionJupiter}"
 
 	fun junit5(project: Project) {
-		project.dependencies.add("testImplementation", jupiter)
-		project.dependencies.add("testRuntimeOnly", platform)
-		project.dependencies.add("testRuntimeOnly", jupiterEngine)
-		project.tasks.named("test", Test::class.java).configure { it.useJUnitPlatform() }
+		project.dependencies {
+			add("testImplementation", jupiter)
+			add("testRuntimeOnly", platform)
+			add("testRuntimeOnly", jupiterEngine)
+		}
+		project.tasks.named<Test>("test").configure { useJUnitPlatform() }
 	}
 }
 

@@ -21,17 +21,6 @@ dependencies {
 }
 
 dependencies { // Network
-	implementation(Deps.Retrofit2.core) {
-		exclude module: 'okhttp'
-	}
-	implementation Deps.Retrofit2.converter_scalars
-	testImplementation Deps.Retrofit2.mock
-
-	implementation Deps.OkHttp3.core
-	implementation Deps.OkHttp3.interceptor_logging
-	testImplementation(Deps.OkHttp3.mockwebserver) {
-		exclude module: 'junit'
-	}
 }
 
 dependencies { // Logging
