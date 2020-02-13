@@ -1,0 +1,57 @@
+plugins {
+	id("java")
+	id("java-test-fixtures")
+	id("org.jetbrains.kotlin.jvm")
+	id("org.jetbrains.kotlin.kapt")
+}
+
+dependencies {
+	implementation(project(":backend:database"))
+	implementation(project(":backend:feed"))
+
+	implementation(Deps.Kotlin.core)
+	runtimeOnly(Deps.Ktor.client.engine_okhttp)
+
+
+	implementation(Deps.Dagger2.core)
+	kapt(Deps.Dagger2.apt)
+
+	implementation("com.google.code.findbugs:jsr305:3.0.2")
+}
+
+// Logging
+dependencies {
+	implementation(Deps.SLF4J.core)
+	runtimeOnly(Deps.Log4J2.api)
+	runtimeOnly(Deps.Log4J2.core)
+	runtimeOnly(Deps.Log4J2.slf4j)
+}
+
+// Test
+dependencies {
+	Deps.JUnit.junit5(project)
+	testImplementation(Deps.JFixture.jfixture)
+	testImplementation(Deps.Hamcrest.core)
+	testImplementation(Deps.Hamcrest.shazamcrest) {
+		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
+		// Except for ComparisonFailure, which is provided by :test-helpers.
+		exclude(group = "junit", module = "junit")
+	}
+	testImplementation(Deps.Mockito.core3Inline)
+	testImplementation(Deps.Mockito.kotlin)
+	testImplementation(project(":test-helpers"))
+	testImplementation(testFixtures(project(":backend:database")))
+
+	testImplementation(Deps.Jackson.module_kotlin)
+	testImplementation(Deps.Jackson.datatype_java8)
+	testImplementation(Deps.Neo4JOGM.harness)
+	kaptTest(Deps.Dagger2.apt)
+
+	testFixturesImplementation(project(":test-helpers"))
+	testFixturesImplementation(Deps.Kotlin.core)
+	testFixturesImplementation(Deps.JFixture.jfixture)
+}
+
+configurations.all {
+	//resolutionStrategy.failOnVersionConflict()
+}
