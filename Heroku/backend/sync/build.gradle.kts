@@ -15,8 +15,6 @@ dependencies {
 
 	implementation(Deps.Dagger2.core)
 	kapt(Deps.Dagger2.apt)
-
-	implementation("com.google.code.findbugs:jsr305:3.0.2")
 }
 
 // Logging
