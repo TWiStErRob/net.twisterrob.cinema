@@ -4,18 +4,22 @@ plugins {
 
 val topProject = this.project
 subprojects {
-	val subproject = this@subprojects
 	plugins.withType<JavaPlugin> {
-		val copyLoggingResources = subproject.tasks.register<Copy>("copyLoggingResources") {
-			this.from(topProject.file("config/log4j2.xml"))
-			this.into(subproject.sourceSets["main"].resources.srcDirs.first())
+		this@subprojects.tasks {
+			val copyLoggingResources = register<Copy>("copyLoggingResources") {
+				from(topProject.file("config/log4j2.xml"))
+				into(this@subprojects.sourceSets["main"].resources.srcDirs.first())
+			}
+			"processResources" {
+				dependsOn(copyLoggingResources)
+			}
+			val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
+				from(topProject.file("config/log4j2.xml"))
+				into(this@subprojects.sourceSets["test"].resources.srcDirs.first())
+			}
+			"processTestResources"{
+				dependsOn(copyLoggingTestResources)
+			}
 		}
-		subproject.tasks.named("processResources").configure { dependsOn(copyLoggingResources) }
-
-		val copyLoggingTestResources = subproject.tasks.register<Copy>("copyLoggingTestResources") {
-			this.from(topProject.file("config/log4j2.xml"))
-			this.into(subproject.sourceSets["test"].resources.srcDirs.first())
-		}
-		subproject.tasks.named("processTestResources").configure { dependsOn(copyLoggingTestResources) }
 	}
 }
