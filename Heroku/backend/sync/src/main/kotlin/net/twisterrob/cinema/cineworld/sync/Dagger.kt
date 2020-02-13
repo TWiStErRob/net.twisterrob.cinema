@@ -1,9 +1,13 @@
 package net.twisterrob.cinema.cineworld.sync
 
+import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
+import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
+import net.twisterrob.cinema.cineworld.sync.syndication.FeedServiceNetwork
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
@@ -27,7 +31,7 @@ interface SyncAppComponent : CinemaServices {
 	}
 }
 
-@Module
+@Module(includes = [SyncAppModule.Bindings::class])
 class SyncAppModule {
 
 	@Provides
@@ -67,4 +71,14 @@ class SyncAppModule {
 			this.runtime = feed.runningTime.toLong()
 			this.trailer = feed.trailerUrl
 		}
+
+	@Provides
+	fun httpClient(): HttpClient = HttpClient()
+
+	@Module
+	interface Bindings {
+
+		@Binds
+		fun bindFeedService(impl: FeedServiceNetwork): FeedService
+	}
 }

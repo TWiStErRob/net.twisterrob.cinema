@@ -1,0 +1,57 @@
+package net.twisterrob.cinema.cineworld.sync.syndication
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.ktor.client.HttpClient
+import io.ktor.client.call.TypeInfo
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.JsonSerializer
+import io.ktor.client.request.get
+import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.content.OutgoingContent
+import io.ktor.http.content.TextContent
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.readText
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+
+@UseExperimental(KtorExperimentalAPI::class)
+class FeedServiceNetwork @Inject constructor(
+	client: HttpClient
+) : FeedService {
+
+	private val client = client.config {
+		install(JsonFeature) {
+			// Poor man's XmlFeature
+			acceptContentTypes = listOf(ContentType.Application.Xml)
+			serializer = JacksonXmlSerializer(feedReader())
+		}
+	}
+
+	override fun getWeeklyFilmTimes(): Feed =
+		getUKWeeklyFilmTimes() + getIrelandWeeklyFilmTimes()
+
+	private fun getUKWeeklyFilmTimes(): Feed = runBlocking {
+		client.get<Feed> {
+			url("https://www.cineworld.co.uk/syndication/weekly_film_times.xml")
+		}
+	}
+
+	private fun getIrelandWeeklyFilmTimes(): Feed = runBlocking {
+		client.get<Feed> {
+			url("https://www.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
+		}
+	}
+}
+
+private class JacksonXmlSerializer(private val backend: ObjectMapper) : JsonSerializer {
+	override fun read(type: TypeInfo, body: Input): Any =
+		backend.readValue(body.readText(), backend.typeFactory.constructType(type.reifiedType))
+
+	override fun write(data: Any, contentType: ContentType): OutgoingContent =
+		TextContent(backend.writeValueAsString(data), contentType)
+
+	override fun write(data: Any): OutgoingContent =
+		write(data, ContentType.Application.Xml)
+}

@@ -21,6 +21,7 @@ dependencies {
 }
 
 dependencies { // Network
+	Deps.Ktor.client.default(project)
 }
 
 dependencies { // Logging

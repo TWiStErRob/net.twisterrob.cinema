@@ -8,6 +8,7 @@ import org.gradle.kotlin.dsl.add
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.repositories
 
 private object Versions {
 	const val okhttp3 = "3.10.0"
@@ -125,6 +126,7 @@ object Kotlin {
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect"
 	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
+	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3"
 }
 
 /**
@@ -132,10 +134,49 @@ object Kotlin {
  * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
  */
 object Ktor {
-	const val version = "0.9.3"
+
+	const val version = "1.3.1"
 
 	const val core = "io.ktor:ktor-server-core:${version}"
 	const val netty = "io.ktor:ktor-server-netty:${version}"
+	const val html = "io.ktor:ktor-html-builder:${version}"
+	const val freemarker = "io.ktor:ktor-freemarker:${version}"
+
+	val client = _client // hack for Groovy
+
+	object _client {
+		const val client = "io.ktor:ktor-client:${version}"
+		const val core_jvm = "io.ktor:ktor-client-core-jvm:${version}"
+		const val engine_okhttp = "io.ktor:ktor-client-okhttp:${version}"
+
+		const val json = "io.ktor:ktor-client-json:${version}"
+		const val json_jvm = "io.ktor:ktor-client-json-jvm:${version}"
+		const val gson = "io.ktor:ktor-client-gson:${version}"
+		const val jackson = "io.ktor:ktor-client-jackson:${version}"
+		const val kotlinx_serialization = "io.ktor:ktor-client-serialization-jvm:${version}"
+
+		const val mock = "io.ktor:ktor-client-mock:${version}"
+		const val mock_jvm = "io.ktor:ktor-client-mock-jvm:${version}"
+		const val mock_js = "io.ktor:ktor-client-mock-js:${version}"
+		const val mock_native = "io.ktor:ktor-client-mock-native:${version}"
+
+		fun default(project: Project) {
+			project.dependencies {
+				add("api", core_jvm)
+				add("implementation", client)
+				add("implementation", jackson)
+				add("testImplementation", mock_jvm)
+				add("testRuntimeOnly", engine_okhttp)
+				//add("implementation", Kotlin.coroutines)
+			}
+		}
+	}
+
+	fun repo(project: Project) {
+		project.repositories {
+			maven { name = "ktor"; setUrl("https://dl.bintray.com/kotlin/ktor") }
+		}
+	}
 }
 
 object SLF4J {

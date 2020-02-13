@@ -5,5 +5,5 @@ fun main(args: Array<String>) {
 		.builder()
 		.graphDBUri(/* default argument */)
 		.build()
-	dagger.filmSync.sync()
+	dagger.cinemaSync.sync()
 }

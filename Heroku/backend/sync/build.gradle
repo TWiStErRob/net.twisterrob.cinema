@@ -10,6 +10,8 @@ dependencies {
 	implementation project(':backend:feed')
 
 	implementation Deps.Kotlin.core
+	runtimeOnly Deps.Ktor.client.engine_okhttp
+
 
 	implementation Deps.Dagger2.core
 	kapt Deps.Dagger2.apt
