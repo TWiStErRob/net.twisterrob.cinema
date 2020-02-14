@@ -1,0 +1,5 @@
+include(":backend:sync")
+include(":backend:feed")
+include(":backend:database")
+
+include(":test-helpers")
