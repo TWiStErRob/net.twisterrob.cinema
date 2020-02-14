@@ -8,6 +8,7 @@ import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.services.CinemaServices
+import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.set
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
@@ -16,10 +17,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.neo4j.harness.ServerControls
 import org.neo4j.harness.TestServerBuilders
-import javax.inject.Singleton
 import kotlin.streams.toList
 
+@TagIntegration
 class CinemaSyncIntgTest {
+
 	private lateinit var testServer: ServerControls
 
 	private val feedService: FeedService = mock()

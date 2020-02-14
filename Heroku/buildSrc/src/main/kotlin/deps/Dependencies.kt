@@ -3,11 +3,9 @@
 package deps
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.add
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
-import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.repositories
 
 private object Versions {
@@ -89,7 +87,7 @@ object JUnit {
 			add("testRuntimeOnly", platform)
 			add("testRuntimeOnly", jupiterEngine)
 		}
-		project.tasks.named<Test>("test").configure { useJUnitPlatform() }
+		//project.tasks.named<Test>("test").configure { useJUnitPlatform() }
 	}
 }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.GENRES
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.SCREENING_TYPES
+import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.get
 import net.twisterrob.test.set
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@TagIntegration
 class FeedIntgTest {
 
 	private fun loadFeed(fileName: String): Feed =

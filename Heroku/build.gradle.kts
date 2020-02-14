@@ -29,6 +29,45 @@ allprojects {
 	plugins.withId("java") {
 		tasks.withType<Test> {
 			maxHeapSize = "512M"
+			//afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+			//	logger.quiet("Executing test ${descriptor.className}.${descriptor.name} with result: ${result.resultType}")
+			//}))
+		}
+
+		// JUnit 5 Tag setup, see JUnit5Tags.kt
+		@Suppress("UnstableApiUsage")
+		this@allprojects.tasks {
+			val test = "test"(Test::class) {
+				useJUnitPlatform {
+					excludeTags("functional", "integration")
+				}
+			}
+			val functionalTest = register<Test>("functionalTest") {
+				useJUnitPlatform {
+					includeTags("functional")
+				}
+				shouldRunAfter(test)
+			}
+			val integrationTest = register<Test>("integrationTest") {
+				maxParallelForks = 2
+				useJUnitPlatform {
+					includeTags("integration")
+					excludeTags("external")
+				}
+				shouldRunAfter(test, functionalTest)
+			}
+			val integrationExternalTest = register<Test>("integrationExternalTest") {
+				useJUnitPlatform {
+					includeTags("integration & external")
+				}
+				shouldRunAfter(test, functionalTest, integrationTest)
+			}
+			"check" {
+				dependsOn(functionalTest)
+				dependsOn(integrationTest)
+				// Don't want to run it automatically, ever.
+				setDependsOn(dependsOn - integrationExternalTest)
+			}
 		}
 	}
 }
