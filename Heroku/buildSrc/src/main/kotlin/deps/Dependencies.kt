@@ -1,4 +1,9 @@
-@file:Suppress("unused", "RemoveCurlyBracesFromTemplate", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+	"unused", // these will be used from build.gradle files
+	"MemberVisibilityCanBePrivate", // these will be used from build.gradle files
+	"ClassName", // object _foo, val foo = _foo, object foo are OK
+	"RemoveCurlyBracesFromTemplate" // want to have clean separation
+)
 
 package deps
 
@@ -135,12 +140,10 @@ object Ktor {
 
 	const val version = "1.3.1"
 
-	const val core = "io.ktor:ktor-server-core:${version}"
-	const val netty = "io.ktor:ktor-server-netty:${version}"
 	const val html = "io.ktor:ktor-html-builder:${version}"
 	const val freemarker = "io.ktor:ktor-freemarker:${version}"
 
-	val client = _client // hack for Groovy
+	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
 	object _client {
 		const val client = "io.ktor:ktor-client:${version}"
@@ -166,6 +169,30 @@ object Ktor {
 				add("testImplementation", mock_jvm)
 				add("testRuntimeOnly", engine_okhttp)
 				//add("implementation", Kotlin.coroutines)
+			}
+		}
+	}
+
+	val server = _server // hack for "Nested object '*' accessed via instance reference"
+
+	object _server {
+		const val core = "io.ktor:ktor-server-core:${version}"
+		const val test = "io.ktor:ktor-server-tests:${version}"
+
+		object engine {
+			const val netty = "io.ktor:ktor-server-netty:${version}"
+		}
+
+		object content {
+			const val jackson = "io.ktor:ktor-jackson:${version}"
+		}
+
+		fun default(project: Project) {
+			project.dependencies {
+				add("implementation", core)
+				add("implementation", engine.netty)
+				add("implementation", content.jackson)
+				add("testImplementation", test)
 			}
 		}
 	}
