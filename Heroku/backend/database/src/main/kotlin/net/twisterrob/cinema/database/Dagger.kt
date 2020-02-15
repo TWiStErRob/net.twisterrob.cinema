@@ -27,6 +27,9 @@ private val LOG = LoggerFactory.getLogger(Neo4JModule::class.java)
 @Scope
 annotation class Neo4J
 
+/**
+ * @see Neo4JModule.Dependencies when using this module.
+ */
 @Module
 @Suppress("RedundantEmptyInitializerBlock")
 object Neo4JModule {
@@ -36,8 +39,21 @@ object Neo4JModule {
 		//nonapi.io.github.classgraph.utils.LogNode.logInRealtime(true)
 	}
 
+	/**
+	 * Inherit this from [dagger.Component.Builder] for the component to get a consistent dependency setup.
+	 *
+	 * @param Builder actual type of the [dagger.Component.Builder]
+	 */
 	interface Dependencies<Builder> {
-		fun graphDBUri(@BindsInstance @Named(GRAPH_DB) uri: URI = URI.create(System.getenv()["NEO4J_URL"] as String)): Builder
+
+		/**
+		 * For most cases just call this method without any argument, the default will work.
+		 */
+		@BindsInstance
+		fun graphDBUri(
+			@Named(GRAPH_DB) uri: URI =
+				URI.create(System.getenv()["NEO4J_URL"] as String)
+		): Builder
 	}
 
 	private const val GRAPH_DB = "graphDB"
@@ -47,6 +63,7 @@ object Neo4JModule {
 		User::class,
 		View::class
 	)
+
 	/**
 	 * Need to include super-classes explicitly, otherwise they don't get processed by DomainInfo.
 	 */
