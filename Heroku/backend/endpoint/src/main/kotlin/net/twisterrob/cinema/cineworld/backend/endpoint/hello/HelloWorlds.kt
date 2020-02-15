@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.cineworld.backend.endpoint
+package net.twisterrob.cinema.cineworld.backend.endpoint.hello
 
 import dagger.Binds
 import dagger.Module

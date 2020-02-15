@@ -4,7 +4,7 @@ import dagger.BindsInstance
 import dagger.Component
 import io.ktor.application.Application
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteControllerRegistrar
-import net.twisterrob.cinema.cineworld.backend.endpoint.HelloWorlds
+import net.twisterrob.cinema.cineworld.backend.endpoint.hello.HelloWorlds
 import javax.inject.Singleton
 
 @Component(
