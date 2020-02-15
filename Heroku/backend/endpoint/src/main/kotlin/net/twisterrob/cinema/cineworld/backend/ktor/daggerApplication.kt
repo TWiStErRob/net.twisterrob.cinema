@@ -12,6 +12,7 @@ fun Application.daggerApplication() = daggerApplication(DaggerApplicationCompone
 
 internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application.daggerApplication(
 	createComponentBuilder: () -> DaggerComponentBuilder,
+	componentReady: (ApplicationComponent) -> Unit = { },
 	initComponent: (DaggerComponentBuilder) -> Unit = { }
 ) {
 	val builder: DaggerComponentBuilder = createComponentBuilder()
@@ -19,6 +20,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	builder.graphDBUri()
 	initComponent(builder)
 	val dagger = builder.build()
+	componentReady(dagger)
 	this.dagger = dagger
 
 	dagger.controllers.register()

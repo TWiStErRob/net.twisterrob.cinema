@@ -13,16 +13,18 @@ import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
-import net.twisterrob.cinema.cineworld.backend.ktor.ApplicationAttributes.dagger
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @TagFunctional
 class CinemasFuncTest {
+
+	@Inject lateinit var mockRepository: CinemaRepository
 
 	@Test fun `list all cinemas`() = cinemasEndpointTest {
 		val fixtCinemas = listOf(
@@ -51,17 +53,20 @@ class CinemasFuncTest {
 		verify(mockRepository).getActiveCinemas()
 		verifyNoMoreInteractions(mockRepository)
 	}
-}
 
-private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
-	endpointTest(
-		test = test,
-		daggerApp = { daggerApplication(DaggerCinemasFuncTestComponent::builder) { it.cinemas(mock()) } }
-	)
+	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
+		endpointTest(
+			test = test,
+			daggerApp = {
+				daggerApplication(
+					DaggerCinemasFuncTestComponent::builder,
+					initComponent = { it.cinemas(mock()) },
+					componentReady = { (it as CinemasFuncTestComponent).inject(this@CinemasFuncTest) }
+				)
+			}
+		)
+	}
 }
-
-private val TestApplicationEngine.mockRepository
-	get() = (application.dagger as CinemasFuncTestComponent).repository
 
 @Component(
 	modules = [
@@ -71,7 +76,7 @@ private val TestApplicationEngine.mockRepository
 @Singleton
 private interface CinemasFuncTestComponent : ApplicationComponent {
 
-	val repository: CinemaRepository
+	fun inject(test: CinemasFuncTest)
 
 	@Component.Builder
 	interface Builder : ApplicationComponent.Builder {
