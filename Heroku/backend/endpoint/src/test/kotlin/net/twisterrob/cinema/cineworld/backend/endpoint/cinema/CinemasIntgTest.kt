@@ -19,6 +19,7 @@ import net.twisterrob.test.TagIntegration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import javax.inject.Singleton
 
 @TagIntegration
@@ -44,9 +45,10 @@ class CinemasIntgTest {
 					"name": "Fake Cinema 2"
 				}
 			]
-			""".trimIndent(),
+			""",
 			call.response.content,
-			true
+			JSONCompareMode.STRICT
+
 		)
 		verify(mockService).findAll()
 		verifyNoMoreInteractions(mockService)

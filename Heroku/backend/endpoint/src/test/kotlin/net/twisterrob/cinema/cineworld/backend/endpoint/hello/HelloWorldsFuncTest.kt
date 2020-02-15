@@ -6,6 +6,8 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 
 @TagFunctional
 class HelloWorldsFuncTest {
@@ -20,13 +22,14 @@ class HelloWorldsFuncTest {
 	@Test fun `hello json`() = endpointTest {
 		handleRequest { method = HttpMethod.Get; uri = "/resp" }.apply {
 			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals(
+			JSONAssert.assertEquals(
 				"""
 				{
 				  "hello" : "world"
 				}
-				""".trimIndent(),
-				response.content
+				""",
+				response.content,
+				JSONCompareMode.STRICT
 			)
 		}
 	}

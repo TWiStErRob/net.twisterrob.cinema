@@ -18,6 +18,7 @@ import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,9 +47,9 @@ class CinemasFuncTest {
 					"name": "Fake Cinema 2"
 				}
 			]
-			""".trimIndent(),
+			""",
 			call.response.content,
-			true
+			JSONCompareMode.STRICT
 		)
 		verify(mockRepository).getActiveCinemas()
 		verifyNoMoreInteractions(mockRepository)
