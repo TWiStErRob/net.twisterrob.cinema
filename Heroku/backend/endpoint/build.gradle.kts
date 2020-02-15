@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
 	id("java")
 	id("org.jetbrains.kotlin.jvm")
@@ -40,4 +42,13 @@ dependencies {
 	testImplementation(Deps.Jackson.module_kotlin)
 	testImplementation(Deps.Jackson.datatype_java8)
 	kaptTest(Deps.Dagger2.apt)
+}
+
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = freeCompilerArgs + listOf(
+			"-Xuse-experimental=io.ktor.util.KtorExperimentalAPI",
+			"-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"
+		)
+	}
 }
