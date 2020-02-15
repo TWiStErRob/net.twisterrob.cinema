@@ -39,14 +39,19 @@ allprojects {
 		this@allprojects.tasks {
 			val test = "test"(Test::class) {
 				useJUnitPlatform {
+				}
+			}
+			val unitTest = register<Test>("unitTest") {
+				useJUnitPlatform {
 					excludeTags("functional", "integration")
 				}
+				shouldRunAfter()
 			}
 			val functionalTest = register<Test>("functionalTest") {
 				useJUnitPlatform {
 					includeTags("functional")
 				}
-				shouldRunAfter(test)
+				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
 				maxParallelForks = 2
@@ -54,15 +59,18 @@ allprojects {
 					includeTags("integration")
 					excludeTags("external")
 				}
-				shouldRunAfter(test, functionalTest)
+				shouldRunAfter(unitTest, functionalTest)
 			}
 			val integrationExternalTest = register<Test>("integrationExternalTest") {
 				useJUnitPlatform {
 					includeTags("integration & external")
 				}
-				shouldRunAfter(test, functionalTest, integrationTest)
+				shouldRunAfter(unitTest, functionalTest, integrationTest)
 			}
 			"check" {
+				// Remove default dependency, because it runs all tests.
+				setDependsOn(dependsOn - test)
+				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
 				// Don't want to run it automatically, ever.
