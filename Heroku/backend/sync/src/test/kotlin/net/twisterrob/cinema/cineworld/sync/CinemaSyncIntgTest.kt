@@ -7,7 +7,7 @@ import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
-import net.twisterrob.cinema.database.services.CinemaServices
+import net.twisterrob.cinema.database.services.Services
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.set
 import org.hamcrest.MatcherAssert.assertThat
@@ -60,7 +60,7 @@ class CinemaSyncIntgTest {
 
 @Component(modules = [Neo4JModule::class, SyncAppModule::class])
 @Neo4J
-private interface CinemaSyncIntgTestComponent : CinemaServices {
+private interface CinemaSyncIntgTestComponent : Services {
 
 	val sync: CinemaSync
 

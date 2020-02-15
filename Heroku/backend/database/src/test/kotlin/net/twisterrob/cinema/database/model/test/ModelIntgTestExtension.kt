@@ -5,7 +5,6 @@ import dagger.Component
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.validDBData
-import net.twisterrob.cinema.database.services.CinemaServices
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.offsetDateTimeRealistic
 import org.junit.jupiter.api.extension.AfterEachCallback

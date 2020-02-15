@@ -12,14 +12,14 @@ import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
-import net.twisterrob.cinema.database.services.CinemaServices
+import net.twisterrob.cinema.database.services.Services
 import java.time.OffsetDateTime
 import javax.inject.Singleton
 
 @Component(modules = [Neo4JModule::class, SyncAppModule::class])
 @Singleton
 @Neo4J
-interface SyncAppComponent : CinemaServices {
+interface SyncAppComponent : Services {
 
 	val cinemaSync: CinemaSync
 	val filmSync: FilmSync
