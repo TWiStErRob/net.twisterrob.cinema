@@ -1,12 +1,15 @@
 package net.twisterrob.cinema.cineworld.endpoint
 
+import io.ktor.application.log
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.withTestApplication
+import io.ktor.server.testing.createTestEnvironment
+import io.ktor.server.testing.withApplication
 import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.slf4j.Logger
 
 @TagFunctional
 class EndpointsFuncTest {
@@ -41,11 +44,25 @@ class EndpointsFuncTest {
 }
 
 private fun endpointTest(test: TestApplicationEngine.() -> Unit) {
-	withTestApplication(
-		{
+	withApplication(
+		environment = createTestEnvironment {
+			val originalLog = log
+			log = object : Logger by originalLog {
+				override fun info(msg: String?) {
+					when (msg) {
+						"No ktor.deployment.watch patterns specified, automatic reload is not active" -> Unit
+						else -> originalLog.info(msg)
+					}
+				}
+			}
+		}
+	) {
+		application.apply {
 			configuration()
 			endpoints()
-		},
-		test
-	)
+			log.trace("Endpoint test starting {}", test::class)
+			test()
+			log.trace("Endpoint test finished {}", test::class)
+		}
+	}
 }
