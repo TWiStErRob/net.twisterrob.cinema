@@ -14,6 +14,7 @@ dependencies {
 
 	implementation(Deps.Dagger2.core)
 	kapt(Deps.Dagger2.apt)
+	kaptTest(Deps.Dagger2.apt)
 }
 
 // Logging
@@ -29,6 +30,7 @@ dependencies {
 	Deps.JUnit.junit5(project)
 	testImplementation(Deps.JFixture.jfixture)
 	testImplementation(Deps.Hamcrest.core)
+	testImplementation(Deps.Hamcrest.jsonAssert)
 	testImplementation(Deps.Hamcrest.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
 		// Except for ComparisonFailure, which is provided by :test-helpers.

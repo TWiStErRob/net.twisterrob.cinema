@@ -1,16 +1,15 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data
 
+import net.twisterrob.cinema.database.services.CinemaService
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Fake in-memory implementation of [CinemaRepository].
- */
 @Singleton
-class FakeCinemaRepository @Inject constructor(
+class GraphCinemaRepository @Inject constructor(
+	private val service: CinemaService
 ) : CinemaRepository {
 
-	override fun getActiveCinemas(): List<Cinema> = listOf(Cinema("Fake Cinema"))
+	override fun getActiveCinemas(): List<Cinema> = service.findAll().map { Cinema(it.name) }
 
 	override fun getCinemasAuth(userID: Long): List<Cinema> = emptyList()
 

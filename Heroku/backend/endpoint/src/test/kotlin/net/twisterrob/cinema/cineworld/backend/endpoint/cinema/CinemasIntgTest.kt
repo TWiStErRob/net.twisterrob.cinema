@@ -10,26 +10,26 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
-import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
-import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.ApplicationAttributes.dagger
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import net.twisterrob.test.TagFunctional
+import net.twisterrob.cinema.database.model.Cinema
+import net.twisterrob.cinema.database.services.CinemaService
+import net.twisterrob.test.TagIntegration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import javax.inject.Singleton
 
-@TagFunctional
-class CinemasFuncTest {
+@TagIntegration
+class CinemasIntgTest {
 
 	@Test fun `list all cinemas`() = cinemasEndpointTest {
 		val fixtCinemas = listOf(
-			Cinema(name = "Fake Cinema 1"),
-			Cinema(name = "Fake Cinema 2")
+			Cinema().apply { name = "Fake Cinema 1" },
+			Cinema().apply { name = "Fake Cinema 2" }
 		)
-		whenever(mockRepository.getActiveCinemas()).thenReturn(fixtCinemas)
+		whenever(mockService.findAll()).thenReturn(fixtCinemas)
 
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/" }
 
@@ -48,37 +48,38 @@ class CinemasFuncTest {
 			call.response.content,
 			true
 		)
-		verify(mockRepository).getActiveCinemas()
-		verifyNoMoreInteractions(mockRepository)
+		verify(mockService).findAll()
+		verifyNoMoreInteractions(mockService)
 	}
 }
 
 private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
 	endpointTest(
 		test = test,
-		daggerApp = { daggerApplication(DaggerCinemasFuncTestComponent::builder) { it.cinemas(mock()) } }
+		daggerApp = { daggerApplication(DaggerCinemasIntgTestComponent::builder) { it.cinemas(mock()) } }
 	)
 }
 
-private val TestApplicationEngine.mockRepository
-	get() = (application.dagger as CinemasFuncTestComponent).repository
+private val TestApplicationEngine.mockService
+	get() = (application.dagger as CinemasIntgTestComponent).service
 
 @Component(
 	modules = [
-		Cinemas.FrontendModule::class
+		Cinemas.FrontendModule::class,
+		Cinemas.BackendModule::class
 	]
 )
 @Singleton
-private interface CinemasFuncTestComponent : ApplicationComponent {
+private interface CinemasIntgTestComponent : ApplicationComponent {
 
-	val repository: CinemaRepository
+	val service: CinemaService
 
 	@Component.Builder
 	interface Builder : ApplicationComponent.Builder {
 
 		@BindsInstance
-		fun cinemas(repository: CinemaRepository)
+		fun cinemas(service: CinemaService)
 
-		override fun build(): CinemasFuncTestComponent
+		override fun build(): CinemasIntgTestComponent
 	}
 }

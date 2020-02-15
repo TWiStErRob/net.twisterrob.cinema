@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.multibindings.IntoSet
 import io.ktor.locations.Location
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.FakeCinemaRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.GraphCinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 
@@ -44,6 +44,6 @@ object Cinemas {
 	interface BackendModule {
 
 		@Binds
-		fun repository(impl: FakeCinemaRepository): CinemaRepository
+		fun repository(impl: GraphCinemaRepository): CinemaRepository
 	}
 }

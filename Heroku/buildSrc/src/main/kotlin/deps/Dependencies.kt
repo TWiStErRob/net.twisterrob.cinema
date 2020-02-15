@@ -112,9 +112,11 @@ object Mockito {
 object Hamcrest {
 	const val version = "2.2"
 	const val versionShazamcrest = "0.11"
+	const val versionJsonAssert = "1.5.0"
 
 	const val core = "org.hamcrest:hamcrest-core:${version}"
 	const val shazamcrest = "com.shazam:shazamcrest:${versionShazamcrest}"
+	const val jsonAssert = "org.skyscreamer:jsonassert:${versionJsonAssert}"
 }
 
 object JFixture {

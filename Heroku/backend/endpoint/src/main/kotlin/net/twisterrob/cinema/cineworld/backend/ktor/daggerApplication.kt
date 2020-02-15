@@ -16,6 +16,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 ) {
 	val builder: DaggerComponentBuilder = createComponentBuilder()
 	builder.application(this)
+	builder.graphDBUri()
 	initComponent(builder)
 	val dagger = builder.build()
 	this.dagger = dagger
