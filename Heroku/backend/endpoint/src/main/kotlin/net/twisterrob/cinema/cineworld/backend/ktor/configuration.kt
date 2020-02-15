@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.cineworld.endpoint
+package net.twisterrob.cinema.cineworld.backend.ktor
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.Application
@@ -7,9 +7,8 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
-import io.ktor.util.pipeline.ContextDsl
+import io.ktor.locations.Locations
 
-@ContextDsl
 internal fun Application.configuration() {
 	install(DefaultHeaders)
 	install(CallLogging)
@@ -19,4 +18,5 @@ internal fun Application.configuration() {
 			enable(SerializationFeature.INDENT_OUTPUT)
 		}
 	}
+	install(Locations) // support @Location
 }

@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.cineworld.endpoint
+package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.ApplicationCallPipeline

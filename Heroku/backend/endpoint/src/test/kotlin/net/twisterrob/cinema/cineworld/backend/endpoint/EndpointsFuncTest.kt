@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.cineworld.endpoint
+package net.twisterrob.cinema.cineworld.backend.endpoint
 
 import io.ktor.application.log
 import io.ktor.http.HttpMethod
@@ -6,6 +6,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.withApplication
+import net.twisterrob.cinema.cineworld.backend.ktor.configuration
+import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -59,7 +61,7 @@ private fun endpointTest(test: TestApplicationEngine.() -> Unit) {
 	) {
 		application.apply {
 			configuration()
-			endpoints()
+			daggerApplication()
 			log.trace("Endpoint test starting {}", test::class)
 			test()
 			log.trace("Endpoint test finished {}", test::class)

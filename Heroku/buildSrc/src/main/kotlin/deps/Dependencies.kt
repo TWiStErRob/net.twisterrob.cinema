@@ -140,9 +140,6 @@ object Ktor {
 
 	const val version = "1.3.1"
 
-	const val html = "io.ktor:ktor-html-builder:${version}"
-	const val freemarker = "io.ktor:ktor-freemarker:${version}"
-
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
 	object _client {
@@ -178,6 +175,7 @@ object Ktor {
 	object _server {
 		const val core = "io.ktor:ktor-server-core:${version}"
 		const val test = "io.ktor:ktor-server-tests:${version}"
+		const val locations = "io.ktor:ktor-locations:${version}"
 
 		object engine {
 			const val netty = "io.ktor:ktor-server-netty:${version}"
@@ -185,11 +183,14 @@ object Ktor {
 
 		object content {
 			const val jackson = "io.ktor:ktor-jackson:${version}"
+			const val html = "io.ktor:ktor-html-builder:${version}"
+			const val freemarker = "io.ktor:ktor-freemarker:${version}"
 		}
 
 		fun default(project: Project) {
 			project.dependencies {
 				add("implementation", core)
+				add("implementation", locations)
 				add("implementation", engine.netty)
 				add("implementation", content.jackson)
 				add("testImplementation", test)
