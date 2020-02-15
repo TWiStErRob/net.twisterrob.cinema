@@ -1,7 +1,13 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoSet
 import io.ktor.locations.Location
+import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.FakeCinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
+import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 
 object Cinemas {
 
@@ -18,5 +24,26 @@ object Cinemas {
 
 		@Location("/cinema/{cinema}/favorite")
 		data class RemoveFavorite(val edi: Long) : LocationRoute
+	}
+
+	/**
+	 * Published dependencies in this route group.
+	 */
+	@Module
+	interface FrontendModule {
+
+		@Binds
+		@IntoSet
+		fun controller(impl: CinemasController): RouteController
+	}
+
+	/**
+	 * Internal dependencies in this route group.
+	 */
+	@Module
+	interface BackendModule {
+
+		@Binds
+		fun repository(impl: FakeCinemaRepository): CinemaRepository
 	}
 }
