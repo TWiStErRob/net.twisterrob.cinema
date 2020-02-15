@@ -11,7 +11,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
-import net.twisterrob.cinema.cineworld.backend.ktor.ApplicationAttributes.dagger
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.services.CinemaService
@@ -20,10 +19,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @TagIntegration
 class CinemasIntgTest {
+
+	@Inject lateinit var mockService: CinemaService
 
 	@Test fun `list all cinemas`() = cinemasEndpointTest {
 		val fixtCinemas = listOf(
@@ -53,17 +55,20 @@ class CinemasIntgTest {
 		verify(mockService).findAll()
 		verifyNoMoreInteractions(mockService)
 	}
-}
 
-private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
-	endpointTest(
-		test = test,
-		daggerApp = { daggerApplication(DaggerCinemasIntgTestComponent::builder) { it.cinemas(mock()) } }
-	)
+	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
+		endpointTest(
+			test = test,
+			daggerApp = {
+				daggerApplication(
+					createComponentBuilder = DaggerCinemasIntgTestComponent::builder,
+					initComponent = { it.cinemas(mock()) },
+					componentReady = { (it as CinemasIntgTestComponent).inject(this@CinemasIntgTest) }
+				)
+			}
+		)
+	}
 }
-
-private val TestApplicationEngine.mockService
-	get() = (application.dagger as CinemasIntgTestComponent).service
 
 @Component(
 	modules = [
@@ -74,7 +79,7 @@ private val TestApplicationEngine.mockService
 @Singleton
 private interface CinemasIntgTestComponent : ApplicationComponent {
 
-	val service: CinemaService
+	fun inject(test: CinemasIntgTest)
 
 	@Component.Builder
 	interface Builder : ApplicationComponent.Builder {

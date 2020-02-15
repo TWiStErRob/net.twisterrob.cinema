@@ -12,8 +12,8 @@ fun Application.daggerApplication() = daggerApplication(DaggerApplicationCompone
 
 internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application.daggerApplication(
 	createComponentBuilder: () -> DaggerComponentBuilder,
-	componentReady: (ApplicationComponent) -> Unit = { },
-	initComponent: (DaggerComponentBuilder) -> Unit = { }
+	initComponent: (DaggerComponentBuilder) -> Unit = { },
+	componentReady: (ApplicationComponent) -> Unit = { }
 ) {
 	val builder: DaggerComponentBuilder = createComponentBuilder()
 	builder.application(this)

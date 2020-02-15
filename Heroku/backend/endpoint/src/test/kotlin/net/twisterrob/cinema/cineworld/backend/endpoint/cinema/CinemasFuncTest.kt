@@ -60,7 +60,7 @@ class CinemasFuncTest {
 			test = test,
 			daggerApp = {
 				daggerApplication(
-					DaggerCinemasFuncTestComponent::builder,
+					createComponentBuilder = DaggerCinemasFuncTestComponent::builder,
 					initComponent = { it.cinemas(mock()) },
 					componentReady = { (it as CinemasFuncTestComponent).inject(this@CinemasFuncTest) }
 				)
