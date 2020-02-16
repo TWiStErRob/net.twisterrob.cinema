@@ -46,7 +46,7 @@ class CinemaService @Inject constructor(
 	 * Get all the Cinemas associated with a User.
 	 * @param userId ID of the user whose favorite cinemas will be loaded.
 	 */
-	fun getFavoriteCinemas(userId: Long): Iterable<Cinema> = session.query<Cinema>(
+	fun getFavoriteCinemas(userId: String): Iterable<Cinema> = session.query<Cinema>(
 		"""
 		MATCH
 			(u:User { id:{userID} })-[:GOESTO]->(c:Cinema)
@@ -61,15 +61,22 @@ class CinemaService @Inject constructor(
 	 * Get all the Cinemas which are active and whether it is favorited by the User.
 	 * @param userId ID of the user whose favoritism will be taken into account.
 	 */
-	fun getCinemasAuth(userId: Long): Iterable<Cinema> = session.query<Cinema>(
-		"""
-			MATCH (c:Cinema)
-			WHERE NOT exists (c._deleted)
-			OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id:{userID} })
-			RETURN c AS cinema, f IS NOT NULL AS fav
-		""",
-		mapOf(
-			"userID" to userId
-		)
-	)
+	fun getCinemasAuth(userId: String): Map<Cinema, Boolean> =
+		session
+			.query(
+				"""
+					MATCH (c:Cinema)
+					WHERE NOT exists (c._deleted)
+					OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id:{userID} })
+					RETURN c AS cinema, f IS NOT NULL AS fav
+				""",
+				mapOf(
+					"userID" to userId
+				)
+			)
+			.queryResults()
+			.associateBy(
+				keySelector = { it.getValue("cinema") as Cinema },
+				valueTransform = { it.getValue("fav") as Boolean }
+			)
 }

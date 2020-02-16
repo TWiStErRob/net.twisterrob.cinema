@@ -17,11 +17,11 @@ class GraphCinemaRepository @Inject constructor(
 			.map(mapper::map)
 
 	override fun getCinemasAuth(userID: Long): List<FrontendCinema> =
-		service.getCinemasAuth(userID)
+		service.getCinemasAuth(userID.toString())
 			.map(mapper::map)
 
 	override fun getFavoriteCinemas(userID: Long): List<FrontendCinema> =
-		service.getFavoriteCinemas(userID)
+		service.getFavoriteCinemas(userID.toString())
 			.map(mapper::map)
 }
 
@@ -30,6 +30,13 @@ class CinemaMapper @Inject constructor(
 
 	fun map(db: DBCinema): FrontendCinema =
 		FrontendCinema(
-			name = db.name
+			name = db.name,
+			fav = false
+		)
+
+	fun map(favoritedDB: Map.Entry<DBCinema, Boolean>): FrontendCinema =
+		FrontendCinema(
+			name = favoritedDB.key.name,
+			fav = favoritedDB.value
 		)
 }
