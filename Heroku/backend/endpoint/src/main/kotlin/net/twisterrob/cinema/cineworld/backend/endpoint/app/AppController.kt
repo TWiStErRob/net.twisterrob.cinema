@@ -1,13 +1,17 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.http.content.default
 import io.ktor.http.content.files
 import io.ktor.http.content.static
 import io.ktor.http.content.staticRootFolder
+import io.ktor.response.respondRedirect
 import io.ktor.routing.Routing
+import io.ktor.routing.application
+import io.ktor.routing.get
+import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
-import java.io.File
 import javax.inject.Inject
 
 class AppController @Inject constructor(
@@ -18,7 +22,7 @@ class AppController @Inject constructor(
 
 		static("/") {
 			// `./` is Heroku project root folder
-			staticRootFolder = File("./deploy/static")
+			staticRootFolder = application.attributes.staticRootFolder
 			// Serve all files from staticRootFolder
 			files(".")
 			// `/` = `/index.html`
@@ -31,6 +35,10 @@ class AppController @Inject constructor(
 				files(".")
 				default("index.html")
 			}
+		}
+
+		get("favicon.ico") {
+			call.respondRedirect("https://www.google.com/s2/favicons?domain=www.cineworld.co.uk")
 		}
 	}
 }

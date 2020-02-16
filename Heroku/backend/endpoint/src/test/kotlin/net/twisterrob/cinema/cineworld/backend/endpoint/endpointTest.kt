@@ -8,6 +8,7 @@ import io.ktor.server.testing.withApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import org.slf4j.Logger
+import java.io.File
 
 /**
  * @param daggerApp a call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
@@ -15,6 +16,7 @@ import org.slf4j.Logger
  */
 fun endpointTest(
 	daggerApp: Application.() -> Unit = { daggerApplication() },
+	staticRootFolder: File? = null,
 	test: TestApplicationEngine.() -> Unit
 ) {
 	withApplication(
@@ -31,7 +33,11 @@ fun endpointTest(
 		}
 	) {
 		application.apply {
-			configuration()
+			if (staticRootFolder != null) {
+				configuration(staticRootFolder)
+			} else {
+				configuration()
+			}
 			daggerApp()
 			log.trace("Endpoint test starting {}", test::class)
 			test()

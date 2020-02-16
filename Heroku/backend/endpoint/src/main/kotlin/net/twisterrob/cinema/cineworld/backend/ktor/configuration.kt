@@ -18,10 +18,14 @@ import kotlinx.html.h2
 import kotlinx.html.head
 import kotlinx.html.pre
 import kotlinx.html.title
+import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
+import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 
-internal fun Application.configuration() {
+internal fun Application.configuration(staticRootFolder: File = File("./deploy/static")) {
+	this.attributes.staticRootFolder = staticRootFolder
+
 	install(DefaultHeaders)
 	install(CallLogging)
 	install(HeaderLoggingFeature)
