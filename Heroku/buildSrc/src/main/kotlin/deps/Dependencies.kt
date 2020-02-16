@@ -195,6 +195,7 @@ object Ktor {
 				add("implementation", locations)
 				add("implementation", engine.netty)
 				add("implementation", content.jackson)
+				add("implementation", content.html)
 				add("testImplementation", test)
 			}
 		}
