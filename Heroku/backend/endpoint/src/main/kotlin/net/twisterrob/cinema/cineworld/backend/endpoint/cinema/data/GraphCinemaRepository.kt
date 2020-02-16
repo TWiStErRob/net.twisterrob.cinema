@@ -30,8 +30,7 @@ class CinemaMapper @Inject constructor(
 
 	fun map(db: DBCinema): FrontendCinema =
 		FrontendCinema(
-			name = db.name,
-			fav = false
+			name = db.name
 		)
 
 	fun map(favoritedDB: Map.Entry<DBCinema, Boolean>): FrontendCinema =
