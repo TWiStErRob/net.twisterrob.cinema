@@ -3,6 +3,7 @@ package net.twisterrob.cinema.cineworld.backend.app
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.application.Application
+import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas
 import net.twisterrob.cinema.cineworld.backend.endpoint.hello.HelloWorlds
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteControllerRegistrar
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 @Component(
 	modules = [
 		Neo4JModule::class,
+		App.FrontendModule::class,
 		HelloWorlds.FrontendModule::class,
 		Cinemas.FrontendModule::class,
 		Cinemas.BackendModule::class
