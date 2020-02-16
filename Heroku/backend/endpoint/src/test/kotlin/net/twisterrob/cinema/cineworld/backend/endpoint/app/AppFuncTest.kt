@@ -29,8 +29,25 @@ class AppFuncTest {
 		}
 	}
 
+	@Test fun `other files are directly accessible`(@TempDir tempDir: File) = endpointTest(staticRootFolder = tempDir) {
+		tempDir.resolve("other.file").writeText("fake content")
+		handleRequest { method = HttpMethod.Get; uri = "/other.file" }.apply {
+			assertEquals(HttpStatusCode.OK, response.status())
+			assertEquals("fake content", response.content)
+		}
+	}
+
+	@Test fun `other files in subfolders are directly accessible`(@TempDir tempDir: File) =
+		endpointTest(staticRootFolder = tempDir) {
+			tempDir.resolve("sub/folder/other.file").ensureParent().writeText("fake content")
+			handleRequest { method = HttpMethod.Get; uri = "/sub/folder/other.file" }.apply {
+				assertEquals(HttpStatusCode.OK, response.status())
+				assertEquals("fake content", response.content)
+			}
+		}
+
 	@Test fun `planner serves index html`(@TempDir tempDir: File) = endpointTest(staticRootFolder = tempDir) {
-		tempDir.resolve("planner/index.html").also { it.parentFile.mkdirs() }.writeText("fake index")
+		tempDir.resolve("planner/index.html").ensureParent().writeText("fake index")
 		handleRequest { method = HttpMethod.Get; uri = "/planner" }.apply {
 			assertEquals(HttpStatusCode.OK, response.status())
 			assertEquals("fake index", response.content)
@@ -47,3 +64,5 @@ class AppFuncTest {
 		}
 	}
 }
+
+private fun File.ensureParent(): File = also { it.parentFile.mkdirs() }
