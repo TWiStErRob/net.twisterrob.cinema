@@ -32,28 +32,30 @@ class CinemasIntgTest {
 			Cinema().apply { name = "Fake Cinema 1" },
 			Cinema().apply { name = "Fake Cinema 2" }
 		)
-		whenever(mockService.findAll()).thenReturn(fixtCinemas)
+		whenever(mockService.getActiveCinemas()).thenReturn(fixtCinemas)
 
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/" }
+
+		verify(mockService).getActiveCinemas()
+		verifyNoMoreInteractions(mockService)
 
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
 			[
 				{
-					"name": "Fake Cinema 1"
+					"name": "Fake Cinema 1",
+					"fav": false
 				},
 				{
-					"name": "Fake Cinema 2"
+					"name": "Fake Cinema 2",
+					"fav": false
 				}
 			]
 			""",
 			call.response.content,
 			JSONCompareMode.STRICT
-
 		)
-		verify(mockService).findAll()
-		verifyNoMoreInteractions(mockService)
 	}
 
 	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {

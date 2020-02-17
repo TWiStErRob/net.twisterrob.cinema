@@ -36,23 +36,26 @@ class CinemasFuncTest {
 
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/" }
 
+		verify(mockRepository).getActiveCinemas()
+		verifyNoMoreInteractions(mockRepository)
+
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
 			[
 				{
-					"name": "Fake Cinema 1"
+					"name": "Fake Cinema 1",
+					"fav": false
 				},
 				{
-					"name": "Fake Cinema 2"
+					"name": "Fake Cinema 2",
+					"fav": false
 				}
 			]
 			""",
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
-		verify(mockRepository).getActiveCinemas()
-		verifyNoMoreInteractions(mockRepository)
 	}
 
 	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
