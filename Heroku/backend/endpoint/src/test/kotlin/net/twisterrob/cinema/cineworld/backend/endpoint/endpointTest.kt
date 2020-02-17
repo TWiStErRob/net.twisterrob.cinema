@@ -11,12 +11,13 @@ import org.slf4j.Logger
 import java.io.File
 
 /**
- * @param daggerApp a call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
- * @param test to execute after the application has started up
+ * @param daggerApp A call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
+ * @param configure A call to [configuration], but some tests will need to pass in an optional argument.
+ * @param test Test code to execute after the application has started up.
  */
 fun endpointTest(
+	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { daggerApplication() },
-	staticRootFolder: File? = null,
 	test: TestApplicationEngine.() -> Unit
 ) {
 	withApplication(
@@ -33,11 +34,7 @@ fun endpointTest(
 		}
 	) {
 		application.apply {
-			if (staticRootFolder != null) {
-				configuration(staticRootFolder)
-			} else {
-				configuration()
-			}
+			configure()
 			daggerApp()
 			log.trace("Endpoint test starting {}", test::class)
 			test()
