@@ -18,26 +18,46 @@ object ApplicationAttributes {
 
 	private val DaggerComponentAttribute = AttributeKey<ApplicationComponent>("dagger")
 
-	var Attributes.dagger: ApplicationComponent by key(DaggerComponentAttribute)
+	var Attributes.dagger: ApplicationComponent by requiredKey(DaggerComponentAttribute)
 
 	private val StaticRootFolderAttribute = AttributeKey<File>("staticRootFolder")
 
-	var Attributes.staticRootFolder: File by key(StaticRootFolderAttribute)
+	var Attributes.staticRootFolder: File by requiredKey(StaticRootFolderAttribute)
+
+	data class CurrentUser(val id: String, val email: String)
+
+	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
+
+	var Attributes.currentUser: CurrentUser? by optionalKey(CurrentUserAttribute)
 
 	@Suppress("unused") // not needed yet, ApplicationComponent is alive for the whole Application lifecycle
 	private fun Application.registerDaggerForEachCall(dagger: ApplicationComponent) {
 		environment.monitor.subscribe(Routing.RoutingCallStarted) { call: RoutingApplicationCall ->
-			call.attributes.dagger = dagger
+			call.attributes.put(DaggerComponentAttribute, dagger)
 		}
 	}
 }
 
-private fun <T : Any> key(attributeKey: AttributeKey<T>) =
+private fun <T : Any> requiredKey(attributeKey: AttributeKey<T>) =
 	object : ReadWriteProperty<Attributes, T> {
 		override fun getValue(thisRef: Attributes, property: KProperty<*>): T =
 			thisRef[attributeKey]
 
 		override fun setValue(thisRef: Attributes, property: KProperty<*>, value: T) {
 			thisRef.put(attributeKey, value)
+		}
+	}
+
+private fun <T : Any> optionalKey(attributeKey: AttributeKey<T>) =
+	object : ReadWriteProperty<Attributes, T?> {
+		override fun getValue(thisRef: Attributes, property: KProperty<*>): T? =
+			thisRef.getOrNull(attributeKey)
+
+		override fun setValue(thisRef: Attributes, property: KProperty<*>, value: T?) {
+			if (value == null) {
+				thisRef.remove(attributeKey)
+			} else {
+				thisRef.put(attributeKey, value)
+			}
 		}
 	}

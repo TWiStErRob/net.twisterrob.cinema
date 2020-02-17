@@ -6,6 +6,7 @@ import io.ktor.application.call
 import io.ktor.locations.get
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.isAuthenticated
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject
@@ -46,8 +47,3 @@ class CinemasController @Inject constructor(
  * TODO stub to make it compile
  */
 private val ApplicationCall.userId: Long get() = 0
-
-/**
- * TODO stub to make it compile
- */
-private fun ApplicationCall.isAuthenticated(): Boolean = false

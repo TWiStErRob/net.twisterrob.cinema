@@ -11,6 +11,8 @@ dependencies {
 
 	implementation(Deps.Kotlin.core)
 	Deps.Ktor.server.default(project)
+	runtimeOnly(Deps.Ktor.client.engine_okhttp)
+	implementation(Deps.Ktor.client.jackson)
 
 	implementation(Deps.Dagger2.core)
 	kapt(Deps.Dagger2.apt)
@@ -52,5 +54,15 @@ tasks.withType<KotlinCompile> {
 			"-Xuse-experimental=io.ktor.util.KtorExperimentalAPI",
 			"-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"
 		)
+	}
+}
+
+tasks {
+	val copyConfigResources = register<Copy>("copyConfigResources") {
+		from(project(":backend").file("config/default-env.json"))
+		into(project.sourceSets["main"].resources.srcDirs.first())
+	}
+	"processResources" {
+		dependsOn(copyConfigResources)
 	}
 }
