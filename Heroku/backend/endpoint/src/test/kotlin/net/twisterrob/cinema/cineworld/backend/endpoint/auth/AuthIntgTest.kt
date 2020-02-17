@@ -19,6 +19,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
+import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +27,8 @@ import org.junit.jupiter.api.Test
 import javax.inject.Inject
 import javax.inject.Singleton
 
-class AuthFuncTest {
+@TagIntegration
+class AuthIntgTest {
 	@Inject lateinit var mockRepository: AuthRepository
 
 	@Test
@@ -45,11 +47,12 @@ class AuthFuncTest {
 								"&grant_type=authorization_code" +
 								"&state=$state" +
 								"&code=fake_code" +
-								"&redirect_uri=http%3A%2F%2F127.0.0.1%2Fauth%2Fgoogle%2Freturn",
+								"&redirect_uri=http%3A%2F%2Ffake.host.name%2Fauth%2Fgoogle%2Freturn",
 						textContent.text
 					)
 
 					respond(
+						//language=JSON
 						content = """{
                             "access_token": "fake_access_token",
                             "token_type": "fake_token_type",
@@ -65,6 +68,7 @@ class AuthFuncTest {
 				"https://openidconnect.googleapis.com/v1/userinfo" -> {
 					assertEquals("Bearer fake_access_token", request.headers[HttpHeaders.Authorization])
 					respond(
+						//language=JSON
 						content = """{
                             "sub": "fake_google_sub",
                             "email": "fake@google.email",
@@ -93,26 +97,26 @@ class AuthFuncTest {
 			},
 			daggerApp = {
 				daggerApplication(
-					createComponentBuilder = DaggerAuthFuncTestComponent::builder,
+					createComponentBuilder = DaggerAuthIntgTestComponent::builder,
 					initComponent = { builder ->
 						builder
 							.httpClient(mockClient)
 							.users(mock())
 					},
-					componentReady = { (it as AuthFuncTestComponent).inject(this@AuthFuncTest) }
+					componentReady = { (it as AuthIntgTestComponent).inject(this@AuthIntgTest) }
 				)
 			}
 		) {
 			handleRequest {
 				method = HttpMethod.Get
 				uri = "/auth/google/return"
-				addHeader("Host", "127.0.0.1")
+				addHeader("Host", "fake.host.name")
 			}.apply {
-				val location = response.headers["Location"] ?: ""
+				val location = response.headers[HttpHeaders.Location] ?: ""
 				assertEquals(
 					"https://accounts.google.com/o/oauth2/auth" +
 							"?client_id=fake_google_client_id" +
-							"&redirect_uri=http%3A%2F%2F127.0.0.1%2Fauth%2Fgoogle%2Freturn" +
+							"&redirect_uri=http%3A%2F%2Ffake.host.name%2Fauth%2Fgoogle%2Freturn" +
 							"&scope=openid+email+profile" +
 							"&state=****" +
 							"&response_type=code",
@@ -120,12 +124,13 @@ class AuthFuncTest {
 				)
 				val stateInfo = Regex("state=(\\w+)").find(location)
 				state = stateInfo!!.groupValues[1]
+				assertEquals(HttpStatusCode.Found, response.status())
 			}
 
 			handleRequest {
 				method = HttpMethod.Get
 				uri = "/auth/google/return?state=$state&code=fake_code"
-				addHeader("Host", "127.0.0.1")
+				addHeader("Host", "fake.host.name")
 			}.apply {
 				assertEquals(HttpStatusCode.Found, response.status())
 				assertEquals("/", response.headers[HttpHeaders.Location])
@@ -135,7 +140,7 @@ class AuthFuncTest {
 				userId = eq("fake_google_sub"),
 				email = eq("fake@google.email"),
 				name = eq("Fake Google Name"),
-				realm = eq("http://127.0.0.1/"),
+				realm = eq("http://fake.host.name/"),
 				created = any()
 			)
 		}
@@ -148,9 +153,9 @@ class AuthFuncTest {
 	]
 )
 @Singleton
-private interface AuthFuncTestComponent : ApplicationComponent {
+private interface AuthIntgTestComponent : ApplicationComponent {
 
-	fun inject(test: AuthFuncTest)
+	fun inject(test: AuthIntgTest)
 
 	@Component.Builder
 	interface Builder : ApplicationComponent.Builder {
@@ -161,6 +166,6 @@ private interface AuthFuncTestComponent : ApplicationComponent {
 		@BindsInstance
 		fun users(repository: AuthRepository): Builder
 
-		override fun build(): AuthFuncTestComponent
+		override fun build(): AuthIntgTestComponent
 	}
 }
