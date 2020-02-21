@@ -13,11 +13,16 @@ class AuthRepository @Inject constructor(
 	}
 
 	fun findUser(userId: String): User {
-		val user = userService.find(userId)!!
+		val user = userService.find(userId) ?: throw UnknownUserException(userId)
 		return user.let {
 			User(it.id, it.email)
 		}
 	}
+
+	class UnknownUserException(
+		@Suppress("CanBeParameter") // keep for debug
+		val userId: String
+	) : RuntimeException("Cannot find user $userId")
 
 	data class User(
 		val id: String,

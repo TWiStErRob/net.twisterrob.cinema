@@ -36,9 +36,11 @@ import net.twisterrob.test.verify
 import net.twisterrob.test.verifyNoMoreInteractions
 import net.twisterrob.test.verifyZeroInteractions
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.CheckReturnValue
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -116,6 +118,7 @@ class AuthIntgTest {
 			assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
 			assertRedirect("/")
 		}
+		verify(mockRepository).findUser(realisticUserId)
 	}
 
 	@Test
@@ -130,6 +133,7 @@ class AuthIntgTest {
 		}.apply {
 			assertRedirect("/")
 		}
+		verify(mockRepository).findUser(realisticUserId)
 	}
 
 	@Test
@@ -142,6 +146,22 @@ class AuthIntgTest {
 		}.apply {
 			assertEquals("no user", response.content)
 		}
+	}
+
+	@Test
+	fun `account page shows error when invalid user in session`() = endpointTest(
+		daggerApp = createAppForAuthIntgTest()
+	) {
+		whenever(mockRepository.findUser(realisticUserId)).thenThrow(AuthRepository.UnknownUserException("fake error"))
+		val ex = assertThrows<AuthRepository.UnknownUserException> {
+			handleRequest {
+				method = HttpMethod.Get
+				uri = "/account"
+				addHeader(HttpHeaders.Cookie, realisticCookie)
+			}
+		}
+		assertThat(ex.message, containsString("fake error"))
+		verify(mockRepository).findUser(realisticUserId)
 	}
 
 	@Test
@@ -166,6 +186,7 @@ class AuthIntgTest {
 				JSONCompareMode.STRICT
 			)
 		}
+		verify(mockRepository).findUser(realisticUserId)
 	}
 
 	/**
