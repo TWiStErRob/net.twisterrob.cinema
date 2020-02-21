@@ -57,7 +57,8 @@ class AuthController @Inject constructor(
 		intercept(ApplicationCallPipeline.Features) {
 			val session: AuthSession? = call.sessions.get()
 			if (session != null) {
-				call.attributes.currentUser = CurrentUser(session.userId, "TODO")
+				val user = authRepository.findUser(session.userId)
+				call.attributes.currentUser = CurrentUser(user.id, user.email)
 			}
 		}
 

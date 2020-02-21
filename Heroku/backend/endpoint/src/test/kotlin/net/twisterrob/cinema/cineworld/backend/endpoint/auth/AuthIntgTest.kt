@@ -2,12 +2,14 @@
 
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
+import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.application.Application
@@ -27,6 +29,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
+import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import net.twisterrob.test.verify
@@ -48,14 +51,19 @@ class AuthIntgTest {
 	companion object {
 		/**
 		 * It needs to be a cookie that uses the right secretSignKey in Sessions Ktor feature.
-		 * If this is broken, debug the logout function and capture a [HttpHeaders.SetCookie] header value.
-		 * The rest of the `Set-Cookie` is omitted as it's not relevant here.
+		 * If this is broken, debug a test where [receiveAuthorizationFromGoogle] is visible and capture the value.
+		 * The rest of the [HttpHeaders.SetCookie] is omitted as it's not relevant here.
 		 *
 		 * @see configuration
 		 * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
 		 */
 		const val realisticCookie =
-			"auth=userId%3D%2523sfake%5Fgoogle%5Fsub%2Fd4e037a50f9f7ecef6aaacadfe7332c938e8ecb986ee75f340bbc6b985c83e4e"
+			"auth=userId%3D%2523srealistic%5Fgoogle%5Fsub%2F1d9f41780441596d9ec55c20219873d813180e8d1d7caab07e1463fcb6462622"
+
+		/**
+		 * User ID contained within [realisticCookie]. Needed to ensure session data is passed through the right way.
+		 */
+		const val realisticUserId = "realistic_google_sub"
 	}
 
 	@Inject lateinit var mockRepository: AuthRepository
@@ -99,6 +107,7 @@ class AuthIntgTest {
 	fun `logout clears auth cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
+		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 		handleRequest {
 			method = HttpMethod.Get
 			uri = "/logout"
@@ -113,6 +122,7 @@ class AuthIntgTest {
 	fun `authorizing already logged in session with Google redirects to home`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
+		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 		handleRequest {
 			method = HttpMethod.Get
 			uri = "/auth/google"
@@ -138,6 +148,8 @@ class AuthIntgTest {
 	fun `account page shows user data with session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
+		val user: AuthRepository.User = JFixture().build()
+		whenever(mockRepository.findUser(realisticUserId)).thenReturn(user)
 		handleRequest {
 			method = HttpMethod.Get
 			uri = "/account"
@@ -146,8 +158,8 @@ class AuthIntgTest {
 			JSONAssert.assertEquals(
 				"""
 					{
-					  "id" : "fake_google_sub",
-					  "email" : "TODO"
+					  "id" : "${user.id}",
+					  "email" : "${user.email}"
 					}
 				""",
 				response.content,

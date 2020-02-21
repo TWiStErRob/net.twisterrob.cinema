@@ -1,7 +1,10 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.User
+import net.twisterrob.neo4j.ogm.load
+import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class UserService @Inject constructor(
@@ -11,8 +14,8 @@ class UserService @Inject constructor(
 	fun findAll(): Iterable<User> =
 		session.loadAll(User::class.java, 1)
 
-	fun find(id: Long): User? =
-		session.load(User::class.java, id, 2)
+	fun find(id: String): User? =
+		session.load(id, 0)
 
 	fun delete(id: String) =
 		session.delete(session.load(User::class.java, id))
@@ -22,5 +25,38 @@ class UserService @Inject constructor(
 //		return session.load(Ad::class.java, entity.adId, 1)
 		return entity
 	}
-}
 
+	/**
+	 * Create a user if doesn't exists with the specified data.
+	 * @param userId OpenID
+	 * @param name Display name of the user being created.
+	 * @param email The email of the user being created.
+	 * @param created Moment of creation.
+	 * @param realm The website where the login happened.
+	 */
+	fun addUser(userId: String, email: String, name: String, realm: String, created: OffsetDateTime): User =
+		session.queryForObject(
+			"""
+			MERGE (u:User {id: {id}})
+			ON CREATE SET u._created = {created}
+			ON CREATE SET u.class = "User"
+
+			ON CREATE SET u.email = {email}
+			ON CREATE SET u.name = {name}
+			ON CREATE SET u.realm = {realm}
+
+			ON MATCH SET u.email = {email}
+			ON MATCH SET u.name = {name}
+			ON MATCH SET u.realm = {realm}
+
+			RETURN u AS user
+			""",
+			mapOf(
+				"realm" to realm,
+				"id" to userId,
+				"email" to email,
+				"name" to name,
+				"created" to created
+			)
+		)!!
+}

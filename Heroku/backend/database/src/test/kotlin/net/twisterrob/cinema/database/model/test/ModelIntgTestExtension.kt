@@ -22,6 +22,30 @@ import org.neo4j.ogm.session.Session
  * Injects parameter [GraphDatabaseService], only one graph will exist during a test.
  * Injects parameter [Session], supports multiple sessions in one method.
  * Injects parameter and field [JFixture] with a customised fixture for Database entities.
+ *
+ * Tip: it is recommended to use a separate [Session] for `sut` and [org.junit.jupiter.api.Test].
+ * This prevents caching problems with changing data and getting data from cache instead of from DB.
+ * ```kotlin
+ * @ExtendWith(ModelIntgTestExtension::class)
+ * @TagIntegration
+ * class SomeIntgTest {
+ *     private lateinit var fixture: JFixture
+ *     private lateinit var sut: UserService
+ *
+ *     @BeforeEach fun setUp(session: Session) {
+ *         sut = Something(session) // initialize with sut's session
+ *     }
+ *
+ *     @Test fun test(session: Session) {
+ *         val fixtData = fixture.build()
+ *         session.save(fixtData) // save using test's session (this will cache fixtData)
+ *
+ *         val result = sut.find(fixtData.id) // read using sut's session (empty at this point)
+ *
+ *         assertThat(result, sameBeanAs(fixtData)) // compare all fields are equal between sessions
+ *     }
+ * }
+ * ```
  */
 class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
