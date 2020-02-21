@@ -15,4 +15,9 @@ dependencies {
 	compileOnly(Deps.Neo4JOGM.harness)
 
 	compileOnly(Deps.Ktor.client.mock_jvm)
+
+	Deps.JUnit.junit5(project)
+	testImplementation(Deps.JUnit.jupiter)
+	testImplementation(Deps.Hamcrest.core)
+	// TODO add more testImplementation when writing tests
 }
