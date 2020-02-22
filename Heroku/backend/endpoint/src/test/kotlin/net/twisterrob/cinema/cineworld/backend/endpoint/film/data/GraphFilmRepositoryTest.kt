@@ -4,6 +4,7 @@ import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
+import net.twisterrob.cinema.cineworld.quickbook.QuickbookService
 import net.twisterrob.cinema.database.model.validDBData
 import net.twisterrob.cinema.database.services.FilmService
 import net.twisterrob.test.applyCustomisation
@@ -21,6 +22,7 @@ class GraphFilmRepositoryTest {
 
 	@Mock lateinit var mockService: FilmService
 	@Mock lateinit var mockMapper: FilmMapper
+	@Mock lateinit var mockQuickbook: QuickbookService
 
 	private val fixture = JFixture().applyCustomisation {
 		add(validDBData())
@@ -30,7 +32,7 @@ class GraphFilmRepositoryTest {
 
 	@BeforeEach fun setUp() {
 		MockitoAnnotations.initMocks(this)
-		sut = GraphFilmRepository(mockService, mockMapper)
+		sut = GraphFilmRepository(mockService, mockMapper, mockQuickbook)
 	}
 
 	@Test fun `get film by edi`() {

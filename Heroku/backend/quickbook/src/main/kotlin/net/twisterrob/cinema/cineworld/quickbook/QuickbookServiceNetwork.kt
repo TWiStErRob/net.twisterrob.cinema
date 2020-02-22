@@ -11,9 +11,11 @@ import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Named
 
 class QuickbookServiceNetwork @Inject constructor(
 	client: HttpClient,
+	@Named(QuickbookModule.API_KEY)
 	private val key: String
 ) : QuickbookService {
 

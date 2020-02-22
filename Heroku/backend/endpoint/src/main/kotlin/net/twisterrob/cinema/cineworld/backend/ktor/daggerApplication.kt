@@ -15,6 +15,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	val builder: DaggerComponentBuilder = createComponentBuilder()
 	builder.application(this)
 	builder.graphDBUri()
+	builder.quickbookApiKey()
 	initComponent(builder)
 	val dagger = builder.build()
 	componentReady(dagger)

@@ -1,8 +1,10 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.cinema.database.model.User
 import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.query
 import javax.inject.Inject
 
 class FilmService @Inject constructor(
@@ -40,4 +42,46 @@ class FilmService @Inject constructor(
 			"filmEDI" to edi
 		)
 	)
+
+	/**
+	 * Find a list of films by edis.
+	 * @param filmEDIs films to return (array of [Film.edi])
+	 */
+	fun getFilms(filmEDIs: List<Long>): Iterable<Film> =
+		session.query<Film>(
+			"""
+			MATCH (f:Film)
+			WHERE NOT exists(f._deleted) AND f.edi IN {filmEDIs}
+			RETURN f AS film
+			""",
+			mapOf(
+				"filmEDIs" to filmEDIs
+			)
+		)
+
+	/**
+	 * Find a list of films by edis.
+	 * @param filmEDIs films to return (array of [Film.edi])
+	 * @param userID [User.id]
+	 */
+	fun getFilmsAuth(filmEDIs: List<Long>, userID: String): Iterable<Film> =
+		session.query<Film>(
+			"""
+			MATCH (f:Film)
+			WHERE //not exists(f._deleted) and
+			f.edi IN {filmEDIs}
+			OPTIONAL MATCH (f)<-[w:WATCHED]-(v:View)
+			OPTIONAL MATCH (v)<-[a:ATTENDED]-(u:User { id:{userID} })
+			OPTIONAL MATCH (v)-[at:AT]->(c:Cinema)
+			RETURN
+				f AS film,
+				coalesce(v, f) AS view,
+				coalesce(u, f) AS user,
+				coalesce(c, f) AS cinema
+			""",
+			mapOf(
+				"userID" to userID,
+				"filmEDIs" to filmEDIs
+			)
+		)
 }

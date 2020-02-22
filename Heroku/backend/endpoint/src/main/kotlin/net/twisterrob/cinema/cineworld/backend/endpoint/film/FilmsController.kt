@@ -7,6 +7,8 @@ import io.ktor.locations.get
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject
@@ -27,8 +29,12 @@ class FilmsController @Inject constructor(
 	 */
 	override fun Routing.registerRoutes() {
 
-		get<Films.Routes.ListFilms> {
-			TODO("implement based on index.js")
+		get<Films.Routes.ListFilms> { listFilms ->
+			if (call.hasUser) {
+				call.respond(repository.getFilmsAuth(call.userId, listFilms.date, listFilms.cinemaIDs))
+			} else {
+				call.respond(repository.getFilms(listFilms.date, listFilms.cinemaIDs))
+			}
 		}
 
 		get<Films.Routes.GetFilm> { getFilm ->

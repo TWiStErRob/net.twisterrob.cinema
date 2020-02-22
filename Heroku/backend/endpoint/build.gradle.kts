@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
 	implementation(project(":backend:database"))
+	implementation(project(":backend:quickbook"))
 
 	implementation(Deps.Kotlin.core)
 	Deps.Ktor.server.default(project)

@@ -18,6 +18,7 @@ import io.ktor.auth.oauth
 import io.ktor.client.HttpClient
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.DataConversion
 import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
 import io.ktor.html.respondHtml
@@ -28,6 +29,7 @@ import io.ktor.locations.Locations
 import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
+import io.ktor.util.ConversionService
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.h2
@@ -43,7 +45,13 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.lang.reflect.Type
+import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.SignStyle
+import java.time.temporal.ChronoField
+import java.util.Locale
 
 /**
  * @see RouteControllerRegistrar
@@ -59,6 +67,21 @@ internal fun Application.configuration(
 	install(DefaultHeaders)
 	install(CallLogging)
 	//install(HeaderLoggingFeature)
+	install(DataConversion) {
+		this.convert(LocalDate::class, object : ConversionService {
+			private val formatter = DateTimeFormatterBuilder()
+				.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
+				.appendValue(ChronoField.MONTH_OF_YEAR, 2)
+				.appendValue(ChronoField.DAY_OF_MONTH, 2)
+				.toFormatter(Locale.ROOT)
+
+			override fun fromValues(values: List<String>, type: Type): LocalDate =
+				LocalDate.from(formatter.parse(values.single()))
+
+			override fun toValues(value: Any?): List<String> =
+				TODO("YAGNI")
+		})
+	}
 	install(ContentNegotiation) {
 		jackson {
 			enable(SerializationFeature.INDENT_OUTPUT)

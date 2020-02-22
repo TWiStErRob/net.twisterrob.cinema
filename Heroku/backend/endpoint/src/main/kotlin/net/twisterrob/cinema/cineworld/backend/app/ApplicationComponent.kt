@@ -8,6 +8,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.Films
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteControllerRegistrar
+import net.twisterrob.cinema.cineworld.quickbook.QuickbookModule
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import javax.inject.Singleton
@@ -31,7 +32,7 @@ interface ApplicationComponent {
 	val controllers: RouteControllerRegistrar
 
 	@Component.Builder
-	interface Builder : Neo4JModule.Dependencies<Builder> {
+	interface Builder : Neo4JModule.Dependencies<Builder>, QuickbookModule.Dependencies<Builder> {
 
 		@BindsInstance
 		fun application(application: Application): Builder
