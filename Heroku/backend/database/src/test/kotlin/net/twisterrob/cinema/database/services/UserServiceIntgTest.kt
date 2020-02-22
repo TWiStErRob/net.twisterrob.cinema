@@ -17,6 +17,7 @@ import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -150,15 +151,18 @@ class UserServiceIntgTest {
 	}
 
 	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
-	@Test fun `addUser() preserves date format`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `addUser() preserves date format`(graph: GraphDatabaseService) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
 		val fixtRealm: String = fixture.build()
 		val fixtCreated: OffsetDateTime = fixture.build<OffsetDateTime>().let {
-			// make sure the milliseconds are ??0
 			it.minusNanos(it.nano % 10000000L)
 		}
+		assertTrue(
+			fixtCreated.toInstant().toEpochMilli() % 10 == 0L,
+			"$fixtCreated should have milliseconds ending .??0 to test regression"
+		)
 
 		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
 
