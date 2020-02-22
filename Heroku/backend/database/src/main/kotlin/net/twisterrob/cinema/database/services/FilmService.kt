@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
 import javax.inject.Inject
 
@@ -25,4 +26,18 @@ class FilmService @Inject constructor(
 
 	fun save(list: List<Film>) =
 		session.save(list)
+
+	/**
+	 * Find a film by [edi].
+	 * @param edi [Film.edi]
+	 */
+	fun getFilm(edi: Long): Film? = session.queryForObject(
+		"""
+		MATCH (f:Film {edi: {filmEDI}})
+		RETURN f AS film
+		""",
+		mapOf(
+			"filmEDI" to edi
+		)
+	)
 }

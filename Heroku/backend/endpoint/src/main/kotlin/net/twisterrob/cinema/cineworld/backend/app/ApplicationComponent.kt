@@ -6,6 +6,7 @@ import io.ktor.application.Application
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas
+import net.twisterrob.cinema.cineworld.backend.endpoint.film.Films
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteControllerRegistrar
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
@@ -18,7 +19,9 @@ import javax.inject.Singleton
 		Auth.FrontendModule::class,
 		Auth.BackendModule::class,
 		Cinemas.FrontendModule::class,
-		Cinemas.BackendModule::class
+		Cinemas.BackendModule::class,
+		Films.FrontendModule::class,
+		Films.BackendModule::class
 	]
 )
 @Singleton
