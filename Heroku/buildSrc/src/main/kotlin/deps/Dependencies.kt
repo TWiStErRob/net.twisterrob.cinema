@@ -149,6 +149,7 @@ object Ktor {
 
 	object _client {
 		const val client = "io.ktor:ktor-client:${version}"
+		const val logging_jvm = "io.ktor:ktor-client-logging-jvm:${version}"
 		const val core_jvm = "io.ktor:ktor-client-core-jvm:${version}"
 		const val engine_okhttp = "io.ktor:ktor-client-okhttp:${version}"
 
@@ -169,6 +170,7 @@ object Ktor {
 				add("implementation", client)
 				add("implementation", jackson)
 				add("testImplementation", mock_jvm)
+				add("testImplementation", logging_jvm)
 				add("testRuntimeOnly", engine_okhttp)
 				//add("implementation", Kotlin.coroutines)
 			}
