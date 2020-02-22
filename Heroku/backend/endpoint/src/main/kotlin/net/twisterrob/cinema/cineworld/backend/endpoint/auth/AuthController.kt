@@ -35,6 +35,7 @@ import javax.inject.Singleton
 /**
  * See [Docs](https://developers.google.com/identity/protocols/OpenIDConnect).
  * See [Endpoint Discovery](https://accounts.google.com/.well-known/openid-configuration)
+ * @see Auth
  */
 @Singleton
 class AuthController @Inject constructor(
@@ -51,7 +52,7 @@ class AuthController @Inject constructor(
 	}
 
 	/**
-	 * Registers the routes related to [Auth].
+	 * @see Auth.Routes
 	 */
 	override fun Routing.registerRoutes() {
 		intercept(ApplicationCallPipeline.Features) {

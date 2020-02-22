@@ -14,10 +14,16 @@ import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticR
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject
 
+/**
+ * @see App
+ */
 class AppController @Inject constructor(
 	application: Application
 ) : RouteController(application) {
 
+	/**
+	 * @see App.Routes
+	 */
 	override fun Routing.registerRoutes() {
 
 		static("/") {

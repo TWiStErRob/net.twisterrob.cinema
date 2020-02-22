@@ -11,15 +11,13 @@ import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
-import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * The [Cinemas] controller. This controller handles the routes related to cinemas.
- * It inherits [RouteController] that offers some basic functionality.
+ * @see Views
  */
 @Singleton
 class ViewsController @Inject constructor(
@@ -28,7 +26,7 @@ class ViewsController @Inject constructor(
 ) : RouteController(application) {
 
 	/**
-	 * Registers the routes related to [Cinemas].
+	 * @see Views.Routes
 	 */
 	override fun Routing.registerRoutes() {
 

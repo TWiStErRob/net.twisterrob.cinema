@@ -15,8 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * The [Films] controller. This controller handles the routes related to films.
- * It inherits [RouteController] that offers some basic functionality.
+ * @see Films
  */
 @Singleton
 class FilmsController @Inject constructor(
@@ -25,7 +24,7 @@ class FilmsController @Inject constructor(
 ) : RouteController(application) {
 
 	/**
-	 * Registers the routes related to [Films].
+	 * @see Films.Routes
 	 */
 	override fun Routing.registerRoutes() {
 
