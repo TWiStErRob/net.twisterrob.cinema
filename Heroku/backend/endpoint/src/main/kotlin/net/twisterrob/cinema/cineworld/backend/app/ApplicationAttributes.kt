@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.app
 
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
 import io.ktor.routing.Routing
 import io.ktor.routing.RoutingApplicationCall
 import io.ktor.util.AttributeKey
@@ -28,6 +29,12 @@ object ApplicationAttributes {
 
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
 
+	/**
+	 * Do not use directly. Prefer using shorthands on [ApplicationCall].
+	 *
+	 * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
+	 * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
+	 */
 	var Attributes.currentUser: CurrentUser? by optionalKey(CurrentUserAttribute)
 
 	@Suppress("unused") // not needed yet, ApplicationComponent is alive for the whole Application lifecycle

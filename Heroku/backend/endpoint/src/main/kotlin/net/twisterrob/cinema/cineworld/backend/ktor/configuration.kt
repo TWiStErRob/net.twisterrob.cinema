@@ -1,6 +1,12 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.Application
@@ -37,7 +43,11 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.time.OffsetDateTime
 
+/**
+ * @see RouteControllerRegistrar
+ */
 internal fun Application.configuration(
 	staticRootFolder: File = File("./deploy/static"),
 	oauthHttpClient: HttpClient = HttpClient(),
@@ -52,6 +62,23 @@ internal fun Application.configuration(
 	install(ContentNegotiation) {
 		jackson {
 			enable(SerializationFeature.INDENT_OUTPUT)
+			registerModule(JavaTimeModule())
+			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+			enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)
+			disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+			registerModule(object : SimpleModule("cineworld-backend") {
+				init {
+					// Work around https://github.com/FasterXML/jackson-modules-java8/issues/76
+					// Make sure trailing zeros are serialized. Disregards all (de-)serialization features.
+					addSerializer(OffsetDateTime::class.java, object : JsonSerializer<OffsetDateTime>() {
+						override fun serialize(
+							value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
+						) {
+							gen.writeString(value.toString())
+						}
+					})
+				}
+			})
 		}
 	}
 	install(StatusPages) {

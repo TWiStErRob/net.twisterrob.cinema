@@ -16,13 +16,19 @@ class GraphCinemaRepository @Inject constructor(
 		service.getActiveCinemas()
 			.map(mapper::map)
 
-	override fun getCinemasAuth(userID: Long): List<FrontendCinema> =
-		service.getCinemasAuth(userID.toString())
+	override fun getCinemasAuth(userID: String): List<FrontendCinema> =
+		service.getCinemasAuth(userID)
 			.map(mapper::map)
 
-	override fun getFavoriteCinemas(userID: Long): List<FrontendCinema> =
-		service.getFavoriteCinemas(userID.toString())
+	override fun getFavoriteCinemas(userID: String): List<FrontendCinema> =
+		service.getFavoriteCinemas(userID)
 			.map(mapper::map)
+
+	override fun addFavorite(userID: String, cinema: Long): FrontendCinema? =
+		service.addFavorite(userID, cinema)?.let { mapper.map(it) }
+
+	override fun removeFavorite(userID: String, cinema: Long): FrontendCinema? =
+		service.removeFavorite(userID, cinema)?.let { mapper.map(it) }
 }
 
 class CinemaMapper @Inject constructor(
@@ -30,12 +36,17 @@ class CinemaMapper @Inject constructor(
 
 	fun map(db: DBCinema): FrontendCinema =
 		FrontendCinema(
-			name = db.name
+			name = db.name,
+			cineworldID = db.cineworldID,
+			postcode = db.postcode,
+			address = db.address,
+			telephone = db.telephone,
+			cinema_url = db.cinema_url.toString(),
+			_created = db._created,
+			_updated = db._updated,
+			fav = false
 		)
 
 	fun map(favoritedDB: Map.Entry<DBCinema, Boolean>): FrontendCinema =
-		FrontendCinema(
-			name = favoritedDB.key.name,
-			fav = favoritedDB.value
-		)
+		map(favoritedDB.key).copy(fav = favoritedDB.value)
 }

@@ -76,7 +76,7 @@ class AuthController @Inject constructor(
 
 		authenticate(optional = true) {
 			get<Auth.Routes.Logout> {
-				if (call.hasUser()) {
+				if (call.hasUser) {
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Logging out {}.", currentUser)
 					call.sessions.clear<AuthSession>()
@@ -90,7 +90,7 @@ class AuthController @Inject constructor(
 
 		authenticate(optional = true) {
 			get<Auth.Routes.Google> {
-				if (call.hasUser()) {
+				if (call.hasUser) {
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Already logged in as {}.", currentUser)
 					call.respondRedirect(App.Routes.Home.href)

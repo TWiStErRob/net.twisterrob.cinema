@@ -1,12 +1,16 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 
 import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.locations.delete
 import io.ktor.locations.get
+import io.ktor.locations.put
 import io.ktor.response.respond
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.isAuthenticated
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject
@@ -28,7 +32,7 @@ class CinemasController @Inject constructor(
 	override fun Routing.registerRoutes() {
 
 		get<Cinemas.Routes.ListCinemas> {
-			if (call.isAuthenticated()) {
+			if (call.hasUser) {
 				call.respond(repository.getCinemasAuth(userID = call.userId))
 			} else {
 				call.respond(repository.getActiveCinemas())
@@ -36,14 +40,31 @@ class CinemasController @Inject constructor(
 		}
 
 		get<Cinemas.Routes.ListFavoriteCinemas> {
-			TODO("Must be authenticated, don't know how to check yet")
-			@Suppress("UNREACHABLE_CODE")
-			call.respond(repository.getFavoriteCinemas(userID = call.userId))
+			if (call.hasUser) {
+				call.respond(repository.getFavoriteCinemas(userID = call.userId))
+			} else {
+				call.respondText("Can't find user.", status = NotFound)
+			}
+		}
+
+		put<Cinemas.Routes.AddFavorite> { cinema ->
+			if (call.hasUser) {
+				val updatedCinema = repository.addFavorite(userID = call.userId, cinema = cinema.cinema)
+					?: return@put call.respondText("Can't find cinema ${cinema.cinema}.", status = NotFound)
+				call.respond(updatedCinema)
+			} else {
+				call.respondText("Can't find user.", status = NotFound)
+			}
+		}
+
+		delete<Cinemas.Routes.RemoveFavorite> { cinema ->
+			if (call.hasUser) {
+				val updatedCinema = repository.removeFavorite(userID = call.userId, cinema = cinema.cinema)
+					?: return@delete call.respondText("Can't find cinema ${cinema.cinema}.", status = NotFound)
+				call.respond(updatedCinema)
+			} else {
+				call.respondText("Can't find user.", status = NotFound)
+			}
 		}
 	}
 }
-
-/**
- * TODO stub to make it compile
- */
-private val ApplicationCall.userId: Long get() = 0

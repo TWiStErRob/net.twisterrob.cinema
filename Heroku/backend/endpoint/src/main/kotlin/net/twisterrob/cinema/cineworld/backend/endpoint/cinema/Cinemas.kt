@@ -20,10 +20,10 @@ object Cinemas {
 		object ListFavoriteCinemas : LocationRoute
 
 		@Location("/cinema/{cinema}/favorite")
-		data class AddFavorite(val edi: Long) : LocationRoute
+		data class AddFavorite(val cinema: Long) : LocationRoute
 
 		@Location("/cinema/{cinema}/favorite")
-		data class RemoveFavorite(val edi: Long) : LocationRoute
+		data class RemoveFavorite(val cinema: Long) : LocationRoute
 	}
 
 	/**

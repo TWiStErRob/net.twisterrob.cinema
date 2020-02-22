@@ -1,6 +1,8 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Cinema
+import net.twisterrob.cinema.database.model.User
+import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.query
 import javax.inject.Inject
@@ -79,4 +81,46 @@ class CinemaService @Inject constructor(
 				keySelector = { it.getValue("cinema") as Cinema },
 				valueTransform = { it.getValue("fav") as Boolean }
 			)
+
+	/**
+	 * Create a `GOESTO` relation between [User] and [Cinema] if it doesn't exist.
+	 * @param userId [User.id]
+	 * @param cinema [Cinema.cineworldID]
+	 * @return updated [Cinema], or `null` if [cinema] is not a known [Cinema].
+	 */
+	fun addFavorite(userId: String, cinema: Long): Cinema? =
+		session.queryForObject(
+			"""
+			MATCH
+				(c:Cinema { cineworldID:{cinemaID} }),
+				(u:User { id:{userID} })
+			CREATE UNIQUE
+				(u)-[:GOESTO]->(c)
+			RETURN u AS user, c AS cinema
+			""",
+			mapOf(
+				"userID" to userId,
+				"cinemaID" to cinema
+			)
+		)
+
+	/**
+	 * Find the [User] and remove the relation `GOESTO` to the [Cinema].
+	 * @param userId [User.id]
+	 * @param cinema [Cinema.cineworldID]
+	 * @return updated [Cinema], or `null` if [cinema] is not a known [Cinema].
+	 */
+	fun removeFavorite(userId: String, cinema: Long): Cinema? =
+		session.queryForObject(
+			"""
+				MATCH
+					(u:User { id:{userID} })-[g:GOESTO]->(c:Cinema { cineworldID:{cinemaID} })
+				DELETE g
+				RETURN u AS user, c AS cinema
+				""",
+			mapOf(
+				"userID" to userId,
+				"cinemaID" to cinema
+			)
+		)
 }
