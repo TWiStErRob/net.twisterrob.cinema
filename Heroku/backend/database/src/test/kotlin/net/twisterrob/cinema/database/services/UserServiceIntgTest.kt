@@ -101,9 +101,10 @@ class UserServiceIntgTest {
 			val users = graph.allNodes.toList()
 
 			assertThat(users, hasSize(1))
-			val user = users.single()
-			assertSameData(savedUser, user)
-			assertThat(user.relationships, emptyIterable())
+			users.single().let { userNode ->
+				assertSameData(savedUser, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
 		}
 	}
 
@@ -137,10 +138,52 @@ class UserServiceIntgTest {
 			val users = graph.allNodes.toList()
 
 			assertThat(users, hasSize(2))
-			assertSameData(fixtUser, users[0])
-			assertSameData(expectedNewUser, users[1])
-			assertThat(users[0].relationships, emptyIterable())
-			assertThat(users[1].relationships, emptyIterable())
+			users[0].let { userNode ->
+				assertSameData(fixtUser, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
+			users[1].let { userNode ->
+				assertSameData(expectedNewUser, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
+		}
+	}
+
+	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
+	@Test fun `addUser() preserves date format`(session: Session, graph: GraphDatabaseService) {
+		val fixtUserId: String = fixture.build()
+		val fixtEmail: String = fixture.build()
+		val fixtName: String = fixture.build()
+		val fixtRealm: String = fixture.build()
+		val fixtCreated: OffsetDateTime = fixture.build<OffsetDateTime>().let {
+			// make sure the milliseconds are ??0
+			it.minusNanos(it.nano % 10000000L)
+		}
+
+		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+
+		assertThat(result.id, equalTo(fixtUserId))
+		assertThat(result.email, equalTo(fixtEmail))
+		assertThat(result.name, equalTo(fixtName))
+		assertThat(result.realm, equalTo(fixtRealm))
+		assertThat(result._created, equalTo(fixtCreated))
+
+		val expectedNewUser = User().apply {
+			this["graphId"] = result.graphId
+			this.id = fixtUserId
+			this.email = fixtEmail
+			this.name = fixtName
+			this.realm = fixtRealm
+			this._created = fixtCreated
+		}
+		graph.beginTx().use {
+			val users = graph.allNodes.toList()
+
+			assertThat(users, hasSize(1))
+			users.single().let { user ->
+				assertSameData(expectedNewUser, user)
+				assertThat(user.relationships, emptyIterable())
+			}
 		}
 	}
 
@@ -164,10 +207,14 @@ class UserServiceIntgTest {
 			val users = graph.allNodes.toList()
 
 			assertThat(users, hasSize(2))
-			assertSameData(fixtUser, users[0])
-			assertSameData(result, users[1])
-			assertThat(users[0].relationships, emptyIterable())
-			assertThat(users[1].relationships, emptyIterable())
+			users[0].let { userNode ->
+				assertSameData(fixtUser, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
+			users[1].let { userNode ->
+				assertSameData(result, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
 		}
 	}
 
@@ -199,9 +246,10 @@ class UserServiceIntgTest {
 			val users = graph.allNodes.toList()
 
 			assertThat(users, hasSize(1))
-			val user = users.single()
-			assertSameData(savedUser, user)
-			assertThat(user.relationships, emptyIterable())
+			users.single().let { userNode ->
+				assertSameData(savedUser, userNode)
+				assertThat(userNode.relationships, emptyIterable())
+			}
 		}
 	}
 }

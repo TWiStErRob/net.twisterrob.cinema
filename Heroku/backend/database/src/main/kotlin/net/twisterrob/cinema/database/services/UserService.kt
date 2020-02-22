@@ -56,7 +56,8 @@ class UserService @Inject constructor(
 				"id" to userId,
 				"email" to email,
 				"name" to name,
-				"created" to created
+				// calling OffsetDateTime.toString() is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
+				"created" to created.toString()
 			)
 		)!!
 }
