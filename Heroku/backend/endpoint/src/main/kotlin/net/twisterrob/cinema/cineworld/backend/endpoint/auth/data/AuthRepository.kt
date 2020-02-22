@@ -18,14 +18,4 @@ class AuthRepository @Inject constructor(
 			User(it.id, it.email)
 		}
 	}
-
-	class UnknownUserException(
-		@Suppress("CanBeParameter") // keep for debug
-		val userId: String
-	) : RuntimeException("Cannot find user $userId")
-
-	data class User(
-		val id: String,
-		val email: String
-	)
 }

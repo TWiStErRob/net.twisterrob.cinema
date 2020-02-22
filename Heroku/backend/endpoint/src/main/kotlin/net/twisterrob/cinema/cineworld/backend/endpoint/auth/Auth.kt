@@ -4,12 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import io.ktor.application.ApplicationCall
-import io.ktor.auth.UserIdPrincipal
-import io.ktor.auth.authentication
 import io.ktor.client.HttpClient
 import io.ktor.locations.Location
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 
@@ -54,21 +50,3 @@ object Auth {
 		fun httpClient() = HttpClient()
 	}
 }
-
-// TODO what's the difference to hasUser?
-val ApplicationCall.isAuthenticated: Boolean
-	get() = this.authentication.principal<io.ktor.auth.OAuthAccessTokenResponse.OAuth2>() != null
-
-/**
- * @see userId if this is `true`, the user ID can be retrieved
- */
-// TODO hasUser is true even with expired session?
-val ApplicationCall.hasUser: Boolean
-	get() = this.attributes.currentUser != null
-
-/**
- * @return ID of the currently logged in user if [hasUser] is `true`
- * @throws NullPointerException if [hasUser] is `false`
- */
-val ApplicationCall.userId: String
-	get() = this.attributes.currentUser!!.id

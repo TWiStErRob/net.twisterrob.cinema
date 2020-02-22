@@ -18,6 +18,7 @@ import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthIntgTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
@@ -236,8 +237,8 @@ private fun serializedCinema(cinema: Cinema): String =
  * Makes sure that auth interceptor works as expected.
  * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
  */
-private fun AuthRepository.setupAuth(): AuthRepository.User {
-	val fixtUser: AuthRepository.User = JFixture().build()
+private fun AuthRepository.setupAuth(): User {
+	val fixtUser: User = JFixture().build()
 	whenever(this.findUser(AuthIntgTest.realisticUserId)).thenReturn(fixtUser)
 	return fixtUser
 }

@@ -25,6 +25,8 @@ import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
@@ -152,8 +154,8 @@ class AuthIntgTest {
 	fun `account page shows error when invalid user in session`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		whenever(mockRepository.findUser(realisticUserId)).thenThrow(AuthRepository.UnknownUserException("fake error"))
-		val ex = assertThrows<AuthRepository.UnknownUserException> {
+		whenever(mockRepository.findUser(realisticUserId)).thenThrow(UnknownUserException("fake error"))
+		val ex = assertThrows<UnknownUserException> {
 			handleRequest {
 				method = HttpMethod.Get
 				uri = "/account"
@@ -168,7 +170,7 @@ class AuthIntgTest {
 	fun `account page shows user data with session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val user: AuthRepository.User = JFixture().build()
+		val user: User = JFixture().build()
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(user)
 		handleRequest {
 			method = HttpMethod.Get
