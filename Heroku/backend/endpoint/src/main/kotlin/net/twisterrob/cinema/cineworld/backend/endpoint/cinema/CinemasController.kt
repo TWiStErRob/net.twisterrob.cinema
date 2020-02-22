@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * The Users controller. This controller handles the routes related to users.
+ * The [Cinemas] controller. This controller handles the routes related to cinemas.
  * It inherits [RouteController] that offers some basic functionality.
  */
 @Singleton

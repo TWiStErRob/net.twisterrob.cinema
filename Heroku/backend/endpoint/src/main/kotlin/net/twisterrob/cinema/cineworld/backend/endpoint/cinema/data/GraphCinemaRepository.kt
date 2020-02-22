@@ -4,7 +4,6 @@ import net.twisterrob.cinema.database.services.CinemaService
 import javax.inject.Inject
 import javax.inject.Singleton
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema as FrontendCinema
-import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
 @Singleton
 class GraphCinemaRepository @Inject constructor(
