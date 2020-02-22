@@ -89,12 +89,12 @@ allprojects {
 			}
 			"check" {
 				// Remove default dependency, because it runs all tests.
-				setDependsOn(dependsOn - test)
+				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == test.name })
 				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
 				// Don't want to run it automatically, ever.
-				setDependsOn(dependsOn - integrationExternalTest)
+				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
 			}
 		}
 	}
