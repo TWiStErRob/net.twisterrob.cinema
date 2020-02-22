@@ -58,7 +58,7 @@ internal fun Application.configuration(
 
 	install(DefaultHeaders)
 	install(CallLogging)
-	install(HeaderLoggingFeature)
+	//install(HeaderLoggingFeature)
 	install(ContentNegotiation) {
 		jackson {
 			enable(SerializationFeature.INDENT_OUTPUT)

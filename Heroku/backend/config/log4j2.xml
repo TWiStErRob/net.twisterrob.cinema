@@ -35,12 +35,83 @@
 			<AppenderRef ref="color-console" />
 		</Root>
 
-		<!-- tighten spamming logs -->
-		<Logger name="org.neo4j.ogm" level="TRACE" />
-		<Logger name="org.neo4j.driver.internal.shaded" level="INFO" />
-		<Logger name="io.mockk" level="WARN" />
-
-		<!-- Application specific logs. -->
+		<!-- Enable lots of logs. -->
 		<Logger name="net.twisterrob" level="ALL" />
+		<Logger name="org.neo4j.ogm" level="TRACE" />
+
+		<!-- Tighten spamming logs. -->
+
+		<!-- on every entity mapping these spam:
+			DEBUG (MetaData.java:160) looking for concrete class to resolve label: Cinema
+			DEBUG (MetaData.java:183) concrete class found: ClassInfo{className='net.twisterrob.cinema.database.model.Cinema', neo4jName='Cinema'}. comparing with what's already been found previously...
+			DEBUG (MetaData.java:203) Cinema resolving class: ClassInfo{className='net.twisterrob.cinema.database.model.Cinema', neo4jName='Cinema'}
+			DEBUG (MetaData.java:160) looking for concrete class to resolve label: Historical
+			DEBUG (MetaData.java:175) label is on an abstract class. Looking for a single concrete subclass...
+			DEBUG (MetaData.java:261) More than one class subclasses ClassInfo{className='net.twisterrob.cinema.database.model.Historical', neo4jName='null'}
+			DEBUG (MetaData.java:198) no implementing class or concrete subclass found!
+			DEBUG (MetaData.java:160) looking for concrete class to resolve label: BaseNode
+			DEBUG (MetaData.java:175) label is on an abstract class. Looking for a single concrete subclass...
+			DEBUG (MetaData.java:261) More than one class subclasses ClassInfo{className='net.twisterrob.cinema.database.model.BaseNode', neo4jName='null'}
+			DEBUG (MetaData.java:198) no implementing class or concrete subclass found!
+		-->
+		<Logger name="org.neo4j.ogm.metadata.MetaData" level="INFO" />
+
+		<!-- on startup
+			DEBUG (PlatformDependent.java:987) Platform: Windows
+			DEBUG (PlatformDependent0.java:396) -Dio.netty.noUnsafe: false
+			DEBUG (PlatformDependent0.java:852) Java version: 8
+			DEBUG (PlatformDependent0.java:121) sun.misc.Unsafe.theUnsafe: available
+			DEBUG (PlatformDependent0.java:145) sun.misc.Unsafe.copyMemory: available
+			DEBUG (PlatformDependent0.java:183) java.nio.Buffer.address: available
+			DEBUG (PlatformDependent0.java:244) direct buffer constructor: available
+			DEBUG (PlatformDependent0.java:314) java.nio.Bits.unaligned: available, true
+			DEBUG (PlatformDependent0.java:379) jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable prior to Java9
+			DEBUG (PlatformDependent0.java:386) java.nio.DirectByteBuffer.<init>(long, int): available
+			DEBUG (PlatformDependent.java:1030) sun.misc.Unsafe: available
+			DEBUG (PlatformDependent.java:1149) -Dio.netty.tmpdir: C:\Users\TWiStEr\AppData\Local\Temp (java.io.tmpdir)
+			DEBUG (PlatformDependent.java:1228) -Dio.netty.bitMode: 64 (sun.arch.data.model)
+			DEBUG (PlatformDependent.java:174) -Dio.netty.maxDirectMemory: 67108864 bytes
+			DEBUG (PlatformDependent.java:181) -Dio.netty.uninitializedArrayAllocationThreshold: -1
+			DEBUG (CleanerJava6.java:92) java.nio.ByteBuffer.cleaner(): available
+			DEBUG (PlatformDependent.java:201) -Dio.netty.noPreferDirect: false
+			DEBUG (PlatformDependent.java:891) org.jctools-core.MpscChunkedArrayQueue: available
+		-->
+		<Logger name="io.netty.util.internal" level="INFO" />
+
+		<!-- on startup, 50-ish times:
+			TRACE (NioEventLoop.java:260) instrumented a special java.util.Set into: sun.nio.ch.WindowsSelectorImpl@1ce24091
+		-->
+		<Logger name="io.netty.channel.nio.NioEventLoop" level="DEBUG" />
+
+		<!-- on startup
+			DEBUG (NioEventLoop.java:106) -Dio.netty.noKeySetOptimization: false
+			DEBUG (NioEventLoop.java:107) -Dio.netty.selectorAutoRebuildThreshold: 512
+			DEBUG (DefaultChannelId.java:79) -Dio.netty.processId: 21896 (auto-detected)
+			DEBUG (NetUtil.java:139) -Djava.net.preferIPv4Stack: false
+			DEBUG (NetUtil.java:140) -Djava.net.preferIPv6Addresses: false
+			DEBUG (NetUtil.java:224) Loopback interface: lo (Software Loopback Interface 1, 127.0.0.1)
+			DEBUG (NetUtil.java:289) Failed to get SOMAXCONN from sysctl and file \proc\sys\net\core\somaxconn. Default: 200
+			DEBUG (DefaultChannelId.java:101) -Dio.netty.machineId: 00:50:56:ff:fe:c0:00:01 (auto-detected)
+			DEBUG (ResourceLeakDetector.java:130) -Dio.netty.leakDetection.level: simple
+			DEBUG (ResourceLeakDetector.java:131) -Dio.netty.leakDetection.targetRecords: 4
+			DEBUG (PooledByteBufAllocator.java:142) -Dio.netty.allocator.numHeapArenas: 0
+			DEBUG (PooledByteBufAllocator.java:143) -Dio.netty.allocator.numDirectArenas: 0
+			DEBUG (PooledByteBufAllocator.java:145) -Dio.netty.allocator.pageSize: 8192
+			DEBUG (PooledByteBufAllocator.java:150) -Dio.netty.allocator.maxOrder: 11
+			DEBUG (PooledByteBufAllocator.java:154) -Dio.netty.allocator.chunkSize: 16777216
+			DEBUG (PooledByteBufAllocator.java:155) -Dio.netty.allocator.tinyCacheSize: 512
+			DEBUG (PooledByteBufAllocator.java:156) -Dio.netty.allocator.smallCacheSize: 256
+			DEBUG (PooledByteBufAllocator.java:157) -Dio.netty.allocator.normalCacheSize: 64
+			DEBUG (PooledByteBufAllocator.java:158) -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+			DEBUG (PooledByteBufAllocator.java:159) -Dio.netty.allocator.cacheTrimInterval: 8192
+			DEBUG (PooledByteBufAllocator.java:160) -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+			DEBUG (PooledByteBufAllocator.java:161) -Dio.netty.allocator.useCacheForAllThreads: true
+			DEBUG (PooledByteBufAllocator.java:162) -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+			DEBUG (ByteBufUtil.java:86) -Dio.netty.allocator.type: pooled
+			DEBUG (ByteBufUtil.java:95) -Dio.netty.threadLocalDirectBufferSize: 0
+			DEBUG (ByteBufUtil.java:98) -Dio.netty.maxThreadLocalCharBufferSize: 16384
+		-->
+		<Logger name="io.netty" level="INFO" />
+
 	</Loggers>
 </Configuration>

@@ -4,6 +4,7 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.call
+import io.ktor.application.log
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelineContext
 
@@ -27,6 +28,6 @@ class HeaderLoggingConfiguration
 
 private fun PipelineContext<Unit, ApplicationCall>.logRequestHeaders() {
 	call.request.headers.forEach { name, values ->
-		println("$name: ${values.joinToString()}")
+		call.application.log.trace("Header $name: ${values.joinToString()}")
 	}
 }
