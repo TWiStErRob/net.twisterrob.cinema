@@ -11,18 +11,8 @@ dependencies {
 
 	implementation(Deps.Kotlin.core)
 	runtimeOnly(Deps.Ktor.client.engine_okhttp)
-
-
-	implementation(Deps.Dagger2.core)
-	kapt(Deps.Dagger2.apt)
-}
-
-// Logging
-dependencies {
-	implementation(Deps.SLF4J.core)
-	runtimeOnly(Deps.Log4J2.api)
-	runtimeOnly(Deps.Log4J2.core)
-	runtimeOnly(Deps.Log4J2.slf4j)
+	Deps.Log4J2.slf4j(project)
+	Deps.Dagger2.default(project)
 }
 
 // Test
@@ -43,7 +33,6 @@ dependencies {
 	testImplementation(Deps.Jackson.module_kotlin)
 	testImplementation(Deps.Jackson.datatype_java8)
 	testImplementation(Deps.Neo4JOGM.harness)
-	kaptTest(Deps.Dagger2.apt)
 
 	testFixturesImplementation(project(":test-helpers"))
 	testFixturesImplementation(Deps.Kotlin.core)

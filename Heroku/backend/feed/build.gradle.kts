@@ -14,8 +14,7 @@ dependencies {
 	implementation(Deps.Kotlin.core)
 	implementation(Deps.Kotlin.reflect)
 
-	implementation(Deps.Dagger2.core)
-	kapt(Deps.Dagger2.apt)
+	Deps.Dagger2.default(project)
 
 	implementation(Deps.Jackson.dataformat_xml)
 	implementation(Deps.Jackson.module_kotlin)

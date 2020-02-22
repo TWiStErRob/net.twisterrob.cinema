@@ -22,6 +22,7 @@ object OkHttp3 {
 
 	const val core = "com.squareup.okhttp3:okhttp:${version}"
 	const val interceptor_logging = "com.squareup.okhttp3:logging-interceptor:${version}"
+
 	/** `exclude module: 'junit'` */
 	const val mockwebserver = "com.squareup.okhttp3:mockwebserver:${version}"
 
@@ -51,8 +52,10 @@ object Retrofit2 {
 	const val converter_protobuf = "com.squareup.retrift2:converter-protobuf:${version}"
 
 	const val adapter_java8 = "com.squareup.retrofit2:adapter-java8:${version}"
+
 	/** `exclude module: 'rxjava'` */
 	const val adapter_rxjava = "com.squareup.retrofit2:adapter-rxjava:${version}"
+
 	/** `exclude module: 'rxjava'` */
 	const val adapter_rxjava2 = "com.squareup.retrofit2:adapter-rxjava2:${version}"
 	const val adapter_guava = "com.squareup.retrofit2:adapter-guava:${version}"
@@ -228,6 +231,15 @@ object Log4J2 {
 	const val api = "org.apache.logging.log4j:log4j-api:${version}"
 	const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:${version}"
 	const val jul = "org.apache.logging.log4j:log4j-jul:${version}"
+
+	fun slf4j(project: Project) {
+		project.dependencies {
+			add("implementation", SLF4J.core)
+			add("runtimeOnly", api)
+			add("runtimeOnly", core)
+			add("runtimeOnly", slf4j)
+		}
+	}
 }
 
 object Dagger2 {
@@ -238,6 +250,14 @@ object Dagger2 {
 	const val apt = "com.google.dagger:dagger-compiler:${version}"
 
 	const val jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
+
+	fun default(project: Project) {
+		project.dependencies {
+			add("implementation", core)
+			add("kapt", apt)
+			add("kaptTest", apt)
+		}
+	}
 }
 
 object Neo4JOGM {

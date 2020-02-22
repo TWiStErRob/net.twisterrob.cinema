@@ -9,8 +9,7 @@ dependencies {
 	implementation(Deps.Kotlin.core)
 	implementation(Deps.Kotlin.reflect)
 
-	implementation(Deps.Dagger2.core)
-	kapt(Deps.Dagger2.apt)
+	Deps.Dagger2.default(project)
 }
 
 // Graph database
@@ -34,7 +33,6 @@ dependencies {
 	testImplementation(project(":test-helpers"))
 
 	testImplementation(Deps.Neo4JOGM.harness)
-	kaptTest(Deps.Dagger2.apt)
 
 	testRuntimeOnly(Deps.Log4J2.slf4j)
 
