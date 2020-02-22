@@ -62,8 +62,8 @@ class CinemasIntgTest {
 		JSONAssert.assertEquals(
 			"""
 			[
-				${serializedCinema(fixtCinemas[0])},
-				${serializedCinema(fixtCinemas[1])}
+				${serialized(fixtCinemas[0])},
+				${serialized(fixtCinemas[1])}
 			]
 			""",
 			call.response.content,
@@ -86,8 +86,8 @@ class CinemasIntgTest {
 		JSONAssert.assertEquals(
 			"""
 			[
-				${serializedCinema(fixtCinemas[0])},
-				${serializedCinema(fixtCinemas[1])}
+				${serialized(fixtCinemas[0])},
+				${serialized(fixtCinemas[1])}
 			]
 			""",
 			call.response.content,
@@ -119,8 +119,8 @@ class CinemasIntgTest {
 		JSONAssert.assertEquals(
 			"""
 			[
-				${serializedCinema(fixtCinemas[0])},
-				${serializedCinema(fixtCinemas[1])}
+				${serialized(fixtCinemas[0])},
+				${serialized(fixtCinemas[1])}
 			]
 			""",
 			call.response.content,
@@ -148,7 +148,7 @@ class CinemasIntgTest {
 		verifyNoMoreInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.OK, call.response.status())
-		JSONAssert.assertEquals(serializedCinema(fixtCinema), call.response.content, JSONCompareMode.STRICT)
+		JSONAssert.assertEquals(serialized(fixtCinema), call.response.content, JSONCompareMode.STRICT)
 	}
 
 	/** @see Cinemas.Routes.RemoveFavorite */
@@ -171,7 +171,7 @@ class CinemasIntgTest {
 		verifyNoMoreInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.OK, call.response.status())
-		JSONAssert.assertEquals(serializedCinema(fixtCinema), call.response.content, JSONCompareMode.STRICT)
+		JSONAssert.assertEquals(serialized(fixtCinema), call.response.content, JSONCompareMode.STRICT)
 	}
 
 	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
@@ -180,7 +180,7 @@ class CinemasIntgTest {
 			daggerApp = {
 				daggerApplication(
 					createComponentBuilder = DaggerCinemasIntgTestComponent::builder,
-					initComponent = { it.cinemas(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },
+					initComponent = { it.repo(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },
 					componentReady = { (it as CinemasIntgTestComponent).inject(this@CinemasIntgTest) }
 				)
 			}
@@ -203,7 +203,7 @@ private interface CinemasIntgTestComponent : ApplicationComponent {
 	interface Builder : ApplicationComponent.Builder {
 
 		@BindsInstance
-		fun cinemas(repository: CinemaRepository): Builder
+		fun repo(repository: CinemaRepository): Builder
 
 		@BindsInstance
 		fun httpClient(client: HttpClient): Builder
@@ -216,7 +216,7 @@ private interface CinemasIntgTestComponent : ApplicationComponent {
 }
 
 @Language("json")
-private fun serializedCinema(cinema: Cinema): String =
+private fun serialized(cinema: Cinema): String =
 	// order intentionally switched up
 	"""
 	{

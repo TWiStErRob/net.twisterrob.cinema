@@ -30,23 +30,3 @@ class GraphCinemaRepository @Inject constructor(
 	override fun removeFavorite(userID: String, cinema: Long): FrontendCinema? =
 		service.removeFavorite(userID, cinema)?.let { mapper.map(it) }
 }
-
-class CinemaMapper @Inject constructor(
-) {
-
-	fun map(db: DBCinema): FrontendCinema =
-		FrontendCinema(
-			name = db.name,
-			cineworldID = db.cineworldID,
-			postcode = db.postcode,
-			address = db.address,
-			telephone = db.telephone,
-			cinema_url = db.cinema_url.toString(),
-			_created = db._created,
-			_updated = db._updated,
-			fav = false
-		)
-
-	fun map(favoritedDB: Map.Entry<DBCinema, Boolean>): FrontendCinema =
-		map(favoritedDB.key).copy(fav = favoritedDB.value)
-}

@@ -97,9 +97,9 @@ class GraphCinemaRepositoryTest {
 		whenever(mockMapper.map(fixtDBCinema)).thenReturn(fixtCinema)
 		whenever(mockService.addFavorite(fixtUser, fixtCinemaId)).thenReturn(fixtDBCinema)
 
-		val cinemas = sut.addFavorite(fixtUser, fixtCinemaId)
+		val cinema = sut.addFavorite(fixtUser, fixtCinemaId)
 
-		assertEquals(fixtCinema, cinemas)
+		assertEquals(fixtCinema, cinema)
 
 		verify(mockService).addFavorite(fixtUser, fixtCinemaId)
 		verify(mockMapper).map(fixtDBCinema)
@@ -111,9 +111,9 @@ class GraphCinemaRepositoryTest {
 		val fixtCinemaId: Long = fixture.build()
 		whenever(mockService.addFavorite(fixtUser, fixtCinemaId)).thenReturn(null)
 
-		val cinemas = sut.addFavorite(fixtUser, fixtCinemaId)
+		val cinema = sut.addFavorite(fixtUser, fixtCinemaId)
 
-		assertNull(cinemas)
+		assertNull(cinema)
 
 		verify(mockService).addFavorite(fixtUser, fixtCinemaId)
 		verifyNoMoreInteractions(mockService, mockMapper)
@@ -127,9 +127,9 @@ class GraphCinemaRepositoryTest {
 		whenever(mockMapper.map(fixtDBCinema)).thenReturn(fixtCinema)
 		whenever(mockService.removeFavorite(fixtUser, fixtCinemaId)).thenReturn(fixtDBCinema)
 
-		val cinemas = sut.removeFavorite(fixtUser, fixtCinemaId)
+		val cinema = sut.removeFavorite(fixtUser, fixtCinemaId)
 
-		assertEquals(fixtCinema, cinemas)
+		assertEquals(fixtCinema, cinema)
 
 		verify(mockService).removeFavorite(fixtUser, fixtCinemaId)
 		verify(mockMapper).map(fixtDBCinema)
@@ -141,9 +141,9 @@ class GraphCinemaRepositoryTest {
 		val fixtCinemaId: Long = fixture.build()
 		whenever(mockService.removeFavorite(fixtUser, fixtCinemaId)).thenReturn(null)
 
-		val cinemas = sut.removeFavorite(fixtUser, fixtCinemaId)
+		val cinema = sut.removeFavorite(fixtUser, fixtCinemaId)
 
-		assertNull(cinemas)
+		assertNull(cinema)
 
 		verify(mockService).removeFavorite(fixtUser, fixtCinemaId)
 		verifyNoMoreInteractions(mockService, mockMapper)
