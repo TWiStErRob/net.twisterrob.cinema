@@ -7,6 +7,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.Films
+import net.twisterrob.cinema.cineworld.backend.endpoint.view.Views
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteControllerRegistrar
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookModule
 import net.twisterrob.cinema.database.Neo4J
@@ -22,7 +23,9 @@ import javax.inject.Singleton
 		Cinemas.FrontendModule::class,
 		Cinemas.BackendModule::class,
 		Films.FrontendModule::class,
-		Films.BackendModule::class
+		Films.BackendModule::class,
+		Views.FrontendModule::class,
+		Views.BackendModule::class
 	]
 )
 @Singleton
