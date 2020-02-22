@@ -244,11 +244,23 @@ object Neo4JOGM {
 
 	const val version = "3.2.8" // https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 	const val version_neo4j = "3.4.9"
+
 	/**
 	 * Warning "The following annotation processors were detected on the compile classpath:"
 	 *  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'
 	 *  * 'org.neo4j.kernel.impl.annotations.DocumentationProcessor'
-	 * Solution: `exclude module: 'neo4j-kernel'`
+	 *
+	 * Solution (remove processors): `exclude module: 'neo4j-kernel'`
+	 *
+	 * Solution (disable classpath detection):
+	 * ```kotlin
+	 * plugins.withId("org.jetbrains.kotlin.kapt") {
+	 *     val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
+	 *     kapt.apply {
+	 *       includeCompileClasspath = false
+	 *     }
+	 * }
+	 * ```
 	 * @see [https://neo4j.com/docs/ogm-manual/current/]
 	 */
 	const val core = "org.neo4j:neo4j-ogm-core:${version}"
@@ -256,10 +268,6 @@ object Neo4JOGM {
 	const val driver_http = "org.neo4j:neo4j-ogm-http-driver:${version}"
 
 	const val harness = "org.neo4j.test:neo4j-harness:${version_neo4j}"
-	/**
-	 * TODO `{ transitive = true }` why?
-	 */
-	const val neo4j_kernel = "org.neo4j:neo4j-kernel:${version_neo4j}"
 }
 
 object Jackson {

@@ -16,10 +16,7 @@ dependencies {
 // Graph database
 dependencies {
 	api(Deps.Jackson.databind) // override to equalize versions
-	api(Deps.Neo4JOGM.core) {
-		exclude(module = "neo4j-kernel")
-	}
-	runtimeOnly(Deps.Neo4JOGM.neo4j_kernel) { isTransitive = true }
+	api(Deps.Neo4JOGM.core)
 	runtimeOnly(Deps.Neo4JOGM.driver_bolt)
 	runtimeOnly(Deps.Neo4JOGM.driver_http)
 }
