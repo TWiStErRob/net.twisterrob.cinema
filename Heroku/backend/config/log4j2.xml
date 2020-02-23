@@ -41,6 +41,9 @@
 
 		<!-- Tighten spamming logs. -->
 
+		<!-- TMI from embedded driver during tests. -->
+		<Logger name="org.neo4j.driver.internal.shaded" level="INFO" />
+
 		<!-- on every entity mapping these spam:
 			DEBUG (MetaData.java:160) looking for concrete class to resolve label: Cinema
 			DEBUG (MetaData.java:183) concrete class found: ClassInfo{className='net.twisterrob.cinema.database.model.Cinema', neo4jName='Cinema'}. comparing with what's already been found previously...
