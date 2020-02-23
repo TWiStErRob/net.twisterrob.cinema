@@ -75,9 +75,9 @@ class FilmService @Inject constructor(
 			OPTIONAL MATCH (v)-[at:AT]->(c:Cinema)
 			RETURN
 				f AS film,
-				coalesce(v, f) AS view,
-				coalesce(u, f) AS user,
-				coalesce(c, f) AS cinema
+				w AS watched, v AS view,
+				a AS attended, u AS user,
+				at AS at, c AS cinema
 			""",
 			mapOf(
 				"userID" to userID,

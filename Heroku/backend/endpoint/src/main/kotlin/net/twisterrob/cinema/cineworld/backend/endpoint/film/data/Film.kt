@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.film.data
 
+import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import java.net.URI
 import java.time.OffsetDateTime
 
@@ -27,5 +28,6 @@ data class Film(
 	val group: Long,
 	val _created: OffsetDateTime,
 	val _updated: OffsetDateTime?,
-	val `class`: String = "Film"
+	val `class`: String = "Film",
+	val view: View? = null
 )
