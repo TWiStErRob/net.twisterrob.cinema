@@ -34,7 +34,12 @@ class ViewsController @Inject constructor(
 		post<Views.Routes.AddView> {
 			val payload = call.receive<Views.Routes.ViewPayload>()
 			if (call.hasUser) {
-				val view = repository.addView(call.userId, payload.edi, payload.cinema, payload.time)
+				val view = repository.addView(
+					user = call.userId,
+					film = payload.edi,
+					cinema = payload.cinema,
+					time = payload.time
+				)
 					?: return@post call.respondText("Can't find view ${payload}.", status = NotFound)
 				call.respond(view)
 			} else {
@@ -44,7 +49,12 @@ class ViewsController @Inject constructor(
 
 		delete<Views.Routes.RemoveView> { remove ->
 			if (call.hasUser) {
-				repository.removeView(call.userId, remove.cinema, remove.edi, remove.time)
+				repository.removeView(
+					user = call.userId,
+					film = remove.edi,
+					cinema = remove.cinema,
+					time = remove.time
+				)
 				call.respondText("", status = OK)
 			} else {
 				call.respondText("Can't find user.", status = NotFound)

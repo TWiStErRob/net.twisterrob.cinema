@@ -11,10 +11,10 @@ class GraphViewRepository @Inject constructor(
 	private val mapper: ViewMapper
 ) : ViewRepository {
 
-	override fun addView(userID: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
-		service.addView(userID, film, cinema, time)?.let(mapper::map)
+	override fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
+		service.addView(user = user, film = film, cinema = cinema, time = time)?.let(mapper::map)
 
-	override fun removeView(userID: String, film: Long, cinema: Long, time: OffsetDateTime) {
-		service.removeView(userID, film, cinema, time)
+	override fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime) {
+		service.removeView(user = user, film = film, cinema = cinema, time = time)
 	}
 }

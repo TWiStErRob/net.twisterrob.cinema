@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
  */
 interface ViewRepository {
 
-	fun addView(userID: String, film: Long, cinema: Long, time: OffsetDateTime): View?
+	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View?
 
-	fun removeView(userID: String, film: Long, cinema: Long, time: OffsetDateTime)
+	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime)
 }

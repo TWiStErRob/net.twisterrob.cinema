@@ -47,7 +47,8 @@ class ViewServiceIntgTest {
 		session.save(fixtFilm)
 		session.save(fixtUser)
 
-		val result = sut.addView(fixtUser.id, fixtFilm.edi, fixtCinema.cineworldID, fixtTime)
+		val result =
+			sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		assertNotNull(result); result!!
 		// Wire up a View that is like the expected one and connect relationships.
@@ -72,7 +73,7 @@ class ViewServiceIntgTest {
 		session.save(fixtFilm)
 		session.save(fixtUser)
 
-		sut.addView(fixtUser.id, fixtFilm.edi, fixtCinema.cineworldID, fixtTime)
+		sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		graph.beginTx().use {
 			val nodes = graph.allNodes.toList()
@@ -95,7 +96,7 @@ class ViewServiceIntgTest {
 	}
 
 	@Test fun `addView fails if data is missing`(session: Session) {
-		val result = sut.addView("missing", -1, -1, fixture.build())
+		val result = sut.addView(user = "missing", film = -1, cinema = -1, time = fixture.build())
 
 		assertNull(result)
 	}
@@ -107,7 +108,7 @@ class ViewServiceIntgTest {
 		session.save(fixtFilm)
 		session.save(fixtUser)
 
-		val result = sut.addView(fixtUser.id, fixtFilm.edi, -1, fixtTime)
+		val result = sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = -1, time = fixtTime)
 
 		assertNull(result)
 	}
@@ -119,7 +120,7 @@ class ViewServiceIntgTest {
 		session.save(fixtCinema)
 		session.save(fixtUser)
 
-		val result = sut.addView(fixtUser.id, -1, fixtCinema.cineworldID, fixtTime)
+		val result = sut.addView(user = fixtUser.id, film = -1, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		assertNull(result)
 	}
@@ -131,7 +132,8 @@ class ViewServiceIntgTest {
 		session.save(fixtFilm)
 		session.save(fixtCinema)
 
-		val result = sut.addView("missing", fixtFilm.edi, fixtCinema.cineworldID, fixtTime)
+		val result =
+			sut.addView(user = "missing", film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		assertNull(result)
 	}
@@ -141,10 +143,10 @@ class ViewServiceIntgTest {
 		session.save(fixtView)
 
 		sut.removeView(
-			fixtView.userRef.id,
-			fixtView.watchedFilm.edi,
-			fixtView.atCinema.cineworldID,
-			fixtView.date.atOffset(ZoneOffset.UTC)
+			user = fixtView.userRef.id,
+			film = fixtView.watchedFilm.edi,
+			cinema = fixtView.atCinema.cineworldID,
+			time = fixtView.date.atOffset(ZoneOffset.UTC)
 		)
 
 		graph.beginTx().use {
