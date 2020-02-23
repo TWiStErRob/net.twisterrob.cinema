@@ -5,6 +5,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 
 class View(
+	val date: Long,
 	val film: Film,
 	val cinema: Cinema,
 	val user: User

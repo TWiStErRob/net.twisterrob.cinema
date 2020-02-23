@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.locations.delete
 import io.ktor.locations.post
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
@@ -30,10 +31,11 @@ class ViewsController @Inject constructor(
 	 */
 	override fun Routing.registerRoutes() {
 
-		post<Views.Routes.AddView> { add ->
+		post<Views.Routes.AddView> {
+			val payload = call.receive<Views.Routes.ViewPayload>()
 			if (call.hasUser) {
-				val view = repository.addView(call.userId, add.cinema, add.edi, add.time)
-					?: return@post call.respondText("Can't find view ${add}.", status = NotFound)
+				val view = repository.addView(call.userId, payload.edi, payload.cinema, payload.time)
+					?: return@post call.respondText("Can't find view ${payload}.", status = NotFound)
 				call.respond(view)
 			} else {
 				call.respondText("Can't find user.", status = NotFound)

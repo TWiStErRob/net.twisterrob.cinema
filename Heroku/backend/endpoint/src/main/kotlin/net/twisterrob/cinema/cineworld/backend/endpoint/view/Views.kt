@@ -17,11 +17,7 @@ object Views {
 	object Routes {
 
 		@Location("/film/{edi}/view")
-		data class AddView(val edi: Long, val cinema: Long, val date: Long) : LocationRoute {
-
-			val time: OffsetDateTime
-				get() = OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.of("UTC"))
-		}
+		data class AddView(val edi: Long/*, val cinema: Long, val date: Long*/) : LocationRoute
 
 		@Location("/film/{edi}/view")
 		data class RemoveView(val edi: Long, val cinema: Long, val date: Long) : LocationRoute {
@@ -32,6 +28,17 @@ object Views {
 
 		@Location("/film/{edi}/ignore")
 		data class IgnoreView(val edi: Long) : LocationRoute
+
+		// TODO remove this in favor of Location POST properties, but frontend needs to unwrap the object in payload
+		data class ViewPayload(
+			val edi: Long,
+			val cinema: Long,
+			val date: Long
+		) {
+
+			val time: OffsetDateTime
+				get() = OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.of("UTC"))
+		}
 	}
 
 	/**
