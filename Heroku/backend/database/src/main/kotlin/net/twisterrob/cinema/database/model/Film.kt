@@ -81,7 +81,7 @@ class Film : Historical() {
 	lateinit var release: OffsetDateTime
 
 	@Property(name = "categories")
-	lateinit var categories: List<String>
+	var categories: List<String> = mutableListOf()
 
 	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
