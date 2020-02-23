@@ -1,6 +1,5 @@
 var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/blob/master/docs/Documentation.md
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
-var passport = require('passport');   // http://passportjs.org/guide/
 var GoogleStrategy = require('passport-google-oauth20').Strategy; // http://passportjs.org/docs/google
 var config = require('./config');
 var moment = require('moment');
@@ -14,7 +13,7 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/login');
 }
 
-function setupPassport(app, graph) {
+function setupPassport(passport, app, graph) {
 	passport.serializeUser(function(user, done) {
 		done(null, user.id);
 	});
@@ -58,7 +57,7 @@ function setupPassport(app, graph) {
 	));
 }
 
-function setupRoutes(app) {
+function setupRoutes(passport, app) {
 	app.get('/account', ensureAuthenticated, function getUser(req, res){
 		res.jsonp({ user: req.user });
 	});
@@ -66,7 +65,7 @@ function setupRoutes(app) {
 		res.redirect('/auth/google');
 	});
 
-	var googleAuthSettings = { scope: ['email'], failureRedirect: '/login' };
+	const googleAuthSettings = { scope: ['openid', 'email', 'profile'], failureRedirect: '/login' };
 	app.get('/auth/google',
 		function skipLogin(req, res, next) {
 			if (req.isAuthenticated()) {
@@ -98,11 +97,7 @@ function setupRoutes(app) {
 	});
 }
 
-module.exports.init = function(app, graph) {
-	setupPassport(app, graph);
-
-	app.use(passport.initialize());
-	app.use(passport.session());
-
-	setupRoutes(app);
+module.exports.init = function(passport, app, graph) {
+	setupPassport(passport, app, graph);
+	setupRoutes(passport, app);
 };

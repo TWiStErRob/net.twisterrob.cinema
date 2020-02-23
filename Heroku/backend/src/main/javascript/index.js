@@ -3,6 +3,7 @@ var http = require('http');           // http://nodejs.org/api/http.html
 var url = require('url');             // http://nodejs.org/api/url.html
 var path = require('path');           // http://nodejs.org/api/path.html
 var express = require('express');     // http://expressjs.com/api.html
+var passport = require('passport');   // http://passportjs.org/guide/
 var extend = require('node.extend');  // https://github.com/dreamerslab/node.extend
 var moment = require('moment-timezone'); // http://momentjs.com/docs/
 var _ = require('lodash');            // https://lodash.com/docs
@@ -17,7 +18,7 @@ var graph;
 require('./neo4j').init(function(error, connected) {
 	if(error) throw error;
 	graph = connected;
-	auth.init(app, graph);
+	auth.init(passport, app, graph);
 	listen();
 });
 var logs = require('./logs');
@@ -342,6 +343,10 @@ app.use(express.cookieSession({
 	key: 'session',
 	secret: 'twister'
 }));
+// Set up passport and router in the correct order: https://stackoverflow.com/a/34570310/253468
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(app.router);
 
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }

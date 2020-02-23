@@ -24,7 +24,7 @@
 		"lodash": "4.17.4",
 		"nodeunit": "0.8.2",
 		"passport": "0.3.2",
-		"passport-google-oauth20": "1.0.0",
+		"passport-google-oauth20": "2.0.0",
 		"moment": "2.19.3",
 		"moment-timezone": "0.5.14",
 		"async": "0.2.9"
