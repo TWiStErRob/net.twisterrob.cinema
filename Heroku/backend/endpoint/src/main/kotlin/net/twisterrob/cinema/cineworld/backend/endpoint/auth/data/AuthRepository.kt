@@ -5,17 +5,16 @@ import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
-	private val userService: UserService
+	private val service: UserService,
+	private val mapper:UserMapper
 ) {
 
 	fun addUser(userId: String, email: String, name: String, realm: String, created: OffsetDateTime) {
-		userService.addUser(userId, email, name, realm, created)
+		service.addUser(userId, email, name, realm, created)
 	}
 
 	fun findUser(userId: String): User {
-		val user = userService.find(userId) ?: throw UnknownUserException(userId)
-		return user.let {
-			User(it.id, it.email)
-		}
+		val user = service.find(userId) ?: throw UnknownUserException(userId)
+		return mapper.map(user)
 	}
 }
