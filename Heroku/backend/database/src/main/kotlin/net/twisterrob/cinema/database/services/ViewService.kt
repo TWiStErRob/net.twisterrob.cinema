@@ -43,21 +43,22 @@ class ViewService @Inject constructor(
 				(f:Film { edi: {filmEDI} }),
 				(u:User { id: {userID} })
 			CREATE UNIQUE
-				(u)-[:ATTENDED]->(v:View {
+				(u)-[t:ATTENDED]->(v:View {
 					film: {filmEDI},
 					cinema: {cinemaID},
 					user: {userID},
 					date: {dateEpochUTC}
 				}),
-				(v:View)-[:AT]->(c),
-				(v:View)-[:WATCHED]->(f)
-			RETURN v AS view, u AS user, c AS cinema, f AS film
+				(v:View)-[a:AT]->(c),
+				(v:View)-[w:WATCHED]->(f)
+			// need to return nodes and relationships, otherwise OGM doesn't connect them
+			RETURN v AS view, t AS attended, u AS user, a AS at, c AS cinema, w AS watched, f AS film
 			""",
 			mapOf(
 				"userID" to user,
 				"cinemaID" to cinema,
 				"filmEDI" to film,
-				"dateEpochUTC" to time.toEpochSecond()
+				"dateEpochUTC" to time.toInstant().toEpochMilli()
 			)
 		)
 
@@ -82,7 +83,7 @@ class ViewService @Inject constructor(
 				"userID" to user,
 				"cinemaID" to cinema,
 				"filmEDI" to film,
-				"dateEpochUTC" to time.toEpochSecond()
+				"dateEpochUTC" to time.toInstant().toEpochMilli()
 			)
 		)
 	}
