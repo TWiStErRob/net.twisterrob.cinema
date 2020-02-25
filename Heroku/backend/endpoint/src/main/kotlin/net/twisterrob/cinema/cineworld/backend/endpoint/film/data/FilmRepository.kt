@@ -2,9 +2,6 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.film.data
 
 import java.time.LocalDate
 
-/**
- * Repository that will handle operations related to the films.
- */
 interface FilmRepository {
 
 	fun getFilms(date: LocalDate, cinemas: List<Long>): List<Film>
