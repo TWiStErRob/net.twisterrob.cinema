@@ -1,0 +1,59 @@
+package net.twisterrob.cinema.cineworld.backend.endpoint.view.data
+
+import com.flextrade.jfixture.JFixture
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
+import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserMapper
+import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
+import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaMapper
+import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
+import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmMapper
+import net.twisterrob.cinema.database.model.validDBData
+import net.twisterrob.test.applyCustomisation
+import net.twisterrob.test.build
+import net.twisterrob.test.offsetDateTimeRealistic
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import net.twisterrob.cinema.database.model.View as DBView
+
+class ViewMapperTest {
+	private val mockFilmMapper: FilmMapper = mock()
+	private val mockCinemaMapper: CinemaMapper = mock()
+	private val mockUserMapper: UserMapper = mock()
+
+	private val fixture = JFixture().applyCustomisation {
+		add(validDBData())
+		add(offsetDateTimeRealistic())
+		circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
+	}
+	private lateinit var sut: ViewMapper
+
+	@BeforeEach fun setUp() {
+		sut = ViewMapper(mockCinemaMapper, mockFilmMapper, mockUserMapper)
+	}
+
+	@Test fun map() {
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
+		val fixtDBView: DBView = fixture.build()
+		val fixtCinema: Cinema = fixture.build()
+		val fixtFilm: Film = fixture.build()
+		val fixtUser: User = fixture.build()
+		whenever(mockCinemaMapper.map(fixtDBView.atCinema)).thenReturn(fixtCinema)
+		whenever(mockFilmMapper.map(fixtDBView.watchedFilm, false)).thenReturn(fixtFilm)
+		whenever(mockUserMapper.map(fixtDBView.userRef)).thenReturn(fixtUser)
+
+		val view = sut.map(fixtDBView)
+
+		assertThat(view, sameBeanAs(View(fixtDBView.date.toEpochMilli(), fixtFilm, fixtCinema, fixtUser)))
+
+		verify(mockCinemaMapper).map(fixtDBView.atCinema)
+		verify(mockFilmMapper).map(fixtDBView.watchedFilm, false)
+		verify(mockUserMapper).map(fixtDBView.userRef)
+		verifyNoMoreInteractions(mockCinemaMapper, mockFilmMapper, mockUserMapper)
+	}
+}
