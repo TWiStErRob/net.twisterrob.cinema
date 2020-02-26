@@ -31,7 +31,7 @@ class QuickbookServiceNetwork @Inject constructor(
 			url("https://www.cineworld.co.uk/api/quickbook/films")
 			parameter("key", key)
 			parameter("full", full)
-		}.films
+		}.throwErrorOrReturn { it.films }
 	}
 
 	override fun films(date: LocalDate, cinemas: List<Long>, full: Boolean): List<QuickbookFilm> = runBlocking {
@@ -41,7 +41,7 @@ class QuickbookServiceNetwork @Inject constructor(
 			parameter("date", date.formatDateParam())
 			parameter("full", full)
 			cinemas.forEach { parameter("cinema", it) }
-		}.films
+		}.throwErrorOrReturn { it.films }
 	}
 }
 

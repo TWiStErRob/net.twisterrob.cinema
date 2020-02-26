@@ -48,4 +48,12 @@ class QuickbookServiceNetworkIntgExtTest {
 
 		assertThat(films, not(empty()))
 	}
+
+	@Test fun `get performances`() {
+		val cinema = londonCinemas.random()
+		val film = sut.films(date = tomorrow, cinemas = listOf(cinema)).random().edi
+		val performances = sut.performances(date = tomorrow, cinema = cinema, film = film)
+
+		assertThat(performances, not(empty()))
+	}
 }
