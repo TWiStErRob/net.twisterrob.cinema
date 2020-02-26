@@ -48,6 +48,7 @@ import java.io.StringWriter
 import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.SignStyle
 import java.time.temporal.ChronoField
@@ -94,10 +95,27 @@ internal fun Application.configuration(
 					// Work around https://github.com/FasterXML/jackson-modules-java8/issues/76
 					// Make sure trailing zeros are serialized. Disregards all (de-)serialization features.
 					addSerializer(OffsetDateTime::class.java, object : JsonSerializer<OffsetDateTime>() {
+						private val formatter = DateTimeFormatterBuilder()
+							.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
+							.appendLiteral('-')
+							.appendValue(ChronoField.MONTH_OF_YEAR, 2)
+							.appendLiteral('-')
+							.appendValue(ChronoField.DAY_OF_MONTH, 2)
+							.appendLiteral('T')
+							.appendValue(ChronoField.HOUR_OF_DAY, 2)
+							.appendLiteral(':')
+							.appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+							.appendLiteral(':')
+							.appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+							.appendLiteral('.')
+							.appendValue(ChronoField.MILLI_OF_SECOND, 3)
+							.appendLiteral('Z')
+							.toFormatter(Locale.ROOT)
+
 						override fun serialize(
 							value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
 						) {
-							gen.writeString(value.toString())
+							gen.writeString(formatter.format(value.withOffsetSameInstant(ZoneOffset.UTC)))
 						}
 					})
 				}
