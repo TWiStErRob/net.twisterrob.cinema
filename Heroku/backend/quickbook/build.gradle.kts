@@ -11,6 +11,7 @@ dependencies {
 	Deps.Dagger2.default(project)
 	Deps.Ktor.client.default(project)
 	Deps.Log4J2.slf4j(project)
+	implementation(Deps.Jackson.datatype_java8)
 }
 
 // Test

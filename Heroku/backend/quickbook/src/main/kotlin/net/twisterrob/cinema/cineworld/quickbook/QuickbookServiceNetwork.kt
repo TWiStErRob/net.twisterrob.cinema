@@ -1,6 +1,9 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
@@ -22,6 +25,11 @@ class QuickbookServiceNetwork @Inject constructor(
 	@UseExperimental(KtorExperimentalAPI::class)
 	private val client = client.config {
 		install(JsonFeature) {
+			serializer = JacksonSerializer {
+				// Deserialize whatever is thrown at us, maybe stricten this to specific types?
+				registerModule(JavaTimeModule())
+				disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+			}
 			acceptContentTypes = listOf(ContentType.Application.Json)
 		}
 	}
@@ -42,6 +50,16 @@ class QuickbookServiceNetwork @Inject constructor(
 			parameter("full", full)
 			cinemas.forEach { parameter("cinema", it) }
 		}.throwErrorOrReturn { it.films }
+	}
+
+	override fun performances(date: LocalDate, cinema: Long, film: Long): List<QuickbookPerformance> = runBlocking {
+		client.get<PerformancesResponse> {
+			url("https://www.cineworld.co.uk/api/quickbook/performances")
+			parameter("key", key)
+			parameter("date", date.formatDateParam())
+			parameter("cinema", cinema)
+			parameter("film", film)
+		}.throwErrorOrReturn { it.performances }
 	}
 }
 
