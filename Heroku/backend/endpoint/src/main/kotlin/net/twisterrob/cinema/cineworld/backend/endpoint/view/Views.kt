@@ -27,7 +27,7 @@ object Views {
 		}
 
 		@Location("/film/{edi}/ignore")
-		data class IgnoreView(val edi: Long) : LocationRoute
+		data class IgnoreView(val edi: Long, val reason: String) : LocationRoute
 
 		// TODO remove this in favor of Location POST properties, but frontend needs to unwrap the object in payload
 		data class ViewPayload(

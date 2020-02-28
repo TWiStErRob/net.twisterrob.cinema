@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.locations.delete
 import io.ktor.locations.post
+import io.ktor.locations.put
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
@@ -56,6 +57,19 @@ class ViewsController @Inject constructor(
 					time = remove.time
 				)
 				call.respondText("", status = OK)
+			} else {
+				call.respondText("Can't find user.", status = NotFound)
+			}
+		}
+
+		put<Views.Routes.IgnoreView> { ignore ->
+			if (call.hasUser) {
+				val ignored = repository.ignoreView(
+					user = call.userId,
+					film = ignore.edi,
+					reason = ignore.reason
+				)
+				call.respond(ignored)
 			} else {
 				call.respondText("Can't find user.", status = NotFound)
 			}

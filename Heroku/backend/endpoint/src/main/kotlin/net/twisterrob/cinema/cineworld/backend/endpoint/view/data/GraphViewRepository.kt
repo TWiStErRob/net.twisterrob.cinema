@@ -17,4 +17,14 @@ class GraphViewRepository @Inject constructor(
 	override fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime) {
 		service.removeView(user = user, film = film, cinema = cinema, time = time)
 	}
+
+	override fun ignoreView(user: String, film: Long, reason: String): IgnoreResponse {
+		TODO("Not implemented")
+		@Suppress("UNREACHABLE_CODE")
+		return IgnoreResponse(
+			film = IgnoreResponse.Film(edi = film),
+			reason = reason,
+			date = OffsetDateTime.now()
+		)
+	}
 }
