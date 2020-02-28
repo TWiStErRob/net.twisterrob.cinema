@@ -17,6 +17,7 @@ import io.ktor.auth.OAuthServerSettings
 import io.ktor.auth.oauth
 import io.ktor.client.HttpClient
 import io.ktor.features.CallLogging
+import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DataConversion
 import io.ktor.features.DefaultHeaders
@@ -29,6 +30,8 @@ import io.ktor.locations.Locations
 import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
+import io.ktor.sessions.get
+import io.ktor.sessions.sessions
 import io.ktor.util.ConversionService
 import kotlinx.html.body
 import kotlinx.html.h1
@@ -55,6 +58,7 @@ import java.time.temporal.ChronoField
 import java.util.Locale
 
 /**
+ * @param staticRootFolder `.` is the Heroku project folder when ran from IDEA.
  * @see RouteControllerRegistrar
  */
 internal fun Application.configuration(
@@ -67,6 +71,9 @@ internal fun Application.configuration(
 
 	install(DefaultHeaders)
 	install(CallLogging)
+	install(Compression) {
+		default()
+	}
 	//install(HeaderLoggingFeature)
 	install(DataConversion) {
 		this.convert(LocalDate::class, object : ConversionService {
@@ -165,6 +172,11 @@ internal fun Application.configuration(
 			defaultScopes = listOf(openid, email, profile)
 		)
 		oauth(name = null /* default */) {
+			skipWhen { call ->
+				// AuthController will install an interceptor to set the user
+				call.sessions.get<AuthSession>() != null
+				false // mandatory for now, TODO use above condition? see ApplicationCall.isAuthenticated
+			}
 			client = oauthHttpClient
 			providerLookup = { googleOauthProvider }
 			urlProvider = { absoluteUrl("/auth/google/return") }

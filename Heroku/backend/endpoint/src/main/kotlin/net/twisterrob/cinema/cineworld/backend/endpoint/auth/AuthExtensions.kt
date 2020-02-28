@@ -21,3 +21,13 @@ val ApplicationCall.hasUser: Boolean
  */
 val ApplicationCall.userId: String
 	get() = this.attributes.currentUser!!.id
+
+/**
+ * TODO interceptor, also see configuration oath().skipWhen {}
+ * ```
+ * function ensureAuthenticated(req, res, next) {
+ * 	if (req.isAuthenticated()) { return next(); }
+ * 	res.send(401, 'Please log in first to access this feature.');
+ * }
+ * ```
+*/
