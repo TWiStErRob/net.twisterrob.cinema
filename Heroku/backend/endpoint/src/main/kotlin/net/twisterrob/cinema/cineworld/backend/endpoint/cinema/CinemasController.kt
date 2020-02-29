@@ -9,6 +9,7 @@ import io.ktor.locations.put
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
+import net.twisterrob.cinema.cineworld.backend.endpoint.app.cached
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
@@ -32,9 +33,10 @@ class CinemasController @Inject constructor(
 
 		get<Cinemas.Routes.ListCinemas> {
 			if (call.hasUser) {
+				// Note: this is not cache-able because of `Cinema.fav` property in the response.
 				call.respond(repository.getCinemasAuth(userID = call.userId))
 			} else {
-				call.respond(repository.getActiveCinemas())
+				cached { call.respond(repository.getActiveCinemas()) }
 			}
 		}
 

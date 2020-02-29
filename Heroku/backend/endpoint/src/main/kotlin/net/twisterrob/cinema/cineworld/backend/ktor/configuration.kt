@@ -16,6 +16,7 @@ import io.ktor.auth.Authentication
 import io.ktor.auth.OAuthServerSettings
 import io.ktor.auth.oauth
 import io.ktor.client.HttpClient
+import io.ktor.features.CachingHeaders
 import io.ktor.features.CallLogging
 import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
@@ -73,6 +74,9 @@ internal fun Application.configuration(
 	install(CallLogging)
 	install(Compression) {
 		default()
+	}
+	install(CachingHeaders) {
+		// default is `options { it.caching }`
 	}
 	//install(HeaderLoggingFeature)
 	install(DataConversion) {
