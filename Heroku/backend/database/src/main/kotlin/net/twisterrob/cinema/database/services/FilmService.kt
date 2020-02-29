@@ -30,6 +30,19 @@ class FilmService @Inject constructor(
 		session.save(list)
 
 	/**
+	 * Return all Films which are active.
+	 */
+	fun getActiveFilms(): Iterable<Film> =
+		session.query<Film>(
+			"""
+			MATCH (f:Film)
+			WHERE NOT exists(f._deleted)
+			RETURN f AS film
+			""",
+			mapOf()
+		)
+
+	/**
 	 * Find a film by [edi].
 	 * @param edi [Film.edi]
 	 */
