@@ -34,8 +34,8 @@ var ApplicationCall.caching: CachingOptions
 
 @UseExperimental(ExperimentalTime::class)
 fun defaultCacheOptions(): CachingOptions {
-	val env = System.getProperty("NODE_ENV", "development")
-	val cacheLength = if (env == "development") 0 else 10.hours.inSeconds
+	val env: String? = System.getProperty("NODE_ENV")
+	val cacheLength = if (env == "production") 10.hours.inSeconds else 0
 	return CachingOptions(
 		cacheControl = MaxAge(
 			visibility = Visibility.Public,
