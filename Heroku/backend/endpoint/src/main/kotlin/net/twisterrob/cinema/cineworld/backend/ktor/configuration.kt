@@ -12,6 +12,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.application.log
 import io.ktor.auth.Authentication
 import io.ktor.auth.OAuthServerSettings
 import io.ktor.auth.oauth
@@ -68,6 +69,8 @@ internal fun Application.configuration(
 	config: Map<String, Any?> = jacksonObjectMapper()
 		.readValue(App::class.java.getResourceAsStream("/default-env.json"))
 ) {
+	log.info("Configuring app as ${environment.config.environment} environment.")
+
 	this.attributes.staticRootFolder = staticRootFolder
 
 	install(DefaultHeaders)

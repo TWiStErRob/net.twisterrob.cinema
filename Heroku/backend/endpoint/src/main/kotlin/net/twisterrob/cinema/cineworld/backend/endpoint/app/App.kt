@@ -21,5 +21,9 @@ object App {
 		@Binds
 		@IntoSet
 		fun controller(impl: AppController): RouteController
+
+		@Binds
+		@IntoSet
+		fun testController(impl: TestController): RouteController
 	}
 }

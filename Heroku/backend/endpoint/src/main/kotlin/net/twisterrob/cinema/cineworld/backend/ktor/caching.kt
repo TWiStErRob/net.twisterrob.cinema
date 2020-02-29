@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.application.ApplicationCall
+import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.http.CacheControl.MaxAge
 import io.ktor.http.CacheControl.Visibility
@@ -14,7 +15,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 
 inline fun PipelineContext<Unit, ApplicationCall>.cached(
-	caching: CachingOptions = defaultCacheOptions(),
+	caching: CachingOptions = defaultCacheOptions(application.environment.config.environment),
 	block: PipelineContext<Unit, ApplicationCall>.() -> Unit
 ) {
 	this.call.caching = caching
@@ -33,9 +34,8 @@ var ApplicationCall.caching: CachingOptions
 	}
 
 @UseExperimental(ExperimentalTime::class)
-fun defaultCacheOptions(): CachingOptions {
-	val env: String? = System.getProperty("NODE_ENV")
-	val cacheLength = if (env == "production") 10.hours.inSeconds else 0.0
+fun defaultCacheOptions(environment: Env): CachingOptions {
+	val cacheLength = if (environment == Env.PRODUCTION) 10.hours.inSeconds else 0.0
 	return CachingOptions(
 		cacheControl = MaxAge(
 			visibility = Visibility.Public,
