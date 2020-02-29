@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.cineworld.backend.endpoint.app
+package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -10,7 +10,8 @@ import io.ktor.http.content.caching
 import io.ktor.response.ApplicationSendPipeline
 import io.ktor.util.pipeline.PipelineContext
 import java.time.ZonedDateTime
-import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.hours
 
 inline fun PipelineContext<Unit, ApplicationCall>.cached(
 	caching: CachingOptions = defaultCacheOptions(),
@@ -31,15 +32,15 @@ var ApplicationCall.caching: CachingOptions
 		}
 	}
 
+@UseExperimental(ExperimentalTime::class)
 fun defaultCacheOptions(): CachingOptions {
 	val env = System.getProperty("NODE_ENV", "development")
-	val cacheLength =
-		if (env == "development") 0 else TimeUnit.HOURS.toSeconds(10)
+	val cacheLength = if (env == "development") 0 else 10.hours.inSeconds
 	return CachingOptions(
 		cacheControl = MaxAge(
 			visibility = Visibility.Public,
 			maxAgeSeconds = cacheLength.toInt()
 		),
-		expires = ZonedDateTime.now().plusSeconds(cacheLength)
+		expires = ZonedDateTime.now().plusSeconds(cacheLength.toLong())
 	)
 }

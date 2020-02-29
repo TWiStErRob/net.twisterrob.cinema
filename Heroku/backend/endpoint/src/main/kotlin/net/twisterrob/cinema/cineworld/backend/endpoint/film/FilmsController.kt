@@ -7,11 +7,11 @@ import io.ktor.locations.get
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
-import net.twisterrob.cinema.cineworld.backend.endpoint.app.cached
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
+import net.twisterrob.cinema.cineworld.backend.ktor.cached
 import javax.inject.Inject
 import javax.inject.Singleton
 
