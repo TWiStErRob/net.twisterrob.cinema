@@ -27,7 +27,6 @@ class AppController @Inject constructor(
 	override fun Routing.registerRoutes() {
 
 		static("/") {
-			// `./` is Heroku project root folder
 			staticRootFolder = application.attributes.staticRootFolder
 			// Serve all files from staticRootFolder
 			files(".")
