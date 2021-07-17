@@ -32,6 +32,17 @@ fun feedReader(): XmlMapper {
 	}
 }
 
+operator fun Feed.plus(other: Feed): Feed = Feed(
+	// merge the attributes, keep only unique ones
+	attributes = (this.attributes + other.attributes).distinctBy { it.code },
+	// different country -> different cinemas
+	cinemas = (this.cinemas + other.cinemas),
+	// both countries play the same movies
+	films = (this.films + other.films).distinctBy { it.id },
+	// performances are separate by cinemas, see cinemas above
+	performances = (this.performances + other.performances)
+)
+
 /**
  * Jackson format for
  *  * [weekly_film_times.xml](https://www.cineworld.co.uk/syndication/weekly_film_times.xml)
