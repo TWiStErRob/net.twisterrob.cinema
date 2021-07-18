@@ -51,6 +51,8 @@ class AuthController @Inject constructor(
 		}
 	}
 
+	override val order: Int get() = -2
+
 	/**
 	 * @see Auth.Routes
 	 */

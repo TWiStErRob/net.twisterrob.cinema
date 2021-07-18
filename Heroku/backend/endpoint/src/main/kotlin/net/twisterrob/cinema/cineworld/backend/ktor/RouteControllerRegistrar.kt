@@ -15,8 +15,8 @@ class RouteControllerRegistrar @Inject constructor(
 
 	fun register() {
 		application.routing {
-			//trace { application.log.trace(it.buildText()) }
-			controllers.forEach { controller ->
+			trace { application.log.trace(it.buildText()) }
+			controllers.toList().sortedBy(RouteController::order).forEach { controller ->
 				application.log.trace("Registering '$controller' routes...")
 				controller.apply { registerRoutes() }
 			}

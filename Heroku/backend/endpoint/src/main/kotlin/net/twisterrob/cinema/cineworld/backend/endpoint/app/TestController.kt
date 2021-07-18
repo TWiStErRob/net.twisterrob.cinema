@@ -23,6 +23,8 @@ class TestController @Inject constructor(
 	application: Application
 ) : RouteController(application) {
 
+	override val order: Int get() = Int.MIN_VALUE
+
 	override fun Routing.registerRoutes() {
 		if (application.environment.config.environment == Env.PRODUCTION) return
 
