@@ -181,7 +181,10 @@ internal fun Application.configuration(
 			}
 			client = oauthHttpClient
 			providerLookup = { googleOauthProvider }
-			urlProvider = { absoluteUrl("/auth/google/return") }
+			urlProvider = {
+				// Manually encode? https://youtrack.jetbrains.com/issue/KTOR-2938
+				absoluteUrl("/auth/google/return")//.encodeURLParameter(spaceToPlus = true)
+			}
 		}
 	}
 }
