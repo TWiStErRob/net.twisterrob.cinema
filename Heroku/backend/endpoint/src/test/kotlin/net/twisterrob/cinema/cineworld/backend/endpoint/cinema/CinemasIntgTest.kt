@@ -55,7 +55,7 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getActiveCinemas()).thenReturn(fixtCinemas)
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/" }
+		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema" }
 
 		verify(mockRepository).getActiveCinemas()
 		verifyNoMoreInteractions(mockRepository)
@@ -79,7 +79,7 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getCinemasAuth(fixtUser.id)).thenReturn(fixtCinemas)
 
-		val call = handleRequestAuth { method = HttpMethod.Get; uri = "/cinema/" }
+		val call = handleRequestAuth { method = HttpMethod.Get; uri = "/cinema" }
 
 		verify(mockRepository).getCinemasAuth(fixtUser.id)
 		verifyNoMoreInteractions(mockRepository)
