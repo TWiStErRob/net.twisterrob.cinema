@@ -95,7 +95,7 @@ class ViewServiceIntgTest {
 		}
 	}
 
-	@Test fun `addView fails if data is missing`(session: Session) {
+	@Test fun `addView fails if data is missing`() {
 		val result = sut.addView(user = "missing", film = -1, cinema = -1, time = fixture.build())
 
 		assertNull(result)

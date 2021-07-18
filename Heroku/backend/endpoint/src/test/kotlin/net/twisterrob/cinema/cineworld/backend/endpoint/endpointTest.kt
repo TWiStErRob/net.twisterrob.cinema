@@ -8,7 +8,6 @@ import io.ktor.server.testing.withApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import org.slf4j.Logger
-import java.io.File
 
 /**
  * @param daggerApp A call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
@@ -36,9 +35,12 @@ fun endpointTest(
 		application.apply {
 			configure()
 			daggerApp()
-			log.trace("Endpoint test starting {}", test::class)
-			test()
-			log.trace("Endpoint test finished {}", test::class)
+			try {
+				log.trace("Endpoint test starting {}", test::class)
+				test()
+			} finally {
+				log.trace("Endpoint test finished {}", test::class)
+			}
 		}
 	}
 }

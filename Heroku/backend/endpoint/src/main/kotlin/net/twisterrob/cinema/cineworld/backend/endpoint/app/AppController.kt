@@ -21,10 +21,16 @@ class AppController @Inject constructor(
 	application: Application
 ) : RouteController(application) {
 
+	override val order: Int get() = -1
+
 	/**
 	 * @see App.Routes
 	 */
 	override fun Routing.registerRoutes() {
+
+		get("favicon.ico") {
+			call.respondRedirect("https://www.google.com/s2/favicons?domain=www.cineworld.co.uk")
+		}
 
 		static("/") {
 			staticRootFolder = application.attributes.staticRootFolder
@@ -40,10 +46,6 @@ class AppController @Inject constructor(
 				files(".")
 				default("index.html")
 			}
-		}
-
-		get("favicon.ico") {
-			call.respondRedirect("https://www.google.com/s2/favicons?domain=www.cineworld.co.uk")
 		}
 	}
 }

@@ -21,6 +21,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,6 +50,7 @@ class FilmsIntgTest {
 
 	/** @see Films.Routes.GetFilm */
 	@Test fun `get film by edi`() = filmsEndpointTest {
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
 		val fixtFilm: Film = fixture.build()
 		whenever(mockRepository.getFilm(123)).thenReturn(fixtFilm)
 
@@ -109,8 +112,28 @@ private fun serialized(film: Film): String =
 		"class": "${film.`class`}",
 		"title": "${film.title}",
 		"cineworldID": ${film.cineworldID},
-		"_created": "${film._created}",
-		"_updated": "${film._updated}"
+		"_created": "${film._created.atZoneSameInstant(ZoneOffset.UTC)}",
+		"_updated": "${film._updated?.atZoneSameInstant(ZoneOffset.UTC)}",
+		"director": "${film.director}",
+		"release": "${film.release.atZoneSameInstant(ZoneOffset.UTC)}",
+		"format": "${film.format}",
+		"runtime": ${film.runtime},
+		"poster_url": "${film.poster_url}",
+		"cineworldInternalID": ${film.cineworldInternalID},
+		"cert": "${film.cert}",
+		"imax": ${film.imax},
+		"3D": ${film.`3D`},
+		"film_url": "${film.film_url}",
+		"edi": ${film.edi},
+		"classification": "${film.classification}",
+		"trailer": "${film.trailer}",
+		"actors": "${film.actors}",
+		"originalTitle": "${film.originalTitle}",
+		"categories": ${film.categories},
+		"weighted": ${film.weighted},
+		"slug": "${film.slug}",
+		"group": ${film.group},
+		"view": null
 	}
 	"""
 

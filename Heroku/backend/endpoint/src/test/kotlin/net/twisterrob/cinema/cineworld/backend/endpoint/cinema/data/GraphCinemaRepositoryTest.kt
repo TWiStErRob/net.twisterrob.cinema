@@ -11,12 +11,12 @@ import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.buildMap
 import net.twisterrob.test.offsetDateTimeRealistic
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema as FrontendCinema
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 

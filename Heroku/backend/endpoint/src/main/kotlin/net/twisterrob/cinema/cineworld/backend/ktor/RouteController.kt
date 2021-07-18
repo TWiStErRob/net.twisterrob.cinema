@@ -23,6 +23,12 @@ abstract class RouteController(
 		get() = application.locations.href(this)
 
 	/**
+	 * What is the order in which to call the [registerRoutes] method, lower goes first.
+	 * Used to define some kind of consistency between runs, rather than relying on [HashSet].
+	 */
+	open val order: Int get() = 0
+
+	/**
 	 * Method that subtypes must override to register the handled [Routing] routes.
 	 * @see RouteControllerRegistrar
 	 */
