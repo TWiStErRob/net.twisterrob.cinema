@@ -6,6 +6,7 @@ import java.lang.reflect.Field
 
 inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
 	val field = this.findField(fieldName)
+	@Suppress("DEPRECATION")
 	val accessible = field.isAccessible
 	try {
 		field.isAccessible = true
@@ -22,6 +23,7 @@ inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
 
 operator fun Any.set(fieldName: String, value: Any?) {
 	val field = this.findField(fieldName)
+	@Suppress("DEPRECATION")
 	val accessible = field.isAccessible
 	try {
 		field.isAccessible = true
