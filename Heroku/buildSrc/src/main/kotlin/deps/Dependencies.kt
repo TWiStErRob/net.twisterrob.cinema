@@ -134,7 +134,7 @@ object Kotlin {
 	 * @see Jackson.version
 	 * @see Ktor.version
 	 */
-	const val version = "1.4.32"
+	const val version = "1.5.21"
 
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
