@@ -65,7 +65,7 @@ internal fun Application.configuration(
 	staticRootFolder: File = File("./deploy/static"),
 	oauthHttpClient: HttpClient = HttpClient(),
 	config: Map<String, Any?> = jacksonObjectMapper()
-		.readValue(App::class.java.getResourceAsStream("/default-env.json"))
+		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
 ) {
 	log.info("Configuring app as ${environment.config.environment} environment.")
 
