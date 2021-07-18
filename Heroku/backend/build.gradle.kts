@@ -2,7 +2,7 @@ plugins {
 	id("java")
 }
 
-val topProject = this.project
+val topProject = project
 subprojects {
 	plugins.withType<JavaPlugin> {
 		this@subprojects.tasks {
