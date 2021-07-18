@@ -270,8 +270,16 @@ object Dagger2 {
 
 object Neo4JOGM {
 
-	const val version = "3.2.8" // https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
-	const val version_neo4j = "3.4.9"
+	/**
+	 * https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+	 */
+	const val version = "3.2.24"
+
+	/**
+	 * https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
+	 * Match version of DB at https://console.neo4j.io/#databases
+	 */
+	const val version_neo4j = "4.2.0"
 
 	/**
 	 * Warning "The following annotation processors were detected on the compile classpath:"
