@@ -299,7 +299,7 @@ object Neo4JOGM {
 }
 
 object Jackson {
-	const val version = "2.12.3"
+	const val version = "2.13.0-rc1" // 2.13 stable not released yet, but Kotlin 1.5.21 needs it.
 
 	const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
 	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"

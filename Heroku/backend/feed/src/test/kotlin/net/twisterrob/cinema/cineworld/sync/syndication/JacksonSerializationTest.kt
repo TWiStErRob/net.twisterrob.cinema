@@ -328,7 +328,7 @@ private fun jackson(
 	configure: XmlMapper.() -> Unit = {}
 ): XmlMapper =
 	XmlMapper(JacksonXmlModule().apply(configureModule)).apply {
-		registerModule(KotlinModule())
+		registerModule(KotlinModule.Builder().build())
 		registerModule(JavaTimeModule())
 		enable(SerializationFeature.INDENT_OUTPUT)
 		configure()

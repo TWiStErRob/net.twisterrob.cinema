@@ -25,7 +25,7 @@ fun feedReader(): XmlMapper {
 		setXMLTextElementName("innerText")
 	}
 	return XmlMapper(jackson).apply {
-		registerModule(KotlinModule())
+		registerModule(KotlinModule.Builder().build())
 		registerModule(JavaTimeModule())
 		// Let's not add it. I want to know when new things are added to syndication.
 		//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
