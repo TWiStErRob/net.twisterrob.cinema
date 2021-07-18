@@ -139,7 +139,7 @@ object Kotlin {
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
 	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
-	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
 }
 
 /**
@@ -148,7 +148,7 @@ object Kotlin {
  */
 object Ktor {
 
-	const val version = "1.6.0"
+	const val version = "1.6.1"
 
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
@@ -220,7 +220,7 @@ object Ktor {
 }
 
 object SLF4J {
-	const val version = "1.7.25"
+	const val version = "1.7.31"
 
 	const val core = "org.slf4j:slf4j-api:${version}"
 	const val log4j12 = "org.slf4j:slf4j-log4j12:${version}"
