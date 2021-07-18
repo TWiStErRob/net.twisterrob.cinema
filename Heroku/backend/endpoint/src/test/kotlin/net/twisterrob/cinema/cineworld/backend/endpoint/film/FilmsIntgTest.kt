@@ -21,6 +21,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -48,6 +49,7 @@ class FilmsIntgTest {
 
 	/** @see Films.Routes.GetFilm */
 	@Test fun `get film by edi`() = filmsEndpointTest {
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
 		val fixtFilm: Film = fixture.build()
 		whenever(mockRepository.getFilm(123)).thenReturn(fixtFilm)
 

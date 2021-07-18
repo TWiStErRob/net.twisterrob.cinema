@@ -4,6 +4,7 @@ import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
+import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookService
 import net.twisterrob.cinema.database.model.validDBData
 import net.twisterrob.cinema.database.services.FilmService
@@ -37,6 +38,7 @@ class GraphFilmRepositoryTest {
 
 	@Test fun `get film by edi`() {
 		val fixtDBFilm: DBFilm = fixture.build()
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
 		val fixtFilm: FrontendFilm = fixture.build()
 		val fixtFilmId: Long = fixture.build()
 		whenever(mockMapper.map(fixtDBFilm)).thenReturn(fixtFilm)
