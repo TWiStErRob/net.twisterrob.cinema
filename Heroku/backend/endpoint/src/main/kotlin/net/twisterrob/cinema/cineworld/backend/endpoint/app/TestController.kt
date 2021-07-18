@@ -29,6 +29,7 @@ class TestController @Inject constructor(
 		val root = File("backend/src/test/fake")
 		intercept(ApplicationCallPipeline.Call) {
 			val fullPathAndQuery = this.call.request.uri.substringAfter("/").encodeURLPath()
+				.ifBlank { "index.html" }
 			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
 			if (fakeFullPathAndQueryFile.exists()) {
 				respondFake(fakeFullPathAndQueryFile)
@@ -36,6 +37,7 @@ class TestController @Inject constructor(
 			}
 
 			val fullPath = this.call.request.path().substringAfter("/").encodeURLPath()
+				.ifBlank { "index.html" }
 			val fakeFullPathFile = root.resolve(fullPath)
 			if (fakeFullPathFile.exists()) {
 				respondFake(fakeFullPathFile)
