@@ -22,6 +22,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
+import net.twisterrob.cinema.cineworld.backend.ktor.ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -112,10 +113,10 @@ private fun serialized(film: Film): String =
 		"class": "${film.`class`}",
 		"title": "${film.title}",
 		"cineworldID": ${film.cineworldID},
-		"_created": "${film._created.atZoneSameInstant(ZoneOffset.UTC)}",
-		"_updated": "${film._updated?.atZoneSameInstant(ZoneOffset.UTC)}",
+		"_created": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film._created.atZoneSameInstant(ZoneOffset.UTC))}",
+		"_updated": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film._updated?.atZoneSameInstant(ZoneOffset.UTC))}",
 		"director": "${film.director}",
-		"release": "${film.release.atZoneSameInstant(ZoneOffset.UTC)}",
+		"release": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film.release.atZoneSameInstant(ZoneOffset.UTC))}",
 		"format": "${film.format}",
 		"runtime": ${film.runtime},
 		"poster_url": "${film.poster_url}",

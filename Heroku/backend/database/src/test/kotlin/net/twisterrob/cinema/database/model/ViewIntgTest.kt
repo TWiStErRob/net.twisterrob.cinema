@@ -20,6 +20,7 @@ import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
+import java.time.temporal.ChronoUnit
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
@@ -29,6 +30,8 @@ class ViewIntgTest {
 
 	@Test fun `new view can be loaded back and contains all data`(session: Session) {
 		val fixtView: View = fixture.build()
+		// Java 9+ is more precise than Java 8, but we only store milliseconds.
+		fixtView.date = fixtView.date.truncatedTo(ChronoUnit.MILLIS)
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 

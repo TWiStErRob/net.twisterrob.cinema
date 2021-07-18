@@ -52,10 +52,6 @@ import java.io.StringWriter
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.SignStyle
-import java.time.temporal.ChronoField
-import java.util.Locale
 
 /**
  * @param staticRootFolder `.` is the Heroku project folder when ran from IDEA.
@@ -82,13 +78,8 @@ internal fun Application.configuration(
 	//install(HeaderLoggingFeature)
 	install(DataConversion) {
 		convert<LocalDate> {
-			val formatter = DateTimeFormatterBuilder()
-				.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
-				.appendValue(ChronoField.MONTH_OF_YEAR, 2)
-				.appendValue(ChronoField.DAY_OF_MONTH, 2)
-				.toFormatter(Locale.ROOT)
 			decode { values, _ ->
-				LocalDate.from(formatter.parse(values.single()))
+				LocalDate.from(ISO_LOCAL_DATE_FORMATTER_NO_DASHES.parse(values.single()))
 			}
 		}
 	}
@@ -101,30 +92,12 @@ internal fun Application.configuration(
 			disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
 			registerModule(object : SimpleModule("cineworld-backend") {
 				init {
-					// Work around https://github.com/FasterXML/jackson-modules-java8/issues/76
-					// Make sure trailing zeros are serialized. Disregards all (de-)serialization features.
 					addSerializer(OffsetDateTime::class.java, object : JsonSerializer<OffsetDateTime>() {
-						private val formatter = DateTimeFormatterBuilder()
-							.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
-							.appendLiteral('-')
-							.appendValue(ChronoField.MONTH_OF_YEAR, 2)
-							.appendLiteral('-')
-							.appendValue(ChronoField.DAY_OF_MONTH, 2)
-							.appendLiteral('T')
-							.appendValue(ChronoField.HOUR_OF_DAY, 2)
-							.appendLiteral(':')
-							.appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-							.appendLiteral(':')
-							.appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-							.appendLiteral('.')
-							.appendValue(ChronoField.MILLI_OF_SECOND, 3)
-							.appendLiteral('Z')
-							.toFormatter(Locale.ROOT)
-
 						override fun serialize(
 							value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
 						) {
-							gen.writeString(formatter.format(value.withOffsetSameInstant(ZoneOffset.UTC)))
+							val utcTime = value.withOffsetSameInstant(ZoneOffset.UTC)
+							gen.writeString(ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(utcTime))
 						}
 					})
 				}

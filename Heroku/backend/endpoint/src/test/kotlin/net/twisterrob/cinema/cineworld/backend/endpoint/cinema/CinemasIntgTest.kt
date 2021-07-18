@@ -22,6 +22,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
+import net.twisterrob.cinema.cineworld.backend.ktor.ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -228,8 +229,8 @@ private fun serialized(cinema: Cinema): String =
 		"postcode": "${cinema.postcode}",
 		"telephone": "${cinema.telephone}",
 		"cinema_url": "${cinema.cinema_url}",
-		"_created": "${cinema._created.withOffsetSameInstant(ZoneOffset.UTC)}",
-		"_updated": "${cinema._updated?.withOffsetSameInstant(ZoneOffset.UTC)}",
+		"_created": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(cinema._created.withOffsetSameInstant(ZoneOffset.UTC))}",
+		"_updated": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(cinema._updated?.withOffsetSameInstant(ZoneOffset.UTC))}",
 		"address": "${cinema.address}",
 		"fav": ${cinema.fav}
 	}
