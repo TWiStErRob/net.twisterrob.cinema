@@ -10,7 +10,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
-import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
@@ -22,7 +21,6 @@ class QuickbookServiceNetwork @Inject constructor(
 	private val key: String
 ) : QuickbookService {
 
-	@UseExperimental(KtorExperimentalAPI::class)
 	private val client = client.config {
 		install(JsonFeature) {
 			serializer = JacksonSerializer {

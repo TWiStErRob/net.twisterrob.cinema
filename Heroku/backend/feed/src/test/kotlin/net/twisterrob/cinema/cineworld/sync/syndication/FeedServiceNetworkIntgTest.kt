@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class FeedServiceNetworkIntgTest {
 
 	private fun loadFeed(fileName: String): ByteArray =
-		FeedServiceNetworkIntgTest::class.java.getResourceAsStream("/$fileName").readBytes()
+		FeedServiceNetworkIntgTest::class.java.getResourceAsStream("/$fileName")!!.readBytes()
 
 	private val mockClient = HttpClient(mockEngine())
 

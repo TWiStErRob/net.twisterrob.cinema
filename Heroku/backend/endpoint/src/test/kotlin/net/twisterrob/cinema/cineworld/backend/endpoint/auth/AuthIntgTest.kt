@@ -266,10 +266,13 @@ private fun TestApplicationEngine.authorizeWithGoogle(host: String, relativeUri:
 		addHeader(HttpHeaders.Host, host)
 	}.apply {
 		val location = response.headers[HttpHeaders.Location] ?: ""
+		@Suppress("HttpUrlsUsage") // This is a test server running on localhost.
 		assertEquals(
 			"https://accounts.google.com/o/oauth2/auth" +
 					"?client_id=${clientId}" +
-					"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
+					// Verify unencoded for now. https://youtrack.jetbrains.com/issue/KTOR-2938
+					"&redirect_uri=http://${host}${relativeUri}" +
+					//"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
 					"&scope=openid+email+profile" +
 					"&state=****" +
 					"&response_type=code",

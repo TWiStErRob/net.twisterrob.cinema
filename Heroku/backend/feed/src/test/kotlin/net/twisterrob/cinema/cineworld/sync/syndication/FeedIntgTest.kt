@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class FeedIntgTest {
 
 	private fun loadFeed(fileName: String): Feed =
-		feedReader().readValue(FeedIntgTest::class.java.getResourceAsStream("/$fileName"))
+		feedReader().readValue(FeedIntgTest::class.java.getResourceAsStream("/$fileName")!!)
 
 	@Test fun `read UK weekly film times XML`() {
 		val feed = loadFeed("weekly_film_times.xml")

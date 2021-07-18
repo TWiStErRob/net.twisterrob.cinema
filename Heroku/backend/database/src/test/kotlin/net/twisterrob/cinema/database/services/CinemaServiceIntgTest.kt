@@ -9,14 +9,13 @@ import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.anything
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -87,8 +86,3 @@ class CinemaServiceIntgTest {
 		assertThat(result.entries, hasSize(2))
 	}
 }
-
-/**
- * Help Kotlin infer things properly.
- */
-private fun <T> not(not: Matcher<in T>): Matcher<in T> = Matchers.not(not)

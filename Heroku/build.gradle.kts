@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.3.61" apply false
-	id("org.jetbrains.kotlin.kapt") version "1.3.61" apply false
+	id("org.jetbrains.kotlin.jvm") version "1.5.21" apply false
+	id("org.jetbrains.kotlin.kapt") version "1.5.21" apply false
 }
 
 allprojects {
@@ -41,7 +41,7 @@ allprojects {
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<KotlinCompile> {
 			kotlinOptions {
-				jvmTarget = "1.8"
+				jvmTarget = JavaVersion.VERSION_1_8.toString()
 				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
 			}
 		}

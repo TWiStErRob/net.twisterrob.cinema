@@ -10,5 +10,5 @@ enum class Env {
 
 val ApplicationConfig.environment: Env
 	get() = this.propertyOrNull("environment")
-		?.let { Env.valueOf(it.getString().toUpperCase()) }
+		?.let { Env.valueOf(it.getString().uppercase()) }
 		?: Env.DEVELOPMENT
