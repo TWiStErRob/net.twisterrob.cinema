@@ -75,7 +75,7 @@ class ViewServiceIntgTest {
 		sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		graph.beginTx().use {
-			val nodes = graph.allNodes.toList()
+			val nodes = it.allNodes.toList()
 			assertThat(nodes, hasSize(4))
 			val cinema = nodes.single { it.hasLabel(Label.label("Cinema")) }
 			assertSameData(fixtCinema, cinema)
@@ -85,7 +85,7 @@ class ViewServiceIntgTest {
 			assertSameData(fixtUser, user)
 			val view = nodes.single { it.hasLabel(Label.label("View")) }
 			assertThat(
-				graph.allRelationships, containsInAnyOrder(
+				it.allRelationships, containsInAnyOrder(
 					hasRelationship(view, "AT", cinema),
 					hasRelationship(view, "WATCHED", film),
 					hasRelationship(user, "ATTENDED", view)
@@ -149,7 +149,7 @@ class ViewServiceIntgTest {
 		)
 
 		graph.beginTx().use {
-			val nodes = graph.allNodes.toList()
+			val nodes = it.allNodes.toList()
 			assertThat(nodes, hasSize(3))
 			val cinema = nodes.single { it.hasLabel(Label.label("Cinema")) }
 			assertSameData(fixtView.atCinema, cinema)
@@ -157,7 +157,7 @@ class ViewServiceIntgTest {
 			assertSameData(fixtView.watchedFilm, film)
 			val user = nodes.single { it.hasLabel(Label.label("User")) }
 			assertSameData(fixtView.userRef, user)
-			assertThat(graph.allRelationships.toList(), empty())
+			assertThat(it.allRelationships.toList(), empty())
 		}
 	}
 }

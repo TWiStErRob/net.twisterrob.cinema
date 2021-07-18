@@ -46,7 +46,7 @@ class CinemaIntgTest {
 		session.clear() // drop cached Cinema objects, start fresh
 
 		graph.beginTx().use {
-			val cinemas = graph.allNodes.toList()
+			val cinemas = it.allNodes.toList()
 
 			assertThat(cinemas, hasSize(1))
 			val cinema = cinemas.single()

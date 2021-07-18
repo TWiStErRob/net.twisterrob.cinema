@@ -15,21 +15,21 @@ import org.hamcrest.Matchers.empty
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.neo4j.harness.ServerControls
-import org.neo4j.harness.TestServerBuilders
+import org.neo4j.harness.Neo4j
+import org.neo4j.harness.Neo4jBuilders
 import kotlin.streams.toList
 
 @TagIntegration
 class CinemaSyncIntgTest {
 
-	private lateinit var testServer: ServerControls
+	private lateinit var testServer: Neo4j
 
 	private val feedService: FeedService = mock()
 
 	private lateinit var sut: CinemaSync
 
 	@BeforeEach fun setUp() {
-		testServer = TestServerBuilders.newInProcessBuilder().newServer()
+		testServer = Neo4jBuilders.newInProcessBuilder().build()
 
 		val dagger = DaggerCinemaSyncIntgTestComponent
 			.builder()
@@ -41,7 +41,7 @@ class CinemaSyncIntgTest {
 	}
 
 	@AfterEach fun tearDown() {
-		testServer.graph().shutdown()
+		testServer.close()
 	}
 
 	@Test fun `no cinemas in feed result in no data synced`() {
@@ -50,8 +50,8 @@ class CinemaSyncIntgTest {
 
 		sut.sync()
 
-		testServer.graph().beginTx().apply {
-			val allNodes = testServer.graph().allNodes.stream().toList()
+		testServer.defaultDatabaseService().beginTx().apply {
+			val allNodes = this.allNodes.stream().toList()
 			assertThat(allNodes, empty())
 			// no relationships either, since there are no nodes to connect
 		}
