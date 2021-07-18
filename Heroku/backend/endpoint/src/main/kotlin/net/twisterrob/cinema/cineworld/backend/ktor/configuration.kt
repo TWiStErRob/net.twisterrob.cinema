@@ -34,7 +34,6 @@ import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
 import io.ktor.sessions.get
 import io.ktor.sessions.sessions
-import io.ktor.util.ConversionService
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.h2
@@ -50,7 +49,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -83,19 +81,16 @@ internal fun Application.configuration(
 	}
 	//install(HeaderLoggingFeature)
 	install(DataConversion) {
-		this.convert(LocalDate::class, object : ConversionService {
-			private val formatter = DateTimeFormatterBuilder()
+		convert<LocalDate> {
+			val formatter = DateTimeFormatterBuilder()
 				.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
 				.appendValue(ChronoField.MONTH_OF_YEAR, 2)
 				.appendValue(ChronoField.DAY_OF_MONTH, 2)
 				.toFormatter(Locale.ROOT)
-
-			override fun fromValues(values: List<String>, type: Type): LocalDate =
+			decode { values, _ ->
 				LocalDate.from(formatter.parse(values.single()))
-
-			override fun toValues(value: Any?): List<String> =
-				TODO("YAGNI")
-		})
+			}
+		}
 	}
 	install(ContentNegotiation) {
 		jackson {

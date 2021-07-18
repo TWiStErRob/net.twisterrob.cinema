@@ -2,7 +2,7 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
-import io.ktor.client.call.TypeInfo
+import io.ktor.util.reflect.TypeInfo
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.JsonSerializer
 import io.ktor.client.request.get
@@ -10,13 +10,11 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
-import io.ktor.util.KtorExperimentalAPI
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.readText
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-@OptIn(KtorExperimentalAPI::class)
 class FeedServiceNetwork @Inject constructor(
 	client: HttpClient
 ) : FeedService {
@@ -33,13 +31,13 @@ class FeedServiceNetwork @Inject constructor(
 		getUKWeeklyFilmTimes() + getIrelandWeeklyFilmTimes()
 
 	private fun getUKWeeklyFilmTimes(): Feed = runBlocking {
-		client.get<Feed> {
+		client.get {
 			url("https://www.cineworld.co.uk/syndication/weekly_film_times.xml")
 		}
 	}
 
 	private fun getIrelandWeeklyFilmTimes(): Feed = runBlocking {
-		client.get<Feed> {
+		client.get {
 			url("https://www.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
 		}
 	}

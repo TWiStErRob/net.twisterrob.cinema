@@ -148,7 +148,7 @@ object Kotlin {
  */
 object Ktor {
 
-	const val version = "1.5.4"
+	const val version = "1.6.0"
 
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
