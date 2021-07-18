@@ -16,7 +16,7 @@ import io.ktor.utils.io.core.readText
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-@UseExperimental(KtorExperimentalAPI::class)
+@OptIn(KtorExperimentalAPI::class)
 class FeedServiceNetwork @Inject constructor(
 	client: HttpClient
 ) : FeedService {

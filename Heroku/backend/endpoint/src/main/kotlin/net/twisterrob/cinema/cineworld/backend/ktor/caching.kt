@@ -33,7 +33,7 @@ var ApplicationCall.caching: CachingOptions
 		}
 	}
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun defaultCacheOptions(environment: Env): CachingOptions {
 	val cacheLength = if (environment == Env.PRODUCTION) 10.hours.inSeconds else 0.0
 	return CachingOptions(

@@ -22,7 +22,7 @@ class QuickbookServiceNetwork @Inject constructor(
 	private val key: String
 ) : QuickbookService {
 
-	@UseExperimental(KtorExperimentalAPI::class)
+	@OptIn(KtorExperimentalAPI::class)
 	private val client = client.config {
 		install(JsonFeature) {
 			serializer = JacksonSerializer {
