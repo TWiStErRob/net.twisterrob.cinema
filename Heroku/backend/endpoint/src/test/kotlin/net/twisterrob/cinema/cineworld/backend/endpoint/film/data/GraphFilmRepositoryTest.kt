@@ -11,11 +11,11 @@ import net.twisterrob.cinema.database.services.FilmService
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.offsetDateTimeRealistic
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import kotlin.test.assertEquals
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
