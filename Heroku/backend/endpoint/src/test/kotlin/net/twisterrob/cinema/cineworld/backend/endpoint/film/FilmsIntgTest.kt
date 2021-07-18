@@ -113,7 +113,27 @@ private fun serialized(film: Film): String =
 		"title": "${film.title}",
 		"cineworldID": ${film.cineworldID},
 		"_created": "${film._created.atZoneSameInstant(ZoneOffset.UTC)}",
-		"_updated": "${film._updated?.atZoneSameInstant(ZoneOffset.UTC)}"
+		"_updated": "${film._updated?.atZoneSameInstant(ZoneOffset.UTC)}",
+		"director": "${film.director}",
+		"release": "${film.release.atZoneSameInstant(ZoneOffset.UTC)}",
+		"format": "${film.format}",
+		"runtime": ${film.runtime},
+		"poster_url": "${film.poster_url}",
+		"cineworldInternalID": ${film.cineworldInternalID},
+		"cert": "${film.cert}",
+		"imax": ${film.imax},
+		"3D": ${film.`3D`},
+		"film_url": "${film.film_url}",
+		"edi": ${film.edi},
+		"classification": "${film.classification}",
+		"trailer": "${film.trailer}",
+		"actors": "${film.actors}",
+		"originalTitle": "${film.originalTitle}",
+		"categories": ${film.categories},
+		"weighted": ${film.weighted},
+		"slug": "${film.slug}",
+		"group": ${film.group},
+		"view": null
 	}
 	"""
 
