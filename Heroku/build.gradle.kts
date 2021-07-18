@@ -36,26 +36,17 @@ allprojects {
 		val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
 		kapt.apply {
 			includeCompileClasspath = false
-//			javacOptions {
-//				option("-source", "8")
-//				option("-target", "8")
-//			}
 		}
 	}
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<KotlinCompile> {
 			kotlinOptions {
 				jvmTarget = JavaVersion.VERSION_1_8.toString()
-//				jvmTarget = JavaVersion.VERSION_11.toString()
 				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
 			}
 		}
 	}
 	plugins.withId("java") {
-//		configure<JavaPluginConvention> {
-//			sourceCompatibility = JavaVersion.VERSION_1_8
-//			targetCompatibility = JavaVersion.VERSION_11
-//		}
 		tasks.withType<Test> {
 			maxHeapSize = "512M"
 			//afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
