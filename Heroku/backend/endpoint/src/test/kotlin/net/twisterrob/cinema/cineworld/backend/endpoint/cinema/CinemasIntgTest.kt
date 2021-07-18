@@ -33,6 +33,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -226,8 +228,8 @@ private fun serialized(cinema: Cinema): String =
 		"postcode": "${cinema.postcode}",
 		"telephone": "${cinema.telephone}",
 		"cinema_url": "${cinema.cinema_url}",
-		"_created": "${cinema._created}",
-		"_updated": "${cinema._updated}",
+		"_created": "${cinema._created.withOffsetSameInstant(ZoneOffset.UTC)}",
+		"_updated": "${cinema._updated?.withOffsetSameInstant(ZoneOffset.UTC)}",
 		"address": "${cinema.address}",
 		"fav": ${cinema.fav}
 	}

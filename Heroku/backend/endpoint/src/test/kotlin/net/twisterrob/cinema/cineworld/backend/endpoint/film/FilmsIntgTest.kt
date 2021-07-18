@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -111,8 +112,8 @@ private fun serialized(film: Film): String =
 		"class": "${film.`class`}",
 		"title": "${film.title}",
 		"cineworldID": ${film.cineworldID},
-		"_created": "${film._created}",
-		"_updated": "${film._updated}"
+		"_created": "${film._created.atZoneSameInstant(ZoneOffset.UTC)}",
+		"_updated": "${film._updated?.atZoneSameInstant(ZoneOffset.UTC)}"
 	}
 	"""
 
