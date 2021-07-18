@@ -129,12 +129,17 @@ object JFixture {
 }
 
 object Kotlin {
-	const val version = "1.3.61"
 
-	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-	const val reflect = "org.jetbrains.kotlin:kotlin-reflect"
+	/**
+	 * @see Jackson.version
+	 * @see Ktor.version
+	 */
+	const val version = "1.4.32"
+
+	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
 	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
-	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3"
+	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
 }
 
 /**
@@ -143,7 +148,7 @@ object Kotlin {
  */
 object Ktor {
 
-	const val version = "1.3.1"
+	const val version = "1.5.4"
 
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
@@ -201,6 +206,7 @@ object Ktor {
 				add("implementation", engine.netty)
 				add("implementation", content.jackson)
 				add("implementation", content.html)
+				add("testImplementation", client.mock_jvm)
 				add("testImplementation", test)
 			}
 		}
@@ -293,10 +299,10 @@ object Neo4JOGM {
 }
 
 object Jackson {
-	const val version = "2.10.2"
+	const val version = "2.12.3"
 
-	const val databind = "com.fasterxml.jackson.core:jackson-databind:2.10.1"
-	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1"
-	const val module_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2"
-	const val datatype_java8 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2"
+	const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
+	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
+	const val module_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
+	const val datatype_java8 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${version}"
 }

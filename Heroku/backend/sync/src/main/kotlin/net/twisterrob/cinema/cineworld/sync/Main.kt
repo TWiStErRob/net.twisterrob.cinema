@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
-fun main(args: Array<String>) {
+fun main() {
 	val dagger = DaggerSyncAppComponent
 		.builder()
 		.graphDBUri(/* default argument */)
