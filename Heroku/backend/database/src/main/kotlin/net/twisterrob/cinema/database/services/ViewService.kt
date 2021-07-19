@@ -42,15 +42,14 @@ class ViewService @Inject constructor(
 				(c:Cinema { cineworldID: ${"$"}cinemaID }),
 				(f:Film { edi: ${"$"}filmEDI }),
 				(u:User { id: ${"$"}userID })
-			CREATE UNIQUE
-				(u)-[t:ATTENDED]->(v:View {
+			MERGE (u)-[t:ATTENDED]->(v:View {
 					film: ${"$"}filmEDI,
 					cinema: ${"$"}cinemaID,
 					user: ${"$"}userID,
 					date: ${"$"}dateEpochUTC
-				}),
-				(v:View)-[a:AT]->(c),
-				(v:View)-[w:WATCHED]->(f)
+				})
+			MERGE (v)-[a:AT]->(c)
+			MERGE (v)-[w:WATCHED]->(f)
 			// need to return nodes and relationships, otherwise OGM doesn't connect them
 			RETURN v AS view, t AS attended, u AS user, a AS at, c AS cinema, w AS watched, f AS film
 			""",
