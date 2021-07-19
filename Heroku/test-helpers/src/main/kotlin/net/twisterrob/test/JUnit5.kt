@@ -2,7 +2,7 @@ package net.twisterrob.test
 
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
-import org.junit.platform.commons.util.BlacklistedExceptions
+import org.junit.platform.commons.util.UnrecoverableExceptions
 import org.opentest4j.MultipleFailuresError
 import kotlin.DeprecationLevel.ERROR
 
@@ -43,7 +43,7 @@ constructor(
 		try {
 			function.invoke()
 		} catch (t: Throwable) {
-			BlacklistedExceptions.rethrowIfBlacklisted(t)
+			UnrecoverableExceptions.rethrowIfUnrecoverable(t)
 
 			failures.add(t)
 		}

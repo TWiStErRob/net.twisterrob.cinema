@@ -78,9 +78,9 @@ object RxJava2 {
 }
 
 object JUnit {
-	const val version4 = "4.13"
-	const val versionPlatform = "1.6.0"
-	const val versionJupiter = "5.6.0"
+	const val version4 = "4.13.2"
+	const val versionPlatform = "1.7.2"
+	const val versionJupiter = "5.7.2"
 
 	const val junit4 = "junit:junit:${version4}"
 	const val platform = "org.junit.platform:junit-platform-launcher:${versionPlatform}"
