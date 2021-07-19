@@ -47,7 +47,7 @@ inline fun <reified T> Session.deleteForIds(filters: Iterable<Filter> = emptyLis
  *
  * @return entity instance, `null` if not found
  * @see org.neo4j.ogm.session.load which has the wrong return type
- * TODO remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
+ * STOPSHIP remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
  */
 inline fun <reified T : Any> Session.load(id: Serializable, depth: Int = 1): T? =
 	load(T::class.java, id, depth)
@@ -64,7 +64,7 @@ inline fun <reified T : Any> Session.load(id: Serializable, depth: Int = 1): T? 
  *         `null` if no object is matched.
  * @throws RuntimeException If more than one object is found.
  * @see org.neo4j.ogm.session.queryForObject which has the wrong return type
- * TODO remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
+ * STOPSHIP remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
  */
 inline fun <reified T> Session.queryForObject(
 	cypher: String,
