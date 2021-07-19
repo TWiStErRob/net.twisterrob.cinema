@@ -453,6 +453,6 @@ object Neo4jMatchers {
 		protected abstract fun manifest(tx: Transaction): Iterable<T>
 
 		fun collection(): Collection<T> =
-			db.beginTx().use { manifest(it).toList() }
+			db.beginTx().use { tx -> manifest(tx).toList() }
 	}
 }

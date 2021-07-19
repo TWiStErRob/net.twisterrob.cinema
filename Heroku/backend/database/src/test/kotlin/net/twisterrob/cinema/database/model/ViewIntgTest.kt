@@ -61,8 +61,8 @@ class ViewIntgTest {
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 
-		graph.beginTx().use {
-			val nodes = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val nodes = tx.allNodes.toList()
 
 			assertThat(nodes, hasSize(4))
 			val (user, film, view, cinema) = nodes

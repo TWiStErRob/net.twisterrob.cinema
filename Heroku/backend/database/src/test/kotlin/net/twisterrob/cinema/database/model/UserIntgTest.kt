@@ -45,8 +45,8 @@ class UserIntgTest {
 		session.save(fixtUser, -1)
 		session.clear() // drop cached User objects, start fresh
 
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			val user = users.single()

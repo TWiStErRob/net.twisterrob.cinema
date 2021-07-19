@@ -97,8 +97,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->
@@ -134,8 +134,8 @@ class UserServiceIntgTest {
 			this.realm = fixtRealm
 			this._created = fixtCreated
 		}
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -179,8 +179,8 @@ class UserServiceIntgTest {
 			this.realm = fixtRealm
 			this._created = fixtCreated
 		}
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -206,8 +206,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtUser._created))
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -245,8 +245,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use {
-			val users = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->

@@ -45,8 +45,8 @@ class FilmIntgTest {
 		session.save(fixtFilm, -1)
 		session.clear() // drop cached Film objects, start fresh
 
-		graph.beginTx().use {
-			val films = it.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val films = tx.allNodes.toList()
 
 			assertThat(films, hasSize(1))
 			val film = films.single()
