@@ -13,25 +13,6 @@ allprojects {
 		Deps.Ktor.repo(project)
 	}
 
-	configurations.all {
-		resolutionStrategy.dependencySubstitution.all {
-			val requested = this.requested
-			// Waiting for Neo4J OGM release with https://github.com/neo4j/neo4j-ogm/pull/762.
-			if (requested is ModuleComponentSelector
-				&& requested.module == "classgraph"
-				&& requested.group == "io.github.classgraph"
-			) {
-				if (VersionNumber.parse(requested.version) < VersionNumber.parse("4.8.62")) {
-					// 4.8.63 doesn't work on JDK 8
-					useTarget(
-						"${requested.group}:${requested.module}:4.8.64",
-						"Performance issue with low memory: https://github.com/classgraph/classgraph/issues/400"
-					)
-				}
-			}
-		}
-	}
-
 	plugins.withId("org.jetbrains.kotlin.kapt") {
 		val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
 		kapt.apply {
