@@ -39,15 +39,15 @@ class ViewService @Inject constructor(
 		session.queryForObject<View>(
 			"""
 			MATCH
-				(c:Cinema { cineworldID: {cinemaID} }),
-				(f:Film { edi: {filmEDI} }),
-				(u:User { id: {userID} })
+				(c:Cinema { cineworldID: ${"$"}cinemaID }),
+				(f:Film { edi: ${"$"}filmEDI }),
+				(u:User { id: ${"$"}userID })
 			CREATE UNIQUE
 				(u)-[t:ATTENDED]->(v:View {
-					film: {filmEDI},
-					cinema: {cinemaID},
-					user: {userID},
-					date: {dateEpochUTC}
+					film: ${"$"}filmEDI,
+					cinema: ${"$"}cinemaID,
+					user: ${"$"}userID,
+					date: ${"$"}dateEpochUTC
 				}),
 				(v:View)-[a:AT]->(c),
 				(v:View)-[w:WATCHED]->(f)
@@ -72,10 +72,10 @@ class ViewService @Inject constructor(
 	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime): Unit = run {
 		session.query(
 			"""
-			MATCH (v:View {date: {dateEpochUTC} })
-			MATCH (v)<-[a:ATTENDED]-(u:User { id: {userID} })
-			MATCH (v)-[w:WATCHED]->(f:Film { edi: {filmEDI} })
-			MATCH (v)-[at:AT]->(c:Cinema { cineworldID: {cinemaID} })
+			MATCH (v:View {date: ${"$"}dateEpochUTC })
+			MATCH (v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID })
+			MATCH (v)-[w:WATCHED]->(f:Film { edi: ${"$"}filmEDI })
+			MATCH (v)-[at:AT]->(c:Cinema { cineworldID: ${"$"}cinemaID })
 			MATCH (v)-[r]-()
 			DELETE v, r
 			""",
