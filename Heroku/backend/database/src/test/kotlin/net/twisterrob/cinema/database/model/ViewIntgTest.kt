@@ -32,6 +32,7 @@ class ViewIntgTest {
 		val fixtView: View = fixture.build()
 		val expected = fixtView.copy().apply view@{
 			graphId = 2
+			inUTC()
 			// Java 9+ is more precise than Java 8, but we only store milliseconds.
 			date = date.truncatedTo(ChronoUnit.MILLIS)
 			atCinema = atCinema.copy().apply {
@@ -87,6 +88,14 @@ class ViewIntgTest {
 			session.save(view, -1)
 		}
 	}
+}
+
+fun View.inUTC() {
+	// Java 9+ is more precise than Java 8, but we only store milliseconds.
+	date = date.truncatedTo(ChronoUnit.MILLIS)
+	watchedFilm.inUTC()
+	atCinema.inUTC()
+	userRef.inUTC()
 }
 
 fun assertSameData(expected: View, actual: Node) = assertAll {

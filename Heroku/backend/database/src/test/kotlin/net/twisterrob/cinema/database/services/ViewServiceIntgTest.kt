@@ -8,6 +8,7 @@ import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
 import net.twisterrob.cinema.database.model.assertSameData
+import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.TagIntegration
@@ -39,8 +40,11 @@ class ViewServiceIntgTest {
 
 	@Test fun `addView returns each piece of the View`(session: Session) {
 		val fixtCinema: Cinema = fixture.build()
+		fixtCinema.inUTC()
 		val fixtFilm: Film = fixture.build()
+		fixtFilm.inUTC()
 		val fixtUser: User = fixture.build()
+		fixtUser.inUTC()
 		val fixtTime: OffsetDateTime = fixture.build()
 		session.save(fixtCinema)
 		session.save(fixtFilm)

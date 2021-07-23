@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.User
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.neo4j.ogm.load
 import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
@@ -56,8 +57,8 @@ class UserService @Inject constructor(
 				"id" to userId,
 				"email" to email,
 				"name" to name,
-				// calling OffsetDateTime.toString() is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
-				"created" to created.toString()
+				// calling the converter is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
+				"created" to TimestampConverter().toGraphProperty(created)
 			)
 		)!!
 }

@@ -4,6 +4,7 @@ import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
@@ -19,6 +20,7 @@ import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
+import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
@@ -30,6 +32,7 @@ class CinemaIntgTest {
 		val fixtCinema: Cinema = fixture.build()
 		val expected = fixtCinema.copy().apply {
 			graphId = 0
+			inUTC()
 		}
 		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
@@ -64,13 +67,19 @@ class CinemaIntgTest {
 	}
 }
 
+fun Cinema.inUTC() {
+	_created = _created.withOffsetSameInstant(ZoneOffset.UTC)
+	_updated = _updated?.withOffsetSameInstant(ZoneOffset.UTC)
+	_deleted = _deleted?.withOffsetSameInstant(ZoneOffset.UTC)
+}
+
 fun assertSameData(expected: Cinema, actual: Node) = assertAll {
 	that("labels", actual, hasLabels("Cinema"))
 	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf(
-		"_created" to expected._created.toString(),
-		"_updated" to expected._updated.toString(),
-		"_deleted" to expected._deleted.toString(),
+		"_created" to TimestampConverter().toGraphProperty(expected._created),
+		"_updated" to TimestampConverter().toGraphProperty(expected._updated),
+		"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
 		"class" to expected.className,
 		"cineworldID" to expected.cineworldID,
 		"name" to expected.name,
