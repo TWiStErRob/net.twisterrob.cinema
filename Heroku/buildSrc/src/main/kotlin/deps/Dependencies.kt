@@ -273,7 +273,7 @@ object Neo4JOGM {
 	/**
 	 * https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 	 */
-	const val version = "3.2.24"
+	const val version = "3.2.25"
 
 	/**
 	 * https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
