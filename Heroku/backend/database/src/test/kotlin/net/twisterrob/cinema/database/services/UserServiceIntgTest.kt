@@ -216,7 +216,7 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 
 		val expectedNewUser = User().apply {
-			this["graphId"] = result.graphId
+			this.graphId = result.graphId
 			this.id = fixtUserId
 			this.email = fixtEmail
 			this.name = fixtName
