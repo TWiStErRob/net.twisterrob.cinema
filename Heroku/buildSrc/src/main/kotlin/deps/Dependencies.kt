@@ -305,6 +305,15 @@ object Neo4JOGM {
 	const val driver_bolt = "org.neo4j:neo4j-ogm-bolt-driver:${version}"
 	const val driver_http = "org.neo4j:neo4j-ogm-http-driver:${version}"
 
+	/**
+	 * When using this, mind https://github.com/neo4j/neo4j/issues/12770.
+	 * To work around, use:
+	 * ```
+	 * testImplementation(Deps.Neo4JOGM.harness) {
+	 *     exclude(group = "org.slf4j", module = "slf4j-nop")
+	 * }
+	 * ```
+	 */
 	const val harness = "org.neo4j.test:neo4j-harness:${version_neo4j}"
 }
 
