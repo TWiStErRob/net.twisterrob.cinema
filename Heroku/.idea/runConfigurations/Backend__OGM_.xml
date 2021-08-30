@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend (OGM)" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="net.twisterrob.cinema.cineworld.backend.MainKt" />
+    <module name="Heroku.backend.endpoint.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
