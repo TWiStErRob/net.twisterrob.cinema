@@ -34,6 +34,7 @@ dependencies {
 
 	testImplementation(Deps.Neo4JOGM.harness)
 
+	testRuntimeOnly(Deps.Log4J2.core)
 	testRuntimeOnly(Deps.Log4J2.slf4j)
 
 	testFixturesImplementation(Deps.Kotlin.core)

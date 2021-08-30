@@ -233,7 +233,7 @@ object Log4J {
 }
 
 object Log4J2 {
-	const val version = "2.11.0"
+	const val version = "2.14.1"
 
 	const val core = "org.apache.logging.log4j:log4j-core:${version}"
 	const val api = "org.apache.logging.log4j:log4j-api:${version}"
@@ -271,13 +271,15 @@ object Dagger2 {
 object Neo4JOGM {
 
 	/**
-	 * https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+	 * @see Neo4JOGM.version_neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 	 */
 	const val version = "3.2.25"
 
 	/**
 	 * https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
-	 * Match version of DB at https://console.neo4j.io/#databases
+	 * Match version of DB at https://console.neo4j.io/#databases, exactly to minor.
+	 * @see Neo4JOGM.version should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+	 * @see Log4J2.version should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 	 */
 	const val version_neo4j = "4.2.0"
 
