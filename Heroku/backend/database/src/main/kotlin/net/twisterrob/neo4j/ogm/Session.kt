@@ -4,7 +4,6 @@ package net.twisterrob.neo4j.ogm
 
 import org.neo4j.ogm.cypher.Filter
 import org.neo4j.ogm.session.Session
-import java.io.Serializable
 
 /**
  * Type-safe Kotlin extension functions with inferred nullability based on docs and code.
@@ -41,36 +40,6 @@ inline fun <reified T> Session.deleteForCount(filters: Iterable<Filter> = emptyL
 @Suppress("UNCHECKED_CAST") // necessary because of List's generics
 inline fun <reified T> Session.deleteForIds(filters: Iterable<Filter> = emptyList()): List<Long> =
 	delete(T::class.java, filters, true) as List<Long>
-
-/**
- * Load single entity instance of type, with depth
- *
- * @return entity instance, `null` if not found
- * @see org.neo4j.ogm.session.load which has the wrong return type
- * STOPSHIP remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
- */
-inline fun <reified T : Any> Session.load(id: Serializable, depth: Int = 1): T? =
-	load(T::class.java, id, depth)
-
-/**
- * A cypher statement this method will return a domain object that is hydrated to the
- * default level or a scalar (depending on the parametrized type).
- *
- * @param T The type that should be returned from the query.
- * @param cypher The parameterizable cypher to execute.
- * @param parameters Any scalar parameters to attach to the cypher.
- * @param T A domain object or scalar.
- * @return An instance of the objectType that matches the cypher and parameters.
- *         `null` if no object is matched.
- * @throws RuntimeException If more than one object is found.
- * @see org.neo4j.ogm.session.queryForObject which has the wrong return type
- * STOPSHIP remove this in favor of https://github.com/neo4j/neo4j-ogm/pull/765
- */
-inline fun <reified T> Session.queryForObject(
-	cypher: String,
-	parameters: Map<String, *> = emptyMap<String, Any>()
-): T? =
-	queryForObject(T::class.java, cypher, parameters)
 
 /**
  * A cypher statement this method will return a collection of domain objects that is hydrated to

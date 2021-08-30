@@ -2,9 +2,9 @@ package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.neo4j.ogm.TimestampConverter
-import net.twisterrob.neo4j.ogm.load
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.load
+import org.neo4j.ogm.session.queryForObject
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
@@ -58,7 +58,7 @@ class UserService @Inject constructor(
 				"email" to email,
 				"name" to name,
 				// calling the converter is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
-				"created" to TimestampConverter().toGraphProperty(created)
+				"created" to TimestampConverter().toGraphProperty(created)!!
 			)
 		)!!
 }

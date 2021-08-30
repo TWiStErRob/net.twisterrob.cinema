@@ -2,9 +2,9 @@ package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.User
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.query
+import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
 
 class CinemaService @Inject constructor(

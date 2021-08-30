@@ -7,7 +7,6 @@ import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.assertSameData
 import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
-import net.twisterrob.neo4j.ogm.load
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.load
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 

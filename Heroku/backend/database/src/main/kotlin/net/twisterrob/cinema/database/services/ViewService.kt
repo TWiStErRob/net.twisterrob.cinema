@@ -4,8 +4,8 @@ import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.queryForObject
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
