@@ -37,4 +37,14 @@ class View : BaseNode() {
 
 	override fun toString() =
 		"View[$graphId](${userRef.name} watched ${watchedFilm.title} at ${atCinema.name}"
+
+	fun copy(): View {
+		val copy = View()
+		copy.copyProperties(this)
+		copy.date = date
+		copy.atCinema = atCinema
+		copy.watchedFilm = watchedFilm
+		copy.userRef = userRef
+		return copy
+	}
 }

@@ -88,4 +88,35 @@ class Film : Historical() {
 
 	override fun toString() =
 		"Film[$graphId](${cineworldID}, ${title})"
+
+	fun copy(): Film {
+		val copy = Film()
+		copy.copyProperties(this)
+		copy.edi = edi
+		copy.cineworldID = cineworldID
+		copy.cineworldInternalID = cineworldInternalID
+		copy.title = title
+		copy.originalTitle = originalTitle
+		copy.advisory = advisory
+		copy.classification = classification
+		copy.cert = cert
+		copy.actors = actors
+		copy.director = director
+		copy.imax = imax
+		copy.`3D` = `3D`
+		copy.runtime = runtime
+		copy.weighted = weighted
+		copy.slug = slug
+		copy.group = group
+		copy.format = format
+		copy.still_url = still_url
+		copy.film_url = film_url
+		copy.poster_url = poster_url
+		copy.poster = poster
+		copy.trailer = trailer
+		copy.release = release
+		copy.categories = categories
+		copy.views = views
+		return copy
+	}
 }

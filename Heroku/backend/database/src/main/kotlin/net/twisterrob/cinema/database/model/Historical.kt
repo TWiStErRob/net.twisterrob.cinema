@@ -14,4 +14,11 @@ abstract class Historical : BaseNode() {
 
 	@Property(name = "_deleted")
 	var _deleted: OffsetDateTime? = null
+
+	protected fun copyProperties(from: Historical) {
+		super.copyProperties(from)
+		_created = from._created
+		_updated = from._updated
+		_deleted = from._deleted
+	}
 }

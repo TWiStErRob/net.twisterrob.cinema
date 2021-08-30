@@ -8,5 +8,8 @@ abstract class BaseNode {
 	@Id
 	@GeneratedValue
 	var graphId: Long? = null
-		private set
+
+	protected fun copyProperties(from: BaseNode) {
+		graphId = from.graphId
+	}
 }
