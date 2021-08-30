@@ -160,6 +160,8 @@ data class Feed(
 	@JsonIdentityInfo(
 		scope = Film::class,
 		generator = ObjectIdGenerators.PropertyGenerator::class,
+		// TODEL https://twitter.com/TWiStErRob/status/1432281514511847433
+		resolver = IgnoreDuplicatesObjectIdResolver::class,
 		property = "id"
 	)
 	data class Film(
