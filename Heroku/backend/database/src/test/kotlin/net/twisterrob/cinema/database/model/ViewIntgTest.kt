@@ -30,15 +30,30 @@ class ViewIntgTest {
 
 	@Test fun `new view can be loaded back and contains all data`(session: Session) {
 		val fixtView: View = fixture.build()
-		// Java 9+ is more precise than Java 8, but we only store milliseconds.
-		fixtView.date = fixtView.date.truncatedTo(ChronoUnit.MILLIS)
+		val expected = fixtView.copy().apply view@{
+			graphId = 2
+			// Java 9+ is more precise than Java 8, but we only store milliseconds.
+			date = date.truncatedTo(ChronoUnit.MILLIS)
+			atCinema = atCinema.copy().apply {
+				graphId = 3
+				views = mutableSetOf(this@view)
+			}
+			watchedFilm = watchedFilm.copy().apply {
+				graphId = 1
+				views = mutableSetOf(this@view)
+			}
+			userRef = userRef.copy().apply {
+				graphId = 0
+				views = mutableSetOf(this@view)
+			}
+		}
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 
 		val views = session.loadAll<View>(depth = -1)
 
 		assertThat(views, hasSize(1))
-		assertThat(views.elementAt(0), sameBeanAs(fixtView))
+		assertThat(views.elementAt(0), sameBeanAs(expected))
 	}
 
 	@Test fun `new view contains the right node information`(session: Session, graph: GraphDatabaseService) {

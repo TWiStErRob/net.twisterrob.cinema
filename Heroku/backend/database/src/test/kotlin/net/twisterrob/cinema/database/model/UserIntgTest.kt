@@ -28,13 +28,16 @@ class UserIntgTest {
 
 	@Test fun `new user can be loaded back and contains all data`(session: Session) {
 		val fixtUser: User = fixture.build()
+		val expected = fixtUser.copy().apply {
+			graphId = 0
+		}
 		session.save(fixtUser, -1)
 		session.clear() // drop cached User objects, start fresh
 
 		val users = session.loadAll<User>(depth = -1)
 
 		assertThat(users, hasSize(1))
-		assertThat(users.elementAt(0), sameBeanAs(fixtUser))
+		assertThat(users.elementAt(0), sameBeanAs(expected))
 	}
 
 	@Test fun `new user contains the right node information`(session: Session, graph: GraphDatabaseService) {

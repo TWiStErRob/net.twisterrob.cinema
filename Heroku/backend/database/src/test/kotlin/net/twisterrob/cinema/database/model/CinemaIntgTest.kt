@@ -28,13 +28,16 @@ class CinemaIntgTest {
 
 	@Test fun `new cinema can be loaded back and contains all data`(session: Session) {
 		val fixtCinema: Cinema = fixture.build()
+		val expected = fixtCinema.copy().apply {
+			graphId = 0
+		}
 		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
 
 		val cinemas = session.loadAll<Cinema>(depth = -1)
 
 		assertThat(cinemas, hasSize(1))
-		assertThat(cinemas.elementAt(0), sameBeanAs(fixtCinema))
+		assertThat(cinemas.elementAt(0), sameBeanAs(expected))
 	}
 
 	@Test fun `new cinema contains the right node information`(session: Session, graph: GraphDatabaseService) {
