@@ -35,8 +35,9 @@ class FeedTest {
 	}
 
 	@Test fun `plus skips duplicate films`() {
-		val feed1: Feed = JFixture().build()
-		val extra: Feed.Film = JFixture().build()
+		val fixture = JFixture()
+		val feed1: Feed = fixture.build()
+		val extra: Feed.Film = fixture.build()
 		val feed2 = feed1.copy(films = feed1.films + extra)
 
 		val result = feed1 + feed2
@@ -45,8 +46,9 @@ class FeedTest {
 	}
 
 	@Test fun `plus skips duplicate attributes`() {
-		val feed1: Feed = JFixture().build()
-		val extra: Feed.Attribute = JFixture().build()
+		val fixture = JFixture()
+		val feed1: Feed = fixture.build()
+		val extra: Feed.Attribute = fixture.build()
 		val feed2 = feed1.copy(attributes = feed1.attributes + extra)
 
 		val result = feed1 + feed2
