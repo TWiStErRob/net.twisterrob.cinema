@@ -281,7 +281,7 @@ object Neo4JOGM {
 	 * @see Neo4JOGM.version should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 	 * @see Log4J2.version should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 	 */
-	const val version_neo4j = "4.2.0"
+	const val version_neo4j = "4.2.4"
 
 	/**
 	 * Warning "The following annotation processors were detected on the compile classpath:"
