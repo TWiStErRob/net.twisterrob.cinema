@@ -91,12 +91,10 @@ class CinemaService @Inject constructor(
 	fun addFavorite(userId: String, cinema: Long): Cinema? =
 		session.queryForObject(
 			"""
-			MATCH
-				(c:Cinema { cineworldID: ${"$"}cinemaID }),
-				(u:User { id: ${"$"}userID })
-			CREATE UNIQUE
-				(u)-[:GOESTO]->(c)
-			RETURN u AS user, c AS cinema
+			MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
+			MATCH (u:User { id: ${"$"}userID })
+			MERGE (u)-[g:GOESTO]->(c)
+			RETURN u AS user, c AS cinema, g as favorite
 			""",
 			mapOf(
 				"userID" to userId,

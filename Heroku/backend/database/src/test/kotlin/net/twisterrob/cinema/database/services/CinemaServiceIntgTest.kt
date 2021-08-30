@@ -17,6 +17,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -40,6 +41,7 @@ class CinemaServiceIntgTest {
 		fixtCinemas[2]._deleted = null // active
 		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
+		session.clear()
 
 		val result = sut.getActiveCinemas().toList()
 
@@ -50,9 +52,11 @@ class CinemaServiceIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList()
 		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
-		val fixtUser: User = fixture.build()
-		fixtUser.cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		val fixtUser: User = fixture.build {
+			cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		}
 		session.save(fixtUser)
+		session.clear()
 
 		val result = sut.getFavoriteCinemas(fixtUser.id).toList()
 
@@ -67,10 +71,12 @@ class CinemaServiceIntgTest {
 		fixtCinemas[3]._deleted = null // active
 		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
-		val fixtUser: User = fixture.build()
-		// User favorited one of the two active and an inactive cinema
-		fixtUser.cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		val fixtUser: User = fixture.build {
+			// User favorited one of the two active and an inactive cinema
+			cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		}
 		session.save(fixtUser)
+		session.clear()
 
 		val result = sut.getCinemasAuth(fixtUser.id)
 
@@ -88,5 +94,63 @@ class CinemaServiceIntgTest {
 			)
 		)
 		assertThat(result.entries, hasSize(2))
+	}
+
+	@Test fun `addFavorite() marks cinema as favorite`(session: Session) {
+		val fixtCinemas: List<Cinema> = fixture.buildList()
+		fixtCinemas.forEach { it.inUTC() }
+		fixtCinemas.forEach(session::save)
+		val fixtUser: User = fixture.build {
+			inUTC()
+			cinemas = mutableListOf(fixtCinemas[2])
+		}
+		session.save(fixtUser)
+		session.clear()
+
+		val result = sut.addFavorite(fixtUser.id, fixtCinemas[1].cineworldID)
+		val expected = fixtCinemas[1].copy()
+		expected.users = mutableListOf(fixtUser)
+		fixtUser.cinemas = mutableSetOf(expected)
+		assertThat(result, sameBeanAs(expected))
+		session.clear()
+
+		val favs = sut.getFavoriteCinemas(fixtUser.id).toList()
+		assertThat(favs, containsInAnyOrder(sameBeanAs(result), sameBeanAs(fixtCinemas[2])))
+	}
+
+	@Test fun `removeFavorite() removes user's favorite cinema, but not others`(session: Session) {
+		val fixtCinemas: List<Cinema> = fixture.buildList()
+		fixtCinemas.forEach { it.inUTC() }
+		fixtCinemas.forEach(session::save)
+		val fixtUser: User = fixture.build {
+			inUTC()
+			cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		}
+		session.save(fixtUser)
+		session.clear()
+
+		val result = sut.removeFavorite(fixtUser.id, fixtCinemas[0].cineworldID)
+		assertThat(result, sameBeanAs(fixtCinemas[0]))
+
+		val favs = sut.getFavoriteCinemas(fixtUser.id).toList()
+		assertThat(favs, containsInAnyOrder(sameBeanAs(fixtCinemas[2])))
+	}
+
+	@Test fun `removeFavorite() does not remove user's non-favorited cinema`(session: Session) {
+		val fixtCinemas: List<Cinema> = fixture.buildList()
+		fixtCinemas.forEach { it.inUTC() }
+		fixtCinemas.forEach(session::save)
+		val fixtUser: User = fixture.build {
+			inUTC()
+			cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
+		}
+		session.save(fixtUser)
+		session.clear()
+
+		val result = sut.removeFavorite(fixtUser.id, fixtCinemas[1].cineworldID)
+		assertNull(result)
+
+		val favs = sut.getFavoriteCinemas(fixtUser.id).toList()
+		assertThat(favs, containsInAnyOrder(sameBeanAs(fixtCinemas[0]), sameBeanAs(fixtCinemas[2])))
 	}
 }
