@@ -18,28 +18,37 @@ class Film : Historical() {
 
 	@Property(name = "edi")
 	var edi: Long = 0
+
 	@Property(name = "cineworldID")
 	var cineworldID: Long? = null
+
 	@Property(name = "cineworldInternalID")
 	var cineworldInternalID: Long = 0
 
 	@Property(name = "title")
 	lateinit var title: String
+
 	@Property(name = "originalTitle")
 	lateinit var originalTitle: String
 
 	@Property(name = "advisory")
 	var advisory: String? = null
+
 	@Property(name = "classification")
 	lateinit var classification: String
+
 	@Property(name = "cert")
 	lateinit var cert: String
+
 	@Property(name = "actors")
 	lateinit var actors: String
+
 	@Property(name = "director")
 	lateinit var director: String
+
 	@Property(name = "imax")
 	var imax: Boolean = false
+
 	@Property(name = "3D")
 	var `3D`: Boolean = false
 
