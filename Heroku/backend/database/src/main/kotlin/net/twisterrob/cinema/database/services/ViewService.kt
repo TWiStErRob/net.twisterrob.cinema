@@ -4,8 +4,8 @@ import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.queryForObject
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
@@ -36,21 +36,20 @@ class ViewService @Inject constructor(
 	 * @param time [View.date]
 	 */
 	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
-		session.queryForObject<View>(
+		session.queryForObject(
 			"""
 			MATCH
-				(c:Cinema { cineworldID: {cinemaID} }),
-				(f:Film { edi: {filmEDI} }),
-				(u:User { id: {userID} })
-			CREATE UNIQUE
-				(u)-[t:ATTENDED]->(v:View {
-					film: {filmEDI},
-					cinema: {cinemaID},
-					user: {userID},
-					date: {dateEpochUTC}
-				}),
-				(v:View)-[a:AT]->(c),
-				(v:View)-[w:WATCHED]->(f)
+				(c:Cinema { cineworldID: ${"$"}cinemaID }),
+				(f:Film { edi: ${"$"}filmEDI }),
+				(u:User { id: ${"$"}userID })
+			MERGE (u)-[t:ATTENDED]->(v:View {
+				film: ${"$"}filmEDI,
+				cinema: ${"$"}cinemaID,
+				user: ${"$"}userID,
+				date: ${"$"}dateEpochUTC
+			})
+			MERGE (v)-[a:AT]->(c)
+			MERGE (v)-[w:WATCHED]->(f)
 			// need to return nodes and relationships, otherwise OGM doesn't connect them
 			RETURN v AS view, t AS attended, u AS user, a AS at, c AS cinema, w AS watched, f AS film
 			""",
@@ -72,10 +71,10 @@ class ViewService @Inject constructor(
 	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime): Unit = run {
 		session.query(
 			"""
-			MATCH (v:View {date: {dateEpochUTC} })
-			MATCH (v)<-[a:ATTENDED]-(u:User { id: {userID} })
-			MATCH (v)-[w:WATCHED]->(f:Film { edi: {filmEDI} })
-			MATCH (v)-[at:AT]->(c:Cinema { cineworldID: {cinemaID} })
+			MATCH (v:View {date: ${"$"}dateEpochUTC })
+			MATCH (v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID })
+			MATCH (v)-[w:WATCHED]->(f:Film { edi: ${"$"}filmEDI })
+			MATCH (v)-[at:AT]->(c:Cinema { cineworldID: ${"$"}cinemaID })
 			MATCH (v)-[r]-()
 			DELETE v, r
 			""",

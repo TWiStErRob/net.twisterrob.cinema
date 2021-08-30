@@ -32,8 +32,11 @@ dependencies {
 	}
 	testImplementation(project(":test-helpers"))
 
-	testImplementation(Deps.Neo4JOGM.harness)
+	testImplementation(Deps.Neo4JOGM.harness) {
+		exclude(group = "org.slf4j", module = "slf4j-nop")
+	}
 
+	testRuntimeOnly(Deps.Log4J2.core)
 	testRuntimeOnly(Deps.Log4J2.slf4j)
 
 	testFixturesImplementation(Deps.Kotlin.core)

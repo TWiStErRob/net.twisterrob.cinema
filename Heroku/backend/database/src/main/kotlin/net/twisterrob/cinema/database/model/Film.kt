@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.database.model
 
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.neo4j.ogm.URIConverter
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
@@ -86,6 +87,7 @@ class Film : Historical() {
 	@Property(name = "trailer")
 	var trailer: URI? = null
 
+	@Convert(TimestampConverter::class)
 	@Property(name = "release")
 	lateinit var release: OffsetDateTime
 

@@ -8,6 +8,7 @@ import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
@@ -19,7 +20,6 @@ import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
-import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
 import java.time.temporal.ChronoUnit
 
 @ExtendWith(ModelIntgTestExtension::class)
@@ -32,6 +32,7 @@ class ViewIntgTest {
 		val fixtView: View = fixture.build()
 		val expected = fixtView.copy().apply view@{
 			graphId = 2
+			inUTC()
 			// Java 9+ is more precise than Java 8, but we only store milliseconds.
 			date = date.truncatedTo(ChronoUnit.MILLIS)
 			atCinema = atCinema.copy().apply {
@@ -61,8 +62,8 @@ class ViewIntgTest {
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 
-		graph.beginTx().use {
-			val nodes = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val nodes = tx.allNodes.toList()
 
 			assertThat(nodes, hasSize(4))
 			val (user, film, view, cinema) = nodes
@@ -87,6 +88,14 @@ class ViewIntgTest {
 			session.save(view, -1)
 		}
 	}
+}
+
+fun View.inUTC() {
+	// Java 9+ is more precise than Java 8, but we only store milliseconds.
+	date = date.truncatedTo(ChronoUnit.MILLIS)
+	watchedFilm.inUTC()
+	atCinema.inUTC()
+	userRef.inUTC()
 }
 
 fun assertSameData(expected: View, actual: Node) = assertAll {

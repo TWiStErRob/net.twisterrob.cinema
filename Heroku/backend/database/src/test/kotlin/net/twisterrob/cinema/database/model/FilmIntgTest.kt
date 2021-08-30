@@ -4,10 +4,12 @@ import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
+import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -18,7 +20,7 @@ import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
-import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
+import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
@@ -30,6 +32,7 @@ class FilmIntgTest {
 		val fixtFilm: Film = fixture.build()
 		val expected = fixtFilm.copy().apply {
 			graphId = 0
+			inUTC()
 		}
 		session.save(fixtFilm, -1)
 		session.clear() // drop cached Film objects, start fresh
@@ -45,8 +48,8 @@ class FilmIntgTest {
 		session.save(fixtFilm, -1)
 		session.clear() // drop cached Film objects, start fresh
 
-		graph.beginTx().use {
-			val films = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val films = tx.allNodes.toList()
 
 			assertThat(films, hasSize(1))
 			val film = films.single()
@@ -64,13 +67,20 @@ class FilmIntgTest {
 	}
 }
 
+fun Film.inUTC() {
+	_created = _created.withOffsetSameInstant(ZoneOffset.UTC)
+	_updated = _updated?.withOffsetSameInstant(ZoneOffset.UTC)
+	_deleted = _deleted?.withOffsetSameInstant(ZoneOffset.UTC)
+	release = release.withOffsetSameInstant(ZoneOffset.UTC)
+}
+
 fun assertSameData(expected: Film, actual: Node) = assertAll {
 	that("labels", actual, hasLabels("Film"))
 	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf<String, Any?>(
-		"_created" to expected._created.toString(),
-		"_updated" to expected._updated.toString(),
-		"_deleted" to expected._deleted.toString(),
+		"_created" to TimestampConverter().toGraphProperty(expected._created),
+		"_updated" to TimestampConverter().toGraphProperty(expected._updated),
+		"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
 		"class" to expected.className,
 		"edi" to expected.edi,
 		"cineworldID" to expected.cineworldID,
@@ -99,7 +109,7 @@ fun assertSameData(expected: Film, actual: Node) = assertAll {
 		"poster" to expected.poster,
 		"trailer" to expected.trailer,
 
-		"release" to expected.release.toString(),
+		"release" to TimestampConverter().toGraphProperty(expected.release),
 
 		"categories" to expected.categories.toTypedArray()
 	)

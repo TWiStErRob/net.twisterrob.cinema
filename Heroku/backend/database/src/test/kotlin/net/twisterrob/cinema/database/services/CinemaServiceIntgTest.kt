@@ -5,6 +5,7 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.User
+import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -37,6 +38,7 @@ class CinemaServiceIntgTest {
 		fixtCinemas[0]._deleted = null // active
 		fixtCinemas[1]._deleted = fixture.build() // inactive
 		fixtCinemas[2]._deleted = null // active
+		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
 
 		val result = sut.getActiveCinemas().toList()
@@ -46,6 +48,7 @@ class CinemaServiceIntgTest {
 
 	@Test fun `getFavoriteCinemas() returns the user's favorite cinemas, but not others`(session: Session) {
 		val fixtCinemas: List<Cinema> = fixture.buildList()
+		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
 		val fixtUser: User = fixture.build()
 		fixtUser.cinemas = mutableListOf(fixtCinemas[0], fixtCinemas[2])
@@ -62,6 +65,7 @@ class CinemaServiceIntgTest {
 		fixtCinemas[1]._deleted = fixture.build() // inactive
 		fixtCinemas[2]._deleted = fixture.build() // inactive
 		fixtCinemas[3]._deleted = null // active
+		fixtCinemas.forEach { it.inUTC() }
 		fixtCinemas.forEach(session::save)
 		val fixtUser: User = fixture.build()
 		// User favorited one of the two active and an inactive cinema

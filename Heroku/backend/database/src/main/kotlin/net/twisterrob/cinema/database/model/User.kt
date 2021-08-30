@@ -1,9 +1,11 @@
 package net.twisterrob.cinema.database.model
 
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import org.neo4j.ogm.annotation.Id
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
+import org.neo4j.ogm.annotation.typeconversion.Convert
 import java.time.OffsetDateTime
 
 @NodeEntity(label = "User")
@@ -27,6 +29,7 @@ class User : BaseNode() {
 	@Property(name = "realm")
 	lateinit var realm: String
 
+	@Convert(TimestampConverter::class)
 	@Property(name = "_created")
 	lateinit var _created: OffsetDateTime
 

@@ -4,10 +4,12 @@ import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
+import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -18,7 +20,7 @@ import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
-import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
+import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
@@ -30,6 +32,7 @@ class UserIntgTest {
 		val fixtUser: User = fixture.build()
 		val expected = fixtUser.copy().apply {
 			graphId = 0
+			inUTC()
 		}
 		session.save(fixtUser, -1)
 		session.clear() // drop cached User objects, start fresh
@@ -45,8 +48,8 @@ class UserIntgTest {
 		session.save(fixtUser, -1)
 		session.clear() // drop cached User objects, start fresh
 
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			val user = users.single()
@@ -64,11 +67,15 @@ class UserIntgTest {
 	}
 }
 
+fun User.inUTC() {
+	_created = _created.withOffsetSameInstant(ZoneOffset.UTC)
+}
+
 fun assertSameData(expected: User, actual: Node) = assertAll {
 	that("labels", actual, hasLabels("User"))
 	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf<String, Any?>(
-		"_created" to expected._created.toString(),
+		"_created" to TimestampConverter().toGraphProperty(expected._created),
 		"class" to expected.className,
 		"id" to expected.id,
 		"name" to expected.name,

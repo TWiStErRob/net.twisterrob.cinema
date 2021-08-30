@@ -32,7 +32,9 @@ dependencies {
 
 	testImplementation(Deps.Jackson.module_kotlin)
 	testImplementation(Deps.Jackson.datatype_java8)
-	testImplementation(Deps.Neo4JOGM.harness)
+	testImplementation(Deps.Neo4JOGM.harness) {
+		exclude(group = "org.slf4j", module = "slf4j-nop")
+	}
 
 	testFixturesImplementation(project(":test-helpers"))
 	testFixturesImplementation(Deps.Kotlin.core)

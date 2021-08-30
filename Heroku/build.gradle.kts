@@ -1,4 +1,3 @@
-import org.gradle.util.VersionNumber
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -11,25 +10,6 @@ allprojects {
 	repositories {
 		jcenter()
 		Deps.Ktor.repo(project)
-	}
-
-	configurations.all {
-		resolutionStrategy.dependencySubstitution.all {
-			val requested = this.requested
-			// Waiting for Neo4J OGM release with https://github.com/neo4j/neo4j-ogm/pull/762.
-			if (requested is ModuleComponentSelector
-				&& requested.module == "classgraph"
-				&& requested.group == "io.github.classgraph"
-			) {
-				if (VersionNumber.parse(requested.version) < VersionNumber.parse("4.8.62")) {
-					// 4.8.63 doesn't work on JDK 8
-					useTarget(
-						"${requested.group}:${requested.module}:4.8.64",
-						"Performance issue with low memory: https://github.com/classgraph/classgraph/issues/400"
-					)
-				}
-			}
-		}
 	}
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
@@ -57,23 +37,56 @@ allprojects {
 		// JUnit 5 Tag setup, see JUnit5Tags.kt
 		@Suppress("UnstableApiUsage")
 		this@allprojects.tasks {
+			/**
+			 * https://github.com/neo4j/neo4j/issues/12712
+			 */
+			fun Test.allowUnsafe() {
+				if (JavaVersion.current() < JavaVersion.VERSION_1_9) return
+				// WARNING: Illegal reflective access using Lookup on org.neo4j.memory.RuntimeInternals
+				// (org.neo4j/neo4j-unsafe/4.2.0/neo4j-unsafe-4.2.0.jar)
+				// to class java.lang.String
+				jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+				// WARNING: Illegal reflective access by org.apache.commons.lang3.reflect.FieldUtils
+				// (org.apache.commons/commons-lang3/3.11/commons-lang3-3.11.jar)
+				// to field sun.nio.ch.FileChannelImpl.positionLock
+				jvmArgs("--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED")
+				// WARNING: Illegal reflective access by org.apache.commons.lang3.reflect.FieldUtils
+				// (org.apache.commons/commons-lang3/3.11/commons-lang3-3.11.jar)
+				// to field java.io.FileDescriptor.fd
+				jvmArgs("--add-opens", "java.base/java.io=ALL-UNNAMED")
+				// WARNING: Illegal reflective access by com.shazam.shazamcrest.CyclicReferenceDetector
+				// (com.shazam/shazamcrest/0.11/shazamcrest-0.11.jar)
+				// to field java.time.OffsetDateTime.serialVersionUID
+				// to field java.net.URI.serialVersionUID
+				jvmArgs("--add-opens", "java.base/java.time=ALL-UNNAMED")
+				jvmArgs("--add-opens", "java.base/java.net=ALL-UNNAMED")
+				// WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate
+				// (org.eclipse.collections/eclipse-collections/10.3.0//eclipse-collections-10.3.0.jar)
+				// to field java.util.ArrayList.elementData
+				jvmArgs("--add-opens", "java.base/java.util=ALL-UNNAMED")
+			}
+
 			val test = "test"(Test::class) {
+				allowUnsafe()
 				useJUnitPlatform {
 				}
 			}
 			val unitTest = register<Test>("unitTest") {
+				allowUnsafe()
 				useJUnitPlatform {
 					excludeTags("functional", "integration")
 				}
 				shouldRunAfter()
 			}
 			val functionalTest = register<Test>("functionalTest") {
+				allowUnsafe()
 				useJUnitPlatform {
 					includeTags("functional")
 				}
 				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
+				allowUnsafe()
 				maxParallelForks = 2
 				useJUnitPlatform {
 					includeTags("integration")
@@ -82,6 +95,7 @@ allprojects {
 				shouldRunAfter(unitTest, functionalTest)
 			}
 			val integrationExternalTest = register<Test>("integrationExternalTest") {
+				allowUnsafe()
 				useJUnitPlatform {
 					includeTags("integration & external")
 				}

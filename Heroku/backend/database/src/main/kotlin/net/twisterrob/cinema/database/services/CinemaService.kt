@@ -2,9 +2,9 @@ package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.User
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.query
+import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
 
 class CinemaService @Inject constructor(
@@ -51,7 +51,7 @@ class CinemaService @Inject constructor(
 	fun getFavoriteCinemas(userId: String): Iterable<Cinema> = session.query<Cinema>(
 		"""
 		MATCH
-			(u:User { id:{userID} })-[:GOESTO]->(c:Cinema)
+			(u:User { id: ${"$"}userID })-[:GOESTO]->(c:Cinema)
 		RETURN c AS cinema
 		""",
 		mapOf(
@@ -69,7 +69,7 @@ class CinemaService @Inject constructor(
 				"""
 					MATCH (c:Cinema)
 					WHERE NOT exists (c._deleted)
-					OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id:{userID} })
+					OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id: ${"$"}userID })
 					RETURN c AS cinema, f IS NOT NULL AS fav
 				""",
 				mapOf(
@@ -92,8 +92,8 @@ class CinemaService @Inject constructor(
 		session.queryForObject(
 			"""
 			MATCH
-				(c:Cinema { cineworldID:{cinemaID} }),
-				(u:User { id:{userID} })
+				(c:Cinema { cineworldID: ${"$"}cinemaID }),
+				(u:User { id: ${"$"}userID })
 			CREATE UNIQUE
 				(u)-[:GOESTO]->(c)
 			RETURN u AS user, c AS cinema
@@ -114,7 +114,7 @@ class CinemaService @Inject constructor(
 		session.queryForObject(
 			"""
 				MATCH
-					(u:User { id:{userID} })-[g:GOESTO]->(c:Cinema { cineworldID:{cinemaID} })
+					(u:User { id: ${"$"}userID })-[g:GOESTO]->(c:Cinema { cineworldID: ${"$"}cinemaID })
 				DELETE g
 				RETURN u AS user, c AS cinema
 				""",

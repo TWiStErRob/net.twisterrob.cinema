@@ -2,9 +2,9 @@ package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.User
-import net.twisterrob.neo4j.ogm.queryForObject
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.query
+import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
 
 class FilmService @Inject constructor(
@@ -48,7 +48,7 @@ class FilmService @Inject constructor(
 	 */
 	fun getFilm(edi: Long): Film? = session.queryForObject(
 		"""
-		MATCH (f:Film {edi: {filmEDI}})
+		MATCH (f:Film { edi: ${"$"}filmEDI })
 		RETURN f AS film
 		""",
 		mapOf(
@@ -64,7 +64,7 @@ class FilmService @Inject constructor(
 		session.query<Film>(
 			"""
 			MATCH (f:Film)
-			WHERE NOT exists(f._deleted) AND f.edi IN {filmEDIs}
+			WHERE NOT exists(f._deleted) AND f.edi IN ${"$"}filmEDIs
 			RETURN f AS film
 			""",
 			mapOf(
@@ -82,10 +82,10 @@ class FilmService @Inject constructor(
 			"""
 			MATCH (f:Film)
 			WHERE //not exists(f._deleted) and
-			f.edi IN {filmEDIs}
+			f.edi IN ${"$"}filmEDIs
 			OPTIONAL MATCH
 				(f)<-[w:WATCHED]-(v:View),
-				(v)<-[a:ATTENDED]-(u:User { id:{userID} }),
+				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
 				(v)-[at:AT]->(c:Cinema)
 			RETURN
 				f AS film,

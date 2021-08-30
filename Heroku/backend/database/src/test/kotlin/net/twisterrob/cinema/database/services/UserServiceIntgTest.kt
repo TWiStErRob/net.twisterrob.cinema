@@ -5,8 +5,8 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.assertSameData
+import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
-import net.twisterrob.neo4j.ogm.load
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
@@ -22,7 +22,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.load
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
@@ -37,6 +39,7 @@ class UserServiceIntgTest {
 
 	@Test fun `find() finds user by external ID`(session: Session) {
 		val fixtUsers: List<User> = fixture.buildList(size = 3)
+		fixtUsers.forEach { it.inUTC() }
 		fixtUsers.forEach(session::save)
 
 		val result = sut.find(fixtUsers[1].id)
@@ -67,7 +70,7 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtEmail))
 		assertThat(result.name, equalTo(fixtName))
 		assertThat(result.realm, equalTo(fixtRealm))
-		assertThat(result._created, equalTo(fixtCreated))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 
 		val data: User? = session.load(result.id, 1)
 		assertThat("Data in database is the same as just added User", data, sameBeanAs(result))
@@ -84,7 +87,7 @@ class UserServiceIntgTest {
 			this.email = fixtEmail
 			this.name = fixtName
 			this.realm = fixtRealm
-			this._created = fixtCreated
+			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
 		session.save(savedUser)
 
@@ -94,11 +97,11 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtEmail))
 		assertThat(result.name, equalTo(fixtName))
 		assertThat(result.realm, equalTo(fixtRealm))
-		assertThat(result._created, equalTo(fixtCreated))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->
@@ -123,7 +126,7 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtEmail))
 		assertThat(result.name, equalTo(fixtName))
 		assertThat(result.realm, equalTo(fixtRealm))
-		assertThat(result._created, equalTo(fixtCreated))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
 		val expectedNewUser = User().apply {
@@ -132,10 +135,10 @@ class UserServiceIntgTest {
 			this.email = fixtEmail
 			this.name = fixtName
 			this.realm = fixtRealm
-			this._created = fixtCreated
+			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -169,7 +172,7 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtEmail))
 		assertThat(result.name, equalTo(fixtName))
 		assertThat(result.realm, equalTo(fixtRealm))
-		assertThat(result._created, equalTo(fixtCreated))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 
 		val expectedNewUser = User().apply {
 			this.graphId = result.graphId
@@ -177,10 +180,51 @@ class UserServiceIntgTest {
 			this.email = fixtEmail
 			this.name = fixtName
 			this.realm = fixtRealm
-			this._created = fixtCreated
+			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
+
+			assertThat(users, hasSize(1))
+			users.single().let { user ->
+				assertSameData(expectedNewUser, user)
+				assertThat(user.relationships, emptyIterable())
+			}
+		}
+	}
+
+	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
+	@Test fun `addUser() preserves date format (no millies)`(graph: GraphDatabaseService) {
+		val fixtUserId: String = fixture.build()
+		val fixtEmail: String = fixture.build()
+		val fixtName: String = fixture.build()
+		val fixtRealm: String = fixture.build()
+		val fixtCreated: OffsetDateTime = fixture.build<OffsetDateTime>().let {
+			it.minusNanos(it.nano % 1000000000L)
+		}
+		assertTrue(
+			fixtCreated.toInstant().toEpochMilli() % 1000 == 0L,
+			"$fixtCreated should have milliseconds ending .000 to test regression"
+		)
+
+		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+
+		assertThat(result.id, equalTo(fixtUserId))
+		assertThat(result.email, equalTo(fixtEmail))
+		assertThat(result.name, equalTo(fixtName))
+		assertThat(result.realm, equalTo(fixtRealm))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
+
+		val expectedNewUser = User().apply {
+			this.graphId = result.graphId
+			this.id = fixtUserId
+			this.email = fixtEmail
+			this.name = fixtName
+			this.realm = fixtRealm
+			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
+		}
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -203,11 +247,11 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtUser.email))
 		assertThat(result.name, equalTo(fixtUser.name))
 		assertThat(result.realm, equalTo(fixtUser.realm))
-		assertThat(result._created, equalTo(fixtUser._created))
+		assertThat(result._created, equalTo(fixtUser._created.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -232,7 +276,7 @@ class UserServiceIntgTest {
 			this.email = fixtEmail
 			this.name = fixtName
 			this.realm = fixtRealm
-			this._created = fixtCreated
+			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
 		session.save(savedUser)
 
@@ -242,11 +286,11 @@ class UserServiceIntgTest {
 		assertThat(result.email, equalTo(fixtEmail))
 		assertThat(result.name, equalTo(fixtName))
 		assertThat(result.realm, equalTo(fixtRealm))
-		assertThat(result._created, equalTo(fixtCreated))
+		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use {
-			val users = graph.allNodes.toList()
+		graph.beginTx().use { tx ->
+			val users = tx.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->

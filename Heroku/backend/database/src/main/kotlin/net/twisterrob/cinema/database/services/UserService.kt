@@ -1,9 +1,10 @@
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.User
-import net.twisterrob.neo4j.ogm.load
-import net.twisterrob.neo4j.ogm.queryForObject
+import net.twisterrob.neo4j.ogm.TimestampConverter
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.load
+import org.neo4j.ogm.session.queryForObject
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
@@ -37,17 +38,17 @@ class UserService @Inject constructor(
 	fun addUser(userId: String, email: String, name: String, realm: String, created: OffsetDateTime): User =
 		session.queryForObject(
 			"""
-			MERGE (u:User {id: {id}})
-			ON CREATE SET u._created = {created}
+			MERGE (u:User { id: ${"$"}id })
+			ON CREATE SET u._created = ${"$"}created
 			ON CREATE SET u.class = "User"
 
-			ON CREATE SET u.email = {email}
-			ON CREATE SET u.name = {name}
-			ON CREATE SET u.realm = {realm}
+			ON CREATE SET u.email = ${"$"}email
+			ON CREATE SET u.name = ${"$"}name
+			ON CREATE SET u.realm = ${"$"}realm
 
-			ON MATCH SET u.email = {email}
-			ON MATCH SET u.name = {name}
-			ON MATCH SET u.realm = {realm}
+			ON MATCH SET u.email = ${"$"}email
+			ON MATCH SET u.name = ${"$"}name
+			ON MATCH SET u.realm = ${"$"}realm
 
 			RETURN u AS user
 			""",
@@ -56,8 +57,8 @@ class UserService @Inject constructor(
 				"id" to userId,
 				"email" to email,
 				"name" to name,
-				// calling OffsetDateTime.toString() is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
-				"created" to created.toString()
+				// calling the converter is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
+				"created" to TimestampConverter().toGraphProperty(created)!!
 			)
 		)!!
 }

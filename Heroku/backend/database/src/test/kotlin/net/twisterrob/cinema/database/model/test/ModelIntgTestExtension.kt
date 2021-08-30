@@ -14,8 +14,8 @@ import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
 import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.harness.ServerControls
-import org.neo4j.harness.TestServerBuilders
+import org.neo4j.harness.Neo4j
+import org.neo4j.harness.Neo4jBuilders
 import org.neo4j.ogm.session.Session
 
 /**
@@ -49,7 +49,7 @@ import org.neo4j.ogm.session.Session
  */
 class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
-	private lateinit var testServer: ServerControls
+	private lateinit var testServer: Neo4j
 	private lateinit var dagger: ModelIntgTestExtensionComponent
 	private val fixture: JFixture by lazy {
 		JFixture().applyCustomisation {
@@ -65,7 +65,7 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
-		testServer = TestServerBuilders.newInProcessBuilder().newServer()
+		testServer = Neo4jBuilders.newInProcessBuilder().build()
 		dagger = DaggerModelIntgTestExtensionComponent
 			.builder()
 			.graphDBUri(testServer.boltURI())
@@ -73,7 +73,7 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 	}
 
 	override fun afterEach(extensionContext: ExtensionContext) {
-		testServer.graph().shutdown()
+		testServer.close()
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean {
@@ -82,7 +82,7 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 
 	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? =
 		when (parameterContext.parameter.type) {
-			GraphDatabaseService::class.java -> testServer.graph()
+			GraphDatabaseService::class.java -> testServer.defaultDatabaseService()
 			Session::class.java -> dagger.session
 			JFixture::class.java -> fixture
 			else -> error("Unsupported $parameterContext")
