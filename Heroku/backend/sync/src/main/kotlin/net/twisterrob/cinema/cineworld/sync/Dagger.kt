@@ -13,6 +13,7 @@ import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.services.Services
+import org.neo4j.ogm.session.SessionFactory
 import java.time.OffsetDateTime
 import javax.inject.Singleton
 
@@ -21,6 +22,8 @@ import javax.inject.Singleton
 @Neo4J
 interface SyncAppComponent : Services {
 
+	val neo4j: SessionFactory
+	val network: HttpClient
 	val cinemaSync: CinemaSync
 	val filmSync: FilmSync
 

@@ -5,6 +5,11 @@ fun main() {
 		.builder()
 		.graphDBUri(/* default argument */)
 		.build()
-	dagger.cinemaSync.sync()
-	dagger.filmSync.sync()
+	try {
+		dagger.cinemaSync.sync()
+		dagger.filmSync.sync()
+	} finally {
+		dagger.neo4j.close()
+		dagger.network.close()
+	}
 }
