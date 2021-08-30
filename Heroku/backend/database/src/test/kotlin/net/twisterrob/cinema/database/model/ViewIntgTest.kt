@@ -8,6 +8,7 @@ import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
@@ -19,7 +20,6 @@ import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
-import org.neo4j.test.mockito.matcher.Neo4jMatchers.hasLabels
 import java.time.temporal.ChronoUnit
 
 @ExtendWith(ModelIntgTestExtension::class)

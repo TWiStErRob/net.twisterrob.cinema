@@ -9,8 +9,8 @@ fun JFixture.applyCustomisation(block: FluentCustomisation.() -> Unit): JFixture
 	return this
 }
 
-inline fun <reified T> JFixture.build(): T =
-	this.create(T::class.java)
+inline fun <reified T> JFixture.build(block: T.() -> Unit = {}): T =
+	this.create(T::class.java).apply(block)
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> JFixture.buildList(size: Int = 3): MutableList<T> =

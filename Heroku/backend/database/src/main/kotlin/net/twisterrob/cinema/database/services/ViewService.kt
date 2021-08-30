@@ -36,18 +36,18 @@ class ViewService @Inject constructor(
 	 * @param time [View.date]
 	 */
 	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
-		session.queryForObject<View>(
+		session.queryForObject(
 			"""
 			MATCH
 				(c:Cinema { cineworldID: ${"$"}cinemaID }),
 				(f:Film { edi: ${"$"}filmEDI }),
 				(u:User { id: ${"$"}userID })
 			MERGE (u)-[t:ATTENDED]->(v:View {
-					film: ${"$"}filmEDI,
-					cinema: ${"$"}cinemaID,
-					user: ${"$"}userID,
-					date: ${"$"}dateEpochUTC
-				})
+				film: ${"$"}filmEDI,
+				cinema: ${"$"}cinemaID,
+				user: ${"$"}userID,
+				date: ${"$"}dateEpochUTC
+			})
 			MERGE (v)-[a:AT]->(c)
 			MERGE (v)-[w:WATCHED]->(f)
 			// need to return nodes and relationships, otherwise OGM doesn't connect them
