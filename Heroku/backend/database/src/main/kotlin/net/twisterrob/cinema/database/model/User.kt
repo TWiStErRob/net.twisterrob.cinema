@@ -38,4 +38,17 @@ class User : BaseNode() {
 
 	override fun toString() =
 		"User[$graphId]($id, $name)"
+
+	fun copy(): User {
+		val copy = User()
+		copy.copyProperties(this)
+		copy.id = id
+		copy.name = name
+		copy.email = email
+		copy.realm = realm
+		copy._created = _created
+		copy.cinemas = cinemas
+		copy.views = views
+		return copy
+	}
 }

@@ -42,4 +42,18 @@ class Cinema : Historical() {
 
 	override fun toString() =
 		"Cinema[$graphId](${cineworldID}, ${name})"
+
+	fun copy(): Cinema {
+		val copy = Cinema()
+		copy.copyProperties(this)
+		copy.cineworldID = cineworldID
+		copy.name = name
+		copy.postcode = postcode
+		copy.address = address
+		copy.telephone = telephone
+		copy.cinema_url = cinema_url
+		copy.users = users
+		copy.views = views
+		return copy
+	}
 }

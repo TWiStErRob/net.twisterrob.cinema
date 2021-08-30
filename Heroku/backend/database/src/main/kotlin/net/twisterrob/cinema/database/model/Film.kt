@@ -18,28 +18,37 @@ class Film : Historical() {
 
 	@Property(name = "edi")
 	var edi: Long = 0
+
 	@Property(name = "cineworldID")
 	var cineworldID: Long? = null
+
 	@Property(name = "cineworldInternalID")
 	var cineworldInternalID: Long = 0
 
 	@Property(name = "title")
 	lateinit var title: String
+
 	@Property(name = "originalTitle")
 	lateinit var originalTitle: String
 
 	@Property(name = "advisory")
 	var advisory: String? = null
+
 	@Property(name = "classification")
 	lateinit var classification: String
+
 	@Property(name = "cert")
 	lateinit var cert: String
+
 	@Property(name = "actors")
 	lateinit var actors: String
+
 	@Property(name = "director")
 	lateinit var director: String
+
 	@Property(name = "imax")
 	var imax: Boolean = false
+
 	@Property(name = "3D")
 	var `3D`: Boolean = false
 
@@ -88,4 +97,35 @@ class Film : Historical() {
 
 	override fun toString() =
 		"Film[$graphId](${cineworldID}, ${title})"
+
+	fun copy(): Film {
+		val copy = Film()
+		copy.copyProperties(this)
+		copy.edi = edi
+		copy.cineworldID = cineworldID
+		copy.cineworldInternalID = cineworldInternalID
+		copy.title = title
+		copy.originalTitle = originalTitle
+		copy.advisory = advisory
+		copy.classification = classification
+		copy.cert = cert
+		copy.actors = actors
+		copy.director = director
+		copy.imax = imax
+		copy.`3D` = `3D`
+		copy.runtime = runtime
+		copy.weighted = weighted
+		copy.slug = slug
+		copy.group = group
+		copy.format = format
+		copy.still_url = still_url
+		copy.film_url = film_url
+		copy.poster_url = poster_url
+		copy.poster = poster
+		copy.trailer = trailer
+		copy.release = release
+		copy.categories = categories
+		copy.views = views
+		return copy
+	}
 }

@@ -11,7 +11,6 @@ import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.emptyIterable
-import net.twisterrob.test.set
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
@@ -128,7 +127,7 @@ class UserServiceIntgTest {
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
 		val expectedNewUser = User().apply {
-			this["graphId"] = result.graphId
+			this.graphId = result.graphId
 			this.id = fixtUserId
 			this.email = fixtEmail
 			this.name = fixtName
@@ -173,7 +172,7 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated))
 
 		val expectedNewUser = User().apply {
-			this["graphId"] = result.graphId
+			this.graphId = result.graphId
 			this.id = fixtUserId
 			this.email = fixtEmail
 			this.name = fixtName

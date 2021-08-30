@@ -12,7 +12,6 @@ import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
-import net.twisterrob.test.set
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize
@@ -52,12 +51,12 @@ class ViewServiceIntgTest {
 
 		assertNotNull(result); result!!
 		// Wire up a View that is like the expected one and connect relationships.
-		View().apply {
-			this["graphId"] = result.graphId
+		View().apply view@{
+			graphId = result.graphId
 			date = fixtTime.toInstant()
-			atCinema = fixtCinema.also { it.views = mutableSetOf(this) }
-			watchedFilm = fixtFilm.also { it.views = mutableSetOf(this) }
-			userRef = fixtUser.also { it.views = mutableSetOf(this) }
+			atCinema = fixtCinema.apply { views = mutableSetOf(this@view) }
+			watchedFilm = fixtFilm.apply { views = mutableSetOf(this@view) }
+			userRef = fixtUser.apply { views = mutableSetOf(this@view) }
 		}
 		assertThat(result.atCinema, sameBeanAs(fixtCinema))
 		assertThat(result.watchedFilm, sameBeanAs(fixtFilm))
