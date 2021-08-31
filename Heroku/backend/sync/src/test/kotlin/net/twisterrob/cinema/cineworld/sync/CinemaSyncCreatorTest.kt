@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.sync
 
 import com.flextrade.jfixture.JFixture
 import dagger.Component
+import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.that
@@ -14,6 +15,10 @@ import org.junit.jupiter.api.assertThrows
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Cinema as FeedCinema
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
+/**
+ * @see SyncAppModule.cinemaEntityFactory sut
+ * @see DBCinema.copyPropertiesFrom delegate
+ */
 class CinemaSyncCreatorTest {
 
 	private val fixture = JFixture()
@@ -24,9 +29,10 @@ class CinemaSyncCreatorTest {
 	}
 
 	@Test fun `creator copies all properties`() {
+		val fixtFeed: Feed = fixture.build()
 		val fixtCinema: FeedCinema = fixture.build()
 
-		val actualCinema = sut.invoke(fixtCinema)
+		val actualCinema = sut.invoke(fixtCinema, fixtFeed)
 
 		assertAll {
 			that("className", actualCinema.className, equalTo("Cinema"))

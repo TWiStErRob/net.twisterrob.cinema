@@ -36,13 +36,13 @@ class SyncAppModule {
 
 	@Provides
 	fun cinemaEntityFactory(updater: Updater<Cinema, Feed.Cinema>): Creator<Feed.Cinema, Cinema> =
-		fun Feed.Cinema.(): Cinema =
-			Cinema().also { updater(it, this) }
+		fun Feed.Cinema.(feed: Feed): Cinema =
+			Cinema().also { updater(it, this, feed) }
 
 	@Provides
 	fun filmEntityFactory(updater: Updater<Film, Feed.Film>): Creator<Feed.Film, Film> =
-		fun Feed.Film.(): Film =
-			Film().also { updater(it, this) }
+		fun Feed.Film.(feed: Feed): Film =
+			Film().also { updater(it, this, feed) }
 
 	@Provides
 	fun nowProvider(): () -> OffsetDateTime =
@@ -50,27 +50,11 @@ class SyncAppModule {
 
 	@Provides
 	fun copyCinemaProperties(): Updater<Cinema, Feed.Cinema> =
-		fun Cinema.(feed) {
-			this.cineworldID = feed.id
-			this.name = feed.name.replace("""^Cineworld """.toRegex(), "")
-			this.postcode = feed.postcode
-			this.address = feed.address
-			this.telephone = feed.phone
-			this.cinema_url = feed.url
-			// TODO feed.serviceList
-		}
+		Cinema::copyPropertiesFrom
 
 	@Provides
 	fun copyFilmProperties(): Updater<Film, Feed.Film> =
-		fun Film.(feed) {
-			this.edi = feed.id
-			this.title = feed.title
-			this.director = feed.director
-			this.film_url = feed.url
-			this.poster_url = feed.posterUrl
-			this.runtime = feed.runningTime.toLong()
-			this.trailer = feed.trailerUrl
-		}
+		Film::copyPropertiesFrom
 
 	@Provides
 	fun httpClient(): HttpClient = HttpClient()

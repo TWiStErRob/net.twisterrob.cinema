@@ -24,6 +24,6 @@ class CinemaSyncCalculator @Inject constructor(
 			dbCinemas, DBCinema::cineworldID,
 			feedCinemas, FeedCinema::id
 		)
-		return nodeSyncer.update(changes, now)
+		return nodeSyncer.update(feed, changes, now)
 	}
 }
