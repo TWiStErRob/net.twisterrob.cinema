@@ -302,6 +302,7 @@ object Neo4JOGM {
 	 * @see [https://neo4j.com/docs/ogm-manual/current/]
 	 */
 	const val core = "org.neo4j:neo4j-ogm-core:${version}"
+	const val driver = "org.neo4j.driver:neo4j-java-driver:${version_neo4j}"
 	const val driver_bolt = "org.neo4j:neo4j-ogm-bolt-driver:${version}"
 	const val driver_http = "org.neo4j:neo4j-ogm-http-driver:${version}"
 
