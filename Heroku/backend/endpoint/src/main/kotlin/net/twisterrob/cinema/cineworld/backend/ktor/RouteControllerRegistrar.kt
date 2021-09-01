@@ -16,10 +16,18 @@ class RouteControllerRegistrar @Inject constructor(
 	fun register() {
 		application.routing {
 			trace { application.log.trace(it.buildText()) }
-			controllers.toList().sortedBy(RouteController::order).forEach { controller ->
+			controllers.toList().sortedWith(CONTROLLER_ORDER).forEach { controller ->
 				application.log.trace("Registering '$controller' routes...")
 				controller.apply { registerRoutes() }
 			}
 		}
+	}
+
+	companion object {
+
+		val CONTROLLER_ORDER: Comparator<RouteController> = compareBy(
+			RouteController::order,
+			{ it::class.java.name }
+		)
 	}
 }
