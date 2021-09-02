@@ -12,7 +12,7 @@ application {
 	tasks.named<JavaExec>("run") {
 		// The folder that :frontend builds into.
 		// Can be overridden with `gradlew :backend:endpoint:run --args <folder>`.
-		args("../../deploy/static")
+		args("../../deploy/static", "../src/test/fake")
 	}
 }
 

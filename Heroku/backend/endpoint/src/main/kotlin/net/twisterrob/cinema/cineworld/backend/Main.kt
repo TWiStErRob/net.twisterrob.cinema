@@ -9,11 +9,15 @@ import java.io.File
 fun main(vararg args: String) {
 	val port = System.getProperty("PORT", "8080").toInt()
 	val staticContentPath = if (args.isNotEmpty()) args[0] else null
+	val fakeContentPath = if (args.size >= 2) args[1] else null
 	embeddedServer(Netty, port) {
-		if (staticContentPath != null) {
-			configuration(staticRootFolder = File(staticContentPath))
-		} else {
-			configuration()
+		when {
+			staticContentPath != null && fakeContentPath != null ->
+				configuration(staticRootFolder = File(staticContentPath), fakeRootFolder = File(fakeContentPath))
+			staticContentPath != null ->
+				configuration(staticRootFolder = File(staticContentPath))
+			else ->
+				configuration()
 		}
 		daggerApplication()
 	}.start(wait = true)

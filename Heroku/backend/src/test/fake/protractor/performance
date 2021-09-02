@@ -1,0 +1,246 @@
+[
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 70,
+    "film": 160454,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110590",
+        "time": "2017-07-14T11:50:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110591",
+        "time": "2017-07-14T16:30:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 70,
+    "film": 184739,
+    "performances": []
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 70,
+    "film": 189108,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110711",
+        "time": "2017-07-14T10:50:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110627",
+        "time": "2017-07-14T13:00:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110712",
+        "time": "2017-07-14T16:40:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110688",
+        "time": "2017-07-14T19:50:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110695",
+        "time": "2017-07-14T22:30:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 70,
+    "film": 223046,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110704",
+        "time": "2017-07-14T13:30:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8094/110661",
+        "time": "2017-07-14T19:45:00.000Z",
+        "type": "reg",
+        "ad": true,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 103,
+    "film": 160454,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13514",
+        "time": "2017-07-14T11:50:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13515",
+        "time": "2017-07-14T14:10:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13516",
+        "time": "2017-07-14T16:30:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 103,
+    "film": 184739,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13449",
+        "time": "2017-07-14T10:00:00.000Z",
+        "type": "imax",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13450",
+        "time": "2017-07-14T13:10:00.000Z",
+        "type": "imax",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13451",
+        "time": "2017-07-14T16:20:00.000Z",
+        "type": "imax",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13452",
+        "time": "2017-07-14T19:30:00.000Z",
+        "type": "imax",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 103,
+    "film": 189108,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13638",
+        "time": "2017-07-14T11:00:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13639",
+        "time": "2017-07-14T13:40:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13590",
+        "time": "2017-07-14T17:10:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      },
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13591",
+        "time": "2017-07-14T19:50:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  },
+  {
+    "date": "2017-07-14T00:00:00.000Z",
+    "cinema": 103,
+    "film": 223046,
+    "performances": [
+      {
+        "available": true,
+        "booking_url": "https://booking.cineworld.co.uk/booking/8110/13621",
+        "time": "2017-07-14T20:10:00.000Z",
+        "type": "reg",
+        "ad": false,
+        "subtitled": false,
+        "ss": false
+      }
+    ]
+  }
+]

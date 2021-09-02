@@ -40,6 +40,7 @@ import kotlinx.html.h2
 import kotlinx.html.head
 import kotlinx.html.pre
 import kotlinx.html.title
+import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
@@ -59,6 +60,7 @@ import java.time.ZoneOffset
  */
 internal fun Application.configuration(
 	staticRootFolder: File = File("./deploy/static"),
+	fakeRootFolder: File = File("./backend/src/test/fake"),
 	oauthHttpClient: HttpClient = HttpClient(),
 	config: Map<String, Any?> = jacksonObjectMapper()
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
@@ -66,6 +68,7 @@ internal fun Application.configuration(
 	log.info("Configuring app as ${environment.config.environment} environment.")
 
 	this.attributes.staticRootFolder = staticRootFolder
+	this.attributes.fakeRootFolder = fakeRootFolder
 
 	install(DefaultHeaders)
 	install(CallLogging)

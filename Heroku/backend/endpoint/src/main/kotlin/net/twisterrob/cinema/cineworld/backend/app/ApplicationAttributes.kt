@@ -25,6 +25,10 @@ object ApplicationAttributes {
 
 	var Attributes.staticRootFolder: File by requiredKey(StaticRootFolderAttribute)
 
+	private val FakeRootFolderAttribute = AttributeKey<File>("fakeRootFolder")
+
+	var Attributes.fakeRootFolder: File by requiredKey(FakeRootFolderAttribute)
+
 	data class CurrentUser(val id: String, val email: String)
 
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
