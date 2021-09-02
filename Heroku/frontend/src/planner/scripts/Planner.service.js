@@ -47,7 +47,7 @@ module.service('Planner', [
 		 * @param {Moment.Duration} params.endOfWork time offset from midnight (within a day)
 		 */
 		function plan(params) {
-			const date = moment(params.date).utc().toISOString();
+			const date = moment(params.date).utc(true).toISOString();
 			const cache = {};
 			_.each(params.cinemas, function (cinema) {
 				cache[cinema.cineworldID] = {};
