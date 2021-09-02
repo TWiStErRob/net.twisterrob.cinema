@@ -9,6 +9,11 @@ plugins {
 
 application {
 	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
+	tasks.named<JavaExec>("run") {
+		// The folder that :frontend builds into.
+		// Can be overridden with `gradlew :backend:endpoint:run --args <folder>`.
+		args("../../deploy/static")
+	}
 }
 
 dependencies {
