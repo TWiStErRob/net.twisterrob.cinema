@@ -25,6 +25,7 @@ import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.current
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.absoluteUrl
@@ -60,8 +61,13 @@ class AuthController @Inject constructor(
 		intercept(ApplicationCallPipeline.Features) {
 			val session: AuthSession? = call.sessions.get()
 			if (session != null) {
-				val user = authRepository.findUser(session.userId)
-				call.attributes.currentUser = CurrentUser(user.id, user.email)
+				try {
+					val user = authRepository.findUser(session.userId)
+					call.attributes.currentUser = CurrentUser(user.id, user.email)
+				} catch (ex: UnknownUserException) {
+					call.application.log.error("Invalid session: {}", call.sessions, ex)
+					call.sessions.clear<AuthSession>()
+				}
 			}
 		}
 
@@ -73,8 +79,8 @@ class AuthController @Inject constructor(
 		}
 
 		get<Auth.Routes.Login> {
-				// TODO how to do internal redirect?
-				call.respondRedirect(Auth.Routes.Google.href)
+			// TODO how to do internal redirect?
+			call.respondRedirect(Auth.Routes.Google.href)
 		}
 
 		authenticate(optional = true) {
