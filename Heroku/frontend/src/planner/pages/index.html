@@ -39,7 +39,12 @@
 						</button>
 					</span>
 				</div>
-				<span id="cineworldDate-display">Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em></span>
+				<span id="cineworldDate-display">
+					Selected date is: <em>{{cineworld.date | date:'fullDate' }}</em>
+					<span ng-if="cineworld.dateIsToday">(today)</span>
+					<span ng-if="cineworld.dateIsTomorrow">(tomorrow)</span>
+					<span ng-if="cineworld.dateInPast">(in the past)</span>
+				</span>
 			</form>
 		</header>
 		<aside id="debug" ng-controller="DebugController">

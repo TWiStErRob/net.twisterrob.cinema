@@ -53,7 +53,7 @@ module.service('Cineworld', [
 			});
 			return data.films;
 		}, config.filmWait);
-		
+
 		this.updatePerformances = _.debounce(function() {
 			var params = {
 				date: data.formattedDate,
@@ -85,6 +85,14 @@ module.service('Cineworld', [
 		Object.defineProperty(data, 'formattedDate', {
 			get: function() { return moment(data.date).format("YYYYMMDD"); }
 		});
+		Object.defineProperty(data, 'dateIsToday', {
+			get: function() { return moment(data.date).isSame(moment().add(0, 'day'), 'date'); }
+		});
+		Object.defineProperty(data, 'dateIsTomorrow', {
+			get: function() { return moment(data.date).isSame(moment().add(1, 'day'), 'date'); }
+		});
+		Object.defineProperty(data, 'dateInPast', {
+			get: function() { return moment(data.date).isBefore(moment().startOf('day')); }
+		});
 	}
 ]);
-
