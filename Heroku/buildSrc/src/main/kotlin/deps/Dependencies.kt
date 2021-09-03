@@ -207,7 +207,9 @@ object Ktor {
 				add("implementation", content.jackson)
 				add("implementation", content.html)
 				add("testImplementation", client.mock_jvm)
-				add("testImplementation", test)
+				add("testImplementation", test) {
+					exclude(group = "ch.qos.logback", module = "logback-classic")
+				}
 			}
 		}
 	}

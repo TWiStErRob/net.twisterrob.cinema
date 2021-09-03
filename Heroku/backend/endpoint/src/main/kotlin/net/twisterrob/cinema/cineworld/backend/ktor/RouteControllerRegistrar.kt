@@ -23,6 +23,7 @@ class RouteControllerRegistrar @Inject constructor(
 					application.log.info(traceFormatter.formatSimple(it))
 				}
 			}
+			require(controllers.isNotEmpty()) { "There are no controllers, not starting up." }
 			controllers.toList().sortedWith(CONTROLLER_ORDER).forEach { controller ->
 				application.log.trace("Registering '$controller' routes...")
 				controller.apply { registerRoutes() }
