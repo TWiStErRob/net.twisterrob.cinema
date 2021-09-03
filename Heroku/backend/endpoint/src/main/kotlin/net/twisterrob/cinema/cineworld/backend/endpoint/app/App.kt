@@ -2,10 +2,16 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoSet
+import io.ktor.client.HttpClient
+import io.ktor.client.features.logging.LogLevel
+import io.ktor.client.features.logging.Logging
 import io.ktor.locations.Location
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object App {
 
@@ -29,5 +35,51 @@ object App {
 		@Binds
 		@IntoSet
 		fun traceController(impl: TraceController): RouteController
+	}
+
+	@Module
+	object BackendModule {
+
+		@Provides
+		fun httpClient() = HttpClient().config {
+			install(Logging) {
+				val log = LoggerFactory.getLogger(HttpClient::class.java)!!
+				when {
+					log.isTraceEnabled -> {
+						level = LogLevel.ALL
+						logger = LevelLogger(log, Logger::trace)
+					}
+
+					log.isDebugEnabled -> {
+						level = LogLevel.BODY
+						logger = LevelLogger(log, Logger::debug)
+					}
+
+					log.isInfoEnabled -> {
+						level = LogLevel.INFO
+						logger = LevelLogger(log, Logger::info)
+					}
+
+					else -> {
+						level = LogLevel.NONE
+						logger = LevelLogger(log, Logger::error)
+					}
+				}
+			}
+		}
+	}
+}
+
+private class LevelLogger(
+	private val log: Logger,
+	private val logAtLevel: Logger.(message: String) -> Unit,
+) : io.ktor.client.features.logging.Logger {
+
+	override fun log(message: String) {
+		if (message.startsWith("REQUEST: ")) {
+			val url = message.substringAfter("REQUEST: ")
+			log.info("Network call: $url", Exception("Network call callsite"))
+		}
+		log.logAtLevel(message)
 	}
 }

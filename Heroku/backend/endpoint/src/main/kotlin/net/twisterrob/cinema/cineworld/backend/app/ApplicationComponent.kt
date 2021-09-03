@@ -19,6 +19,7 @@ import javax.inject.Singleton
 	modules = [
 		Neo4JModule::class,
 		App.FrontendModule::class,
+		App.BackendModule::class,
 		Auth.FrontendModule::class,
 		Auth.BackendModule::class,
 		Cinemas.FrontendModule::class,
