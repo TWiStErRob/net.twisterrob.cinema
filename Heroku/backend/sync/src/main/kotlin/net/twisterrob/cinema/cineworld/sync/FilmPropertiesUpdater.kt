@@ -1,0 +1,59 @@
+package net.twisterrob.cinema.cineworld.sync
+
+import net.twisterrob.cinema.cineworld.sync.syndication.Feed
+import net.twisterrob.cinema.database.model.Film
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
+
+fun Film.copyPropertiesFrom(feedFilm: Feed.Film, feed: Feed) {
+	this.edi = feedFilm.id
+	this.title = formatTitle(feedFilm.title, feedFilm.attributeList)
+	this.originalTitle = feedFilm.title
+	this.director = feedFilm.director
+	this.actors = feedFilm.cast
+	this.film_url = feedFilm.url
+	this.slug = feedFilm.url.path.substringAfterLast("/")
+	this.`3D` = "3D" in feedFilm.attributeList
+	this.imax = "IMAX" in feedFilm.attributeList
+	this.format = findFormat(feedFilm.attributeList)
+	this.poster_url = feedFilm.posterUrl
+	this.runtime = feedFilm.runningTime.toLong()
+	this.trailer = feedFilm.trailerUrl
+	this.cert = feedFilm.classification
+	this.classification = feedFilm.classification
+	this.release = ukMidnight(feedFilm.releaseDate)
+	this.categories = feedFilm.attributeList
+		.filter { it.startsWith("gn:") }
+		.map { attr -> feed.attributes.single { it.code == attr } }
+		.map { it.title }
+}
+
+private fun ukMidnight(date: LocalDate): OffsetDateTime {
+	val ukZone = ZoneId.of("Europe/London").rules.getOffset(date.atStartOfDay())
+	return date.atTime(LocalTime.of(0, 0).atOffset(ukZone))
+}
+
+private fun formatTitle(title: String, attributeList: List<String>): String {
+	val format = attributeList
+		.filterNot { it.startsWith("gn:") }
+		.filterNot { it == "2D" }
+		.sorted()
+		.joinToString(separator = ", ")
+	val noFormatTitle = Regex("""\(.*\) (.*)""").find(title)?.let { it.groupValues[1] } ?: title
+	return "$noFormatTitle [$format]"
+}
+
+private fun findFormat(attributeList: List<String>): String =
+	when {
+		"IMAX" in attributeList ->
+			when {
+				"3D" in attributeList -> "IMAX3D"
+				"2D" in attributeList -> "IMAX2D"
+				else -> "IMAX"
+			}
+		"3D" in attributeList -> "3D" // could be 4DX too
+		"2D" in attributeList -> "2D"
+		else -> ""
+	}

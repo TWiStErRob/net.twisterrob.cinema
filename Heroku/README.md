@@ -15,6 +15,7 @@
 
 `frontend` continuously builds into `deploy` via `npm start`
 `backend` serves from `deploy` via `npm start`
+`test` contains UI tests, [README.md](test/README.md) for more.
 
 ### Entry points
 
@@ -26,7 +27,7 @@
 
 ## Configuration
  
-`NEO4J_URL` and `PORT` can be configured.
+`NEO4J_URL` and `PORT` can be configured, see [env.bat](scripts/env.bat) for example.
 
 ## Deployment
 

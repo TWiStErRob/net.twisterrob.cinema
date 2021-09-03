@@ -1,12 +1,35 @@
+## Environment setup
+Since the dependencies are old some trickery is necessary. In the package.json there are hardcoded version numbers.
+
+`--versions.standalone 3.141.59` is the latest available Selenium driver that's compatible with this runner.
+
+`--versions.chrome 92.0.4515.107` is a compatible Chrome Driver version which cannot be installed automatically, so need to do it manually:
+ * `Heroku\test$ npm install`
+ * Working directory: `Heroku\test\node_modules\webdriver-manager\selenium`
+ * Go to Chrome > Help > About and find version number: `x`
+ * Download the ZIP file as described here from `x`:
+   https://chromedriver.chromium.org/downloads/version-selection  
+   `win32` will do, let's say it's version `y`.
+ * Rename it to `chromedriver_$y.zip`
+ * Extract and rename `chromedriver.exe` inside it to `chromedriver_$y.exe`
+ * Replace `package.json`'s Chrome version numbers with `y`.
+
+This should help webdriver-manager's up-to-date check happy.
+
 ## Run all tests
 
 ### Command line
 
 Start up everything:
 ```console
+# Set the DB NEO4J_URL and frontend PORT
+Heroku$ scripts\env.bat
+# Make sure the database has up to date data
+Heroku$ gradlew :backend:sync:run
+# Start up everything
 Heroku$ npm run devTest
 ```
-
+Then separately run the tests:
 ```console
 test$ npm run protractor
 ```

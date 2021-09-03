@@ -8,7 +8,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.model.validDBData
-import net.twisterrob.cinema.database.services.CinemaService
+import net.twisterrob.cinema.database.services.FilmService
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
@@ -17,45 +17,45 @@ import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import net.twisterrob.cinema.database.model.Cinema as DBCinema
+import net.twisterrob.cinema.database.model.Film as DBFilm
 
-class CinemaSyncTest {
+class FilmSyncTest {
 
-	private val calculator: CinemaSyncCalculator = mock()
+	private val calculator: FilmSyncCalculator = mock()
 	private val feedService: FeedService = mock()
-	private val dbService: CinemaService = mock()
+	private val dbService: FilmService = mock()
 	private val now by lazy { OffsetDateTime.now() }
 
 	private val fixture = JFixture()
-	private lateinit var sut: CinemaSync
+	private lateinit var sut: FilmSync
 
 	@BeforeEach fun setUp() {
-		sut = CinemaSync(calculator, feedService, dbService, ::now)
+		sut = FilmSync(calculator, feedService, dbService, ::now)
 	}
 
 	@Test fun `all changed cinemas are synced properly`() {
 		fixture.applyCustomisation {
-			add(syncResults<DBCinema>())
+			add(syncResults<DBFilm>())
 			add(validDBData())
 		}
 
 		val fixtFeed: Feed = fixture.build()
 		whenever(feedService.getWeeklyFilmTimes())
 			.thenReturn(fixtFeed)
-		val fixtDB: List<DBCinema> = fixture.buildList()
+		val fixtDB: List<DBFilm> = fixture.buildList()
 		whenever(dbService.findAll())
 			.thenReturn(fixtDB)
-		val fixtResult: SyncResults<DBCinema> = fixture.build()
+		val fixtResult: SyncResults<DBFilm> = fixture.build()
 		whenever(calculator.calculate(now, fixtFeed, fixtDB))
 			.thenReturn(fixtResult)
 
 		sut.sync()
 
-		argumentCaptor<List<DBCinema>> {
+		argumentCaptor<List<DBFilm>> {
 			verify(dbService).save(capture())
 			val cinemas = allValues.single()
-			val persistedCinemas = fixtResult.insert + fixtResult.delete + fixtResult.update + fixtResult.restore
-			assertThat(cinemas, containsInAnyOrder(*persistedCinemas.toTypedArray()))
+			val persistedFilms = fixtResult.insert + fixtResult.delete + fixtResult.update + fixtResult.restore
+			assertThat(cinemas, containsInAnyOrder(*persistedFilms.toTypedArray()))
 		}
 	}
 }

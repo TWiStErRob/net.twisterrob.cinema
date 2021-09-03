@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Sync (OGM)" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="net.twisterrob.cinema.cineworld.sync.MainKt" />
+    <module name="Heroku.backend.sync.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

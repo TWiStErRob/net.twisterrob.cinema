@@ -13,6 +13,7 @@ import io.ktor.response.header
 import io.ktor.response.respondFile
 import io.ktor.routing.Routing
 import io.ktor.util.pipeline.PipelineContext
+import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.environment
@@ -28,7 +29,14 @@ class TestController @Inject constructor(
 	override fun Routing.registerRoutes() {
 		if (application.environment.config.environment == Env.PRODUCTION) return
 
-		val root = File("backend/src/test/fake")
+		val root = application.attributes.fakeRootFolder
+		application.log.debug(
+			"""
+				Running fake content from ${root}
+				  -> ${root.absolutePath}
+				  -> ${root.canonicalPath}
+			""".trimIndent()
+		)
 		intercept(ApplicationCallPipeline.Call) {
 			val fullPathAndQuery = this.call.request.uri.substringAfter("/").encodeURLPath()
 				.ifBlank { "index.html" }
@@ -51,7 +59,7 @@ class TestController @Inject constructor(
 	}
 
 	private suspend fun PipelineContext<Unit, ApplicationCall>.respondFake(path: File) {
-		call.application.log.warn("Fake response to ${call.request.uri} with ${path.absolutePath}")
+		call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
 		call.response.header(HttpHeaders.XForwardedServer, "fakes")
 		call.respondFile(path)
 		finish()

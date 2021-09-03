@@ -1,29 +1,30 @@
 package net.twisterrob.cinema.cineworld.sync
 
+import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.model.Historical
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
-data class SyncResults<DB>(
-	val insert: Collection<@JvmSuppressWildcards DB>,
-	val restore: Collection<@JvmSuppressWildcards DB>,
-	val delete: Collection<@JvmSuppressWildcards DB>,
-	val alreadyDeleted: Collection<@JvmSuppressWildcards DB>,
-	val update: Collection<@JvmSuppressWildcards DB>
+data class SyncResults<TDB>(
+	val insert: Collection<@JvmSuppressWildcards TDB>,
+	val restore: Collection<@JvmSuppressWildcards TDB>,
+	val delete: Collection<@JvmSuppressWildcards TDB>,
+	val alreadyDeleted: Collection<@JvmSuppressWildcards TDB>,
+	val update: Collection<@JvmSuppressWildcards TDB>
 )
 
-typealias Creator<Feed, DB> = @JvmSuppressWildcards Feed.() -> DB
-typealias Updater<DB, Feed> = @JvmSuppressWildcards DB.(Feed) -> Unit
+typealias Creator<TFeed, TDB> = @JvmSuppressWildcards TFeed.(Feed) -> TDB
+typealias Updater<DB, TFeed> = @JvmSuppressWildcards DB.(TFeed, Feed) -> Unit
 
-class NodeSyncer<TFeed, DB : Historical> @Inject constructor(
-	private val toEntity: Creator<TFeed, DB>,
-	private val setFrom: Updater<DB, TFeed>
+class NodeSyncer<TFeed, TDB : Historical> @Inject constructor(
+	private val toEntity: Creator<TFeed, TDB>,
+	private val setFrom: Updater<TDB, TFeed>
 ) {
 
-	fun update(changes: SyncOperations<DB, TFeed>, now: OffsetDateTime): SyncResults<DB> {
+	fun update(feed: Feed, changes: SyncOperations<TDB, TFeed>, now: OffsetDateTime): SyncResults<TDB> {
 
-		val createdNodes = createNodes(changes.insert, now)
-		val updatedNodes = updateNodes(changes.update, now)
+		val createdNodes = createNodes(feed, changes.insert, now)
+		val updatedNodes = updateNodes(feed, changes.update, now)
 		val (onlyUpdated, restored) = updatedNodes.partition { it._deleted == null }
 		restored.onEach { it._deleted = null }
 
@@ -39,21 +40,21 @@ class NodeSyncer<TFeed, DB : Historical> @Inject constructor(
 		)
 	}
 
-	private fun createNodes(nodesToCreate: Collection<TFeed>, now: OffsetDateTime): List<DB> =
+	private fun createNodes(feed: Feed, nodesToCreate: Collection<TFeed>, now: OffsetDateTime): List<TDB> =
 		nodesToCreate
-			.map { feed ->
-				return@map feed.toEntity()
+			.map { feedItem ->
+				return@map feedItem.toEntity(feed)
 			}
 			.onEach { it._created = now }
 
-	private fun updateNodes(nodesToUpdate: Map<DB, TFeed>, now: OffsetDateTime): List<DB> =
+	private fun updateNodes(feed: Feed, nodesToUpdate: Map<TDB, TFeed>, now: OffsetDateTime): List<TDB> =
 		nodesToUpdate
-			.map { (db, feed) ->
-				return@map db.apply { setFrom(feed) }
+			.map { (db, feedItem) ->
+				return@map db.apply { setFrom(feedItem, feed) }
 			}
 			.onEach { it._updated = now }
 
-	private fun deleteNodes(nodesToDelete: List<DB>, now: OffsetDateTime): List<DB> =
+	private fun deleteNodes(nodesToDelete: List<TDB>, now: OffsetDateTime): List<TDB> =
 		nodesToDelete
 			.onEach { it._deleted = now }
 }

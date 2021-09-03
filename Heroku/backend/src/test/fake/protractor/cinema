@@ -1,0 +1,26 @@
+[
+  {
+    "_updated": "2017-07-08T20:41:37.085Z",
+    "_created": "2013-12-05T00:01:01.484Z",
+    "cineworldID": 70,
+    "address": "The Mall Wood Green, High Road, London",
+    "name": "London - Wood Green",
+    "class": "Cinema",
+    "postcode": "N22 6LU",
+    "telephone": "0871 200 2000",
+    "cinema_url": "https://www.cineworld.co.uk/cinemas/london-wood-green",
+    "fav": false
+  },
+  {
+    "_updated": "2017-07-08T20:41:37.085Z",
+    "_created": "2017-04-09T12:09:53.189Z",
+    "cineworldID": 103,
+    "address": "5-6 Leicester Square, London",
+    "name": "London - Leicester Square",
+    "class": "Cinema",
+    "postcode": "WC2H 7NA",
+    "telephone": "0871 200 2000",
+    "cinema_url": "https://www.cineworld.co.uk/cinemas/london-leicester-square",
+    "fav": true
+  }
+]

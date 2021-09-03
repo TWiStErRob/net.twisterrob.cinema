@@ -21,27 +21,27 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Cinema as FeedCinema
-import net.twisterrob.cinema.database.model.Cinema as DBCinema
+import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
+import net.twisterrob.cinema.database.model.Film as DBFilm
 
 @TagFunctional
-class CinemaSyncCalculatorFuncTest {
+class FilmSyncCalculatorFuncTest {
 
 	private val fixture = JFixture().applyCustomisation {
 		add(validDBData())
 	}
-	private val mockCreator: Creator<FeedCinema, DBCinema> = mock()
-	private val mockUpdater: Updater<DBCinema, FeedCinema> = mock()
-	private lateinit var sut: CinemaSyncCalculator
+	private val mockCreator: Creator<FeedFilm, DBFilm> = mock()
+	private val mockUpdater: Updater<DBFilm, FeedFilm> = mock()
+	private lateinit var sut: FilmSyncCalculator
 
 	@BeforeEach fun setUp() {
-		sut = CinemaSyncCalculator(NodeSyncer(mockCreator, mockUpdater))
+		sut = FilmSyncCalculator(NodeSyncer(mockCreator, mockUpdater))
 	}
 
-	@Test fun `no cinemas in feed result in no data synced`() {
+	@Test fun `no films in feed result in no data synced`() {
 		val feed = Feed(emptyList(), emptyList(), emptyList(), emptyList())
-		val db = emptyList<DBCinema>()
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+		val db = emptyList<DBFilm>()
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
@@ -55,11 +55,11 @@ class CinemaSyncCalculatorFuncTest {
 		}
 	}
 
-	@Test fun `new cinemas in feed result in added cinemas`() {
-		val fixtCinema: FeedCinema = fixture.build()
-		val feed = Feed(emptyList(), listOf(fixtCinema), emptyList(), emptyList())
-		val db = emptyList<DBCinema>()
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+	@Test fun `new films in feed result in added films`() {
+		val fixtFilm: FeedFilm = fixture.build()
+		val feed = Feed(emptyList(), emptyList(), listOf(fixtFilm), emptyList())
+		val db = emptyList<DBFilm>()
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
@@ -70,37 +70,37 @@ class CinemaSyncCalculatorFuncTest {
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
 			o { verifyZeroInteractions(mockUpdater) }
-			o { verify(mockCreator).invoke(fixtCinema, feed); verifyNoMoreInteractions(mockCreator) }
+			o { verify(mockCreator).invoke(fixtFilm, feed); verifyNoMoreInteractions(mockCreator) }
 		}
 	}
 
-	@Test fun `existing cinemas missing from feed result in deleted cinemas`() {
+	@Test fun `existing films missing from feed result in deleted films`() {
 		val feed = Feed(emptyList(), emptyList(), emptyList(), emptyList())
-		val fixtDbCinema = fixture.build<DBCinema>().apply {
+		val fixtDbFilm = fixture.build<DBFilm>().apply {
 			_deleted = null
 		}
-		val db = listOf(fixtDbCinema)
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+		val db = listOf(fixtDbFilm)
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
 		assertAll {
 			that("insert", result.insert, empty())
 			that("update", result.update, empty())
-			that("delete", result.delete, contains(fixtDbCinema))
+			that("delete", result.delete, contains(fixtDbFilm))
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
 			o { verifyZeroInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
-	@Test fun `existing deleted cinemas missing from feed result in already deleted cinemas`() {
+	@Test fun `existing deleted films missing from feed result in already deleted films`() {
 		val feed = Feed(emptyList(), emptyList(), emptyList(), emptyList())
-		val fixtDbCinema = fixture.build<DBCinema>().apply {
+		val fixtDbFilm = fixture.build<DBFilm>().apply {
 			_deleted = fixture.build()
 		}
-		val db = listOf(fixtDbCinema)
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+		val db = listOf(fixtDbFilm)
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
@@ -108,44 +108,44 @@ class CinemaSyncCalculatorFuncTest {
 			that("insert", result.insert, empty())
 			that("update", result.update, empty())
 			that("delete", result.delete, empty())
-			that("alreadyDeleted", result.alreadyDeleted, contains(fixtDbCinema))
+			that("alreadyDeleted", result.alreadyDeleted, contains(fixtDbFilm))
 			that("restore", result.restore, empty())
 			o { verifyZeroInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
-	@Test fun `existing cinema with matching id is updated`() {
-		val fixtCinema: FeedCinema = fixture.build()
-		val feed = Feed(emptyList(), listOf(fixtCinema), emptyList(), emptyList())
-		val fixtDbCinema = fixture.build<DBCinema>().apply {
-			cineworldID = fixtCinema.id
+	@Test fun `existing film with matching id is updated`() {
+		val fixtFilm: FeedFilm = fixture.build()
+		val feed = Feed(emptyList(), emptyList(), listOf(fixtFilm), emptyList())
+		val fixtDbFilm = fixture.build<DBFilm>().apply {
+			edi = fixtFilm.id
 			_deleted = null
 		}
-		val db = listOf(fixtDbCinema)
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+		val db = listOf(fixtDbFilm)
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
 		assertAll {
 			that("insert", result.insert, empty())
-			that("update", result.update, contains(fixtDbCinema))
+			that("update", result.update, contains(fixtDbFilm))
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
 			o { verifyZeroInteractions(mockCreator) }
-			o { verify(mockUpdater).invoke(fixtDbCinema, fixtCinema, feed); verifyNoMoreInteractions(mockUpdater) }
+			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}
 
-	@Test fun `existing deleted cinema with matching id is restored`() {
-		val fixtCinema: FeedCinema = fixture.build()
-		val feed = Feed(emptyList(), listOf(fixtCinema), emptyList(), emptyList())
-		val fixtDbCinema = fixture.build<DBCinema>().apply {
-			cineworldID = fixtCinema.id
+	@Test fun `existing deleted film with matching id is restored`() {
+		val fixtFilm: FeedFilm = fixture.build()
+		val feed = Feed(emptyList(), emptyList(), listOf(fixtFilm), emptyList())
+		val fixtDbFilm = fixture.build<DBFilm>().apply {
+			edi = fixtFilm.id
 			_deleted = fixture.build()
 		}
-		val db = listOf(fixtDbCinema)
-		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBCinema() }
+		val db = listOf(fixtDbFilm)
+		whenever(mockCreator.invoke(any(), eq(feed))).thenAnswer { DBFilm() }
 
 		val result = sut.calculate(OffsetDateTime.now(), feed, db)
 
@@ -154,9 +154,9 @@ class CinemaSyncCalculatorFuncTest {
 			that("update", result.update, empty())
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
-			that("restore", result.restore, contains(fixtDbCinema))
+			that("restore", result.restore, contains(fixtDbFilm))
 			o { verifyZeroInteractions(mockCreator) }
-			o { verify(mockUpdater).invoke(fixtDbCinema, fixtCinema, feed); verifyNoMoreInteractions(mockUpdater) }
+			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}
 }

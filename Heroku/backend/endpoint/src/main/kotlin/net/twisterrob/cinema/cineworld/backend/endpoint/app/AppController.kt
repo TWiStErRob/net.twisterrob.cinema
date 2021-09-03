@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
 import io.ktor.application.Application
 import io.ktor.application.call
+import io.ktor.application.log
 import io.ktor.http.content.default
 import io.ktor.http.content.files
 import io.ktor.http.content.static
@@ -34,6 +35,13 @@ class AppController @Inject constructor(
 
 		static("/") {
 			staticRootFolder = application.attributes.staticRootFolder
+			application.log.debug(
+				"""
+					Running static content at / from ${staticRootFolder}
+					  -> ${staticRootFolder?.absolutePath}
+					  -> ${staticRootFolder?.canonicalPath}
+				""".trimIndent()
+			)
 			// Serve all files from staticRootFolder
 			files(".")
 			// `/` = `/index.html`

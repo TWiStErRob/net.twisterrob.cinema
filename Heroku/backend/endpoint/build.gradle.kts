@@ -2,8 +2,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	id("java")
+	id("application")
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
+}
+
+application {
+	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
+	tasks.named<JavaExec>("run") {
+		// The folder that :frontend builds into.
+		// Can be overridden with `gradlew :backend:endpoint:run --args <folder>`.
+		args("../../deploy/static", "../src/test/fake")
+	}
 }
 
 dependencies {

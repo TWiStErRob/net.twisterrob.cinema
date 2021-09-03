@@ -7,7 +7,8 @@ static/scripts/libs/angular/docs/
 *.iml
 *.ipr
 *.iws
-.idea
+/.idea/
+!/.idea/runConfigurations/
 *.sublime-workspace
 .npm-debug.log
 package-lock.json

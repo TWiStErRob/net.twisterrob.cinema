@@ -1,0 +1,3 @@
+cinema 
+film ?cinemaIDs=70&cinemaIDs=103&date=20170714
+performance ?cinemaIDs=70&cinemaIDs=103&date=20170714&filmEDIs=160231&filmEDIs=160454&filmEDIs=189108&filmEDIs=223046
