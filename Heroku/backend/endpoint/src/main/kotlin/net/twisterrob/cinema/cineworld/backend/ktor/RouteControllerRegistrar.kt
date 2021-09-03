@@ -10,19 +10,11 @@ import javax.inject.Inject
  */
 class RouteControllerRegistrar @Inject constructor(
 	private val application: Application,
-	private val traceFormatter: RouteResolveTraceFormatter,
 	private val controllers: Set<@JvmSuppressWildcards RouteController>
 ) {
 
 	fun register() {
 		application.routing {
-			trace {
-				if (application.log.isTraceEnabled) {
-					application.log.trace(traceFormatter.formatFull(it))
-				} else {
-					application.log.info(traceFormatter.formatSimple(it))
-				}
-			}
 			require(controllers.isNotEmpty()) { "There are no controllers, not starting up." }
 			controllers.toList().sortedWith(CONTROLLER_ORDER).forEach { controller ->
 				application.log.trace("Registering '$controller' routes...")

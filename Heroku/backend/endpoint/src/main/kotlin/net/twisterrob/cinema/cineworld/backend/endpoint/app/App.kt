@@ -25,5 +25,9 @@ object App {
 		@Binds
 		@IntoSet
 		fun testController(impl: TestController): RouteController
+
+		@Binds
+		@IntoSet
+		fun traceController(impl: TraceController): RouteController
 	}
 }

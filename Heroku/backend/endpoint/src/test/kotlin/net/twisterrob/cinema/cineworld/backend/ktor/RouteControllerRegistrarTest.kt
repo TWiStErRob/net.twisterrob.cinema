@@ -4,7 +4,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.application.Application
 import io.ktor.routing.Routing
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(KtorExtension::class)
 class RouteControllerRegistrarTest {
 
-	private val mockTraceFormatter: RouteResolveTraceFormatter = mock()
 	private val controllers: MutableSet<RouteController> = LinkedHashSet()
 
 	private lateinit var sut: RouteControllerRegistrar
@@ -26,7 +24,6 @@ class RouteControllerRegistrarTest {
 	@BeforeEach fun setUp(application: Application) {
 		sut = RouteControllerRegistrar(
 			application,
-			mockTraceFormatter,
 			controllers
 		)
 	}
@@ -39,8 +36,6 @@ class RouteControllerRegistrarTest {
 		}
 
 		assertEquals("There are no controllers, not starting up.", result.message)
-
-		verifyZeroInteractions(mockTraceFormatter)
 	}
 
 	@Test fun `one controller registers`() {
@@ -50,7 +45,6 @@ class RouteControllerRegistrarTest {
 		sut.register()
 
 		verify(mockController).run { with(any<Routing>()) { registerRoutes() } }
-		verifyZeroInteractions(mockTraceFormatter)
 	}
 
 	@Test fun `two controllers register by order`() {
@@ -67,7 +61,6 @@ class RouteControllerRegistrarTest {
 			verify(mockController1).run { with(any<Routing>()) { registerRoutes() } }
 			verify(mockController2).run { with(any<Routing>()) { registerRoutes() } }
 		}
-		verifyZeroInteractions(mockTraceFormatter)
 	}
 
 	@Test fun `two controllers register by name`(application: Application) {
@@ -87,6 +80,5 @@ class RouteControllerRegistrarTest {
 			verify(mockController1).run { with(any<Routing>()) { registerRoutes() } }
 			verify(mockController2).run { with(any<Routing>()) { registerRoutes() } }
 		}
-		verifyZeroInteractions(mockTraceFormatter)
 	}
 }
