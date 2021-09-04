@@ -4,7 +4,8 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"scripts": {
-		"postinstall": "npm-run-all --serial selenium:update",
+		"preinstall": "echo Installing Frontend dependencies",
+		"postinstall": "npm-run-all --serial selenium:update && echo Installed Frontend dependencies",
 		"postupdate": "npm-run-all --serial selenium:update",
 		"start": "npm-run-all --race --parallel selenium protractor",
 		"selenium": "webdriver-manager --versions.standalone 3.141.59 --versions.chrome 92.0.4515.107 start",

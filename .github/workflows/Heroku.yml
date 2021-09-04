@@ -132,16 +132,18 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
-      - run: node -v
-      - run: npm -v
-
+      - name: Downgrade node from v14.17.6/6.14.15 to v8.17.0/6.13.4.
       - uses: actions/setup-node@v2
         with:
           node-version: '8'
 
-      - run: node -v
-      - run: npm -v
-
       - name: Install Node dependencies
         working-directory: Heroku
-        run: npm install
+        run: |
+          node -v
+          npm -v
+          npm install
+
+      - name: Test
+        working-directory: Heroku
+        run: npm run test
