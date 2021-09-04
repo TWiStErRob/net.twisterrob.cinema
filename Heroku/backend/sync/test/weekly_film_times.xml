@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<feed>
+    <attributes>
+        <attribute code="2D">2D</attribute>
+        <attribute code="3D">3D</attribute>
+        <attribute code="4DX">4DX</attribute>
+        <attribute code="AC">AC</attribute>
+        <attribute code="AD">AD</attribute>
+        <attribute code="AUT">AUT</attribute>
+        <attribute code="Box">Box</attribute>
+        <attribute code="CH">CH</attribute>
+        <attribute code="CINB">CINB</attribute>
+        <attribute code="DBOX">DBOX</attribute>
+        <attribute code="EDU">EDU</attribute>
+        <attribute code="FEV">FEV</attribute>
+        <attribute code="HFR">HFR</attribute>
+        <attribute code="IMAX">IMAX</attribute>
+        <attribute code="M4J">M4J</attribute>
+        <attribute code="MID">MID</attribute>
+        <attribute code="PRE">PRE</attribute>
+        <attribute code="QA">QA</attribute>
+        <attribute code="SC">SC</attribute>
+        <attribute code="Screening">Screening</attribute>
+        <attribute code="ScreenX">ScreenX</attribute>
+        <attribute code="Sen">Sen</attribute>
+        <attribute code="SKY">SKY</attribute>
+        <attribute code="SS">SS</attribute>
+        <attribute code="ST">ST</attribute>
+        <attribute code="STAR">STAR</attribute>
+        <attribute code="Strobe">Strobe</attribute>
+        <attribute code="TS">TS</attribute>
+        <attribute code="ViP">ViP</attribute>
+        <attribute code="VIP">VIP</attribute>
+        <attribute code="gn:action">Action</attribute>
+        <attribute code="gn:animation">Animation</attribute>
+        <attribute code="gn:bollywood">Bollywood</attribute>
+        <attribute code="gn:comedy">Comedy</attribute>
+        <attribute code="gn:documentary">Documentary</attribute>
+        <attribute code="gn:drama">Drama</attribute>
+        <attribute code="gn:event-cinema">Event Cinema</attribute>
+        <attribute code="gn:family">Family</attribute>
+        <attribute code="gn:fantasy">Fantasy</attribute>
+        <attribute code="gn:hindi">Hindi</attribute>
+        <attribute code="gn:horror">Horror</attribute>
+        <attribute code="gn:live">Live</attribute>
+        <attribute code="gn:malayalam">Malayalam</attribute>
+        <attribute code="gn:movies-for-juniors">Movies for Juniors</attribute>
+        <attribute code="gn:musical">Musical</attribute>
+        <attribute code="gn:national-theatre">National Theatre</attribute>
+        <attribute code="gn:polish">Polish</attribute>
+        <attribute code="gn:punjabi">Punjabi</attribute>
+        <attribute code="gn:romance">Romance</attribute>
+        <attribute code="gn:sci-fi">Sci-Fi</attribute>
+        <attribute code="gn:tamil">Tamil</attribute>
+        <attribute code="gn:telugu">Telugu</attribute>
+        <attribute code="gn:theatre">Theatre</attribute>
+        <attribute code="gn:thriller">Thriller</attribute>
+        <attribute code="gn:unlimited-screening">Unlimited Screening</attribute>
+    </attributes>
+    <cinemas>
+    </cinemas>
+    <films>
+    </films>
+    <performances>
+    </performances>
+</feed>
