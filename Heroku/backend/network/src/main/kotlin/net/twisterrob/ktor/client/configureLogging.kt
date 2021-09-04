@@ -54,6 +54,13 @@ private class LevelLogger(
 					.toTypedArray()
 			})
 		}
-		log.logAtLevel(message)
+		log.logAtLevel(message.shortenTo(5000))
 	}
+
+	private fun String.shortenTo(maxLength: Int): String =
+		if (this.length < maxLength) {
+			this
+		} else {
+			this.substring(0, maxLength) + " ... [showing only ${maxLength}, ${this.length - maxLength} omitted]"
+		}
 }

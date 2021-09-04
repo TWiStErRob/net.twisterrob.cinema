@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.JsonSerializer
 import io.ktor.client.features.onDownload
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.url
@@ -46,9 +47,22 @@ class FeedServiceNetwork @Inject constructor(
 		client.get {
 			url(source)
 			header(HttpHeaders.Connection, "close")
-			onDownload { bytesSentTotal, contentLength ->
-				LOG.trace("Downloading ${source}: ${bytesSentTotal}/${contentLength}")
-			}
+			onDownloadDebounceTrace("Downloading ${source}", 500)
+		}
+	}
+}
+
+/**
+ * @param source prefix every message
+ * @param frequency how often do we log in milliseconds.
+ */
+private fun HttpRequestBuilder.onDownloadDebounceTrace(source: String, frequency: Long) {
+	var lastMessage = Long.MIN_VALUE
+	onDownload { bytesSentTotal, contentLength ->
+		val now = System.currentTimeMillis()
+		if (lastMessage < now - frequency) {
+			LOG.trace("$source: ${bytesSentTotal}/${contentLength}")
+			lastMessage = now
 		}
 	}
 }
