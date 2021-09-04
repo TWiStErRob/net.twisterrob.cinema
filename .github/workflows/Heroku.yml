@@ -8,8 +8,8 @@ concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
-  build:
-    name: 1 🔨 Build
+  check:
+    name: 1 🔨 Build & Check
     runs-on: ubuntu-latest
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
     timeout-minutes: 10
