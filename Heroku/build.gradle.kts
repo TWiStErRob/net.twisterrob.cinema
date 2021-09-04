@@ -108,7 +108,32 @@ allprojects {
 
 			withType<Test> {
 				allowUnsafe()
+				if (project.property("net.twisterrob.build.verboseReports").toString().toBoolean()) {
+					configureVerboseReportsForGithubActions()
+				}
 			}
+		}
+	}
+}
+
+// Need to eagerly create this, so that we can call tasks.withType in it.
+project.tasks.create<TestReport>("tests") {
+	destinationDir = file("${buildDir}/reports/tests/all")
+	project.evaluationDependsOnChildren()
+	allprojects.forEach { subproject ->
+		subproject.tasks.withType<Test> {
+			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
+				ignoreFailures = true
+				reports.junitXml.isEnabled = true
+				this@create.reportOn(this@withType)
+			}
+		}
+	}
+	doLast {
+		val reportFile = File(destinationDir, "index.html")
+		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
+		if (!successRegex.containsMatchIn(reportFile.readText())) {
+			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
 		}
 	}
 }
