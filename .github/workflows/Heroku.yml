@@ -65,25 +65,25 @@ jobs:
           check tests
           -Pnet.twisterrob.build.verboseReports=true
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
+      - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.JOB_NAME }} Test Results XMLs
+          name: Heroku Test Results XMLs
           path: ${{ github.workspace }}/**/build/test-results/*/TEST-*.xml
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTML".
+      - name: Upload "Heroku Test Results HTML".
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.JOB_NAME }} Test Results HTML
+          name: Heroku Test Results HTML
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs".
+      - name: Upload "Heroku Test Results HTMLs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.JOB_NAME }} Test Results HTMLs
+          name: Heroku Test Results HTMLs
           path: ${{ github.workspace }}/**/build/reports/tests/*/
 
       - name: Cleanup Gradle files before caching.
@@ -120,4 +120,4 @@ jobs:
           comment_title: Test Results
           report_individual_runs: true
           test_changes_limit: 0
-          files: artifacts/Test Results XMLs/**/*.xml
+          files: artifacts/Heroku Test Results XMLs/**/*.xml
