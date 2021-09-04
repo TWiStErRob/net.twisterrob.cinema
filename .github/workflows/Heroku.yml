@@ -144,6 +144,7 @@ jobs:
         run: |
           node -v
           npm -v
+          google-chrome --version
           npm install
 
       - name: Test
