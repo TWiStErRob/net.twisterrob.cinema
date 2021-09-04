@@ -67,26 +67,22 @@ allprojects {
 			}
 
 			val test = "test"(Test::class) {
-				allowUnsafe()
 				useJUnitPlatform {
 				}
 			}
 			val unitTest = register<Test>("unitTest") {
-				allowUnsafe()
 				useJUnitPlatform {
 					excludeTags("functional", "integration")
 				}
 				shouldRunAfter()
 			}
 			val functionalTest = register<Test>("functionalTest") {
-				allowUnsafe()
 				useJUnitPlatform {
 					includeTags("functional")
 				}
 				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
-				allowUnsafe()
 				maxParallelForks = 2
 				useJUnitPlatform {
 					includeTags("integration")
@@ -95,7 +91,6 @@ allprojects {
 				shouldRunAfter(unitTest, functionalTest)
 			}
 			val integrationExternalTest = register<Test>("integrationExternalTest") {
-				allowUnsafe()
 				useJUnitPlatform {
 					includeTags("integration & external")
 				}
@@ -109,6 +104,10 @@ allprojects {
 				dependsOn(integrationTest)
 				// Don't want to run it automatically, ever.
 				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
+			}
+
+			withType<Test> {
+				allowUnsafe()
 			}
 		}
 	}
