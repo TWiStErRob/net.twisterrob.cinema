@@ -1,0 +1,123 @@
+name: Heroku
+on:
+  push
+concurrency:
+  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
+  # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  # More info: https://stackoverflow.com/a/68422069/253468:
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  cancel-in-progress: true
+jobs:
+  build:
+    name: 1 🔨 Build
+    runs-on: ubuntu-latest
+    # A run took 5.5 minutes, give it a bit of a buffer and constrain.
+    timeout-minutes: 10
+    steps:
+      - name: Set up JDK 11.
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v2
+
+      - name: Download Gradle running the build.
+        working-directory: Heroku
+        run: |
+          # Run a no-op gradlew command in workspace.
+          ./gradlew --no-daemon --version | tee gradle.version.log
+          # Capture version for later usage.
+          # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
+          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)$' gradle.version.log > gradle.version
+          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
+
+      - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
+        uses: actions/cache@v2
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${ gradle-dist-hash }/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during build
+            ~/.gradle/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
+            ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
+          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
+
+      - name: Build Heroku.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
+
+      - name: Test Heroku.
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          check tests
+          -Pnet.twisterrob.build.verboseReports=true
+
+      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.JOB_NAME }} Test Results XMLs
+          path: ${{ github.workspace }}/**/build/test-results/*/TEST-*.xml
+
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTML".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.JOB_NAME }} Test Results HTML
+          path: ${{ github.workspace }}/build/reports/tests/all/
+
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.JOB_NAME }} Test Results HTMLs
+          path: ${{ github.workspace }}/**/build/reports/tests/*/
+
+      - name: Cleanup Gradle files before caching.
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f  ~/.gradle/caches/modules-2/gc.properties
+          rm -fr ~/.gradle/caches/*/plugin-resolution/
+
+  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
+  publish-test-results:
+    name: 2 📢 Publish Tests Results
+    runs-on: ubuntu-latest
+    needs: check
+    # The dependency job might be skipped, we don't need to run this job then.
+    if: success() || failure()
+    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
+    timeout-minutes: 5
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      #- name: Display structure of downloaded files
+      #  run: ls -R
+      #  working-directory: artifacts
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          check_name: 0 🔔 Test Results
+          comment_title: Test Results
+          report_individual_runs: true
+          test_changes_limit: 0
+          files: artifacts/* Test Results XMLs/**/*.xml
