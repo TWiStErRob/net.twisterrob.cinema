@@ -159,7 +159,7 @@ jobs:
       - name: Start Sync
         working-directory: Heroku
         run: |
-          gradlew --no-daemon :backend:sync:run &
+          ./gradlew --no-daemon :backend:sync:run &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
           # Wait a bit so it actually does its job.
           sleep 10
@@ -167,7 +167,7 @@ jobs:
       - name: Start Backend
         working-directory: Heroku
         run: |
-          gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" &
+          ./gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
 
       - name: Start Frontend
