@@ -161,30 +161,34 @@ jobs:
         run: |
           ./gradlew --no-daemon :backend:sync:run &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
-          # Wait a bit so it actually does its job.
-          sleep 10
+          sleep 30
 
       - name: Start Backend
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
+          sleep 30
 
       - name: Start Frontend
         working-directory: Heroku/frontend
         run: |
           npm run start &
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
+          sleep 10
 
       - name: Start Selenium
         working-directory: Heroku/test
         run: |
           npm run selenium &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
+          sleep 10
 
       - name: Run Protractor tests
         working-directory: Heroku/test
-        run: npm run protractor
+        run: |
+          mkdir logs
+          npm run protractor
 
       - name: Stop Sync (at ${{ env.PID_SYNC }})
         if: always()
