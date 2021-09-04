@@ -44,6 +44,40 @@
 		<!-- TMI from embedded driver during tests. -->
 		<Logger name="org.neo4j.driver.internal.shaded" level="INFO" />
 
+		<!--
+			TMI from Bolt driver.
+			Default logging is JUL, so customised with
+			.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
+			but then the level is ALL by default from <Root>.
+			These Loggers don't have a namespace so need to list them explicitly one by one.
+		-->
+		<Logger name="ChannelConnectedListener" level="INFO" />
+		<Logger name="ChunkDecoder" level="INFO" />
+		<Logger name="ConnectionPool" level="INFO" />
+		<Logger name="Driver" level="INFO" />
+		<Logger name="HandshakeHandler" level="INFO" />
+		<Logger name="InboundMessageDispatcher" level="INFO" />
+		<Logger name="InboundMessageHandler" level="INFO" />
+		<Logger name="LeastConnectedLoadBalancingStrategy" level="INFO" />
+		<Logger name="LoadBalancer" level="INFO" />
+		<Logger name="NettyChannelTracker" level="INFO" />
+		<Logger name="OutboundMessageHandler" level="INFO" />
+
+		<!-- on every request these lines are logged:
+			DEBUG (BoltTransaction.java:61) No current transaction, starting a new one
+			DEBUG (BoltTransaction.java:64) Native transaction: org.neo4j.driver.internal.InternalTransaction@520cd73
+			DEBUG (BoltTransaction.java:94) Committing native transaction: org.neo4j.driver.internal.InternalTransaction@520cd73
+		-->
+		<Logger name="org.neo4j.ogm.drivers.bolt.transaction.BoltTransaction" level="INFO" />
+
+		<!-- not using transactions yet:
+			DEBUG (AbstractTransaction.java:83) Thread 78: Commit transaction extent: 0
+			DEBUG (AbstractTransaction.java:90) Thread 78: Committed
+			DEBUG (AbstractTransaction.java:139) Thread 78: Close transaction extent: 0
+			DEBUG (AbstractTransaction.java:142) Thread 78: Closing transaction
+		-->
+		<Logger name="org.neo4j.ogm.transaction.Transaction" level="INFO" />
+
 		<!-- on every entity mapping these spam:
 			DEBUG (MetaData.java:160) looking for concrete class to resolve label: Cinema
 			DEBUG (MetaData.java:183) concrete class found: ClassInfo{className='net.twisterrob.cinema.database.model.Cinema', neo4jName='Cinema'}. comparing with what's already been found previously...

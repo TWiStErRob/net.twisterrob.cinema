@@ -2,12 +2,11 @@ package net.twisterrob.cinema.cineworld.sync
 
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.services.CinemaService
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
-private val log: Logger = LoggerFactory.getLogger(CinemaSync::class.java)
+private val LOG = LoggerFactory.getLogger(CinemaSync::class.java)
 
 class CinemaSync @Inject constructor(
 	private val calculator: CinemaSyncCalculator,
@@ -23,13 +22,13 @@ class CinemaSync @Inject constructor(
 			feed = feedService.getWeeklyFilmTimes(),
 			dbCinemas = dbService.findAll()
 		)
-		log.info(
+		LOG.info(
 			"Inserting {} new, updating {} existing ({} restored), deleting {} existing ({} already deleted) {}s for {}.",
 			sync.insert.size, sync.update.size, sync.restore.size, sync.delete.size, sync.alreadyDeleted.size,
 			"Cinema",
 			now
 		)
-		log.debug(sync.toString())
+		LOG.debug(sync.toString())
 		dbService.save(sync.insert + sync.update + sync.delete + sync.restore)
 	}
 }

@@ -78,6 +78,8 @@ object Neo4JModule {
 		.uri(uri.toString())
 		.connectionLivenessCheckTimeout(TimeUnit.SECONDS.toMillis(30).toInt())
 		.connectionPoolSize(150)
+		// org.neo4j.ogm.drivers.bolt.driver.BoltDriver.CONFIG_PARAMETER_BOLT_LOGGING
+		.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
 		.build()
 
 	@Neo4J

@@ -38,11 +38,9 @@ import net.twisterrob.test.verify
 import net.twisterrob.test.verifyNoMoreInteractions
 import net.twisterrob.test.verifyZeroInteractions
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.CheckReturnValue
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -53,6 +51,7 @@ import javax.inject.Singleton
 class AuthIntgTest {
 
 	companion object {
+
 		/**
 		 * It needs to be a cookie that uses the right secretSignKey in Sessions Ktor feature.
 		 * If this is broken, debug a test where [receiveAuthorizationFromGoogle] is visible and capture the value.
@@ -155,14 +154,14 @@ class AuthIntgTest {
 		daggerApp = createAppForAuthIntgTest()
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenThrow(UnknownUserException("fake error"))
-		val ex = assertThrows<UnknownUserException> {
-			handleRequest {
-				method = HttpMethod.Get
-				uri = "/account"
-				addHeader(HttpHeaders.Cookie, realisticCookie)
-			}
+		handleRequest {
+			method = HttpMethod.Get
+			uri = "/account"
+			addHeader(HttpHeaders.Cookie, realisticCookie)
+		}.apply {
+			assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
+			assertEquals("no user", response.content)
 		}
-		assertThat(ex.message, containsString("fake error"))
 		verify(mockRepository).findUser(realisticUserId)
 	}
 

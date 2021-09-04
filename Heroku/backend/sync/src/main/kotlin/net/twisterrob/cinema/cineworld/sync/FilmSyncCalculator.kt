@@ -1,14 +1,13 @@
 package net.twisterrob.cinema.cineworld.sync
 
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
-private val log: Logger = LoggerFactory.getLogger(FilmSync::class.java)
+private val LOG = LoggerFactory.getLogger(FilmSyncCalculator::class.java)
 
 class FilmSyncCalculator @Inject constructor(
 	private val nodeSyncer: NodeSyncer<FeedFilm, DBFilm>
@@ -17,8 +16,8 @@ class FilmSyncCalculator @Inject constructor(
 	fun calculate(now: OffsetDateTime, feed: Feed, dbFilms: Iterable<DBFilm>): SyncResults<DBFilm> {
 		val feedFilms = feed.films
 
-		log.trace(feedFilms.toString())
-		log.trace(dbFilms.toString())
+		LOG.trace(feedFilms.toString())
+		LOG.trace(dbFilms.toString())
 
 		val changes = calculateChanges(
 			dbFilms, DBFilm::edi,

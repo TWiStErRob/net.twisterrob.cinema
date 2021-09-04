@@ -2,9 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoSet
-import io.ktor.client.HttpClient
 import io.ktor.locations.Location
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
@@ -46,7 +44,7 @@ object Auth {
 	@Module
 	object BackendModule {
 
-		@Provides
-		fun httpClient() = HttpClient()
+//		@Provides
+//		fun httpClient() = HttpClient()
 	}
 }
