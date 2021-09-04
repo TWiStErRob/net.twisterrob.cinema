@@ -128,6 +128,8 @@ jobs:
     runs-on: ubuntu-20.04
     # TODO Don't know how fast yet.
     #timeout-minutes: 10
+    env:
+      NEO4J_URL: ${{ secrets.NEO4J_URL }}
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
@@ -147,3 +149,55 @@ jobs:
       - name: Test
         working-directory: Heroku
         run: npm run test
+
+      - name: Build Frontend
+        working-directory: Heroku/frontend
+        run: |
+          npm run build-dev
+          npm run build-prod
+
+      - name: Start Sync
+        working-directory: Heroku
+        run: |
+          gradlew --no-daemon :backend:sync:run &
+          echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
+          # Wait a bit so it actually does its job.
+          sleep 10
+
+      - name: Start Backend
+        working-directory: Heroku
+        run: |
+          gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" &
+          echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
+
+      - name: Start Frontend
+        working-directory: Heroku/frontend
+        run: |
+          npm run start &
+          echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
+
+      - name: Start Selenium
+        working-directory: Heroku/test
+        run: |
+          npm run selenium &
+          echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
+
+      - name: Run Protractor tests
+        working-directory: Heroku/test
+        run: npm run protractor
+
+      - name: Stop Sync (at ${{ env.PID_SYNC }})
+        if: always()
+        run: kill ${{ env.PID_SYNC }}
+
+      - name: Stop Backend (at ${{ env.PID_ENDPOINT }})
+        if: always()
+        run: kill ${{ env.PID_ENDPOINT }}
+
+      - name: Stop Frontend (at ${{ env.PID_FRONTEND }})
+        if: always()
+        run: kill ${{ env.PID_FRONTEND }}
+
+      - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
+        if: always()
+        run: kill ${{ env.PID_SELENIUM }}
