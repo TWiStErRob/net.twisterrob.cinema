@@ -7,7 +7,7 @@ import javax.inject.Inject
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
-private val LOG = LoggerFactory.getLogger(FilmSync::class.java)
+private val LOG = LoggerFactory.getLogger(FilmSyncCalculator::class.java)
 
 class FilmSyncCalculator @Inject constructor(
 	private val nodeSyncer: NodeSyncer<FeedFilm, DBFilm>
