@@ -19,12 +19,12 @@ application {
 dependencies {
 	implementation(project(":backend:database"))
 	implementation(project(":backend:quickbook"))
+	implementation(project(":backend:network"))
 
 	implementation(Deps.Kotlin.core)
 	Deps.Ktor.server.default(project)
 	runtimeOnly(Deps.Ktor.client.engine_okhttp)
 	implementation(Deps.Ktor.client.jackson)
-	implementation(Deps.Ktor.client.logging_jvm)
 	Deps.Log4J2.slf4j(project)
 	Deps.Dagger2.default(project)
 }

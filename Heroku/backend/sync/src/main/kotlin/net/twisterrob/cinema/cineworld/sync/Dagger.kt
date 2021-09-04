@@ -13,7 +13,9 @@ import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.services.Services
+import net.twisterrob.ktor.client.configureLogging
 import org.neo4j.ogm.session.SessionFactory
+import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 import javax.inject.Singleton
 
@@ -60,7 +62,10 @@ class SyncAppModule {
 		Film::copyPropertiesFrom
 
 	@Provides
-	fun httpClient(): HttpClient = HttpClient()
+	fun httpClient(): HttpClient =
+		HttpClient().config {
+			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
+		}
 
 	@Module
 	interface Bindings {

@@ -13,6 +13,7 @@ application {
 dependencies {
 	implementation(project(":backend:database"))
 	implementation(project(":backend:feed"))
+	implementation(project(":backend:network"))
 
 	implementation(Deps.Kotlin.core)
 	runtimeOnly(Deps.Ktor.client.engine_okhttp)
