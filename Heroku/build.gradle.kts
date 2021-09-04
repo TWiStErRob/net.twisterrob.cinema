@@ -22,6 +22,8 @@ allprojects {
 		tasks.withType<KotlinCompile> {
 			kotlinOptions {
 				jvmTarget = JavaVersion.VERSION_1_8.toString()
+				allWarningsAsErrors = true
+				verbose = true
 				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
 			}
 		}
