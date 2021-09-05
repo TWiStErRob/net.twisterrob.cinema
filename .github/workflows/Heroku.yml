@@ -186,28 +186,28 @@ jobs:
       - name: Start Sync
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon :backend:sync:run &
+          ./gradlew --no-daemon :backend:sync:run >sync.log 2>&1 &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
-          sleep 30
+          sleep 40
 
       - name: Start Backend
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" &
+          ./gradlew --no-daemon :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 30
 
       - name: Start Frontend
         working-directory: Heroku/frontend
         run: |
-          npm run start &
+          npm run start >../frontend.log 2>&1 &
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
           sleep 10
 
       - name: Start Selenium
         working-directory: Heroku/test
         run: |
-          npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} &
+          npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} >../selenium.log 2>&1 &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
           sleep 10
 
@@ -232,3 +232,12 @@ jobs:
       - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
         if: always()
         run: kill ${{ env.PID_SELENIUM }}
+
+      - name: Upload "Heroku test logs".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku test logs
+          path: |
+            ${{ github.workspace }}/Heroku/*.log
+            ${{ github.workspace }}/Heroku/test/logs/*
