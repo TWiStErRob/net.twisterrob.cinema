@@ -126,8 +126,8 @@ jobs:
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
-    # TODO Don't know how fast yet.
-    #timeout-minutes: 10
+    # Setup takes 1+3+1 minute, and protractor runs for 7 minutes
+    timeout-minutes: 15
     env:
       NEO4J_URL: ${{ secrets.NEO4J_URL }}
       PORT: 8080
@@ -234,19 +234,20 @@ jobs:
 
       - name: Stop Sync (at ${{ env.PID_SYNC }})
         if: always()
-        run: kill ${{ env.PID_SYNC }} || echo "::warning file=sync.log::Sync process \#${{ env.PID_SYNC }} didn't exist."
+        run: kill ${{ env.PID_SYNC }} || true
+        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Backend (at ${{ env.PID_ENDPOINT }})
         if: always()
-        run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process \#${{ env.PID_SYNC }} didn't exist."
+        run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Frontend (at ${{ env.PID_FRONTEND }})
         if: always()
-        run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process \#${{ env.PID_SYNC }} didn't exist."
+        run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
         if: always()
-        run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process \#${{ env.PID_SYNC }} didn't exist."
+        run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process ${{ env.PID_SYNC }} didn't exist."
 
       - name: Upload "Heroku test logs".
         if: success() || failure()
