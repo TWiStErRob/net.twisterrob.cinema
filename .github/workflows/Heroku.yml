@@ -249,11 +249,11 @@ jobs:
         if: always()
         run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Upload "Heroku test logs".
+      - name: Upload "Heroku Test Logs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: Heroku test logs
+          name: Heroku Test Logs
           path: |
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test/logs/*
