@@ -18,7 +18,7 @@ ElementFinder.prototype.nameEl2 = function () {
 
 function waitFor(classNameToWaitFor) {
 	const elemToWaitFor = element.all(by.css(classNameToWaitFor)).first();
-	helpers.waitForElementToDisappear(elemToWaitFor, jasmine.DEFAULT_TIMEOUT_INTERVAL);
+	return helpers.waitForElementToDisappear(elemToWaitFor, jasmine.DEFAULT_TIMEOUT_INTERVAL);
 }
 
 export const date = {
@@ -99,7 +99,8 @@ const byFilmRoot = element(by.id('performances-by-film'));
 const byCinemaRoot = element(by.id('performances-by-cinema'));
 export const performances = {
 	wait() {
-		waitFor('.performances-loading');
+		waitFor('#performances-waiting')
+				.then(() => waitFor('#performances-loading'));
 	},
 	buttons: {
 		plan: element(by.id('plan-plan')),
