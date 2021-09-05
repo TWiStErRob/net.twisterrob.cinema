@@ -16,8 +16,12 @@ import org.junit.jupiter.api.Test
 @TagIntegration
 class FeedIntgTest {
 
-	private fun loadFeed(fileName: String): Feed =
-		feedReader().readValue(FeedIntgTest::class.java.getResourceAsStream("/$fileName")!!)
+	private fun loadFeed(fileName: String): Feed {
+		val resource = "/$fileName"
+		val stream = FeedIntgTest::class.java.getResourceAsStream(resource)
+			?: error("Cannot find $resource near ${FeedIntgTest::class.java}")
+		return feedReader().readValue(stream)
+	}
 
 	@Test fun `read UK weekly film times XML`() {
 		val feed = loadFeed("weekly_film_times.xml")

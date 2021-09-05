@@ -11,7 +11,8 @@
 		"preinstall": "echo Installing Backend dependencies",
 		"postinstall": "echo Installed Backend dependencies",
 		"start": "node src/main/javascript",
-		"test": "npm run test:nodeunit & npm run test:jshint",
+		"test-doc": "Disabled test:nodeunit because it needs a real (old) Neo4J instance.",
+		"test": "npm-run-all --serial test:jshint",
 		"test:nodeunit": "node src/test/javascript",
 		"test:jshint": "jshint --verbose src/main/javascript"
 	},
@@ -23,6 +24,7 @@
 		"request": "2.30.0",
 		"lodash": "4.17.4",
 		"nodeunit": "0.8.2",
+		"tap": "0.2.3",
 		"passport": "0.3.2",
 		"passport-google-oauth20": "2.0.0",
 		"moment": "2.19.3",
@@ -30,6 +32,7 @@
 		"async": "0.2.9"
 	},
 	"devDependencies": {
-		"jshint": "2.9.5"
+		"jshint": "2.9.5",
+		"npm-run-all": "4.1.3"
 	}
 }

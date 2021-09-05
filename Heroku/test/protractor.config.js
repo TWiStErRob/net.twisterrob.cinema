@@ -12,6 +12,13 @@ exports.config = {
 		{
 			browserName: 'chrome',
 			loggingPrefs: { browser: 'ALL' },
+			chromeOptions: {
+				args: [
+					"--headless",
+					"--disable-gpu",
+					"--window-size=1920,1080"
+				]
+			}
 		},
 	],
 	specs: [
@@ -159,12 +166,14 @@ function patchJasmineMethods() {
 	patchPendingToIncludeSpace();
 	patchPrettyPrintNotDeepPrintElementFinders();
 }
+
 function patchPendingToIncludeSpace() {
 	const originalPending = global.pending;
-	global.pending =  function (message) {
+	global.pending = function (message) {
 		originalPending(": " + message);
 	};
 }
+
 function patchPrettyPrintNotDeepPrintElementFinders() {
 	const originalPP = jasmine.pp;
 	jasmine.pp = function (arg) {
@@ -177,8 +186,8 @@ function patchPrettyPrintNotDeepPrintElementFinders() {
 		}
 		if (arg instanceof Array) {
 			if (arg.every((item) =>
-							item instanceof protractor.ElementFinder
-							|| item instanceof protractor.ElementArrayFinder)) {
+					item instanceof protractor.ElementFinder
+					|| item instanceof protractor.ElementArrayFinder)) {
 				return `[${arg.map(item => item.locator().toString()).join(", ")}]`;
 			}
 		}

@@ -16,8 +16,12 @@ import org.junit.jupiter.api.Test
 @TagIntegration
 class FeedServiceNetworkIntgTest {
 
-	private fun loadFeed(fileName: String): ByteArray =
-		FeedServiceNetworkIntgTest::class.java.getResourceAsStream("/$fileName")!!.readBytes()
+	private fun loadFeed(fileName: String): ByteArray {
+		val resource = "/$fileName"
+		val stream = FeedServiceNetworkIntgTest::class.java.getResourceAsStream(resource)
+			?: error("Cannot find $resource near ${FeedServiceNetworkIntgTest::class.java}")
+		return stream.readBytes()
+	}
 
 	private val mockClient = HttpClient(mockEngine())
 

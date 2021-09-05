@@ -14,6 +14,7 @@ var neo4j = require('neo4j-js');      // https://github.com/bretcope/neo4j-js/bl
                                       // https://github.com/bretcope/neo4j-js/blob/master/docs/REST.md
 var auth = require('./auth');
 var config = require('./config');
+var app = express();
 var graph;
 require('./neo4j').init(function(error, connected) {
 	if(error) throw error;
@@ -300,7 +301,6 @@ function getPerformances(req, res) {
 // . is /backend, not the folder of this file
 var contentRoot = process.argv[2] || path.resolve('../deploy/');
 var env = process.env.NODE_ENV || 'development';
-var app = express();
 switch (env) {
 	case 'development':
 		app.set('app urlRoot', 'http://localhost:' + config.port + '/');
