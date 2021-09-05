@@ -21,7 +21,6 @@ jobs:
       # > OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
       #JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
     steps:
-      - run: exit 1
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
@@ -131,6 +130,7 @@ jobs:
     #timeout-minutes: 10
     env:
       NEO4J_URL: ${{ secrets.NEO4J_URL }}
+      PORT: 8080
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2

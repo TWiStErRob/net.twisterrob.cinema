@@ -7,7 +7,7 @@ import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import java.io.File
 
 fun main(vararg args: String) {
-	val port = System.getProperty("PORT", "8080").toInt()
+	val port = (System.getenv("PORT") ?: "8080").toInt()
 	val staticContentPath = if (args.isNotEmpty()) args[0] else null
 	val fakeContentPath = if (args.size >= 2) args[1] else null
 	embeddedServer(Netty, port) {
