@@ -217,21 +217,25 @@ jobs:
           mkdir logs
           npm run protractor
 
+      # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
+      # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
+      # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
+
       - name: Stop Sync (at ${{ env.PID_SYNC }})
         if: always()
-        run: kill ${{ env.PID_SYNC }}
+        run: kill ${{ env.PID_SYNC }} || echo "::warning file=sync.log::Sync process #${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Backend (at ${{ env.PID_ENDPOINT }})
         if: always()
-        run: kill ${{ env.PID_ENDPOINT }}
+        run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process #${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Frontend (at ${{ env.PID_FRONTEND }})
         if: always()
-        run: kill ${{ env.PID_FRONTEND }}
+        run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process #${{ env.PID_SYNC }} didn't exist."
 
       - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
         if: always()
-        run: kill ${{ env.PID_SELENIUM }}
+        run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process #${{ env.PID_SYNC }} didn't exist."
 
       - name: Upload "Heroku test logs".
         if: success() || failure()
