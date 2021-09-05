@@ -140,14 +140,14 @@ jobs:
           node-version: '8'
 
       - name: Install Dependencies
-        working-directory: Heroku
+        working-directory: Heroku/test
         run: |
           node -v
           npm -v
           npm install
 
       - name: Install Compatible Chrome Driver
-        working-directory: test/node_modules/webdriver-manager/selenium
+        working-directory: Heroku/test/node_modules/webdriver-manager/selenium
         run: |
           apt-get update
           apt-get install -y curl unzip grep
@@ -160,6 +160,7 @@ jobs:
           cd ../../..
           npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
           cd node_modules/webdriver-manager/selenium
+          # See listing at https://chromedriver.storage.googleapis.com/index.html?path=${{ env.CHROME_DRIVER_VERSION }}/
           curl --output "chromedriver_${{ env.CHROME_DRIVER_VERSION }}.zip" "https://chromedriver.storage.googleapis.com/${{ env.CHROME_DRIVER_VERSION }}/chromedriver_linux64.zip"
           unzip chromedriver_${CHROME_DRIVER_VERSION}.zip
           mv chromedriver chromedriver_${{ env.CHROME_DRIVER_VERSION }}
@@ -199,7 +200,7 @@ jobs:
       - name: Start Selenium
         working-directory: Heroku/test
         run: |
-          npm run selenium &
+          npm run selenium - --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
           sleep 10
 
