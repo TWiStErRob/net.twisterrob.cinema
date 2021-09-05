@@ -141,7 +141,7 @@ jobs:
           node-version: '8'
 
       - name: Install Dependencies
-        working-directory: Heroku/test
+        working-directory: Heroku
         run: |
           node -v
           npm -v
