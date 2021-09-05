@@ -167,8 +167,11 @@ jobs:
           cd node_modules/webdriver-manager/selenium
           echo "See listing at https://chromedriver.storage.googleapis.com/index.html?path=${CHROME_DRIVER_VERSION}/"
           curl --output "chromedriver_${CHROME_DRIVER_VERSION}.zip" "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
+          ls -la
           unzip "chromedriver_${CHROME_DRIVER_VERSION}.zip"
+          ls -la
           mv "chromedriver" "chromedriver_${CHROME_DRIVER_VERSION}"
+          ls -la
           exit 1
 
       - name: Test
