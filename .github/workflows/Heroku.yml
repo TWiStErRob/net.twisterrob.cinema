@@ -150,14 +150,15 @@ jobs:
       - name: Install Compatible Chrome Driver
         working-directory: Heroku/test/node_modules/webdriver-manager/selenium
         run: |
-          #apt-get update
-          #apt-get install -y curl unzip grep
+          echo ::group::Query tool versions
           google-chrome --version
           grep --version
           curl --version
           unzip -v
           echo "CHROME_MINOR_VERSION=$(google-chrome --version | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')" | tee --append $GITHUB_ENV
+          echo "Querying latest Chrome Driver version: https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}"
           echo "CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")" | tee --append $GITHUB_ENV
+          echo ::endgroup::
           cd ../../..
           npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}
           cd node_modules/webdriver-manager/selenium
