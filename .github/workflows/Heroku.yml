@@ -152,7 +152,7 @@ jobs:
         run: |
           #apt-get update
           #apt-get install -y curl unzip grep
-          google-chrome -v
+          google-chrome --version
           grep --version
           curl -version
           unzip -v
