@@ -162,17 +162,16 @@ jobs:
           export CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")
           echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
           echo ::endgroup::
-          cd ../../..
-          npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}
-          cd node_modules/webdriver-manager/selenium
+
+          echo ::group::Install Chrome Driver for Selenium
+          # `npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}` should do normally but we get
+          # > I/update - chromedriver: unzipping chromedriver_92.0.4515.107.zip #(node:1727) UnhandledPromiseRejectionWarning: Error: Invalid filename
+          # Do a manual install instead:
           echo "See listing at https://chromedriver.storage.googleapis.com/index.html?path=${CHROME_DRIVER_VERSION}/"
           curl --output "chromedriver_${CHROME_DRIVER_VERSION}.zip" "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
-          ls -la
           unzip "chromedriver_${CHROME_DRIVER_VERSION}.zip"
-          ls -la
           mv "chromedriver" "chromedriver_${CHROME_DRIVER_VERSION}"
-          ls -la
-          exit 1
+          echo ::endgroup::
 
       - name: Test
         working-directory: Heroku
