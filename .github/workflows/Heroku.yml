@@ -154,7 +154,7 @@ jobs:
           #apt-get install -y curl unzip grep
           google-chrome --version
           grep --version
-          curl -version
+          curl --version
           unzip -v
           echo "CHROME_MINOR_VERSION=$(google-chrome --version | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')" | tee --append $GITHUB_ENV
           echo "CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${{ env.CHROME_MINOR_VERSION }}")" | tee --append $GITHUB_ENV
