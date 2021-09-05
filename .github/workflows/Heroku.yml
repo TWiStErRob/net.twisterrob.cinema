@@ -157,14 +157,14 @@ jobs:
           curl --version
           unzip -v
           echo "CHROME_MINOR_VERSION=$(google-chrome --version | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')" | tee --append $GITHUB_ENV
-          echo "CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${{ env.CHROME_MINOR_VERSION }}")" | tee --append $GITHUB_ENV
+          echo "CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")" | tee --append $GITHUB_ENV
           cd ../../..
-          npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
+          npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}
           cd node_modules/webdriver-manager/selenium
-          # See listing at https://chromedriver.storage.googleapis.com/index.html?path=${{ env.CHROME_DRIVER_VERSION }}/
-          curl --output "chromedriver_${{ env.CHROME_DRIVER_VERSION }}.zip" "https://chromedriver.storage.googleapis.com/${{ env.CHROME_DRIVER_VERSION }}/chromedriver_linux64.zip"
-          unzip chromedriver_${CHROME_DRIVER_VERSION}.zip
-          mv chromedriver chromedriver_${{ env.CHROME_DRIVER_VERSION }}
+          echo "See listing at https://chromedriver.storage.googleapis.com/index.html?path=${CHROME_DRIVER_VERSION}/"
+          curl --output "chromedriver_${CHROME_DRIVER_VERSION}.zip" "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
+          unzip "chromedriver_${CHROME_DRIVER_VERSION}.zip"
+          mv "chromedriver" "chromedriver_${CHROME_DRIVER_VERSION}"
           exit 1
 
       - name: Test
