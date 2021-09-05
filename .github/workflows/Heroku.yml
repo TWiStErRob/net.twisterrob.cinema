@@ -21,6 +21,7 @@ jobs:
       # > OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
       #JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
     steps:
+      - run: exit 1
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
@@ -149,8 +150,8 @@ jobs:
       - name: Install Compatible Chrome Driver
         working-directory: Heroku/test/node_modules/webdriver-manager/selenium
         run: |
-          apt-get update
-          apt-get install -y curl unzip grep
+          #apt-get update
+          #apt-get install -y curl unzip grep
           google-chrome -v
           grep --version
           curl -version
