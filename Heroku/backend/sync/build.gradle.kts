@@ -42,6 +42,7 @@ dependencies {
 		exclude(group = "org.slf4j", module = "slf4j-nop")
 	}
 
+	testFixturesImplementation(project(":backend:database"))
 	testFixturesImplementation(project(":test-helpers"))
 	testFixturesImplementation(Deps.Kotlin.core)
 	testFixturesImplementation(Deps.JFixture.jfixture)
