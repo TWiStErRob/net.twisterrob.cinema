@@ -3,7 +3,7 @@
 ### Setup
  * git
     * `git init .`
-    * `git remote add heroku https://git.heroku.com/twisterrob-cinema.git`
+    * `git --work-tree=Heroku remote add heroku https://git.heroku.com/twisterrob-cinema.git`
     * `git fetch -a`
  * node (`nvm use <version from package.json>`)
  	* npm (`npm install --global npm@<version from package.json>`)
