@@ -40,6 +40,7 @@ dependencies {
 	testRuntimeOnly(Deps.Log4J2.core)
 	testRuntimeOnly(Deps.Log4J2.slf4j)
 
+	testFixturesImplementation(project(":backend:quickbook"))
 	testFixturesImplementation(Deps.Kotlin.core)
 	testFixturesImplementation(Deps.JFixture.jfixture)
 	testFixturesImplementation(project(":test-helpers"))
