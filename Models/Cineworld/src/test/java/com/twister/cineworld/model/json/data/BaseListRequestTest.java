@@ -1,6 +1,7 @@
 package com.twister.cineworld.model.json.data;
 
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 import java.net.URL;
