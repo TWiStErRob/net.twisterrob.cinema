@@ -50,10 +50,7 @@ object Neo4JModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
-		fun graphDBUri(
-			@Named(GRAPH_DB) uri: URI =
-				URI.create(System.getenv()["NEO4J_URL"] as String)
-		): Builder
+		fun graphDBUri(@Named(GRAPH_DB) uri: URI): Builder
 	}
 
 	private const val GRAPH_DB = "graphDB"

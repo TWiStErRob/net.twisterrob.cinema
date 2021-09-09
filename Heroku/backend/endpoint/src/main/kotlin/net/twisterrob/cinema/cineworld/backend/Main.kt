@@ -7,7 +7,7 @@ import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import java.io.File
 
 fun main(vararg args: String) {
-	val port = (System.getenv("PORT") ?: "8080").toInt()
+	val port = getPort()
 	val staticContentPath = if (args.isNotEmpty()) args[0] else null
 	val fakeContentPath = if (args.size >= 2) args[1] else null
 	embeddedServer(Netty, port) {
@@ -21,4 +21,10 @@ fun main(vararg args: String) {
 		}
 		daggerApplication()
 	}.start(wait = true)
+}
+
+private fun getPort(): Int {
+	val port = System.getenv("PORT")
+		?: error("PORT environment variable must be defined (=1234).")
+	return port.toInt()
 }
