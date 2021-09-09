@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE menu>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/menuitem_date_films" android:title="What can I see this day?" />
+	<item android:id="@+id/menuitem_date_cinemas" android:title="Where can I go this day?" />
+	<item android:id="@+id/menuitem_date_films_cinemas" android:title="What are the performances today?" />
+</menu>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources>
+<resources>
+    <string name="app_name">Cineworld Browser</string>
+
+    <string name="title_activity_main">Cineworld Browser</string>
+    <string name="title_activity_error">Cineworld Browser - %s Error</string>
+    <string name="title_activity_cinemas_all">Cineworld Browser - All Cinemas</string>
+    <string name="title_activity_cinemas_forFilm">Cinemas where %1$s showing</string>
+    <string name="title_activity_cinemas_forDistributor">Cinemas where films from distributor %1$s showing</string>
+    <string name="title_activity_cinemas_forEvent">Cinemas where films from event %1$s showing</string>
+    <string name="title_activity_cinemas_forCategory">Cinemas where films from category %1$s showing</string>
+    <string name="title_activity_cinemas_forDate">Cinemas showing on %1$s</string>
+    <string name="title_activity_cinema">Cinema: %1$s</string>
+    <string name="title_activity_films_all">Cineworld Browser - All Films</string>
+    <string name="title_activity_films_forCinema">Films showing at %1$s</string>
+    <string name="title_activity_films_forCategory">Films in category %1$s</string>
+    <string name="title_activity_films_forEvent">Films part of event %1$s</string>
+    <string name="title_activity_films_forDistributor">Films made by %1$s</string>
+    <string name="title_activity_films_forDate">Films showing at %1$s</string>
+    <string name="title_activity_film">Film: %1$s</string>
+    <string name="title_activity_dates_all">Cineworld Browser - All Dates</string>
+    <string name="title_activity_dates_forFilm">Dates for film: %1$s</string>
+    <string name="title_activity_dates_forCinema">Dates for cinema: %1$s</string>
+    <string name="title_activity_dates_forCinemaFilm">Dates for %2$s at %1$s</string>
+    <string name="title_activity_performances_specific">Performances for %2$s at %1$s on %3$tF</string>
+    <string name="title_activity_categories_all">Cineworld Browser - All Categories</string>
+    <string name="title_activity_events_all">Cineworld Browser - All Events</string>
+    <string name="title_activity_distributors_all">Cineworld Browser - All Distributors</string>
+
+    <string name="test">Test</string>
+
+    <string name="design_name_cinema">Cinema Name (id)</string>
+    <string name="design_name_film">Film Full Title (edi/id)</string>
+
+    <string name="design_url_cinema">http://www.cineworld.co.uk/cinemas/id</string>
+    <string name="design_url_film_details">http://www.cineworld.co.uk/films/id</string>
+    <string name="design_url_film_poster">https://www.cineworld.co.uk/assets/media/films/5409_poster.jpg</string>
+    <string name="design_url_film_still">https://www.cineworld.co.uk/assets/media/films/5409_still.jpg</string>
+    
+    <string name="design_misc_address">Place, City, P0STC0D3</string>
+    <string name="design_misc_phone">0871 200 2000</string>
+    <string name="design_misc_classification">18</string>
+    <string name="design_misc_advisory">\???</string>
+
+    <string name="design_attributes_film">IMAX 3D</string>
+
+    <string name="home_button">Home button</string>
+
+    <string name="forcedextract_menu_icon">menu icon</string>
+
+    <string name="global_loading">Loading…</string>
+
+    <string name="global_results_empty">No results</string>
+</resources>
