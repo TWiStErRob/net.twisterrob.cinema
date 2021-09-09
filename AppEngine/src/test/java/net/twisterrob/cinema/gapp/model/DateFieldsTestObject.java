@@ -1,10 +1,12 @@
 package net.twisterrob.cinema.gapp.model;
 
-import javax.jdo.annotations.*;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
 import javax.jdo.listener.StoreCallback;
 
 @PersistenceCapable
 public class DateFieldsTestObject extends Dateable implements StoreCallback {
+
 	/*@formatter:off*/ @Override public void jdoPreStore() { super.jdoPreStore(); } /*@formatter:on*/// req'd hack to call super
 
 	@Persistent

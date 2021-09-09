@@ -25,17 +25,27 @@
 		<log4j.qualifier>debug</log4j.qualifier>
 	</properties>
 	<dependencies>
-		<!-- Own -->
+		<!-- Own, run `mvn install` in ../Models. -->
 		<dependency>
 			<groupId>net.twisterrob.cinema</groupId>
 			<artifactId>twister-cinema-client-cineworld</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- Import libs/gson-extas as a project, or run `mvn install -U -DskipTests -Dmaven.javadoc.skip=true` in that folder -->
+		<!-- gson-extras is not available as an official build.
+		     https://github.com/google/gson/issues/1104
+		     Import libs/gson-extas as a project in Eclipse,
+		     or run `mvn install -U -DskipTests -Dmaven.javadoc.skip=true` in that folder then use:
+		         <dependency>
+		         	<groupId>com.google.code.gson</groupId>
+		         	<artifactId>gson-extras</artifactId>
+		         	<version>1.0-SNAPSHOT</version>
+		         </dependency>
+		     or use this custom build:
+		-->
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
+			<groupId>org.danilopianini</groupId>
 			<artifactId>gson-extras</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.2.2</version>
 		</dependency>
 
 		<!-- Logging -->
@@ -210,7 +220,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -1,4 +1,5 @@
 package net.twisterrob.test;
+
 public class TestUtils {
 	/**
 	 * Sleeps the given millies using {@link Thread#sleep(long)}, but catches the exception.<br>

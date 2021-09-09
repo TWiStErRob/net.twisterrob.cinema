@@ -1,21 +1,36 @@
 package net.twisterrob.cinema.gapp.model;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
 
 import javax.jdo.PersistenceManager;
 
+import org.joda.time.DateTime;
+import org.joda.time.ReadableInstant;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 import net.twisterrob.cinema.gapp.dal.PMF;
 import net.twisterrob.test.mock.easymock.EasyMocks;
 
-import org.joda.time.*;
-import org.junit.*;
-import org.slf4j.*;
-
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.tools.development.testing.*;
 public class DateFieldsTest {
+
 	private static final Logger LOG = LoggerFactory.getLogger(DateFieldsTest.class);
 
 	private static final String INITIAL_NAME = "name1";
@@ -32,19 +47,19 @@ public class DateFieldsTest {
 			.setEnvIsAdmin(false).setEnvIsLoggedIn(false);
 
 	@Before
-	public void setUp() throws Throwable {
+	public void setUp() {
 		helper.setUp();
 
 		control.replay();
 	}
 
 	@After
-	public void tearDown() throws Throwable {
+	public void tearDown() {
 		helper.tearDown();
 	}
 
 	@Test
-	public void testDS() throws InterruptedException {
+	public void testDS() {
 		DateTime startDateReference = new DateTime();
 		Key targetKey;
 

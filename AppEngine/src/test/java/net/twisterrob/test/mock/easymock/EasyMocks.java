@@ -1,14 +1,17 @@
 package net.twisterrob.test.mock.easymock;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.integration.EasyMock2Adapter;
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.*;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
 /**
  * A factory for mocks, approximately equivalent to JMock's mockery (with a dash of JMock's Expectations class too).
- * 
+ *
  * <p>
  * Also implements JUnit's MethodRule interface, so can automatically verify all created mocks.
  */
