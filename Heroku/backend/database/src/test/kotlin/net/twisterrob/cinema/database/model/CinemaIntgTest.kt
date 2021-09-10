@@ -58,6 +58,26 @@ class CinemaIntgTest {
 		}
 	}
 
+	@Test fun `cinema can be undeleted`(session: Session) {
+		val fixtCinema: Cinema = fixture.build()
+		val expected = fixtCinema.copy().apply {
+			graphId = 0
+			inUTC()
+			_deleted = null
+		}
+		session.save(fixtCinema, -1)
+		session.clear() // drop cached Cinema objects, start fresh
+
+		fixtCinema._deleted = null
+		session.save(fixtCinema, -1)
+		session.clear() // drop cached Cinema objects, start fresh
+
+		val cinemas = session.loadAll<Cinema>(depth = -1)
+
+		assertThat(cinemas, hasSize(1))
+		assertThat(cinemas.elementAt(0), sameBeanAs(expected))
+	}
+
 	@Test fun `empty cinema fails to save`(session: Session) {
 		val cinema = Cinema()
 
