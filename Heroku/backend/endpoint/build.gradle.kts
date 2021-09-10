@@ -57,13 +57,3 @@ tasks.withType<KotlinCompile> {
 		)
 	}
 }
-
-tasks {
-	val copyConfigResources = register<Copy>("copyConfigResources") {
-		from(project(":backend").file("config/default-env.json"))
-		into(project.sourceSets["main"].resources.srcDirs.first())
-	}
-	"processResources" {
-		dependsOn(copyConfigResources)
-	}
-}

@@ -19,15 +19,14 @@
 
 ### Entry points
 
- * `backend/src/main/javascript/index.js`: web server; backend for planner, serving deploy folder as content
+ * [:backend:endpoint Main.kt](backend/endpoint/src/main/kotlin/net/twisterrob/cinema/cineworld/backend/Main.kt): web server; backend for planner, serving deploy folder as content
  * `frontend/src/planner/pages/index.html`: root of planner page
  * `frontend/src/planner/scripts/index.js`: root of planner webapp logic
- * `updateFromCineworldCinemas.js`: scheduled updater for database
- * `updateFromCineworldFilms.js`: scheduled updater for database
+ * [:backend:sync Main.kt](backend/sync/src/main/kotlin/net/twisterrob/cinema/cineworld/sync/Main.kt): scheduled updater for database
 
 ## Configuration
  
-`NEO4J_URL` and `PORT` can be configured, see [env.bat](scripts/env.bat) for example.
+`NEO4J_URL` and `PORT` must be configured, see [env.bat](scripts/env.bat) for example.
 
 ## Deployment
 

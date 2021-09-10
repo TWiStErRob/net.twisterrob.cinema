@@ -2,14 +2,20 @@ package net.twisterrob.cinema.cineworld.sync
 
 import java.net.URI
 
-fun main() {
+fun main(vararg args: String) {
+	val params = MainParametersParser().parse(*args)
+		.also { println("Syncing: $it") }
 	val dagger = DaggerSyncAppComponent
 		.builder()
 		.graphDBUri(getNeo4jUrl())
 		.build()
 	try {
-		dagger.cinemaSync.sync()
-		dagger.filmSync.sync()
+		if (params.syncCinemas) {
+			dagger.cinemaSync.sync()
+		}
+		if (params.syncFilms) {
+			dagger.filmSync.sync()
+		}
 	} finally {
 		dagger.neo4j.close()
 		dagger.network.close()
