@@ -85,6 +85,18 @@ data class Feed(
 	val performances: List<Screening>
 ) {
 
+	constructor(
+		attributes: List<Attribute>,
+		performances: List<Screening>
+	) : this(attributes, performances.map { it.cinema }, performances.map { it.film }, performances) {
+		val attributeCodes = attributes.map { it.code }
+		performances.forEach { screening ->
+			screening.attributeList.forEach { attributeCode ->
+				check(attributeCode in attributeCodes)
+			}
+		}
+	}
+
 	data class Attribute(
 		/**
 		 * @sample `"2D"`

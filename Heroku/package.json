@@ -17,18 +17,18 @@
 		"npm": "6.2.0"
 	},
 	"scripts": {
-		"start": "(cd backend && npm start && cd ..)",
+		"start": "gradlew :backend:endpoint:run",
 		"updateFromCineworld": "npm run updateFromCineworldCinemas && npm run updateFromCineworldFilms",
-		"updateFromCineworldCinemas": "node backend/src/main/javascript/updateFromCineworldCinemas",
-		"updateFromCineworldFilms": "node backend/src/main/javascript/updateFromCineworldFilms",
+		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
+		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",
 		"heroku-postbuild": "cd frontend && npm run build",
-		"test": "(cd backend && npm test && cd ..) && (cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
-		"install": "(cd backend && npm install && cd ..) && (cd frontend && npm install && cd ..) && (cd test && npm install && cd ..)",
-		"update": "(cd backend && npm update && cd ..) && (cd frontend && npm update && cd ..) && (cd test && npm update && cd ..)",
+		"test": "(cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
+		"install": "(cd frontend && npm install && cd ..) && (cd test && npm install && cd ..)",
+		"update": "(cd frontend && npm update && cd ..) && (cd test && npm update && cd ..)",
 		"devTest": "npm-run-all --race --parallel devTest:*",
 		"devTest:selenium": "(cd test && npm run selenium && cd..)",
 		"devTest:frontend": "(cd frontend && npm start && cd ..)",
-		"devTest:backend": "gradlew :backend:endpoint:run --args \"../../deploy/static ../src/test/fake/protractor\""
+		"devTest:backend": "gradlew :backend:endpoint:run --args \"../../deploy/static ../../test/fake-data\""
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.1"

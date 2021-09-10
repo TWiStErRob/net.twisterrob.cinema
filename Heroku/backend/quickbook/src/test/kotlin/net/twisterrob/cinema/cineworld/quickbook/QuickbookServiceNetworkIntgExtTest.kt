@@ -31,6 +31,12 @@ class QuickbookServiceNetworkIntgExtTest {
 		private val tomorrow = today.plusDays(1)
 	}
 
+	@Test fun `get all cinemas`() {
+		val cinemas = sut.cinemas()
+
+		assertThat(cinemas, not(empty()))
+	}
+
 	@Test fun `get films by cinema in London`() {
 		val films = sut.films(date = tomorrow, cinemas = londonCinemas)
 

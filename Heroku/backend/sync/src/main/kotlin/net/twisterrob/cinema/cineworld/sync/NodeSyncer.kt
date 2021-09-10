@@ -5,14 +5,6 @@ import net.twisterrob.cinema.database.model.Historical
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
-data class SyncResults<TDB>(
-	val insert: Collection<@JvmSuppressWildcards TDB>,
-	val restore: Collection<@JvmSuppressWildcards TDB>,
-	val delete: Collection<@JvmSuppressWildcards TDB>,
-	val alreadyDeleted: Collection<@JvmSuppressWildcards TDB>,
-	val update: Collection<@JvmSuppressWildcards TDB>
-)
-
 typealias Creator<TFeed, TDB> = @JvmSuppressWildcards TFeed.(Feed) -> TDB
 typealias Updater<DB, TFeed> = @JvmSuppressWildcards DB.(TFeed, Feed) -> Unit
 
@@ -22,7 +14,6 @@ class NodeSyncer<TFeed, TDB : Historical> @Inject constructor(
 ) {
 
 	fun update(feed: Feed, changes: SyncOperations<TDB, TFeed>, now: OffsetDateTime): SyncResults<TDB> {
-
 		val createdNodes = createNodes(feed, changes.insert, now)
 		val updatedNodes = updateNodes(feed, changes.update, now)
 		val (onlyUpdated, restored) = updatedNodes.partition { it._deleted == null }
