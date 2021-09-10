@@ -160,7 +160,6 @@ jobs:
           google-chrome --version
           grep --version
           curl --version
-          unzip -v
           echo "Parsing current Chrome version: $(google-chrome --version)"
           export CHROME_MINOR_VERSION=$(google-chrome --version | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')
           echo "CHROME_MINOR_VERSION=${CHROME_MINOR_VERSION}" | tee --append $GITHUB_ENV
@@ -170,13 +169,7 @@ jobs:
           echo ::endgroup::
 
           echo ::group::Install Chrome Driver for Selenium
-          # `npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}` should do normally but we get
-          # > I/update - chromedriver: unzipping chromedriver_92.0.4515.107.zip #(node:1727) UnhandledPromiseRejectionWarning: Error: Invalid filename
-          # Do a manual install instead:
-          echo "See listing at https://chromedriver.storage.googleapis.com/index.html?path=${CHROME_DRIVER_VERSION}/"
-          curl --output "chromedriver_${CHROME_DRIVER_VERSION}.zip" "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip "chromedriver_${CHROME_DRIVER_VERSION}.zip"
-          mv "chromedriver" "chromedriver_${CHROME_DRIVER_VERSION}"
+          npm run selenium:update -- --versions.chrome ${CHROME_DRIVER_VERSION}
           echo ::endgroup::
 
       - name: Test
