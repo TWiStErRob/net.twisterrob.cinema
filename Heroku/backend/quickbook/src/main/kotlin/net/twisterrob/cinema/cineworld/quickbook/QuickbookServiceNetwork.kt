@@ -15,6 +15,10 @@ import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * TODO account for http://www.cineworld.co.uk/api/film/detail?key=...&film=6237
+ * TODO account for https://www.cineworld.co.uk/api/film/list, see [QuickbookFilmInternal].
+ */
 class QuickbookServiceNetwork @Inject constructor(
 	client: HttpClient,
 	@Named(QuickbookModule.API_KEY)
