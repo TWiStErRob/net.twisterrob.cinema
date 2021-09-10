@@ -32,8 +32,16 @@ class QuickbookServiceNetwork @Inject constructor(
 		}
 	}
 
+	override fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
+		client.getCinemas(full) {
+			url("https://www.cineworld.co.uk/api/quickbook/cinemas")
+			parameter("key", key)
+			parameter("full", full)
+		}.throwErrorOrReturn { it.cinemas }
+	}
+
 	override fun films(full: Boolean): List<QuickbookFilm> = runBlocking {
-		client.getWithFull(full) {
+		client.getFilms(full) {
 			url("https://www.cineworld.co.uk/api/quickbook/films")
 			parameter("key", key)
 			parameter("full", full)
@@ -41,7 +49,7 @@ class QuickbookServiceNetwork @Inject constructor(
 	}
 
 	override fun films(date: LocalDate, cinemas: List<Long>, full: Boolean): List<QuickbookFilm> = runBlocking {
-		client.getWithFull(full) {
+		client.getFilms(full) {
 			url("https://www.cineworld.co.uk/api/quickbook/films")
 			parameter("key", key)
 			parameter("date", date.formatDateParam())
@@ -65,7 +73,21 @@ class QuickbookServiceNetwork @Inject constructor(
  * Tell Ktor [HttpClient] which type to parse the JSON as.
  * @param full whether the JSON has full information
  */
-private suspend inline fun HttpClient.getWithFull(
+private suspend inline fun HttpClient.getCinemas(
+	full: Boolean,
+	block: HttpRequestBuilder.() -> Unit = {}
+): CinemasResponse<out QuickbookCinema> =
+	if (full) {
+		get<CinemasResponse<QuickbookCinemaFull>>(block = block)
+	} else {
+		get<CinemasResponse<QuickbookCinemaSimple>>(block = block)
+	}
+
+/**
+ * Tell Ktor [HttpClient] which type to parse the JSON as.
+ * @param full whether the JSON has full information
+ */
+private suspend inline fun HttpClient.getFilms(
 	full: Boolean,
 	block: HttpRequestBuilder.() -> Unit = {}
 ): FilmsResponse<out QuickbookFilm> =
