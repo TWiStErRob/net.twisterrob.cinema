@@ -28,7 +28,7 @@
 		"devTest": "npm-run-all --race --parallel devTest:*",
 		"devTest:selenium": "(cd test && npm run selenium && cd..)",
 		"devTest:frontend": "(cd frontend && npm start && cd ..)",
-		"devTest:backend": "gradlew :backend:endpoint:run --args \"../../deploy/static ../src/test/fake/protractor\""
+		"devTest:backend": "gradlew :backend:endpoint:run --args \"../../deploy/static ../../test/fake-data\""
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.1"
