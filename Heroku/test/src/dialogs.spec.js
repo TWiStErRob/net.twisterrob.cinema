@@ -1,4 +1,4 @@
-import app, { date, cinemas, films, performances, plans } from './dsl/app';
+import app, { date, films, performances } from './dsl/app';
 
 describe('Dialogs', function () {
 
