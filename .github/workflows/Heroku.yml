@@ -204,7 +204,7 @@ jobs:
       - name: Start Backend
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../src/test/fake/protractor" >backend.log 2>&1 &
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../../test/fake-data" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 
