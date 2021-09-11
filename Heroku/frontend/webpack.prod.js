@@ -1,12 +1,14 @@
 'use strict';
-const merge = require('webpack-merge');
+const merge = require('webpack-merge').merge; // https://github.com/survivejs/webpack-merge
 const common = require('./webpack.common.js');
 
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); // needed to use plugin 1.x which uses UglifyES
+const TerserPlugin = require('terser-webpack-plugin'); // https://github.com/webpack-contrib/terser-webpack-plugin
 
 module.exports = merge(common, {
-	plugins: [
-		// equivalent of `--optimize-minimize`, but using specific version above
-		new UglifyJsPlugin(),
-	],
+	mode: "production",
+	// equivalent of `--optimize-minimize`, but using specific version above
+	optimization: {
+		minimize: true,
+		minimizer: [new TerserPlugin()],
+	},
 });

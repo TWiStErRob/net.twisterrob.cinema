@@ -1,8 +1,7 @@
 'use strict';
-const Webpack = require('webpack'); // https://github.com/webpack/webpack
-const HtmlWebpackPlugin = require('html-webpack-plugin'); // https://github.com/jantimon/html-webpack-plugin#configuration
-const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/kevlened/copy-webpack-plugin
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin'); // https://github.com/jantimon/html-webpack-plugin#options
+const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/webpack-contrib/copy-webpack-plugin
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://github.com/webpack-contrib/mini-css-extract-plugin
 const Path = require('path');
 
 const dist = Path.resolve(__dirname, '..', 'deploy');
@@ -36,12 +35,24 @@ module.exports = {
 //			},
 			{ test: /\.json$/, use: ['raw-loader'] },
 			{ test: /\.html$/, use: ['raw-loader'] },
-			{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
+			{
+				test: /\.css$/,
+				use: [
+					{
+						// https://webpack.js.org/plugins/mini-css-extract-plugin/
+						loader: MiniCssExtractPlugin.loader,
+					},
+					{
+						loader: 'css-loader',
+					},
+				]
+			},
 			{
 				test: /\.(sass|scss)/,
 				use: [
 					{
-						loader: 'style-loader'
+						// https://webpack.js.org/plugins/mini-css-extract-plugin/
+						loader: MiniCssExtractPlugin.loader,
 					},
 					{
 						loader: 'css-loader',
@@ -53,16 +64,19 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							sourceMap: true,
-							outputStyle: 'expanded',
+							sassOptions: {
+								outputStyle: 'expanded',
+							},
 						},
 					},
 				],
 			},
+			// TODO https://webpack.js.org/guides/asset-modules/
 			{ test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
 				loader: 'url-loader',
 				options: {
 					outputPath: 'planner/',
-					name: '[hash]_[name].[ext]',
+					name: '[contenthash]_[name].[ext]',
 					limit: 1000,
 					useRelativePath: true
 				}
@@ -70,10 +84,12 @@ module.exports = {
 		]
 	},
 	plugins: [
-		new CopyWebpackPlugin([
-			{ from: 'src/old', to: 'planner-old' }
-		]),
-		// FIXME new ExtractTextPlugin("styles.css"),
+		new MiniCssExtractPlugin(),
+		new CopyWebpackPlugin({
+			patterns: [
+				{ from: 'src/old', to: 'planner-old' }
+			]
+		}),
 		new HtmlWebpackPlugin({
 			chunks: [],
 			filename: 'index.html',
@@ -85,6 +101,5 @@ module.exports = {
 			inject: 'head', // temporary workaround while all dependencies are migrated
 			template: 'src/planner/pages/index.html'
 		})
-//		new Webpack.optimize.CommonsChunkPlugin({ name: 'common', filename: 'common.bundle.js' })
 	]
 };

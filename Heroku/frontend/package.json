@@ -26,20 +26,21 @@
 		"moment-range": "4.0.2"
 	},
 	"devDependencies": {
-		"webpack": "3.10.0",
-		"webpack-dev-server": "2.9.7",
-		"webpack-merge": "4.1.1",
-		"uglifyjs-webpack-plugin": "1.1.4",
-		"html-webpack-plugin": "2.30.1",
-		"copy-webpack-plugin": "4.3.1",
-		"extract-text-webpack-plugin": "3.0.2",
-		"raw-loader": "0.5.1",
-		"css-loader": "0.28.7",
-		"sass-loader": "6.0.6",
-		"style-loader": "0.19.1",
-		"url-loader": "0.6.2",
-		"file-loader": "1.1.6",
+		"webpack": "5.52.1",
+		"webpack-cli": "4.8.0",
+		"webpack-dev-server": "4.2.0",
+		"webpack-merge": "5.8.0",
+		"terser-webpack-plugin": "5.2.4",
+		"html-webpack-plugin": "5.3.2",
+		"copy-webpack-plugin": "9.0.1",
+		"mini-css-extract-plugin": "2.3.0",
+		"raw-loader": "4.0.2",
+		"css-loader": "6.2.0",
+		"sass-loader": "12.1.0",
+		"style-loader": "3.2.1",
+		"url-loader": "4.1.1",
+		"file-loader": "6.2.0",
 		"jshint": "2.13.1",
-		"node-sass": "4.7.2"
+		"node-sass": "6.0.1"
 	}
 }
