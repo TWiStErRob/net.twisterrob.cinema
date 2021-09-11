@@ -131,7 +131,7 @@ describe('Planner display', function () {
 
 			cinemaPlan.each((plan) => {
 				const titles = plan.scheduleMovies.all(by.className('film-title'));
-				expect(anyWithText(titles, firstMovieInPlan.title.getText())).toBeTrue();
+				expect(anyWithText(titles, firstMovieInPlan.title.getText())).toBe(true);
 			});
 			expect(cinemaPlan.moreAll).toBeDisplayed();
 			expect(cinemaPlan.moreN).toBeDisplayed();
