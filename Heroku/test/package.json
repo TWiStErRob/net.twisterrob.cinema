@@ -5,35 +5,35 @@
 	"repository": "local",
 	"scripts": {
 		"preinstall": "echo Installing Test dependencies",
-		"postinstall": "npm-run-all --serial selenium:update && echo Installed Test dependencies",
+		"postinstall": "echo Installing Selenium && npm run selenium:update && echo Hacking Backend dependencies && sed -r -f bpRunner.js.patch.sed -i node_modules/protractor/built/bpRunner.js && echo Installed Test dependencies",
 		"postupdate": "npm-run-all --serial selenium:update",
 		"start": "npm-run-all --race --parallel selenium protractor",
-		"selenium": "webdriver-manager --versions.standalone 3.141.59 --versions.chrome 93.0.4577.63 start",
-		"selenium:update": "webdriver-manager --versions.standalone 3.141.59 --versions.chrome 93.0.4577.63 update",
+		"selenium": "webdriver-manager --standalone false --gecko false --versions.chrome 93.0.4577.63 start",
+		"selenium:update": "webdriver-manager --standalone false --gecko false --versions.chrome 93.0.4577.63 update",
 		"protractor": "protractor protractor.config.js",
 		"inspect": "protractor --directConnect --elementExplorer protractor.config.js",
 		"test": "npm run test:jshint",
 		"test:jshint": "jshint --verbose --show-non-errors src"
 	},
 	"dependencies": {
-		"jasmine-expect": "3.8.3",
+		"jasmine-expect": "5.0.0",
 		"jasmine-expect-moment": "0.1.1",
-		"lodash": "4.17.10",
-		"moment": "2.22.2",
-		"protractor": "5.4.0",
-		"protractor-helpers": "1.1.473",
-		"protractor-browser-logs": "1.0.351",
+		"lodash": "4.17.21",
+		"moment": "2.29.1",
+		"protractor": "7.0.0",
+		"protractor-helpers": "1.1.813",
+		"protractor-browser-logs": "1.0.456",
 		"selenium-webdriver": "3.6.0"
 	},
 	"devDependencies": {
-		"@types/jasminewd2": "2.0.3",
-		"babel-core": "5.8.38",
-		"jasmine-spec-reporter": "4.2.1",
-		"npm-run-all": "4.1.3",
-		"protractor-screenshoter-plugin": "0.10.1",
-		"rimraf": "2.6.2",
-		"webdriver-manager": "12.0.6",
-		"jshint": "2.9.6",
-		"mocha": "5.2.0"
+		"@types/jasminewd2": "2.0.10",
+		"babel-core": "6.26.3",
+		"babel-preset-es2015": "6.24.1",
+		"jasmine-spec-reporter": "7.0.0",
+		"npm-run-all": "4.1.5",
+		"protractor-screenshoter-plugin": "0.10.3",
+		"webdriver-manager": "12.1.8",
+		"jshint": "2.13.1",
+		"mocha": "9.1.1"
 	}
 }

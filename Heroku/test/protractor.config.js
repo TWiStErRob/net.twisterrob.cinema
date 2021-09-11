@@ -107,7 +107,7 @@ function printTestingProgress() {
 			displayPending: true,
 			displayDuration: true,
 			displayErrorMessages: true,
-			displayStacktrace: true,
+			displayStacktrace: 'pretty',
 		},
 		summary: {
 			displaySuccessful: false,
@@ -115,7 +115,7 @@ function printTestingProgress() {
 			displayPending: false,
 			displayDuration: false,
 			displayErrorMessages: true,
-			displayStacktrace: false,
+			displayStacktrace: 'none',
 		},
 	}));
 }

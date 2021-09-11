@@ -1,5 +1,5 @@
 import app, { films as films } from './dsl/app';
-import { anyWithText, noneWithText } from './helpers/protractor-filters';
+import { anyWithText } from './helpers/protractor-filters';
 
 function watchedFilm(film) {
 	return anyWithText(films.watched.items, film.getText());
