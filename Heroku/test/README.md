@@ -21,25 +21,26 @@ test$ npm run protractor
 
 ### IntelliJ IDEA
 
-Create a Node.js run configuration with:
+Create a Protractor run configuration in Ultimate.
+Or in all versions: create a Node.js run configuration with:
  * Working directory: `test` folder
  * Javascript file: `node_modules\protractor\built\cli.js`
  * Application parameters: `protractor.config.js`
  * Node parameters: `--trace-warnings`
 
 Debug attach from IntelliJ IDEA is not working with the following message:
-
-> I/BlockingProxy - Starting BlockingProxy with args: --fork,--seleniumAddress,http://localhost:4444/wd/hub,--logDir,logs
-> E/BlockingProxy - Error: listen EADDRINUSE :::64617
-
-to fix it, change `bpRunner.js` this way:
-
-```diff
-+var execArgv = process.execArgv.filter(function(arg) {
-+    return arg.indexOf('--debug-brk=') !== 0 && arg.indexOf('--inspect') !== 0; });
--this.bpProcess = child_process_1.fork(BP_PATH, args, { silent: true });
-+this.bpProcess = child_process_1.fork(BP_PATH, args, { silent: true, execArgv });
 ```
+I/launcher - Running 1 instances of WebDriver
+I/hosted - Using the selenium server at http://localhost:4444/wd/hub
+I/BlockingProxy - Starting BlockingProxy with args: --fork,--seleniumAddress,http://localhost:4444/wd/hub,--logDir,logs
+E/BlockingProxy - Starting inspector on 127.0.0.1:54285 failed: address already in use
+E/BlockingProxy - Exited with 12
+E/BlockingProxy - signal null
+E/launcher - Error: Error: BP exited with 12
+    at ChildProcess.bpProcess.on.on.on (test/node_modules/protractor/built/bpRunner.js:37:24)
+```
+
+to fix it, change `bpRunner.js` as described in [patch](bpRunner.js.patch.sed). It should run automatically on `npm install`.
 
 ## Upgrade to new Babel
 
