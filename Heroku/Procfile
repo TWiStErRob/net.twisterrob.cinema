@@ -1,1 +1,1 @@
-web: gradlew :backend:endpoint:run
+web: npm start
