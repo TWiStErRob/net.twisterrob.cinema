@@ -28,6 +28,10 @@
 		"PROJECT_PATH": {
 			"description": "See https://stackoverflow.com/a/53221996/253468",
 			"value": "Heroku"
+		},
+		"GRADLE_TASK": {
+			"description": "See https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku",
+			"value": ":backend:endpoint:jar"
 		}
 	}
 }
