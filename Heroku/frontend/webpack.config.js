@@ -56,6 +56,8 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: 'src/planner/pages/index.html',
 				filename: 'planner/index.html',
+				scriptLoading: 'blocking',
+				chunksSortMode: 'manual',
 				chunks: ['shared', 'shared-moment', 'shared-angular', 'shared-bootstrap', 'planner/index'],
 			}),
 		],
