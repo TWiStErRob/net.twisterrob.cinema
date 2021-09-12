@@ -135,11 +135,6 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
-      - name: Downgrade node from v14.17.6/6.14.15 to v8.17.0/6.13.4.
-        uses: actions/setup-node@v2
-        with:
-          node-version: '8'
-
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
       - uses: szenius/set-timezone@v1.0
@@ -177,12 +172,12 @@ jobs:
         working-directory: Heroku
         run: |
           npm run test
-          cd frontend && npm run build-prod
+          cd frontend && npm run build:prod
 
       # Pre-build artifacts for more immediate and deterministic startup.
       - name: Build Frontend
         working-directory: Heroku/frontend
-        run: npm run build-dev
+        run: npm run build:dev
 
       - name: Build Sync & Backend
         working-directory: Heroku
