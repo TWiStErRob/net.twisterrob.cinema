@@ -146,6 +146,8 @@ jobs:
         run: |
           node -v
           npm -v
+          npm install -g npm@7.23.0
+          npm -v
           npm install
 
       - name: Detect Compatible Chrome Driver
