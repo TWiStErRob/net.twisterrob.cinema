@@ -13,8 +13,8 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"engines": {
-		"node": "8.8.1",
-		"npm": "6.2.0"
+		"node": "14.17.6",
+		"npm": "7.23.0"
 	},
 	"scripts": {
 		"start": "gradlew :backend:endpoint:run",
