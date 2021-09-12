@@ -21,6 +21,24 @@ module.exports = (env, argv) => {
 		devtool: devMode
 				? 'inline-source-map'
 				: undefined,
+		plugins: [
+			new MiniCssExtractPlugin(),
+			new CopyWebpackPlugin({
+				patterns: [
+					{ from: 'src/old', to: 'planner-old' },
+				],
+			}),
+			new HtmlWebpackPlugin({
+				chunks: [],
+				filename: 'index.html',
+				template: 'src/main/pages/index.html',
+			}),
+			new HtmlWebpackPlugin({
+				filename: 'planner/index.html',
+				chunks: ['planner/index'],
+				template: 'src/planner/pages/index.html',
+			}),
+		],
 		module: {
 			// https://webpack.js.org/guides/migrating/#chaining-loaders
 			rules: [
@@ -78,23 +96,5 @@ module.exports = (env, argv) => {
 				},
 			],
 		},
-		plugins: [
-			new MiniCssExtractPlugin(),
-			new CopyWebpackPlugin({
-				patterns: [
-					{ from: 'src/old', to: 'planner-old' },
-				],
-			}),
-			new HtmlWebpackPlugin({
-				chunks: [],
-				filename: 'index.html',
-				template: 'src/main/pages/index.html',
-			}),
-			new HtmlWebpackPlugin({
-				filename: 'planner/index.html',
-				chunks: ['planner/index'],
-				template: 'src/planner/pages/index.html',
-			}),
-		],
 	};
 };
