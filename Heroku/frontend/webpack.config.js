@@ -10,7 +10,20 @@ module.exports = (env, argv) => {
 	const devMode = argv.mode === 'development';
 	return {
 		entry: {
-			'planner/index': './src/planner/scripts/index.js',
+			'planner/index': {
+				import: './src/planner/scripts/index.js',
+				dependOn: ['shared'],
+			},
+			// Explicitly declare module groups as entry points.
+			// This will generate separate .bundle.js files for each group.
+			// Helps with build not having to re-write an 8MB file, and also downloading in the browser.
+			'shared': {
+				import: ['lodash'],
+				dependOn: ['shared-moment', 'shared-angular', 'shared-bootstrap'],
+			},
+			'shared-angular': ['angular', 'angular-resource', 'angular-animate', 'angular-ui-bootstrap'],
+			'shared-bootstrap': ['bootstrap'],
+			'shared-moment': ['moment', 'moment-timezone', 'moment-range'],
 		},
 		output: {
 			path: path.join(dist, 'static'),
@@ -36,7 +49,7 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: 'src/planner/pages/index.html',
 				filename: 'planner/index.html',
-				chunks: ['planner/index'],
+				chunks: ['shared', 'shared-moment', 'shared-angular', 'shared-bootstrap', 'planner/index'],
 			}),
 		],
 		module: {
