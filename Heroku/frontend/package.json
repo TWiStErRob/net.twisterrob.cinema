@@ -6,9 +6,9 @@
 	"scripts": {
 		"preinstall": "echo Installing Frontend dependencies",
 		"postinstall": "echo Installed Frontend dependencies",
-		"build": "npm run build-prod",
-		"build-prod": "webpack --config webpack.config.js --mode=production --progress",
-		"build-dev": "webpack --config webpack.config.js --mode=development --progress",
+		"build": "npm run build:prod",
+		"build:prod": "webpack --config webpack.config.js --mode=production --progress",
+		"build:dev": "webpack --config webpack.config.js --mode=development --progress",
 		"start": "webpack --config webpack.config.js --mode=development --watch",
 		"dev-server": "webpack-dev-server --config webpack.config.js --mode=development --progress --colors --port 2992 --inline --content-base ../deploy/static",
 		"test": "npm run test:jshint",

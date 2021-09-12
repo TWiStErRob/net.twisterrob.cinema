@@ -172,12 +172,12 @@ jobs:
         working-directory: Heroku
         run: |
           npm run test
-          cd frontend && npm run build-prod
+          cd frontend && npm run build:prod
 
       # Pre-build artifacts for more immediate and deterministic startup.
       - name: Build Frontend
         working-directory: Heroku/frontend
-        run: npm run build-dev
+        run: npm run build:dev
 
       - name: Build Sync & Backend
         working-directory: Heroku
