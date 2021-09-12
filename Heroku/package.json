@@ -18,6 +18,7 @@
 	},
 	"scripts": {
 		"start": "gradlew :backend:endpoint:run",
+		"start:fake": "gradlew :backend:endpoint:run --args \"../../deploy/static ../../test/fake-data\"",
 		"updateFromCineworld": "npm run updateFromCineworldCinemas && npm run updateFromCineworldFilms",
 		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
 		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",
