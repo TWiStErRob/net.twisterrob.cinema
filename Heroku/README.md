@@ -1,14 +1,13 @@
 ## Development
 
 ### Setup
+* node (`nvm use <version from package.json>`)
+   * npm (`npm install --global npm@<version from package.json>`)
+* heroku (`npm install --global heroku`) or [any other way](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
  * git
-    * `git init .`
     * `git --work-tree=Heroku remote add heroku https://git.heroku.com/twisterrob-cinema.git`
+    * `heroku login` (otherwise fetch and push fails)
     * `git fetch -a`
- * node (`nvm use <version from package.json>`)
- 	* npm (`npm install --global npm@<version from package.json>`)
- * heroku (`npm install --global heroku`)
-    * `heroku keys:add ~/.ssh/id_rsa.pub` (see https://stackoverflow.com/a/6059231)
  * `scripts/env.bat` (or copy contents to global vars)
 
 ### Running
@@ -30,13 +29,11 @@
 
 ## Deployment
 
-Use `scripts/deploy*`
+See [Heroku App Manifest](app.json) ([docs](https://devcenter.heroku.com/articles/app-json-schema)) for more info on what environment is running the app.
 
-`heroku config:set NPM_CONFIG_PRODUCTION=false` was set in order to install `devDependencies` on Heroku, so `npm build` runs `webpack` correctly.
-`heroku config:set NODE_ENV=production` was set automatically by Heroku
-`heroku config:set NEO4J_URL=https://production:password@....dbs.graphenedb.com:24780` was set to use the right database
+Use `scripts/deploy*`.
 
-see also https://dashboard.heroku.com/apps/twisterrob-cinema/settings
+See also https://dashboard.heroku.com/apps/twisterrob-cinema/settings.
 
 ## Debug Production
 
