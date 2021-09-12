@@ -16,7 +16,7 @@ module.exports = (env, argv) => {
 			path: path.join(dist, 'static'),
 			// don't set publicPath to an absolute path because it emits a <script> with that prefix
 			//publicPath: dist,
-			filename: '[name].js'
+			filename: '[name].bundle.js'
 		},
 		devtool: devMode
 				? 'inline-source-map'
@@ -29,14 +29,14 @@ module.exports = (env, argv) => {
 				],
 			}),
 			new HtmlWebpackPlugin({
-				chunks: [],
-				filename: 'index.html',
 				template: 'src/main/pages/index.html',
+				filename: 'index.html',
+				chunks: [],
 			}),
 			new HtmlWebpackPlugin({
+				template: 'src/planner/pages/index.html',
 				filename: 'planner/index.html',
 				chunks: ['planner/index'],
-				template: 'src/planner/pages/index.html',
 			}),
 		],
 		module: {
