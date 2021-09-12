@@ -1,4 +1,5 @@
 'use strict';
+const webpack = require('webpack'); // https://github.com/webpack/webpack
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // https://github.com/jantimon/html-webpack-plugin#options
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/webpack-contrib/copy-webpack-plugin
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://github.com/webpack-contrib/mini-css-extract-plugin
@@ -35,6 +36,12 @@ module.exports = (env, argv) => {
 				? 'inline-source-map'
 				: undefined,
 		plugins: [
+			new webpack.ProvidePlugin({
+				// Workaround from https://github.com/shakacode/bootstrap-loader/issues/85#issuecomment-217081025 for:
+				// > transition.js:59 Uncaught ReferenceError: jQuery is not defined
+				// >     at Object../node_modules/bootstrap/js/transition.js (transition.js:59)
+				jQuery: 'jquery'
+			}),
 			new MiniCssExtractPlugin(),
 			new CopyWebpackPlugin({
 				patterns: [
