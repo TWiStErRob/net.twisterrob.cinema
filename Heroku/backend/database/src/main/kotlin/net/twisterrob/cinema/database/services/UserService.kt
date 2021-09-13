@@ -18,8 +18,9 @@ class UserService @Inject constructor(
 	fun find(id: String): User? =
 		session.load(id, 0)
 
-	fun delete(id: String) =
+	fun delete(id: String) {
 		session.delete(session.load(User::class.java, id))
+	}
 
 	fun createOrUpdate(entity: User): User {
 		session.save(entity, 10)

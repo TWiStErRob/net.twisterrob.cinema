@@ -17,11 +17,13 @@ class CinemaService @Inject constructor(
 	fun find(id: String): Cinema? =
 		session.load(Cinema::class.java, id, 1)
 
-	fun delete(id: String) =
+	fun delete(id: String) {
 		delete(session.load(Cinema::class.java, id))
+	}
 
-	fun delete(entity: Cinema) =
+	fun delete(entity: Cinema) {
 		session.delete(entity)
+	}
 
 	fun createOrUpdate(entity: Cinema): Cinema {
 		session.save(entity, 10)
@@ -29,8 +31,9 @@ class CinemaService @Inject constructor(
 		return entity
 	}
 
-	fun save(list: List<Cinema>) =
+	fun save(list: List<Cinema>) {
 		session.save(list)
+	}
 
 	/**
 	 * Get all the Cinemas which are active.

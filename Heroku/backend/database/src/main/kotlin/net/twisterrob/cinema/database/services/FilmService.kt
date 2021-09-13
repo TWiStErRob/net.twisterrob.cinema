@@ -17,8 +17,9 @@ class FilmService @Inject constructor(
 	fun find(id: String): Film? =
 		session.load(Film::class.java, id, 1)
 
-	fun delete(id: String) =
+	fun delete(id: String) {
 		session.delete(session.load(Film::class.java, id))
+	}
 
 	fun createOrUpdate(entity: Film): Film {
 		session.save(entity, 10)
@@ -26,8 +27,9 @@ class FilmService @Inject constructor(
 		return entity
 	}
 
-	fun save(list: List<Film>) =
+	fun save(list: List<Film>) {
 		session.save(list)
+	}
 
 	/**
 	 * Return all Films which are active.

@@ -19,8 +19,9 @@ class ViewService @Inject constructor(
 	fun find(id: String): View? =
 		session.load(View::class.java, id, 1)
 
-	fun delete(id: String) =
+	fun delete(id: String) {
 		session.delete(session.load(View::class.java, id))
+	}
 
 	fun createOrUpdate(entity: View): View {
 		session.save(entity, 10)
