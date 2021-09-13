@@ -61,10 +61,13 @@ tasks.withType<KotlinCompile> {
 tasks {
 	"jar"(Jar::class) {
 		manifest {
+			val dependencies = configurations.runtimeClasspath
+				.map { it.joinToString(separator = " ") { dep -> dep.name } }
+
 			attributes(
 				mapOf(
 					"Main-Class" to application.mainClass,
-					"Class-Path" to configurations.runtimeClasspath.get().joinToString(separator = " ") { it.name }
+					"Class-Path" to dependencies
 				)
 			)
 		}
