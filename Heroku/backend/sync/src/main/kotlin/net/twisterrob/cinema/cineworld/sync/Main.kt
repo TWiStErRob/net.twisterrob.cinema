@@ -1,29 +1,49 @@
 package net.twisterrob.cinema.cineworld.sync
 
+import io.ktor.client.HttpClient
+import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
+import org.neo4j.ogm.session.SessionFactory
 import java.net.URI
+import javax.inject.Inject
 
-fun main(vararg args: String) {
-	val params = MainParametersParser().parse(*args)
-		.also { println("Syncing: $it") }
-	val dagger = DaggerSyncAppComponent
-		.builder()
-		.graphDBUri(getNeo4jUrl())
-		.build()
-	try {
-		if (params.syncCinemas) {
-			dagger.cinemaSync.sync()
+class Main @Inject constructor(
+	private val feedService: FeedService,
+	private val cinemaSync: CinemaSync,
+	private val filmSync: FilmSync,
+	private val neo4j: SessionFactory,
+	private val network: HttpClient,
+) {
+
+	fun sync(params: MainParameters) {
+		println("Syncing: $params")
+		try {
+			val feed by lazy { feedService.getWeeklyFilmTimes() }
+			if (params.syncCinemas) {
+				cinemaSync.sync(feed)
+			}
+			if (params.syncFilms) {
+				filmSync.sync(feed)
+			}
+		} finally {
+			neo4j.close()
+			network.close()
 		}
-		if (params.syncFilms) {
-			dagger.filmSync.sync()
-		}
-	} finally {
-		dagger.neo4j.close()
-		dagger.network.close()
 	}
-}
 
-private fun getNeo4jUrl(): URI {
-	val url = System.getenv()["NEO4J_URL"]
-		?: error("NEO4J_URL environment variable must be defined (=neo4j+s://username:password@hostname:port).")
-	return URI.create(url)
+	companion object {
+
+		fun main(vararg args: String) {
+			val dagger = DaggerSyncAppComponent
+				.builder()
+				.graphDBUri(getNeo4jUrl())
+				.build()
+			dagger.main.sync(MainParametersParser().parse(*args))
+		}
+
+		private fun getNeo4jUrl(): URI {
+			val url = System.getenv()["NEO4J_URL"]
+				?: error("NEO4J_URL environment variable must be defined (=neo4j+s://username:password@hostname:port).")
+			return URI.create(url)
+		}
+	}
 }

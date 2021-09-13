@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
-import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
+import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.services.FilmService
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
@@ -10,16 +10,15 @@ private val LOG = LoggerFactory.getLogger(FilmSync::class.java)
 
 class FilmSync @Inject constructor(
 	private val calculator: FilmSyncCalculator,
-	private val feedService: FeedService,
 	private val dbService: FilmService,
 	private val now: () -> OffsetDateTime
 ) {
 
-	fun sync() {
+	fun sync(feed: Feed) {
 		val now = now()
 		val sync = calculator.calculate(
 			now = now,
-			feed = feedService.getWeeklyFilmTimes(),
+			feed = feed,
 			dbFilms = dbService.findAll()
 		)
 		LOG.info(
