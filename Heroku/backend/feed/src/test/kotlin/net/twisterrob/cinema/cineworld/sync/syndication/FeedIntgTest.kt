@@ -43,10 +43,10 @@ class FeedIntgTest {
 	@Test fun `serialization is reversible`() {
 		val fixture = JFixture()
 		val fixtFeed = fixture.build<Feed>().apply {
-			cinemas.forEach { it["performances"] = emptyList<Feed.Screening>() }
-			films.forEach { it["performances"] = emptyList<Feed.Screening>() }
+			cinemas.forEach { it["performances"] = emptyList<Feed.Performance>() }
+			films.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			this["performances"] = (1..3).map {
-				val performance = Feed.Screening(
+				val performance = Feed.Performance(
 					film = films.random(),
 					cinema = cinemas.random(),
 					url = fixture.build(),

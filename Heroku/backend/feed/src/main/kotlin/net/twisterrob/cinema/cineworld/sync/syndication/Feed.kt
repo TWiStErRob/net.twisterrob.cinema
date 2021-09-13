@@ -82,12 +82,12 @@ data class Feed(
 	val films: List<Film>,
 
 	@JacksonXmlElementWrapper(localName = "performances")
-	val performances: List<Screening>
+	val performances: List<Performance>
 ) {
 
 	constructor(
 		attributes: List<Attribute>,
-		performances: List<Screening>
+		performances: List<Performance>
 	) : this(attributes, performances.map { it.cinema }, performances.map { it.film }, performances) {
 		val attributeCodes = attributes.map { it.code }
 		performances.forEach { screening ->
@@ -165,7 +165,7 @@ data class Feed(
 		val serviceList = services.split(",")
 
 		@JsonManagedReference("cinema")
-		lateinit var performances: List<Screening>
+		lateinit var performances: List<Performance>
 			private set
 	}
 
@@ -253,11 +253,11 @@ data class Feed(
 		val attributeList = attributes.split(",")
 
 		@JsonManagedReference("film")
-		lateinit var performances: List<Screening>
+		lateinit var performances: List<Performance>
 			private set
 	}
 
-	data class Screening(
+	data class Performance(
 		/**
 		 * @sample `"163254"`
 		 */
