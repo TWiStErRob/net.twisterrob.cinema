@@ -8,6 +8,7 @@ plugins {
 }
 
 application {
+	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
 	tasks.named<JavaExec>("run") {
 		// The folder that :frontend builds into.

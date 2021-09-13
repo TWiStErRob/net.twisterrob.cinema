@@ -1,1 +1,1 @@
-web: gradlew :backend:endpoint:run
+web: java -jar backend/endpoint/build/libs/twisterrob-cinema-backend-endpoint.jar

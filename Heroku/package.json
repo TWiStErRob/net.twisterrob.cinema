@@ -13,17 +13,18 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"engines": {
-		"node": "8.8.1",
-		"npm": "6.2.0"
+		"node": "14.x",
+		"npm": "6.x"
 	},
 	"scripts": {
+		"start:documentation": "Assumes: `cd frontend && npm run build:<env> && cd ..`",
 		"start": "gradlew :backend:endpoint:run",
 		"start:fake:documentation": "echo http://localhost:8080/planner?cineworldDate=&c=103&d=2017-07-14&f=160231&f=160454&f=184739&f=189108&f=223046",
 		"start:fake": "gradlew :backend:endpoint:run --args \"../../deploy/static ../../test/fake-data\"",
 		"updateFromCineworld": "npm run updateFromCineworldCinemas && npm run updateFromCineworldFilms",
 		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
 		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",
-		"heroku-postbuild": "cd frontend && npm run build",
+		"heroku-postbuild": "cd frontend && npm run build:prod",
 		"test": "(cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
 		"install": "(cd frontend && npm install && cd ..) && (cd test && npm install && cd ..)",
 		"update": "(cd frontend && npm update && cd ..) && (cd test && npm update && cd ..)",
