@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
-import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.cinema.database.model.validDBData
 import net.twisterrob.cinema.database.services.CinemaService
 import net.twisterrob.test.applyCustomisation
@@ -22,7 +21,6 @@ import net.twisterrob.cinema.database.model.Cinema as DBCinema
 class CinemaSyncTest {
 
 	private val calculator: CinemaSyncCalculator = mock()
-	private val feedService: FeedService = mock()
 	private val dbService: CinemaService = mock()
 	private val now by lazy { OffsetDateTime.now() }
 
@@ -30,7 +28,7 @@ class CinemaSyncTest {
 	private lateinit var sut: CinemaSync
 
 	@BeforeEach fun setUp() {
-		sut = CinemaSync(calculator, feedService, dbService, ::now)
+		sut = CinemaSync(calculator, dbService, ::now)
 	}
 
 	@Test fun `all changed cinemas are synced properly`() {
@@ -40,8 +38,6 @@ class CinemaSyncTest {
 		}
 
 		val fixtFeed: Feed = fixture.build()
-		whenever(feedService.getWeeklyFilmTimes())
-			.thenReturn(fixtFeed)
 		val fixtDB: List<DBCinema> = fixture.buildList()
 		whenever(dbService.findAll())
 			.thenReturn(fixtDB)
@@ -49,7 +45,7 @@ class CinemaSyncTest {
 		whenever(calculator.calculate(now, fixtFeed, fixtDB))
 			.thenReturn(fixtResult)
 
-		sut.sync()
+		sut.sync(fixtFeed)
 
 		argumentCaptor<List<DBCinema>> {
 			verify(dbService).save(capture())
