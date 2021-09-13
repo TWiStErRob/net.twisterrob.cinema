@@ -57,3 +57,20 @@ tasks.withType<KotlinCompile> {
 		)
 	}
 }
+
+tasks {
+	"jar"(Jar::class) {
+		manifest {
+			attributes(
+				mapOf(
+					"Main-Class" to application.mainClass,
+					"Class-Path" to configurations.runtimeClasspath.get().joinToString(separator = " ") { it.name }
+				)
+			)
+		}
+	}
+	register<Copy>("copyDependencies") {
+		from(configurations.runtimeClasspath)
+		into(jar.map { it.outputs.files.singleFile.parentFile })
+	}
+}

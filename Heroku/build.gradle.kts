@@ -9,7 +9,7 @@ plugins {
 allprojects {
 	repositories {
 		jcenter()
-		Deps.Ktor.repo(project)
+		Deps.Ktor.repo(this@allprojects)
 	}
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
@@ -27,6 +27,10 @@ allprojects {
 				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
 			}
 		}
+	}
+	plugins.withId("java") {
+		val base = this@allprojects.convention.getPlugin(BasePluginConvention::class.java)
+		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
 	}
 	plugins.withId("java") {
 		tasks.withType<Test> {
