@@ -12,6 +12,7 @@ import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.cinema.database.model.Screening
 import net.twisterrob.cinema.database.services.Services
 import net.twisterrob.ktor.client.configureLogging
 import org.slf4j.LoggerFactory
@@ -46,6 +47,11 @@ class SyncAppModule {
 			Film().also { updater(it, this, feed) }
 
 	@Provides
+	fun screeningEntityFactory(updater: Updater<Screening, Feed.Performance>): Creator<Feed.Performance, Screening> =
+		fun Feed.Performance.(feed: Feed): Screening =
+			Screening().also { updater(it, this, feed) }
+
+	@Provides
 	fun nowProvider(): () -> OffsetDateTime =
 		{ OffsetDateTime.now() }
 
@@ -56,6 +62,10 @@ class SyncAppModule {
 	@Provides
 	fun copyFilmProperties(): Updater<Film, Feed.Film> =
 		Film::copyPropertiesFrom
+
+	@Provides
+	fun copyScreeningProperties(): Updater<Screening, Feed.Performance> =
+		Screening::copyPropertiesFrom
 
 	@Provides
 	fun httpClient(): HttpClient =
