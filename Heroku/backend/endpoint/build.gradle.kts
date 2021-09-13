@@ -8,6 +8,7 @@ plugins {
 }
 
 application {
+	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
 	tasks.named<JavaExec>("run") {
 		// The folder that :frontend builds into.
@@ -55,25 +56,5 @@ tasks.withType<KotlinCompile> {
 		freeCompilerArgs = freeCompilerArgs + listOf(
 			"-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"
 		)
-	}
-}
-
-tasks {
-	"jar"(Jar::class) {
-		manifest {
-			val dependencies = configurations.runtimeClasspath
-				.map { it.joinToString(separator = " ") { dep -> dep.name } }
-
-			attributes(
-				mapOf(
-					"Main-Class" to application.mainClass,
-					"Class-Path" to dependencies
-				)
-			)
-		}
-	}
-	register<Copy>("copyDependencies") {
-		from(configurations.runtimeClasspath)
-		into(jar.map { it.outputs.files.singleFile.parentFile })
 	}
 }

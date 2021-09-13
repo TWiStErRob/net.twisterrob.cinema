@@ -7,6 +7,7 @@ plugins {
 }
 
 application {
+	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.sync.MainKt")
 }
 
