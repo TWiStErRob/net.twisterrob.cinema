@@ -13,9 +13,9 @@ class QuickbookService @Inject constructor(
 	fun getFilmEDIs(date: LocalDate, cinemas: List<Long>): Iterable<Long> =
 		session.query<Long>(
 			"""
-			MATCH (f:Film) //WHERE f._deleted IS NOT NULL
+			MATCH (f:Film) WHERE f._deleted IS NULL
 			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
-			MATCH (s:Screening)
+			MATCH (s:Screening) WHERE date.truncate('day', s.time) = ${"$"}date
 			MATCH
 				(s)-[AT]-(c),
 				(s)-[SCREENS]-(f)
@@ -31,7 +31,7 @@ class QuickbookService @Inject constructor(
 	fun getScreenings(date: LocalDate, cinema: Long, film: Long): Iterable<Screening> =
 		session.query<Screening>(
 			"""
-			MATCH (s:Screening)
+			MATCH (s:Screening) WHERE date.truncate('day', s.time) = ${"$"}date
 			MATCH (f:Film) WHERE f.edi = ${"$"}film
 			MATCH (c:Cinema) WHERE c.cineworldID = ${"$"}cinema
 			MATCH
