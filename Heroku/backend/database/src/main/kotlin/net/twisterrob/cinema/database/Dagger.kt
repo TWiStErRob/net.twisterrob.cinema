@@ -79,6 +79,7 @@ object Neo4JModule {
 		.connectionPoolSize(150)
 		// org.neo4j.ogm.drivers.bolt.driver.BoltDriver.CONFIG_PARAMETER_BOLT_LOGGING
 		.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
+		.useNativeTypes()
 		.build()
 
 	@Neo4J
