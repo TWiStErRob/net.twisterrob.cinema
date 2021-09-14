@@ -1,6 +1,5 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.film.data
 
-import net.twisterrob.cinema.cineworld.quickbook.QuickbookCinema
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookFilm
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookFilmSimple
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookPerformance
@@ -12,14 +11,6 @@ import net.twisterrob.cinema.database.services.QuickbookService as GraphService
 class QuickbookServiceGraph @Inject constructor(
 	private val service: GraphService,
 ) : QuickbookService {
-
-	override fun cinemas(full: Boolean): List<QuickbookCinema> {
-		TODO("not implemented")
-	}
-
-	override fun films(full: Boolean): List<QuickbookFilm> {
-		TODO("not implemented")
-	}
 
 	override fun films(date: LocalDate, cinemas: List<Long>, full: Boolean): List<QuickbookFilm> =
 		service.getFilmEDIs(date, cinemas)

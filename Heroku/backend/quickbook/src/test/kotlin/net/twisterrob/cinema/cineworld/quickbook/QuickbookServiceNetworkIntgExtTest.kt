@@ -23,7 +23,7 @@ class QuickbookServiceNetworkIntgExtTest {
 			level = LogLevel.ALL
 		}
 	}
-	private val sut: QuickbookService = QuickbookServiceNetwork(client, "9qfgpF7B")
+	private val sut = QuickbookServiceNetwork(client, "9qfgpF7B")
 
 	companion object {
 		private val londonCinemas = listOf<Long>(22, 25, 37, 45, 65, 66, 70, 79, 89, 103, 113)
@@ -32,7 +32,7 @@ class QuickbookServiceNetworkIntgExtTest {
 	}
 
 	@Test fun `get all cinemas`() {
-		val cinemas = sut.cinemas()
+		val cinemas = sut.cinemas(full = false)
 
 		assertThat(cinemas, not(empty()))
 	}
@@ -50,7 +50,7 @@ class QuickbookServiceNetworkIntgExtTest {
 	}
 
 	@Test fun `get all films`() {
-		val films = sut.films()
+		val films = sut.films(full = false)
 
 		assertThat(films, not(empty()))
 	}

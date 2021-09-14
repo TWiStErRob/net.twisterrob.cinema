@@ -36,7 +36,7 @@ class QuickbookServiceNetwork @Inject constructor(
 		}
 	}
 
-	override fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
+	fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
 		client.getCinemas(full) {
 			url("https://www.cineworld.co.uk/api/quickbook/cinemas")
 			parameter("key", key)
@@ -44,7 +44,7 @@ class QuickbookServiceNetwork @Inject constructor(
 		}.throwErrorOrReturn { it.cinemas }
 	}
 
-	override fun films(full: Boolean): List<QuickbookFilm> = runBlocking {
+	fun films(full: Boolean): List<QuickbookFilm> = runBlocking {
 		client.getFilms(full) {
 			url("https://www.cineworld.co.uk/api/quickbook/films")
 			parameter("key", key)
