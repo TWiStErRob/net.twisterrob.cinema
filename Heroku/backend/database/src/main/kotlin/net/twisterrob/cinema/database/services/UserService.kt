@@ -12,21 +12,8 @@ class UserService @Inject constructor(
 	private val session: Session
 ) {
 
-	fun findAll(): Iterable<User> =
-		session.loadAll(User::class.java, 1)
-
 	fun find(id: String): User? =
-		session.load(id, 0)
-
-	fun delete(id: String) {
-		session.delete(session.load(User::class.java, id))
-	}
-
-	fun createOrUpdate(entity: User): User {
-		session.save(entity, 10)
-//		return session.load(Ad::class.java, entity.adId, 1)
-		return entity
-	}
+		session.load(id, depth = 0)
 
 	/**
 	 * Create a user if doesn't exists with the specified data.
