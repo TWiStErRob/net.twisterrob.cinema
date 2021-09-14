@@ -7,13 +7,13 @@ import org.neo4j.ogm.annotation.Relationship
 import org.neo4j.ogm.annotation.typeconversion.Convert
 import java.net.URI
 
-@NodeEntity(label = "Performance")
+@NodeEntity(label = "Screening")
 class Screening : BaseNode() {
 
 	companion object
 
 	@Property(name = "class")
-	val className: String = "Performance"
+	val className: String = "Screening"
 
 	@Convert(URIConverter::class)
 	@Property(name = "booking_url")
