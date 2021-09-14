@@ -18,7 +18,6 @@ class ScreeningSync @Inject constructor(
 ) {
 
 	fun sync(feed: Feed) {
-		screeningService.deleteAll()
 		val cinemas = cinemaService.getActiveCinemas().associateBy { it.cineworldID }
 		val films = filmService.getActiveFilms().associateBy { it.edi }
 
@@ -29,6 +28,9 @@ class ScreeningSync @Inject constructor(
 			return@map db
 		}
 
+
+		val deleted = screeningService.deleteAll()
+		LOG.info("Deleted {}, inserting {} new {}s.", deleted, screenings.size, "Screening")
 		screeningService.save(screenings)
 	}
 }
