@@ -11,7 +11,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as Fronte
 class GraphFilmRepository @Inject constructor(
 	private val service: FilmService,
 	private val mapper: FilmMapper,
-	private val quickbook: QuickbookService
+	private val quickbook: QuickbookService,
 ) : FilmRepository {
 
 	override fun getFilms(date: LocalDate, cinemas: List<Long>): List<FrontendFilm> {
