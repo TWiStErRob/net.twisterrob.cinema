@@ -35,5 +35,7 @@ fun validDBData(): Customisation = Customisation { fixture ->
 		intercept(User::class.java) { user -> user.cinemas.forEach { it.users = mutableListOf(user) } }
 
 		intercept(View::class.java) { view -> view.graphId = null }
+
+		intercept(Screening::class.java) { view -> view.graphId = null }
 	}
 }

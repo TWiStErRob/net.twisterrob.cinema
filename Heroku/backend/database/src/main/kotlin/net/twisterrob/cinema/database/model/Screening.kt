@@ -1,13 +1,12 @@
 package net.twisterrob.cinema.database.model
 
-import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.neo4j.ogm.URIConverter
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
 import org.neo4j.ogm.annotation.typeconversion.Convert
 import java.net.URI
-import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 
 @NodeEntity(label = "Screening")
 class Screening : BaseNode() {
@@ -21,9 +20,8 @@ class Screening : BaseNode() {
 	@Property(name = "booking_url")
 	lateinit var booking_url: URI
 
-	@Convert(TimestampConverter::class)
 	@Property(name = "time")
-	lateinit var time: OffsetDateTime
+	lateinit var time: ZonedDateTime
 
 	@Relationship(type = "AT", direction = Relationship.OUTGOING)
 	lateinit var cinema: Cinema

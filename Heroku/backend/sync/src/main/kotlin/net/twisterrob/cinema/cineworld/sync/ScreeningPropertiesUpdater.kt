@@ -5,5 +5,5 @@ import net.twisterrob.cinema.database.model.Screening
 
 fun Screening.copyPropertiesFrom(feedPerformance: Feed.Performance, @Suppress("UNUSED_PARAMETER") feed: Feed) {
 	this.booking_url = feedPerformance.url
-	this.time = feedPerformance.time
+	this.time = feedPerformance.time.toZonedDateTime()
 }
