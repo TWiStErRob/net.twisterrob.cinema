@@ -29,6 +29,14 @@ class MainTest {
 		sut = Main(mockFeedService, mockCinemaSync, mockFilmSync, mockPerformanceSync, mockNeo4j, mockNetwork)
 	}
 
+	@Test fun `syncs none when requested`() {
+		val input = MainParameters(syncCinemas = false, syncFilms = false, syncPerformances = false)
+
+		sut.sync(input)
+
+		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
+	}
+
 	@Test fun `syncs cinemas when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
@@ -38,6 +46,19 @@ class MainTest {
 
 		verify(mockFeedService).getWeeklyFilmTimes()
 		verify(mockCinemaSync).sync(fixtFeed)
+		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
+	}
+
+	@Test fun `syncs cinemas when requested together with performances`() {
+		val fixtFeed: Feed = fixture.build()
+		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
+		val input = MainParameters(syncCinemas = true, syncFilms = false, syncPerformances = true)
+
+		sut.sync(input)
+
+		verify(mockFeedService).getWeeklyFilmTimes()
+		verify(mockCinemaSync).sync(fixtFeed)
+		verify(mockPerformanceSync).sync(fixtFeed)
 		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
 	}
 
@@ -53,7 +74,20 @@ class MainTest {
 		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
 	}
 
-	@Test fun `syncs all when requested`() {
+	@Test fun `syncs films when requested together with performances`() {
+		val fixtFeed: Feed = fixture.build()
+		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
+		val input = MainParameters(syncCinemas = false, syncFilms = true, syncPerformances = true)
+
+		sut.sync(input)
+
+		verify(mockFeedService).getWeeklyFilmTimes()
+		verify(mockFilmSync).sync(fixtFeed)
+		verify(mockPerformanceSync).sync(fixtFeed)
+		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
+	}
+
+	@Test fun `syncs cinemas and films when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
 		val input = MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = false)
@@ -66,11 +100,17 @@ class MainTest {
 		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
 	}
 
-	@Test fun `syncs none when requested`() {
-		val input = MainParameters(syncCinemas = false, syncFilms = false, syncPerformances = false)
+	@Test fun `syncs all when requested`() {
+		val fixtFeed: Feed = fixture.build()
+		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
+		val input = MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = true)
 
 		sut.sync(input)
 
+		verify(mockFeedService).getWeeklyFilmTimes()
+		verify(mockFilmSync).sync(fixtFeed)
+		verify(mockCinemaSync).sync(fixtFeed)
+		verify(mockPerformanceSync).sync(fixtFeed)
 		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
 	}
 }
