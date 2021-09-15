@@ -7,8 +7,8 @@ import dagger.multibindings.IntoSet
 import io.ktor.locations.Location
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.GraphFilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.QuickbookFilmRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.QuickbookServiceGraph
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookService
@@ -45,16 +45,16 @@ object Films {
 	abstract class BackendModule {
 
 		@Binds
-		abstract fun repository(impl: QuickbookFilmRepository): FilmRepository
+		abstract fun quickbook(impl: QuickbookServiceNetwork): QuickbookService
 
 		companion object {
 
 			@Provides
-			fun quickbook(
+			fun repository(
 				featureToggles: FeatureToggles,
-				graph: Provider<QuickbookServiceGraph>,
-				network: Provider<QuickbookServiceNetwork>
-			): QuickbookService =
+				graph: Provider<GraphFilmRepository>,
+				network: Provider<QuickbookFilmRepository>,
+			): FilmRepository =
 				if (featureToggles.useQuickBook) {
 					network.get()
 				} else {

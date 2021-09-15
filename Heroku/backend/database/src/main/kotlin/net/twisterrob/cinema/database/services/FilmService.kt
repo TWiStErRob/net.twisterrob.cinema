@@ -6,6 +6,7 @@ import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import org.neo4j.ogm.session.query
 import org.neo4j.ogm.session.queryForObject
+import java.time.LocalDate
 import javax.inject.Inject
 
 class FilmService @Inject constructor(
@@ -26,7 +27,7 @@ class FilmService @Inject constructor(
 		session.query<Film>(
 			"""
 			MATCH (f:Film)
-			WHERE NOT exists(f._deleted)
+			WHERE f._deleted IS NULL
 			RETURN f AS film
 			""",
 			mapOf()
@@ -54,11 +55,33 @@ class FilmService @Inject constructor(
 		session.query<Film>(
 			"""
 			MATCH (f:Film)
-			WHERE NOT exists(f._deleted) AND f.edi IN ${"$"}filmEDIs
+			WHERE
+				f._deleted IS NULL
+				AND f.edi IN ${"$"}filmEDIs
 			RETURN f AS film
 			""",
 			mapOf(
 				"filmEDIs" to filmEDIs
+			)
+		)
+
+	/**
+	 * Find a list of films by date in specific cinemas.
+	 */
+	fun getFilms(date: LocalDate, cinemaIDs: List<Long>): Iterable<Film> =
+		session.query<Film>(
+			"""
+			MATCH (f:Film) WHERE f._deleted IS NULL
+			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
+			MATCH (s:Screening) WHERE date.truncate('day', s.time) = ${"$"}date
+			MATCH
+				(s)-[AT]-(c),
+				(s)-[SCREENS]-(f)
+			RETURN DISTINCT f AS film
+			""",
+			mapOf(
+				"date" to date,
+				"cinemaIDs" to cinemaIDs,
 			)
 		)
 
@@ -71,8 +94,9 @@ class FilmService @Inject constructor(
 		session.query<Film>(
 			"""
 			MATCH (f:Film)
-			WHERE //not exists(f._deleted) and
-			f.edi IN ${"$"}filmEDIs
+			WHERE
+				f._deleted IS NULL
+				AND f.edi IN ${"$"}filmEDIs
 			OPTIONAL MATCH
 				(f)<-[w:WATCHED]-(v:View),
 				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
@@ -86,6 +110,35 @@ class FilmService @Inject constructor(
 			mapOf(
 				"userID" to userID,
 				"filmEDIs" to filmEDIs
+			)
+		)
+
+	/**
+	 *
+	 */
+	fun getFilmsAuth(date: LocalDate, cinemaIDs: List<Long>, userID: String): Iterable<Film> =
+		session.query<Film>(
+			"""
+			MATCH (f:Film) WHERE f._deleted IS NULL
+			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
+			MATCH (s:Screening) WHERE date.truncate('day', s.time) = ${"$"}date
+			MATCH
+				(s)-[AT]-(c),
+				(s)-[SCREENS]-(f)
+			OPTIONAL MATCH
+				(f)<-[w:WATCHED]-(v:View),
+				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
+				(v)-[at:AT]->(c:Cinema)
+			RETURN
+				f AS film, s as screening,
+				w AS watched, v AS view,
+				a AS attended, u AS user,
+				at AS at, c AS cinema
+			""",
+			mapOf(
+				"date" to date,
+				"cinemaIDs" to cinemaIDs,
+				"userID" to userID,
 			)
 		)
 }
