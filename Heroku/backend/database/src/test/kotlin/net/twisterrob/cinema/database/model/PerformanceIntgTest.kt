@@ -30,7 +30,7 @@ class PerformanceIntgTest {
 	@Test fun `new performance can be loaded back and contains all data`(session: Session) {
 		val fixtPerformance: Performance = fixture.build()
 		val expected = fixtPerformance.copy().apply {
-			graphId = 0
+			graphId = 1
 			inUTC()
 		}
 		session.save(fixtPerformance, -1)
@@ -51,13 +51,13 @@ class PerformanceIntgTest {
 			val nodes = tx.allNodes.toList()
 
 			assertThat(nodes, hasSize(3))
-			val (performance, film, cinema) = nodes
+			val (film, performance, cinema) = nodes
 			assertSameData(fixtPerformance, performance)
 			assertSameData(fixtPerformance.screensFilm, film)
 			assertSameData(fixtPerformance.inCinema, cinema)
 			assertThat(
 				performance.relationships, containsInAnyOrder(
-					hasRelationship(performance, "AT", cinema),
+					hasRelationship(performance, "IN", cinema),
 					hasRelationship(performance, "SCREENS", film),
 				)
 			)
