@@ -3,8 +3,10 @@ package net.twisterrob.cinema.cineworld.sync
 import com.flextrade.jfixture.JFixture
 import dagger.Component
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
+import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.javaURIRealistic
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue
@@ -19,7 +21,9 @@ import net.twisterrob.cinema.database.model.Performance as DBPerformance
  */
 class PerformanceSyncCreatorTest {
 
-	private val fixture = JFixture()
+	private val fixture = JFixture().applyCustomisation {
+		add(javaURIRealistic())
+	}
 	private lateinit var sut: Creator<FeedPerformance, DBPerformance>
 
 	@BeforeEach fun setUp() {

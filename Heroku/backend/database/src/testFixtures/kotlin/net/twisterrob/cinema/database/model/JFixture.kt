@@ -2,12 +2,14 @@ package net.twisterrob.cinema.database.model
 
 import com.flextrade.jfixture.customisation.Customisation
 import net.twisterrob.test.applyCustomisation
-import net.twisterrob.test.offsetDateTimeRealistic
+import net.twisterrob.test.java8TimeRealistic
+import net.twisterrob.test.javaURIRealistic
 
 fun validDBData(): Customisation = Customisation { fixture ->
 	fixture.applyCustomisation {
 		// Generate proper random OffsetDateTime, otherwise all instances will be now().
-		add(offsetDateTimeRealistic())
+		add(java8TimeRealistic())
+		add(javaURIRealistic())
 
 		// Stub out relationship collections otherwise JFixture runs into recursion.
 		// Set everything to immutable empty list
