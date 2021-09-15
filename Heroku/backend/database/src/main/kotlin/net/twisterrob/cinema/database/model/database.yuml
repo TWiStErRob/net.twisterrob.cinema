@@ -1,0 +1,14 @@
+[Cinema|name]
+[Film|title]
+[Performance|time]
+// Lookup
+[Performance]-IN>[Cinema]
+[Performance]-SCREENS>[Film]
+// Favorites
+[User|email]
+[User]-GOESTO>[Cinema]
+// User data
+[View|date]
+[View]-WATCHED>[Film]
+[View]-AT>[Cinema]
+[View]<ATTENDED-[User]

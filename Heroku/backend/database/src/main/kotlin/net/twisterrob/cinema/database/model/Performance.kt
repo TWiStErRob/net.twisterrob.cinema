@@ -23,10 +23,10 @@ class Performance : BaseNode() {
 	@Property(name = "time")
 	lateinit var time: ZonedDateTime
 
-	@Relationship(type = "IN", direction = Relationship.OUTGOING)
+	@Relationship(type = "IN")
 	lateinit var inCinema: Cinema
 
-	@Relationship(type = "SCREENS", direction = Relationship.OUTGOING)
+	@Relationship(type = "SCREENS")
 	lateinit var screensFilm: Film
 
 	override fun toString() =
