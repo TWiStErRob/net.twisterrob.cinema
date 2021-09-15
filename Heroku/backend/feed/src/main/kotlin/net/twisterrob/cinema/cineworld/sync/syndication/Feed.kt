@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -28,8 +29,8 @@ fun feedReader(): XmlMapper {
 	return XmlMapper(jackson).apply {
 		registerModule(KotlinModule.Builder().build())
 		registerModule(JavaTimeModule())
-		// Let's not add it. I want to know when new things are added to syndication.
-		//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		// I want to know when new things are added to syndication.
+		enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 	}
 }
 
