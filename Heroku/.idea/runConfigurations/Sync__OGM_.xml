@@ -2,7 +2,7 @@
   <configuration default="false" name="Sync (OGM)" type="JetRunConfigurationType">
     <option name="MAIN_CLASS_NAME" value="net.twisterrob.cinema.cineworld.sync.Main" />
     <module name="Heroku.backend.sync.main" />
-    <option name="PROGRAM_PARAMETERS" value="screenings" />
+    <option name="PROGRAM_PARAMETERS" value="cinemas films performances" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

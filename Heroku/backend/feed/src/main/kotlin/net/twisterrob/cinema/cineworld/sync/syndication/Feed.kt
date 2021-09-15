@@ -90,8 +90,8 @@ data class Feed(
 		performances: List<Performance>
 	) : this(attributes, performances.map { it.cinema }, performances.map { it.film }, performances) {
 		val attributeCodes = attributes.map { it.code }
-		performances.forEach { screening ->
-			screening.attributeList.forEach { attributeCode ->
+		performances.forEach { performance ->
+			performance.attributeList.forEach { attributeCode ->
 				check(attributeCode in attributeCodes)
 			}
 		}

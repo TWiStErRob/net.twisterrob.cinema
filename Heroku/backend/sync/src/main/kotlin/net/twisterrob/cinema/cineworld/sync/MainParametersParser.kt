@@ -5,14 +5,14 @@ class MainParametersParser {
 	fun parse(vararg args: String): MainParameters {
 		val syncCinemas = "cinemas" in args
 		val syncFilms = "films" in args
-		val syncScreenings = "screenings" in args
+		val syncPerformances = "performances" in args
 		val params = MainParameters(
-			syncCinemas = syncCinemas || syncScreenings,
-			syncFilms = syncFilms || syncScreenings,
-			syncScreenings = syncScreenings
+			syncCinemas = syncCinemas || syncPerformances,
+			syncFilms = syncFilms || syncPerformances,
+			syncPerformances = syncPerformances
 		)
-		require(params.syncCinemas || params.syncFilms || params.syncScreenings) {
-			"""Must have "cinemas" or "films" or "screenings" or any/all as an argument."""
+		require(params.syncCinemas || params.syncFilms || params.syncPerformances) {
+			"""Must have "cinemas" or "films" or "performances" or any/all as an argument."""
 		}
 		return params
 	}

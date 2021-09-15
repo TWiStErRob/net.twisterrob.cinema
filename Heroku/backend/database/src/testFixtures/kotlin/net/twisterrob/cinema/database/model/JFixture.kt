@@ -36,6 +36,6 @@ fun validDBData(): Customisation = Customisation { fixture ->
 
 		intercept(View::class.java) { view -> view.graphId = null }
 
-		intercept(Screening::class.java) { view -> view.graphId = null }
+		intercept(Performance::class.java) { view -> view.graphId = null }
 	}
 }

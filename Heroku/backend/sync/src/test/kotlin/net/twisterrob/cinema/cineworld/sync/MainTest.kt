@@ -18,7 +18,7 @@ class MainTest {
 	private val mockFeedService: FeedService = mock()
 	private val mockCinemaSync: CinemaSync = mock()
 	private val mockFilmSync: FilmSync = mock()
-	private val mockScreeningSync: ScreeningSync = mock()
+	private val mockPerformanceSync: PerformanceSync = mock()
 	private val mockNeo4j: SessionFactory = mock()
 	private val mockNetwork: HttpClient = mock()
 
@@ -26,13 +26,13 @@ class MainTest {
 	private lateinit var sut: Main
 
 	@BeforeEach fun setUp() {
-		sut = Main(mockFeedService, mockCinemaSync, mockFilmSync, mockScreeningSync, mockNeo4j, mockNetwork)
+		sut = Main(mockFeedService, mockCinemaSync, mockFilmSync, mockPerformanceSync, mockNeo4j, mockNetwork)
 	}
 
 	@Test fun `syncs cinemas when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = false, syncScreenings = false)
+		val input = MainParameters(syncCinemas = true, syncFilms = false, syncPerformances = false)
 
 		sut.sync(input)
 
@@ -44,7 +44,7 @@ class MainTest {
 	@Test fun `syncs films when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = false, syncFilms = true, syncScreenings = false)
+		val input = MainParameters(syncCinemas = false, syncFilms = true, syncPerformances = false)
 
 		sut.sync(input)
 
@@ -56,7 +56,7 @@ class MainTest {
 	@Test fun `syncs all when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = true, syncScreenings = false)
+		val input = MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = false)
 
 		sut.sync(input)
 
@@ -67,7 +67,7 @@ class MainTest {
 	}
 
 	@Test fun `syncs none when requested`() {
-		val input = MainParameters(syncCinemas = false, syncFilms = false, syncScreenings = false)
+		val input = MainParameters(syncCinemas = false, syncFilms = false, syncPerformances = false)
 
 		sut.sync(input)
 

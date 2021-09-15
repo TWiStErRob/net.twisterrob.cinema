@@ -10,7 +10,7 @@ class Main @Inject constructor(
 	private val feedService: FeedService,
 	private val cinemaSync: CinemaSync,
 	private val filmSync: FilmSync,
-	private val screeningSync: ScreeningSync,
+	private val performanceSync: PerformanceSync,
 	private val neo4j: SessionFactory,
 	private val network: HttpClient,
 ) {
@@ -25,8 +25,8 @@ class Main @Inject constructor(
 			if (params.syncFilms) {
 				filmSync.sync(feed)
 			}
-			if (params.syncScreenings) {
-				screeningSync.sync(feed)
+			if (params.syncPerformances) {
+				performanceSync.sync(feed)
 			}
 		} finally {
 			neo4j.close()

@@ -6,7 +6,7 @@ import dagger.Provides
 import net.twisterrob.cinema.database.model.BaseNode
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
-import net.twisterrob.cinema.database.model.Screening
+import net.twisterrob.cinema.database.model.Performance
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
 import net.twisterrob.unwrapITE
@@ -60,7 +60,7 @@ object Neo4JModule {
 		Film::class,
 		User::class,
 		View::class,
-		Screening::class,
+		Performance::class,
 	)
 
 	/**

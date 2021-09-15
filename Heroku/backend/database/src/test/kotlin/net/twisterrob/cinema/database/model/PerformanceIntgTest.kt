@@ -23,63 +23,63 @@ import org.neo4j.ogm.session.loadAll
 
 @ExtendWith(ModelIntgTestExtension::class)
 @TagIntegration
-class ScreeningIntgTest {
+class PerformanceIntgTest {
 
 	private lateinit var fixture: JFixture
 
-	@Test fun `new screening can be loaded back and contains all data`(session: Session) {
-		val fixtScreening: Screening = fixture.build()
-		val expected = fixtScreening.copy().apply {
+	@Test fun `new performance can be loaded back and contains all data`(session: Session) {
+		val fixtPerformance: Performance = fixture.build()
+		val expected = fixtPerformance.copy().apply {
 			graphId = 0
 			inUTC()
 		}
-		session.save(fixtScreening, -1)
-		session.clear() // drop cached Screening objects, start fresh
+		session.save(fixtPerformance, -1)
+		session.clear() // drop cached Performance objects, start fresh
 
-		val screenings = session.loadAll<Screening>(depth = -1)
+		val performances = session.loadAll<Performance>(depth = -1)
 
-		assertThat(screenings, hasSize(1))
-		assertThat(screenings.elementAt(0), sameBeanAs(expected))
+		assertThat(performances, hasSize(1))
+		assertThat(performances.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new screening contains the right node information`(session: Session, graph: GraphDatabaseService) {
-		val fixtScreening: Screening = fixture.build()
-		session.save(fixtScreening, -1)
-		session.clear() // drop cached Screening objects, start fresh
+	@Test fun `new performance contains the right node information`(session: Session, graph: GraphDatabaseService) {
+		val fixtPerformance: Performance = fixture.build()
+		session.save(fixtPerformance, -1)
+		session.clear() // drop cached Performance objects, start fresh
 
 		graph.beginTx().use { tx ->
 			val nodes = tx.allNodes.toList()
 
 			assertThat(nodes, hasSize(3))
-			val (screening, film, cinema) = nodes
-			assertSameData(fixtScreening, screening)
-			assertSameData(fixtScreening.film, film)
-			assertSameData(fixtScreening.cinema, cinema)
+			val (performance, film, cinema) = nodes
+			assertSameData(fixtPerformance, performance)
+			assertSameData(fixtPerformance.screensFilm, film)
+			assertSameData(fixtPerformance.atCinema, cinema)
 			assertThat(
-				screening.relationships, containsInAnyOrder(
-					hasRelationship(screening, "AT", cinema),
-					hasRelationship(screening, "SCREENS", film),
+				performance.relationships, containsInAnyOrder(
+					hasRelationship(performance, "AT", cinema),
+					hasRelationship(performance, "SCREENS", film),
 				)
 			)
 		}
 	}
 
-	@Test fun `empty screening fails to save`(session: Session) {
-		val screening = Screening()
+	@Test fun `empty performance fails to save`(session: Session) {
+		val performance = Performance()
 
 		assertThrows<UninitializedPropertyAccessException> {
-			session.save(screening, -1)
+			session.save(performance, -1)
 		}
 	}
 }
 
-fun Screening.inUTC() {
-	cinema.inUTC()
-	film.inUTC()
+fun Performance.inUTC() {
+	atCinema.inUTC()
+	screensFilm.inUTC()
 }
 
-fun assertSameData(expected: Screening, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("Screening"))
+fun assertSameData(expected: Performance, actual: Node) = assertAll {
+	that("labels", actual, hasLabels("Performance"))
 	that("id", actual.id, equalTo(expected.graphId))
 	val expectedProperties = mapOf(
 		"class" to expected.className,

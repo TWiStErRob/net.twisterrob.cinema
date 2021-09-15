@@ -8,13 +8,13 @@ import org.neo4j.ogm.annotation.typeconversion.Convert
 import java.net.URI
 import java.time.ZonedDateTime
 
-@NodeEntity(label = "Screening")
-class Screening : BaseNode() {
+@NodeEntity(label = "Performance")
+class Performance : BaseNode() {
 
 	companion object
 
 	@Property(name = "class")
-	val className: String = "Screening"
+	val className: String = "Performance"
 
 	@Convert(URIConverter::class)
 	@Property(name = "booking_url")
@@ -24,20 +24,20 @@ class Screening : BaseNode() {
 	lateinit var time: ZonedDateTime
 
 	@Relationship(type = "AT", direction = Relationship.OUTGOING)
-	lateinit var cinema: Cinema
+	lateinit var atCinema: Cinema
 
 	@Relationship(type = "SCREENS", direction = Relationship.OUTGOING)
-	lateinit var film: Film
+	lateinit var screensFilm: Film
 
 	override fun toString() =
-		"Performance(cinema=${cinema.cineworldID}, film=${film.edi}, time=${time})"
+		"Performance(cinema=${atCinema.cineworldID}, film=${screensFilm.edi}, time=${time})"
 
-	fun copy(): Screening {
-		val copy = Screening()
+	fun copy(): Performance {
+		val copy = Performance()
 		copy.booking_url = booking_url
 		copy.time = time
-		copy.cinema = cinema
-		copy.film = film
+		copy.atCinema = atCinema
+		copy.screensFilm = screensFilm
 		return copy
 	}
 }
