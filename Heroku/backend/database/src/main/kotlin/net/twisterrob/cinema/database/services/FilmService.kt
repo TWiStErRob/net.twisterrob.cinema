@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.database.services
 
+import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.User
 import org.neo4j.ogm.session.Session
@@ -67,6 +68,8 @@ class FilmService @Inject constructor(
 
 	/**
 	 * Find a list of films by date in specific cinemas.
+	 * @param date on which day are the screenings of the film?
+	 * @param cinemaIDs which cinemas are screening the film? (array of [Cinema.cineworldID]s)
 	 */
 	fun getFilms(date: LocalDate, cinemaIDs: List<Long>): Iterable<Film> =
 		session.query<Film>(
@@ -114,7 +117,10 @@ class FilmService @Inject constructor(
 		)
 
 	/**
-	 *
+	 * Find a list of films by date in specific cinemas.
+	 * @param date on which day are the screenings of the film?
+	 * @param cinemaIDs which cinemas are screening the film? (array of [Cinema.cineworldID]s)
+	 * @param userID [User.id]
 	 */
 	fun getFilmsAuth(date: LocalDate, cinemaIDs: List<Long>, userID: String): Iterable<Film> =
 		session.query<Film>(

@@ -1,5 +1,7 @@
 package net.twisterrob.cinema.database.services
 
+import net.twisterrob.cinema.database.model.Cinema
+import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.Performance
 import net.twisterrob.neo4j.ogm.deleteForCount
 import org.neo4j.ogm.session.Session
@@ -18,6 +20,12 @@ class PerformanceService @Inject constructor(
 		session.save(list)
 	}
 
+	/**
+	 * Find all the performance on a given date in all the cinemas screening any of the films.
+	 * @param date on which day are the screenings of the film?
+	 * @param cinemaIDs which cinemas are screening the film? (array of [Cinema.cineworldID]s)
+	 * @param filmEDIs which films are being screened? (array of [Film.edi])
+	 */
 	fun getPerformances(date: LocalDate, cinemaIDs: List<Long>, filmEDIs: List<Long>): Iterable<Performance> =
 		session.query<Performance>(
 			"""
