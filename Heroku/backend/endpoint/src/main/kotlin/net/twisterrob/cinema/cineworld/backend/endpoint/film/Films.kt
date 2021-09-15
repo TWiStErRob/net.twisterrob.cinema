@@ -7,7 +7,7 @@ import dagger.multibindings.IntoSet
 import io.ktor.locations.Location
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.GraphFilmRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.QuickbookFilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.QuickbookServiceGraph
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
@@ -45,7 +45,7 @@ object Films {
 	abstract class BackendModule {
 
 		@Binds
-		abstract fun repository(impl: GraphFilmRepository): FilmRepository
+		abstract fun repository(impl: QuickbookFilmRepository): FilmRepository
 
 		companion object {
 

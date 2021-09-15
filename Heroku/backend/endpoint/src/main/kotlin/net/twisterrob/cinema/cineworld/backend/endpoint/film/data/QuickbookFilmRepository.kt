@@ -8,7 +8,7 @@ import javax.inject.Singleton
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 
 @Singleton
-class GraphFilmRepository @Inject constructor(
+class QuickbookFilmRepository @Inject constructor(
 	private val service: FilmService,
 	private val mapper: FilmMapper,
 	private val quickbook: QuickbookService,

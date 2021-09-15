@@ -10,7 +10,7 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import javax.inject.Inject
 
-class PerformanceMapper @Inject constructor() {
+class QuickbookPerformanceMapper @Inject constructor() {
 	fun map(date: LocalDate, cinema: Long, film: Long, qbPerformances: List<QuickbookPerformance>): Performances {
 		val performances: List<Performances.Performance> = qbPerformances.map {
 			Performances.Performance(

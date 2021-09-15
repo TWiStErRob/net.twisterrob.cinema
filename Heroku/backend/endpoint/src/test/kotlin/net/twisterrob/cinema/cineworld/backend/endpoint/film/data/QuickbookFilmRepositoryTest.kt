@@ -19,7 +19,7 @@ import org.mockito.MockitoAnnotations
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
-class GraphFilmRepositoryTest {
+class QuickbookFilmRepositoryTest {
 
 	@Mock lateinit var mockService: FilmService
 	@Mock lateinit var mockMapper: FilmMapper
@@ -33,7 +33,7 @@ class GraphFilmRepositoryTest {
 
 	@BeforeEach fun setUp() {
 		MockitoAnnotations.initMocks(this)
-		sut = GraphFilmRepository(mockService, mockMapper, mockQuickbook)
+		sut = QuickbookFilmRepository(mockService, mockMapper, mockQuickbook)
 	}
 
 	@Test fun `get film by edi`() {

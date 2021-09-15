@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
 import io.ktor.locations.Location
-import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.GraphPerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.PerformanceRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.QuickbookPerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import java.time.LocalDate
@@ -40,6 +40,6 @@ object Performances {
 	interface BackendModule {
 
 		@Binds
-		fun repository(impl: GraphPerformanceRepository): PerformanceRepository
+		fun repository(impl: QuickbookPerformanceRepository): PerformanceRepository
 	}
 }

@@ -6,9 +6,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GraphPerformanceRepository @Inject constructor(
+class QuickbookPerformanceRepository @Inject constructor(
 	private val quickbookService: QuickbookService,
-	private val performanceMapper: PerformanceMapper,
+	private val performanceMapper: QuickbookPerformanceMapper,
 ) : PerformanceRepository {
 
 	override fun list(date: LocalDate, films: List<Long>, cinemas: List<Long>): List<Performances> =
