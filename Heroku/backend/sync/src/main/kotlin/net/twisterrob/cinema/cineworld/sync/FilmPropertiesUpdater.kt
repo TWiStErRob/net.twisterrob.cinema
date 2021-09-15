@@ -5,7 +5,6 @@ import net.twisterrob.cinema.database.model.Film
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
-import java.time.ZoneId
 
 fun Film.copyPropertiesFrom(feedFilm: Feed.Film, feed: Feed) {
 	this.edi = feedFilm.id
@@ -31,7 +30,7 @@ fun Film.copyPropertiesFrom(feedFilm: Feed.Film, feed: Feed) {
 }
 
 private fun ukMidnight(date: LocalDate): OffsetDateTime {
-	val ukZone = ZoneId.of("Europe/London").rules.getOffset(date.atStartOfDay())
+	val ukZone = Feed.DEFAULT_TIMEZONE.rules.getOffset(date.atStartOfDay())
 	return date.atTime(LocalTime.of(0, 0).atOffset(ukZone))
 }
 

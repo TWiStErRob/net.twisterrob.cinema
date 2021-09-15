@@ -306,7 +306,13 @@ object Neo4JOGM {
 	const val core = "org.neo4j:neo4j-ogm-core:${version}"
 	const val driver = "org.neo4j.driver:neo4j-java-driver:${version_neo4j}"
 	const val driver_bolt = "org.neo4j:neo4j-ogm-bolt-driver:${version}"
-	const val driver_http = "org.neo4j:neo4j-ogm-http-driver:${version}"
+
+	/**
+	 *  * [Opt-in to use native types](https://neo4j.com/docs/ogm-manual/current/reference/#reference:native-property-types:optin)
+	 *  * [Native vs Java 8 types](https://neo4j.com/docs/ogm-manual/current/reference/#reference:native-property-types:mapping)
+	 *  * [Cypher temporal functions](https://neo4j.com/docs/cypher-manual/current/syntax/temporal/)
+	 */
+	const val driver_bolt_native_types = "org.neo4j:neo4j-ogm-bolt-native-types:${version}"
 
 	/**
 	 * When using this, mind https://github.com/neo4j/neo4j/issues/12770.

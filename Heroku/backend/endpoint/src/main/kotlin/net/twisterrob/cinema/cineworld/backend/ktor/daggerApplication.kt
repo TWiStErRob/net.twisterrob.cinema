@@ -4,6 +4,7 @@ import io.ktor.application.Application
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.dagger
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.DaggerApplicationComponent
+import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import java.net.URI
 
 fun Application.daggerApplication() = daggerApplication(DaggerApplicationComponent::builder)
@@ -15,6 +16,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 ) {
 	val builder: DaggerComponentBuilder = createComponentBuilder()
 	builder.application(this)
+	builder.featureToggles(FeatureToggles(useQuickBook = false))
 	builder.graphDBUri(getNeo4jUrl())
 	builder.quickbookApiKey()
 	initComponent(builder)

@@ -8,7 +8,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema as Fr
 @Singleton
 class GraphCinemaRepository @Inject constructor(
 	private val service: CinemaService,
-	private val mapper: CinemaMapper
+	private val mapper: CinemaMapper,
 ) : CinemaRepository {
 
 	override fun getActiveCinemas(): List<FrontendCinema> =

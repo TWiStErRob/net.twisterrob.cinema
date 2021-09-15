@@ -18,7 +18,7 @@ dependencies {
 	api(Deps.Neo4JOGM.core)
 	implementation(Deps.Neo4JOGM.driver)
 	runtimeOnly(Deps.Neo4JOGM.driver_bolt)
-	runtimeOnly(Deps.Neo4JOGM.driver_http)
+	runtimeOnly(Deps.Neo4JOGM.driver_bolt_native_types)
 }
 
 // Test

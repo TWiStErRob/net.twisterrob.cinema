@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneId
 
 fun feedReader(): XmlMapper {
 	val jackson = JacksonXmlModule().apply {
@@ -27,8 +29,8 @@ fun feedReader(): XmlMapper {
 	return XmlMapper(jackson).apply {
 		registerModule(KotlinModule.Builder().build())
 		registerModule(JavaTimeModule())
-		// Let's not add it. I want to know when new things are added to syndication.
-		//disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		// I want to know when new things are added to syndication.
+		enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 	}
 }
 
@@ -82,16 +84,16 @@ data class Feed(
 	val films: List<Film>,
 
 	@JacksonXmlElementWrapper(localName = "performances")
-	val performances: List<Screening>
+	val performances: List<Performance>
 ) {
 
 	constructor(
 		attributes: List<Attribute>,
-		performances: List<Screening>
+		performances: List<Performance>
 	) : this(attributes, performances.map { it.cinema }, performances.map { it.film }, performances) {
 		val attributeCodes = attributes.map { it.code }
-		performances.forEach { screening ->
-			screening.attributeList.forEach { attributeCode ->
+		performances.forEach { performance ->
+			performance.attributeList.forEach { attributeCode ->
 				check(attributeCode in attributeCodes)
 			}
 		}
@@ -165,7 +167,7 @@ data class Feed(
 		val serviceList = services.split(",")
 
 		@JsonManagedReference("cinema")
-		lateinit var performances: List<Screening>
+		lateinit var performances: List<Performance>
 			private set
 	}
 
@@ -253,11 +255,11 @@ data class Feed(
 		val attributeList = attributes.split(",")
 
 		@JsonManagedReference("film")
-		lateinit var performances: List<Screening>
+		lateinit var performances: List<Performance>
 			private set
 	}
 
-	data class Screening(
+	data class Performance(
 		/**
 		 * @sample `"163254"`
 		 */
@@ -277,11 +279,15 @@ data class Feed(
 		 */
 		val url: URI,
 
-		@JacksonXmlProperty(localName = "date")
 		/**
+		 * The time of screening this performance starts.
+		 * Even though it's an ISO instant, the time is wrong.
+		 * In UK DST (BST in Summer) a time is returned as `2018-07-21T10:30:00Z`,
+		 * but this means "10:30" Cinema local time, so needs to be re-interpreted in [DEFAULT_TIMEZONE].
+		 *
 		 * @sample `"2018-07-21T10:00:00Z"`
 		 */
-		val time: OffsetDateTime,
+		val date: OffsetDateTime,
 
 		/**
 		 * @sample `"2D,AD"`
@@ -291,5 +297,14 @@ data class Feed(
 
 		@JsonIgnore
 		val attributeList = attributes.split(",")
+	}
+
+	companion object {
+
+		/**
+		 * Assume all the cinemas to be in the UK.
+		 * This will get fun when Ireland has different DST rules.
+		 */
+		val DEFAULT_TIMEZONE: ZoneId = ZoneId.of("Europe/London")
 	}
 }

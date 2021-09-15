@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class GraphViewRepository @Inject constructor(
 	private val service: ViewService,
-	private val mapper: ViewMapper
+	private val mapper: ViewMapper,
 ) : ViewRepository {
 
 	override fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =

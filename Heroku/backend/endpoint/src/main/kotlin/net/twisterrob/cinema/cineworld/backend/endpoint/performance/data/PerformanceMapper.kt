@@ -1,43 +1,39 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.performance.data
 
-import net.twisterrob.cinema.cineworld.quickbook.QuickbookPerformance
-import org.jetbrains.annotations.TestOnly
+import net.twisterrob.cinema.database.model.Cinema
+import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.cinema.database.model.Performance
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.OffsetDateTime
 import java.time.OffsetTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 import javax.inject.Inject
 
 class PerformanceMapper @Inject constructor() {
-	fun map(date: LocalDate, cinema: Long, film: Long, qbPerformances: List<QuickbookPerformance>): Performances {
-		val performances: List<Performances.Performance> = qbPerformances.map {
-			Performances.Performance(
-				time = getOffsetTime(date, it.time),
-				available = it.available,
-				booking_url = it.booking_url,
-				type = it.type,
-				ad = it.ad,
-				ss = it.ss,
-				subtitled = it.subtitled
-			)
-		}
-		val utcMidnight = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC))
-		return Performances(utcMidnight, cinema, film, performances)
-	}
 
-	@TestOnly internal fun getOffsetTime(date: LocalDate, time: LocalTime): OffsetDateTime {
-		val combinedTime = date.atTime(time)
-		val offset = LONDON.rules.getOffset(combinedTime)
-		return combinedTime.atOffset(offset).withOffsetSameInstant(ZoneOffset.UTC)
-	}
+	fun map(date: LocalDate, performances: List<Performance>): List<Performances> =
+		performances
+			.groupBy { Pair(it.inCinema, it.screensFilm) }
+			.map { (key, performances) ->
+				val (cinema, film) = key
+				map(date, cinema, film, performances)
+			}
 
-	companion object {
-		/**
-		 * Assume all the cinemas to be in the UK.
-		 * This will get fun when Ireland has different DST rules.
-		 */
-		private val LONDON = ZoneId.of("Europe/London")
-	}
+	private fun map(date: LocalDate, cinema: Cinema, film: Film, performances: List<Performance>): Performances =
+		Performances(
+			date = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC)),
+			cinema = cinema.cineworldID,
+			film = film.edi,
+			performances = performances.map {
+				Performances.Performance(
+					time = it.time.toOffsetDateTime(),
+					available = true,
+					booking_url = it.booking_url,
+					type = "reg",
+					ad = false,
+					ss = false,
+					subtitled = false
+				)
+			}
+		)
 }

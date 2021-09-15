@@ -44,6 +44,9 @@ interface ApplicationComponent {
 		@BindsInstance
 		fun application(application: Application): Builder
 
+		@BindsInstance
+		fun featureToggles(featureToggles: FeatureToggles): Builder
+
 		fun build(): ApplicationComponent
 	}
 }

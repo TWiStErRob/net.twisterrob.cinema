@@ -19,10 +19,10 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-class PerformanceMapperTest {
+class QuickbookPerformanceMapperTest {
 
 	private val fixture = JFixture()
-	private val sut = PerformanceMapper()
+	private val sut = QuickbookPerformanceMapper()
 
 	@Test fun `top level fields are mapped correctly`() {
 		val fixtDate: LocalDate = fixture.build()

@@ -3,6 +3,7 @@ package net.twisterrob.cinema.database.services
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.User
 import org.neo4j.ogm.session.Session
+import org.neo4j.ogm.session.loadAll
 import org.neo4j.ogm.session.query
 import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
@@ -12,25 +13,11 @@ class CinemaService @Inject constructor(
 ) {
 
 	fun findAll(): Iterable<Cinema> =
-		session.loadAll(Cinema::class.java, 0)
+		session.loadAll(depth = 0)
 
-	fun find(id: String): Cinema? =
-		session.load(Cinema::class.java, id, 1)
-
-	fun delete(id: String) =
-		delete(session.load(Cinema::class.java, id))
-
-	fun delete(entity: Cinema) =
-		session.delete(entity)
-
-	fun createOrUpdate(entity: Cinema): Cinema {
-		session.save(entity, 10)
-//		return session.load(Ad::class.java, entity.adId, 1)
-		return entity
-	}
-
-	fun save(list: List<Cinema>) =
+	fun save(list: List<Cinema>) {
 		session.save(list)
+	}
 
 	/**
 	 * Get all the Cinemas which are active.

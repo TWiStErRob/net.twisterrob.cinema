@@ -6,6 +6,7 @@ import dagger.Provides
 import net.twisterrob.cinema.database.model.BaseNode
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.cinema.database.model.Performance
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
 import net.twisterrob.unwrapITE
@@ -58,7 +59,8 @@ object Neo4JModule {
 		Cinema::class,
 		Film::class,
 		User::class,
-		View::class
+		View::class,
+		Performance::class,
 	)
 
 	/**
@@ -77,6 +79,7 @@ object Neo4JModule {
 		.connectionPoolSize(150)
 		// org.neo4j.ogm.drivers.bolt.driver.BoltDriver.CONFIG_PARAMETER_BOLT_LOGGING
 		.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
+		.useNativeTypes()
 		.build()
 
 	@Neo4J
