@@ -14,6 +14,10 @@ class MainParametersParser {
 		require(params.syncCinemas || params.syncFilms || params.syncPerformances) {
 			"""Must have "cinemas" or "films" or "performances" or any/all as an argument."""
 		}
+		val unprocessed = args.toList() - "cinemas" - "films" - "performances"
+		require(unprocessed.isEmpty()) {
+			"""Unknown parameters were passed to sync: ${unprocessed} in ${args}."""
+		}
 		return params
 	}
 }
