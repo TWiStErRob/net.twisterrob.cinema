@@ -75,8 +75,8 @@ class FilmService @Inject constructor(
 			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
 			MATCH (p:Performance) WHERE date.truncate('day', p.time) = ${"$"}date
 			MATCH
-				(p)-[AT]-(c),
-				(p)-[SCREENS]-(f)
+				(p)-[in:IN]->(c),
+				(p)-[s:SCREENS]->(f)
 			RETURN DISTINCT f AS film
 			""",
 			mapOf(
@@ -123,17 +123,18 @@ class FilmService @Inject constructor(
 			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
 			MATCH (p:Performance) WHERE date.truncate('day', p.time) = ${"$"}date
 			MATCH
-				(p)-[AT]-(c),
-				(p)-[SCREENS]-(f)
+				(p)-[in:IN]->(c),
+				(p)-[s:SCREENS]->(f)
 			OPTIONAL MATCH
 				(f)<-[w:WATCHED]-(v:View),
 				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
 				(v)-[at:AT]->(c:Cinema)
 			RETURN
-				f AS film, p as performance,
+				f AS film,
+				s AS screen, p AS performance,
 				w AS watched, v AS view,
 				a AS attended, u AS user,
-				at AS at, c AS cinema
+				in AS inCinema, at AS atCinema, c AS cinema
 			""",
 			mapOf(
 				"date" to date,

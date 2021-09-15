@@ -54,7 +54,7 @@ class PerformanceIntgTest {
 			val (performance, film, cinema) = nodes
 			assertSameData(fixtPerformance, performance)
 			assertSameData(fixtPerformance.screensFilm, film)
-			assertSameData(fixtPerformance.atCinema, cinema)
+			assertSameData(fixtPerformance.inCinema, cinema)
 			assertThat(
 				performance.relationships, containsInAnyOrder(
 					hasRelationship(performance, "AT", cinema),
@@ -74,7 +74,7 @@ class PerformanceIntgTest {
 }
 
 fun Performance.inUTC() {
-	atCinema.inUTC()
+	inCinema.inUTC()
 	screensFilm.inUTC()
 }
 

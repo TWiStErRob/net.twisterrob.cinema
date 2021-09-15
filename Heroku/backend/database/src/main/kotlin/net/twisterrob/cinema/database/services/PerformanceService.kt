@@ -25,9 +25,11 @@ class PerformanceService @Inject constructor(
 			MATCH (f:Film) WHERE f.edi IN ${"$"}films
 			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemas
 			MATCH
-				(p)-[AT]-(c),
-				(p)-[SCREENS]-(f)
-			RETURN p, c, f
+				(p)-[in:IN]->(c),
+				(p)-[s:SCREENS]->(f)
+			RETURN p AS performance,
+				in AS in, c AS cinema,
+				s AS screens, f AS film 
 			""",
 			mapOf(
 				"date" to date,

@@ -23,20 +23,20 @@ class Performance : BaseNode() {
 	@Property(name = "time")
 	lateinit var time: ZonedDateTime
 
-	@Relationship(type = "AT", direction = Relationship.OUTGOING)
-	lateinit var atCinema: Cinema
+	@Relationship(type = "IN", direction = Relationship.OUTGOING)
+	lateinit var inCinema: Cinema
 
 	@Relationship(type = "SCREENS", direction = Relationship.OUTGOING)
 	lateinit var screensFilm: Film
 
 	override fun toString() =
-		"Performance(cinema=${atCinema.cineworldID}, film=${screensFilm.edi}, time=${time})"
+		"Performance(cinema=${inCinema.cineworldID}, film=${screensFilm.edi}, time=${time})"
 
 	fun copy(): Performance {
 		val copy = Performance()
 		copy.booking_url = booking_url
 		copy.time = time
-		copy.atCinema = atCinema
+		copy.inCinema = inCinema
 		copy.screensFilm = screensFilm
 		return copy
 	}
