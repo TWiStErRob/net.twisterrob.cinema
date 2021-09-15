@@ -19,6 +19,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneId
 
 fun feedReader(): XmlMapper {
 	val jackson = JacksonXmlModule().apply {
@@ -277,11 +278,15 @@ data class Feed(
 		 */
 		val url: URI,
 
-		@JacksonXmlProperty(localName = "date")
 		/**
+		 * The time of screening this performance starts.
+		 * Even though it's an ISO instant, the time is wrong.
+		 * In UK DST (BST in Summer) a time is returned as `2018-07-21T10:30:00Z`,
+		 * but this means "10:30" Cinema local time, so needs to be re-interpreted in [DEFAULT_TIMEZONE].
+		 *
 		 * @sample `"2018-07-21T10:00:00Z"`
 		 */
-		val time: OffsetDateTime,
+		val date: OffsetDateTime,
 
 		/**
 		 * @sample `"2D,AD"`
@@ -291,5 +296,14 @@ data class Feed(
 
 		@JsonIgnore
 		val attributeList = attributes.split(",")
+	}
+
+	companion object {
+
+		/**
+		 * Assume all the cinemas to be in the UK.
+		 * This will get fun when Ireland has different DST rules.
+		 */
+		val DEFAULT_TIMEZONE: ZoneId = ZoneId.of("Europe/London")
 	}
 }

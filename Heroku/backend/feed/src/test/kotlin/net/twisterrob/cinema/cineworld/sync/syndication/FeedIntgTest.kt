@@ -51,7 +51,7 @@ class FeedIntgTest {
 					cinema = cinemas.random(),
 					url = fixture.build(),
 					attributes = SCREENING_TYPES.random().code,
-					time = fixture.build()
+					date = fixture.build()
 				)
 				performance.film.add("performances", performance)
 				performance.cinema.add("performances", performance)

@@ -11,6 +11,7 @@ import java.time.ZoneOffset
 import javax.inject.Inject
 
 class QuickbookPerformanceMapper @Inject constructor() {
+
 	fun map(date: LocalDate, cinema: Long, film: Long, qbPerformances: List<QuickbookPerformance>): Performances {
 		val performances: List<Performances.Performance> = qbPerformances.map {
 			Performances.Performance(
@@ -34,6 +35,7 @@ class QuickbookPerformanceMapper @Inject constructor() {
 	}
 
 	companion object {
+
 		/**
 		 * Assume all the cinemas to be in the UK.
 		 * This will get fun when Ireland has different DST rules.
