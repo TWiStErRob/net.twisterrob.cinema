@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+	<!--
+		This file is intentionally incomplete. It is supposed to be used together with log4j2.xml
+		as an override, for example with JVM flag: -Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml
+	-->
+
+	<ThresholdFilter level="INFO" />
+
+</Configuration>

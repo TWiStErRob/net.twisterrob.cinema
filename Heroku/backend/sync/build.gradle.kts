@@ -9,6 +9,16 @@ plugins {
 application {
 	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.sync.Main")
+	tasks.named<JavaExec>("run") {
+		jvmArgs(
+			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
+		)
+		// Can be overridden with `gradlew :backend:sync:run --args <sync-type...>`.
+		args(
+			// Types of entities synchronized from syndication.
+			"cinemas", "films", "performances"
+		)
+	}
 }
 
 dependencies {

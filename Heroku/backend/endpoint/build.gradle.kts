@@ -11,9 +11,16 @@ application {
 	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
 	tasks.named<JavaExec>("run") {
-		// The folder that :frontend builds into.
-		// Can be overridden with `gradlew :backend:endpoint:run --args <folder>`.
-		args("../../deploy/static", "../src/test/fake")
+		jvmArgs(
+			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
+		)
+		// Can be overridden with `gradlew :backend:endpoint:run --args <static-folder> <fake-folder>`.
+		args(
+			// The folder that :frontend builds into.
+			"../../deploy/static",
+			// The folder that is looked at for debug builds for fake data for reproducible testing.
+			"../src/test/fake"
+		)
 	}
 }
 
