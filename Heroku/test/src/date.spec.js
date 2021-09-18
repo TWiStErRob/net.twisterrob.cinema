@@ -1,4 +1,4 @@
-import app, { date } from './dsl/app';
+import app, {date} from './dsl/app';
 import moment from 'moment';
 
 describe('Date display', function () {
@@ -49,7 +49,7 @@ describe('Date display', function () {
 
 		it('should update the url', function () {
 			expect(browser).toHaveUrlQuery('d', (d) =>
-					expect(d).toBe(selectedDate.format('YYYY-MM-DD')));
+					d === selectedDate.format('YYYY-MM-DD'));
 		});
 	});
 });

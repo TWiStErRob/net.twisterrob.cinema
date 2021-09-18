@@ -66,7 +66,7 @@ export function toBeSelected(actual, expectedClass) {
 /**
  * @param {protractor.ProtractorBrowser|WebDriver} browser
  * @param {string} queryKey
- * @param {function(jasmine.Matchers): Promise<void>} matcher
+ * @param {function(string): boolean} matcher
  * @returns {{message: string, pass: boolean|Promise<boolean>}}
  */
 export function toHaveUrlQuery(browser, queryKey, matcher) {
@@ -89,8 +89,13 @@ export function toHaveUrlQuery(browser, queryKey, matcher) {
 			verification.message = `Url '${currentUrl}' does not have a query string param named ${queryKey}.`;
 			deferred.fulfill(false);
 		} else {
-			deferred.fulfill(true);
-			matcher(urlObj.query[queryKey]);
+			let queryValue = urlObj.query[queryKey];
+			if (matcher(queryValue)) {
+				deferred.fulfill(true);
+			} else {
+				verification.message = `Url '${currentUrl}' does not satisfy a condition for ${queryKey}=${queryValue} given by\n${matcher}`;
+				deferred.fulfill(false);
+			}
 		}
 	});
 	return verification;

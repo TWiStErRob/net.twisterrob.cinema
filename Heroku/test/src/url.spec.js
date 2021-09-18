@@ -9,14 +9,14 @@ describe('URL Hash', function () {
 			app.goToPlanner();
 
 			expect(browser).toHaveUrlQuery('d', (d) =>
-					expect(moment(d, 'YYYY-MM-DD')).toBeSameMoment(moment(), 'day'));
+					moment(d, 'YYYY-MM-DD').isSame(moment(), 'day'));
 		});
 
 		it('should preselect date', function () {
 			app.goToPlanner('?d=2017-07-14');
 
 			expect(browser).toHaveUrlQuery('d', (d) =>
-					expect(moment(d, 'YYYY-MM-DD')).toBeSameMoment(moment({ year: 2017, month: 6, day: 14 }), 'day'));
+					moment(d, 'YYYY-MM-DD').isSame(moment({year: 2017, month: 6, day: 14}), 'day'));
 			expect(app.date.editor).toHaveText('7/14/17');
 			expect(app.date.label).toHaveText('Friday, July 14, 2017');
 		});
@@ -27,7 +27,8 @@ describe('URL Hash', function () {
 		it('should preselect favorites', function () {
 			app.goToPlanner();
 
-			expect(browser).toHaveUrlQuery('c', (c) => expect(c).toBe('103'));
+			expect(browser).toHaveUrlQuery('c', (c) =>
+					c === '103');
 		});
 
 		it('should preselect cinemas', function () {
