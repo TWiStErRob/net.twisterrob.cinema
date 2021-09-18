@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration
+	xmlns="http://logging.apache.org/log4j/2.0/config"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	strict="true"
-	status="WARN"
-	xsi:noNamespaceSchemaLocation="https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=blob_plain;f=log4j-core/src/main/resources/Log4j-config.xsd"
+	status="warn"
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/apache/logging-log4j2/master/log4j-core/src/main/resources/Log4j-config.xsd"
 >
+	<!--
+		Note: to debug Log4j, set status="trace"
+	-->
+
 	<Properties>
 		<Property name="pattern">%highlight{%date{ISO8601} %-5level [%thread] %message%n%throwable</Property>
 		<!-- See org.apache.logging.log4j.core.pattern.AnsiEscape for keywords  -->
 		<!-- %highlight separates keywords by spaces, %style separates keywords by commas! -->
 		<Property name="pattern_level_colors">
-			<!-- Change to "DEBUG=bright black, TRACE=cyan" once this issue is fixed:
-			     https://github.com/krasa/GrepConsole/issues/60 -->
-			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=green, TRACE=cyan
+			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=bright black, TRACE=cyan
 		</Property>
 		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
 		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
@@ -21,6 +24,7 @@
 	</Properties>
 
 	<ThresholdFilter level="TRACE" onMatch="neutral" onMismatch="deny" />
+
 	<Appenders>
 		<Appender type="Console" name="console">
 			<Layout type="PatternLayout" pattern="${pattern}" />
@@ -40,6 +44,46 @@
 		<Logger name="org.neo4j.ogm" level="TRACE" />
 
 		<!-- Tighten spamming logs. -->
+
+		<Logger name="net.twisterrob.cinema.cineworld.sync.CinemaSync" level="INFO" />
+		<Logger name="net.twisterrob.cinema.cineworld.sync.CinemaSyncCalculator" level="DEBUG" />
+		<Logger name="net.twisterrob.cinema.cineworld.sync.FilmSync" level="INFO" />
+		<Logger name="net.twisterrob.cinema.cineworld.sync.FilmSyncCalculator" level="DEBUG" />
+
+		<!-- on every OGM mapping of an entity these are logged:
+			DEBUG (EntityGraphMapper.java:124) context initialised with 0 relationships
+			DEBUG (EntityGraphMapper.java:358) visiting: Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London])
+			DEBUG (EntityGraphMapper.java:305) Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]) has changed
+			DEBUG (EntityGraphMapper.java:376) mapping references declared by: Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]), currently at depth 1
+			DEBUG (EntityGraphMapper.java:388) Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]): mapping reference type: IN
+			DEBUG (EntityGraphMapper.java:510) linking to entity Cinema[102](75, Dublin) in one direction
+			DEBUG (EntityGraphMapper.java:528) mapping related entity
+			DEBUG (EntityGraphMapper.java:270) already visited: Cinema[102](75, Dublin)
+			DEBUG (EntityGraphMapper.java:846) trying to map relationship between Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]) and Cinema[102](75, Dublin)
+			DEBUG (EntityGraphMapper.java:974) context-new: (-79425)-[-79426:IN]->(102)
+			DEBUG (EntityGraphMapper.java:388) Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]): mapping reference type: SCREENS
+			DEBUG (EntityGraphMapper.java:510) linking to entity Film[166](null, Rise Of The Footsoldier : Origins [AD]) in one direction
+			DEBUG (EntityGraphMapper.java:528) mapping related entity
+			DEBUG (EntityGraphMapper.java:270) already visited: Film[166](null, Rise Of The Footsoldier : Origins [AD])
+			DEBUG (EntityGraphMapper.java:846) trying to map relationship between Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London]) and Film[166](null, Rise Of
+ The Footsoldier : Origins [AD])
+		-->
+		<Logger name="org.neo4j.ogm.context.EntityGraphMapper" level="INFO" />
+
+		<!-- Fine details of execution, no need to know for now.
+			DEBUG (RequestExecutor.java:177) to create: nodeEntity -58:27305
+			DEBUG (RequestExecutor.java:223) creating new node id: -628, 27685, Performance(cinema=1, film=273821, time=2021-09-22T19:30+01:00[Europe/London])
+			DEBUG (RequestExecutor.java:175) to update: nodeEntity 325:325
+			DEBUG (RequestExecutor.java:208) updating existing node id: 778, Film[778](null, The Alpinist [AD])
+			DEBUG (RequestExecutor.java:185) to (maybe) create: relEntity -110:27218
+		-->
+		<Logger name="org.neo4j.ogm.session.request.RequestExecutor" level="INFO" />
+
+		<!-- For every saved entity, which can be a lot in sync:
+			DEBUG (SaveEventDelegate.java:179) dirty: Film[319](null, Space Jam : A New Legacy [AD])
+			DEBUG (SaveEventDelegate.java:179) dirty: Performance(cinema=75, film=342313, time=2021-09-17T14:00+01:00[Europe/London])
+		-->
+		<Logger name="org.neo4j.ogm.session.delegates.SaveEventDelegate" level="INFO" />
 
 		<!-- TMI from embedded driver during tests. -->
 		<Logger name="org.neo4j.driver.internal.shaded" level="INFO" />
@@ -151,4 +195,5 @@
 		<Logger name="io.netty" level="INFO" />
 
 	</Loggers>
+
 </Configuration>
