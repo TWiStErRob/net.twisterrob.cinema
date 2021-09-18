@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration
+	xmlns="http://logging.apache.org/log4j/2.0/config"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	strict="true"
-	status="WARN"
-	xsi:noNamespaceSchemaLocation="https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=blob_plain;f=log4j-core/src/main/resources/Log4j-config.xsd"
+	status="warn"
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/apache/logging-log4j2/master/log4j-core/src/main/resources/Log4j-config.xsd"
 >
+	<!--
+		Note: to debug Log4j, set status="trace"
+	-->
+
 	<Properties>
 		<Property name="pattern">%highlight{%date{ISO8601} %-5level [%thread] %message%n%throwable</Property>
 		<!-- See org.apache.logging.log4j.core.pattern.AnsiEscape for keywords  -->
@@ -21,6 +26,7 @@
 	</Properties>
 
 	<ThresholdFilter level="TRACE" onMatch="neutral" onMismatch="deny" />
+
 	<Appenders>
 		<Appender type="Console" name="console">
 			<Layout type="PatternLayout" pattern="${pattern}" />
@@ -191,4 +197,5 @@
 		<Logger name="io.netty" level="INFO" />
 
 	</Loggers>
+
 </Configuration>
