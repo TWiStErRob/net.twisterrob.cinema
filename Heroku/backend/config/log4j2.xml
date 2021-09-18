@@ -15,9 +15,7 @@
 		<!-- See org.apache.logging.log4j.core.pattern.AnsiEscape for keywords  -->
 		<!-- %highlight separates keywords by spaces, %style separates keywords by commas! -->
 		<Property name="pattern_level_colors">
-			<!-- Change to "DEBUG=bright black, TRACE=cyan" once this issue is fixed:
-			     https://github.com/krasa/GrepConsole/issues/60 -->
-			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=green, TRACE=cyan
+			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=bright black, TRACE=cyan
 		</Property>
 		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
 		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
