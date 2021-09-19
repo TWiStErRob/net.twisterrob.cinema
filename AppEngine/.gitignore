@@ -1,3 +1,5 @@
-/target
-/war
-/temp
+/target/
+/war/
+/temp/
+/.idea/
+*.iml

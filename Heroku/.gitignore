@@ -1,21 +1,20 @@
-.svn/
-node_modules/
-/.gradle/
-/buildSrc/.gradle/
+# Gradle
 build/
-static/scripts/libs/angular/docs/
+.gradle/
+
+# Node JS, NPM, WebPack
+node_modules/
+package-lock.json
+
+# IDEA
+/.idea/
+!/.idea/runConfigurations/
 *.iml
 *.ipr
 *.iws
-/.idea/
-!/.idea/runConfigurations/
-*.sublime-workspace
-.npm-debug.log
-package-lock.json
-/deploy/static/*
-!/deploy/static/lib/
-/test/logs/
+
+# General
 /temp/
-/backend/sync/test/*.xml
-out/
-/local.properties
+
+# Temporary outputs
+/deploy/static/
