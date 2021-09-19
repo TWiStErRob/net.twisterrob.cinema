@@ -2,6 +2,7 @@ package net.twisterrob.test
 
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
+import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.platform.commons.util.UnrecoverableExceptions
 import org.opentest4j.MultipleFailuresError
 import kotlin.DeprecationLevel.ERROR
@@ -93,4 +94,15 @@ fun <T> AllAsserter.that(reason: String, actual: T, matcher: Matcher<in T>) {
 )
 fun <T> AllAsserter.that(actual: T, matcher: Matcher<in T>) {
 	o { MatcherAssert.assertThat(actual, matcher) }
+}
+
+inline fun <reified T : Any> ExtensionContext.Store.put(value: T?) {
+	this.put(T::class, value)
+}
+
+inline fun <reified T : Any> ExtensionContext.Store.get(): T? =
+	this.get(T::class, T::class.java)
+
+inline fun <reified T : Any> ExtensionContext.Store.remove() {
+	this.remove(T::class)
 }
