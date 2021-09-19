@@ -44,6 +44,9 @@ allprojects {
 				//}))
 			}
 			parallelJUnit5Execution()
+			jvmArgs(
+				"-Djava.util.logging.config.file=${rootProject.file("config/logging.properties")}"
+			)
 		}
 
 		// JUnit 5 Tag setup, see JUnit5Tags.kt
@@ -103,7 +106,6 @@ allprojects {
 			}
 			val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
 				from(rootProject.file("config/log4j2.xml"))
-				from(rootProject.file("config/logging.properties"))
 				into(sourceSets["test"].resources.srcDirs.first())
 			}
 			"processTestResources"{

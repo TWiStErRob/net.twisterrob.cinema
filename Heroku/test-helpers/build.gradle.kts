@@ -20,5 +20,7 @@ dependencies {
 	Deps.JUnit.junit5(project)
 	testImplementation(Deps.JUnit.jupiter)
 	testImplementation(Deps.Hamcrest.core)
+	testRuntimeOnly(Deps.SLF4J.jul)
+	Deps.Log4J2.slf4jForTest(project)
 	// TODO add more testImplementation when writing tests
 }

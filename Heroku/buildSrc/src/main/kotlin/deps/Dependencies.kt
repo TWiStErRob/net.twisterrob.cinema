@@ -226,6 +226,7 @@ object SLF4J {
 
 	const val core = "org.slf4j:slf4j-api:${version}"
 	const val log4j12 = "org.slf4j:slf4j-log4j12:${version}"
+	const val jul = "org.slf4j:jul-to-slf4j:${version}"
 }
 
 object Log4J {
@@ -248,6 +249,15 @@ object Log4J2 {
 			add("runtimeOnly", api)
 			add("runtimeOnly", core)
 			add("runtimeOnly", slf4j)
+		}
+	}
+
+	fun slf4jForTest(project: Project) {
+		project.dependencies {
+			add("testRuntimeOnly", SLF4J.core)
+			add("testRuntimeOnly", api)
+			add("testRuntimeOnly", core)
+			add("testRuntimeOnly", slf4j)
 		}
 	}
 }
