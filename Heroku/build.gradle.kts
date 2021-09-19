@@ -91,6 +91,25 @@ allprojects {
 			}
 		}
 	}
+	plugins.withId("java") {
+		this@allprojects.tasks {
+			val sourceSets = this@allprojects.the<JavaPluginConvention>().sourceSets
+			val copyLoggingResources = register<Copy>("copyLoggingResources") {
+				from(rootProject.file("config/log4j2.xml"))
+				into(sourceSets["main"].resources.srcDirs.first())
+			}
+			"processResources" {
+				dependsOn(copyLoggingResources)
+			}
+			val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
+				from(rootProject.file("config/log4j2.xml"))
+				into(sourceSets["test"].resources.srcDirs.first())
+			}
+			"processTestResources"{
+				dependsOn(copyLoggingTestResources)
+			}
+		}
+	}
 }
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
