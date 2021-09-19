@@ -1,5 +1,6 @@
 name: Release to Heroku from master
-on: workflow_dispatch
+on:
+  workflow_dispatch
 jobs:
   release:
     name: Release to heroku branch
