@@ -1,7 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -11,6 +10,7 @@ import net.twisterrob.cinema.database.services.CinemaService
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
+import net.twisterrob.test.captureSingle
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.BeforeEach
@@ -47,11 +47,10 @@ class CinemaSyncTest {
 
 		sut.sync(fixtFeed)
 
-		argumentCaptor<List<DBCinema>> {
+		val cinemas: List<DBCinema> = captureSingle {
 			verify(dbService).save(capture())
-			val cinemas = allValues.single()
-			val persistedCinemas = fixtResult.insert + fixtResult.delete + fixtResult.update + fixtResult.restore
-			assertThat(cinemas, containsInAnyOrder(*persistedCinemas.toTypedArray()))
 		}
+		val persistedCinemas = fixtResult.insert + fixtResult.delete + fixtResult.update + fixtResult.restore
+		assertThat(cinemas, containsInAnyOrder(*persistedCinemas.toTypedArray()))
 	}
 }
