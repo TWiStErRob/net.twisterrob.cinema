@@ -1,1 +1,0 @@
-"c:\Program Files\Git\bin\sh.exe" -l -c "eval `ssh-agent` && ssh-add ~/.ssh/heroku_rsa && git fetch -p && sh -l -i"
