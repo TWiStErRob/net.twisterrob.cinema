@@ -32,11 +32,13 @@ module.exports = (env, argv) => {
 				template: 'src/main/pages/index.html',
 				filename: 'index.html',
 				chunks: [],
+				minify: false,
 			}),
 			new HtmlWebpackPlugin({
 				template: 'src/planner/pages/index.html',
 				filename: 'planner/index.html',
 				chunks: ['planner/index'],
+				minify: false,
 			}),
 		],
 		module: {
