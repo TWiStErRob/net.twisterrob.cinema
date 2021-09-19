@@ -26,32 +26,38 @@ fun Test.configureVerboseReportsForGithubActions() {
 	)
 
 	val lookup = mutableMapOf<TestDescriptor, TestInfo>()
+	beforeSuite(KotlinClosure1<TestDescriptor, Any>({
+		lookup.put(this, TestInfo(this))
+	}))
 	beforeTest(KotlinClosure1<TestDescriptor, Any>({
 		lookup.put(this, TestInfo(this))
 	}))
 	onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
-		if (descriptor.name.startsWith("Gradle Test Executor")) {
-			// Gradle Test Executor 155: Sep 04, 2021 12:26:40 PM org.junit.platform.launcher.core.EngineDiscoveryOrchestrator lambda$logTestDescriptorExclusionReasons$7
-			// Gradle Test Executor 155: INFO: 0 containers and 14 tests were excluded because tags do not match tag expression(s): [integration]
-			return@KotlinClosure2
-		}
 		val info = lookup.getValue(descriptor)
 		when (event.destination!!) {
 			TestOutputEvent.Destination.StdOut -> info.stdOut.append(event.message)
 			TestOutputEvent.Destination.StdErr -> info.stdErr.append(event.message)
 		}
 	}))
-	afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
 		val info = lookup.remove(descriptor)!!
-		fun fold(type: String, condition: Boolean, output: () -> Unit) {
+		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
 			val id = descriptor.toString().hashCode().absoluteValue
 			if (condition) {
-				println("::group::test_${type}_${id}")
+				println("::group::${testType}_${outputType}_${id}")
 				output()
 				println("::endgroup:: ")
 			}
 		}
-		println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
+
+		val groupName = when (val className = descriptor.className) {
+			null -> "Suite"
+			descriptor.name -> "Class"
+			else -> className
+		}
+		val name = descriptor.name
+		println("${groupName} > ${name} ${result.resultType}")
+
 		fold("ex", result.exception != null) {
 			result.exception!!.printStackTrace()
 		}
@@ -63,5 +69,11 @@ fun Test.configureVerboseReportsForGithubActions() {
 			println("STANDARD_ERR")
 			println(info.stdErr)
 		}
+	}
+	afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+		logResults("test", descriptor, result)
+	}))
+	afterSuite(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+		logResults("suite", descriptor, result)
 	}))
 }
