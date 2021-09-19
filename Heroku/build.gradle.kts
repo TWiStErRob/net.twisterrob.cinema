@@ -29,7 +29,7 @@ allprojects {
 		}
 	}
 	plugins.withId("java") {
-		val base = this@allprojects.convention.getPlugin(BasePluginConvention::class.java)
+		val base = this@allprojects.the<BasePluginConvention>()
 		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
 	}
 	plugins.withId("java") {
