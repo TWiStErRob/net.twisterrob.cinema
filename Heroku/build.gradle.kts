@@ -43,6 +43,7 @@ allprojects {
 				//	logger.quiet("Executing test ${descriptor.className}.${descriptor.name} with result: ${result.resultType}")
 				//}))
 			}
+			parallelJUnit5Execution()
 		}
 
 		// JUnit 5 Tag setup, see JUnit5Tags.kt
