@@ -66,7 +66,8 @@ allprojects {
 				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
-				maxParallelForks = 2
+				// For for each test as it needs more memory to set up embedded Neo4j.
+				setForkEvery(1)
 				useJUnitPlatform {
 					includeTags("integration")
 					excludeTags("external")
