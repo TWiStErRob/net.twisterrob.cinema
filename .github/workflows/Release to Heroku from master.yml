@@ -1,0 +1,20 @@
+name: Release to Heroku from master
+on: workflow_dispatch
+jobs:
+  release:
+    name: Release to heroku branch
+    # Doesn't matter which one, simple git commands only.
+    runs-on: ubuntu-latest
+    # Simple fast-forward merge, shouldn't take long.
+    timeout-minutes: 1
+    steps:
+      - name: Merge master into heroku
+        uses: exions/merge-upstream@v1
+        with:
+          # Same repository.
+          upstream: ${{ github.repository }}
+          # From branch.
+          upstream-branch: 'master'
+          # To branch.
+          branch: 'heroku'
+          token: ${{ github.token }}
