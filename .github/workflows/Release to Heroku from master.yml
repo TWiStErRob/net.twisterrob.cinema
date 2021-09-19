@@ -9,7 +9,7 @@ jobs:
     # Simple fast-forward merge, shouldn't take long.
     timeout-minutes: 1
     env:
-      HEROKU_BRANCH: 'heroku1'
+      HEROKU_BRANCH: 'heroku'
       RELEASE_BRANCH: 'master'
     steps:
       - name: Checkout ${{ env.HEROKU_BRANCH }} branch in ${{ github.repository }} repository.
