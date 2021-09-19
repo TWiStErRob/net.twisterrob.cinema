@@ -103,6 +103,7 @@ allprojects {
 			}
 			val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
 				from(rootProject.file("config/log4j2.xml"))
+				from(rootProject.file("config/logging.properties"))
 				into(sourceSets["test"].resources.srcDirs.first())
 			}
 			"processTestResources"{
