@@ -6,6 +6,9 @@ import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.model.validDBData
 import net.twisterrob.test.applyCustomisation
+import net.twisterrob.test.get
+import net.twisterrob.test.put
+import net.twisterrob.test.remove
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -48,45 +51,49 @@ import org.neo4j.ogm.session.Session
  */
 class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
-	private lateinit var testServer: Neo4j
-	private lateinit var dagger: ModelIntgTestExtensionComponent
-	private val fixture: JFixture by lazy {
-		JFixture().applyCustomisation {
+	override fun postProcessTestInstance(testInstance: Any, extensionContext: ExtensionContext) {
+		val fixture: JFixture = JFixture().applyCustomisation {
 			add(validDBData())
 		}
-	}
+		extensionContext.store.put(fixture)
 
-	override fun postProcessTestInstance(testInstance: Any, extensionContext: ExtensionContext) {
 		testInstance::class.java.declaredFields.filter { it.type == JFixture::class.java }
 			.onEach { it.isAccessible = true }
 			.forEach { it.set(testInstance, fixture) }
 	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
-		testServer = Neo4jBuilders.newInProcessBuilder().build()
-		dagger = DaggerModelIntgTestExtensionComponent
+		val testServer = Neo4jBuilders.newInProcessBuilder().build()
+		extensionContext.store.put(testServer)
+		val dagger = DaggerModelIntgTestExtensionComponent
 			.builder()
 			.graphDBUri(testServer.boltURI())
 			.build()
+		extensionContext.store.put(dagger)
 	}
 
 	override fun afterEach(extensionContext: ExtensionContext) {
-		testServer.close()
+		extensionContext.store.get<Neo4j>()!!.close()
+		extensionContext.store.remove<Neo4j>()
+		extensionContext.store.remove<ModelIntgTestExtensionComponent>()
 	}
 
-	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean {
-		return parameterContext.parameter.type in SUPPORTED_PARAMTER_TYPES
-	}
+	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
+		parameterContext.parameter.type in SUPPORTED_PARAMTER_TYPES
 
 	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? =
 		when (parameterContext.parameter.type) {
-			GraphDatabaseService::class.java -> testServer.defaultDatabaseService()
-			Session::class.java -> dagger.session
-			JFixture::class.java -> fixture
+			GraphDatabaseService::class.java ->
+				extensionContext.store.get<Neo4j>()!!.defaultDatabaseService()
+			Session::class.java ->
+				extensionContext.store.get<ModelIntgTestExtensionComponent>()!!.session
+			JFixture::class.java ->
+				extensionContext.store.get<JFixture>()!!
 			else -> error("Unsupported $parameterContext")
 		}
 
 	companion object {
+
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.graphdb.GraphDatabaseService::class.java,
 			org.neo4j.ogm.session.Session::class.java,
@@ -94,6 +101,9 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 		)
 	}
 }
+
+private val ExtensionContext.store: ExtensionContext.Store
+	get() = this.getStore(ExtensionContext.Namespace.create("intgTestModel"))
 
 @Component(modules = [Neo4JModule::class])
 @Neo4J
