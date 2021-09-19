@@ -18,7 +18,9 @@ jobs:
           ref: ${{ env.HEROKU_BRANCH }}
 
       - name: Merge ${{ env.RELEASE_BRANCH }} into ${{ env.HEROKU_BRANCH }}.
-        run: git merge --ff-only origin/${{ env.RELEASE_BRANCH }}
+        run: |
+          git fetch origin ${{ env.RELEASE_BRANCH }}
+          git merge --ff-only origin/${{ env.RELEASE_BRANCH }}
 
       - name: Publish ${{ env.HEROKU_BRANCH }} to GitHub.
         run: git push origin ${{ env.HEROKU_BRANCH }}:${{ env.HEROKU_BRANCH }}
