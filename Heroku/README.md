@@ -29,11 +29,12 @@
 
 ## Deployment
 
+[Automatic deploys](https://devcenter.heroku.com/articles/github-integration#automatic-deploys) are [enabled](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-automatic-deploys) in Heroku from GitHub.
+Push code to deploy to `origin/heroku` branch, or execute "Release to Heroku from master" workflow from GitHub Actions.
+For custom manual deployment visit [Manual Deploy on Heroku](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-manual-deploy).
+
+Manage the app at [Heroku settings](https://dashboard.heroku.com/apps/twisterrob-cinema/settings).
 See [Heroku App Manifest](app.json) ([docs](https://devcenter.heroku.com/articles/app-json-schema)) for more info on what environment is running the app.
-
-Use `scripts/deploy*`.
-
-See also https://dashboard.heroku.com/apps/twisterrob-cinema/settings.
 
 ## Debug Production
 
