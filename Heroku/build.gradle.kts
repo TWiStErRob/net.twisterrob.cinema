@@ -29,7 +29,7 @@ allprojects {
 		}
 	}
 	plugins.withId("java") {
-		val base = this@allprojects.convention.getPlugin(BasePluginConvention::class.java)
+		val base = this@allprojects.the<BasePluginConvention>()
 		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
 	}
 	plugins.withId("java") {
@@ -43,6 +43,7 @@ allprojects {
 				//	logger.quiet("Executing test ${descriptor.className}.${descriptor.name} with result: ${result.resultType}")
 				//}))
 			}
+			parallelJUnit5Execution()
 		}
 
 		// JUnit 5 Tag setup, see JUnit5Tags.kt
@@ -65,7 +66,8 @@ allprojects {
 				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
-				maxParallelForks = 2
+				// For for each test as it needs more memory to set up embedded Neo4j.
+				setForkEvery(1)
 				useJUnitPlatform {
 					includeTags("integration")
 					excludeTags("external")

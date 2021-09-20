@@ -17,14 +17,14 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 		val engine = TestApplicationEngine(createTestEnvironment()) {}
 		engine.start()
 		engine.application.log.trace("Ktor test starting {}.{}", context.requiredTestClass, context.requiredTestMethod)
-		context.ktorStore.put<ApplicationEngine>(engine)
+		context.store.put<ApplicationEngine>(engine)
 	}
 
 	override fun afterEach(context: ExtensionContext) {
-		val engine = context.ktorStore.get<ApplicationEngine>()!!
+		val engine = context.store.get<ApplicationEngine>()!!
 		engine.application.log.trace("Ktor test finishing {}.{}", context.requiredTestClass, context.requiredTestMethod)
 		engine.stop(0L, 0L)
-		context.ktorStore.remove<ApplicationEngine>()
+		context.store.remove<ApplicationEngine>()
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
@@ -33,11 +33,11 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? =
 		when (parameterContext.parameter.type) {
 			TestApplicationEngine::class.java ->
-				extensionContext.ktorStore.get<ApplicationEngine>() as TestApplicationEngine
+				extensionContext.store.get<ApplicationEngine>() as TestApplicationEngine
 			ApplicationEngine::class.java ->
-				extensionContext.ktorStore.get<ApplicationEngine>()
+				extensionContext.store.get<ApplicationEngine>()
 			Application::class.java ->
-				extensionContext.ktorStore.get<ApplicationEngine>()!!.application
+				extensionContext.store.get<ApplicationEngine>()!!.application
 			else -> error("Unsupported $parameterContext")
 		}
 
@@ -52,16 +52,5 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 	}
 }
 
-private val ExtensionContext.ktorStore: ExtensionContext.Store
+private val ExtensionContext.store: ExtensionContext.Store
 	get() = this.getStore(ExtensionContext.Namespace.create("ktor"))
-
-private inline fun <reified T : Any> ExtensionContext.Store.put(server: T) {
-	this.put(T::class, server)
-}
-
-private inline fun <reified T : Any> ExtensionContext.Store.get(): T? =
-	this.get(T::class, T::class.java)
-
-private inline fun <reified T : Any> ExtensionContext.Store.remove() {
-	this.remove(T::class)
-}
