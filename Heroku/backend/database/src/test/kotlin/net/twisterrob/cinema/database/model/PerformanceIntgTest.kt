@@ -21,7 +21,7 @@ import org.neo4j.graphdb.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 
-@ExtendWith(ModelIntgTestExtension::class)
+@ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
 @TagIntegration
 class PerformanceIntgTest {
 

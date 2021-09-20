@@ -22,7 +22,7 @@ import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import java.time.ZoneOffset
 
-@ExtendWith(ModelIntgTestExtension::class)
+@ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
 @TagIntegration
 class CinemaIntgTest {
 

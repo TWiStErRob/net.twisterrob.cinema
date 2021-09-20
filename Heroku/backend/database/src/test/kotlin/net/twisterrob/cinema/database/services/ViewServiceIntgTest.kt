@@ -5,6 +5,7 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.Film
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.View
 import net.twisterrob.cinema.database.model.assertSameData
@@ -27,7 +28,7 @@ import org.neo4j.ogm.session.Session
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-@ExtendWith(ModelIntgTestExtension::class)
+@ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
 @TagIntegration
 class ViewServiceIntgTest {
 
