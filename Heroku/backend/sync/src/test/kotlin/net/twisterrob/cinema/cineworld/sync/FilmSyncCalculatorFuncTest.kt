@@ -9,9 +9,8 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
-import net.twisterrob.cinema.database.model.validDBData
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.TagFunctional
-import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.that
@@ -20,16 +19,16 @@ import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.OffsetDateTime
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
+@ExtendWith(ModelFixtureExtension::class)
 @TagFunctional
 class FilmSyncCalculatorFuncTest {
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-	}
+	private lateinit var fixture: JFixture
 	private val mockCreator: Creator<FeedFilm, DBFilm> = mock()
 	private val mockUpdater: Updater<DBFilm, FeedFilm> = mock()
 	private lateinit var sut: FilmSyncCalculator

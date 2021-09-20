@@ -12,29 +12,30 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaMapper
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmMapper
-import net.twisterrob.cinema.database.model.validDBData
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
-import net.twisterrob.test.offsetDateTimeRealistic
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import net.twisterrob.cinema.database.model.View as DBView
 
+@ExtendWith(ModelFixtureExtension::class)
 class ViewMapperTest {
+
 	private val mockFilmMapper: FilmMapper = mock()
 	private val mockCinemaMapper: CinemaMapper = mock()
 	private val mockUserMapper: UserMapper = mock()
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-		add(offsetDateTimeRealistic())
-		circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
-	}
+	private lateinit var fixture: JFixture
 	private lateinit var sut: ViewMapper
 
 	@BeforeEach fun setUp() {
 		sut = ViewMapper(mockCinemaMapper, mockFilmMapper, mockUserMapper)
+		fixture.applyCustomisation {
+			circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
+		}
 	}
 
 	@Test fun map() {

@@ -1,22 +1,19 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data
 
 import com.flextrade.jfixture.JFixture
-import net.twisterrob.cinema.database.model.validDBData
-import net.twisterrob.test.applyCustomisation
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.build
-import net.twisterrob.test.offsetDateTimeRealistic
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
+@ExtendWith(ModelFixtureExtension::class)
 class CinemaMapperTest {
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-		add(offsetDateTimeRealistic())
-	}
+	private lateinit var fixture: JFixture
 	private lateinit var sut: CinemaMapper
 
 	@BeforeEach fun setUp() {

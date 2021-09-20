@@ -4,31 +4,28 @@ import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
-import net.twisterrob.cinema.database.model.validDBData
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.cinema.database.services.CinemaService
-import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.buildMap
-import net.twisterrob.test.offsetDateTimeRealistic
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema as FrontendCinema
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
+@ExtendWith(ModelFixtureExtension::class)
 class GraphCinemaRepositoryTest {
 
 	@Mock lateinit var mockService: CinemaService
 	@Mock lateinit var mockMapper: CinemaMapper
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-		add(offsetDateTimeRealistic())
-	}
+	private lateinit var fixture: JFixture
 	private lateinit var sut: CinemaRepository
 
 	@BeforeEach fun setUp() {

@@ -9,8 +9,7 @@ import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import dagger.Component
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
-import net.twisterrob.cinema.database.model.validDBData
-import net.twisterrob.test.applyCustomisation
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.that
@@ -18,6 +17,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
@@ -25,11 +25,10 @@ import net.twisterrob.cinema.database.model.Film as DBFilm
  * @see SyncAppModule.copyFilmProperties sut
  * @see DBFilm.copyPropertiesFrom delegate
  */
+@ExtendWith(ModelFixtureExtension::class)
 class FilmSyncUpdaterTest {
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-	}
+	private lateinit var fixture: JFixture
 	private lateinit var sut: Updater<DBFilm, FeedFilm>
 
 	@BeforeEach fun setUp() {

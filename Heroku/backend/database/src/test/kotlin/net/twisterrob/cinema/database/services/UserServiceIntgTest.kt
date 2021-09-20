@@ -3,6 +3,7 @@ package net.twisterrob.cinema.database.services
 import com.flextrade.jfixture.JFixture
 import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.assertSameData
 import net.twisterrob.cinema.database.model.inUTC
@@ -26,7 +27,7 @@ import org.neo4j.ogm.session.load
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-@ExtendWith(ModelIntgTestExtension::class)
+@ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
 @TagIntegration
 class UserServiceIntgTest {
 

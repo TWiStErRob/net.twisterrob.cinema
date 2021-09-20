@@ -1,11 +1,8 @@
 package net.twisterrob.cinema.database.model.test
 
-import com.flextrade.jfixture.JFixture
 import dagger.Component
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
-import net.twisterrob.cinema.database.model.validDBData
-import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.get
 import net.twisterrob.test.put
 import net.twisterrob.test.remove
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
-import org.junit.jupiter.api.extension.TestInstancePostProcessor
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.harness.Neo4j
 import org.neo4j.harness.Neo4jBuilders
@@ -23,7 +19,6 @@ import org.neo4j.ogm.session.Session
 /**
  * Injects parameter [GraphDatabaseService], only one graph will exist during a test.
  * Injects parameter [Session], supports multiple sessions in one method.
- * Injects parameter and field [JFixture] with a customised fixture for Database entities.
  *
  * Tip: it is recommended to use a separate [Session] for `sut` and [org.junit.jupiter.api.Test].
  * This prevents caching problems with changing data and getting data from cache instead of from DB.
@@ -31,7 +26,6 @@ import org.neo4j.ogm.session.Session
  * @ExtendWith(ModelIntgTestExtension::class)
  * @TagIntegration
  * class SomeIntgTest {
- *     private lateinit var fixture: JFixture
  *     private lateinit var sut: UserService
  *
  *     @BeforeEach fun setUp(session: Session) {
@@ -39,28 +33,16 @@ import org.neo4j.ogm.session.Session
  *     }
  *
  *     @Test fun test(session: Session) {
- *         val fixtData = fixture.build()
- *         session.save(fixtData) // save using test's session (this will cache fixtData)
+ *         session.save(data) // save using test's session (this will cache fixtData)
  *
- *         val result = sut.find(fixtData.id) // read using sut's session (empty at this point)
+ *         val result = sut.find(data.id) // read using sut's session (empty at this point)
  *
- *         assertThat(result, sameBeanAs(fixtData)) // compare all fields are equal between sessions
+ *         assertThat(result, sameBeanAs(data)) // compare all fields are equal between sessions
  *     }
  * }
  * ```
  */
-class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback, ParameterResolver {
-
-	override fun postProcessTestInstance(testInstance: Any, extensionContext: ExtensionContext) {
-		val fixture: JFixture = JFixture().applyCustomisation {
-			add(validDBData())
-		}
-		extensionContext.store.put(fixture)
-
-		testInstance::class.java.declaredFields.filter { it.type == JFixture::class.java }
-			.onEach { it.isAccessible = true }
-			.forEach { it.set(testInstance, fixture) }
-	}
+class ModelIntgTestExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val testServer = Neo4jBuilders.newInProcessBuilder().build()
@@ -87,8 +69,6 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 				extensionContext.store.get<Neo4j>()!!.defaultDatabaseService()
 			Session::class.java ->
 				extensionContext.store.get<ModelIntgTestExtensionComponent>()!!.session
-			JFixture::class.java ->
-				extensionContext.store.get<JFixture>()!!
 			else -> error("Unsupported $parameterContext")
 		}
 
@@ -97,7 +77,6 @@ class ModelIntgTestExtension : TestInstancePostProcessor, BeforeEachCallback, Af
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.graphdb.GraphDatabaseService::class.java,
 			org.neo4j.ogm.session.Session::class.java,
-			com.flextrade.jfixture.JFixture::class.java
 		)
 	}
 }
