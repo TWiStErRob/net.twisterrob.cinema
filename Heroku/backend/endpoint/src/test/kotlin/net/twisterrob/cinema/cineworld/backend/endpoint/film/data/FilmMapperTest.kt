@@ -9,33 +9,33 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewMapper
-import net.twisterrob.cinema.database.model.validDBData
+import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
-import net.twisterrob.test.offsetDateTimeRealistic
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import javax.inject.Provider
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
+@ExtendWith(ModelFixtureExtension::class)
 class FilmMapperTest {
 
 	private val mockViewMapper: ViewMapper = mock()
 
-	private val fixture = JFixture().applyCustomisation {
-		add(validDBData())
-		add(offsetDateTimeRealistic())
-		circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
-	}
+	private lateinit var fixture: JFixture
 	private lateinit var sut: FilmMapper
 
 	@BeforeEach fun setUp() {
 		sut = FilmMapper(Provider { mockViewMapper })
+		fixture.applyCustomisation {
+			circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
+		}
 	}
 
 	@Test fun `map a film (defaults to with views)`() {
