@@ -1,8 +1,9 @@
 package net.twisterrob.ktor.client
 
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.atLeast
 import com.nhaarman.mockitokotlin2.atMost
 import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
@@ -68,21 +69,18 @@ class ConfigureLoggingTest {
 		}
 
 		assertEquals("Fake content", result)
-
-		inOrder(mockLogger) {
-			val ex: Throwable = captureSingle {
-				verify(mockLogger).debug(eq("Network call: http://localhost/stubbed"), capture())
-			}
-			assertEquals("net.twisterrob.ktor.client.NetworkCall", ex.javaClass.name)
-			assertEquals("Callsite for http://localhost/stubbed", ex.message)
-			assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
-			verify(mockLogger).info("REQUEST: http://localhost/stubbed")
-			verify(mockLogger).info("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).info("RESPONSE: 200 OK")
-			verify(mockLogger).info("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).info("FROM: http://localhost/stubbed")
-		}
-		verifyNoMoreLogLevelInteractions(mockLogger, Logger::info)
+		verifyCallSite(expectedStack)
+		assertEquals(
+			"""
+			REQUEST: http://localhost/stubbed
+			METHOD: HttpMethod(value=GET)
+			RESPONSE: 200 OK
+			METHOD: HttpMethod(value=GET)
+			FROM: http://localhost/stubbed
+			""".trimIndent(),
+			verifyAllLogsFor(Logger::info)
+		)
+		verifyNoMoreLogLevelInteractions(Logger::info)
 	}
 
 	@Test fun `debug logging displays detailed information`() {
@@ -97,30 +95,28 @@ class ConfigureLoggingTest {
 		}
 
 		assertEquals("Fake content", result)
+		verifyCallSite(expectedStack)
+		assertEquals(
+			"""
+			REQUEST: http://localhost/stubbed
+			METHOD: HttpMethod(value=GET)
+			BODY Content-Type: null
+			BODY START
 
-		inOrder(mockLogger) {
-			val ex: Throwable = captureSingle {
-				verify(mockLogger).debug(eq("Network call: http://localhost/stubbed"), capture())
-			}
-			assertEquals("net.twisterrob.ktor.client.NetworkCall", ex.javaClass.name)
-			assertEquals("Callsite for http://localhost/stubbed", ex.message)
-			assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
-			verify(mockLogger).debug("REQUEST: http://localhost/stubbed")
-			verify(mockLogger).debug("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).debug("BODY Content-Type: null")
-			verify(mockLogger).debug("BODY START")
-			verify(mockLogger).debug("")
-			verify(mockLogger).debug("BODY END")
-			verify(mockLogger).debug("RESPONSE: 200 OK")
-			verify(mockLogger).debug("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).debug("FROM: http://localhost/stubbed")
-			verify(mockLogger).debug("BODY Content-Type: application/xml")
-			verify(mockLogger).debug("BODY START")
-			verify(mockLogger).debug("Fake content")
-			verify(mockLogger).debug("BODY END")
-		}
-		verifyNoMoreLogLevelInteractions(mockLogger, Logger::debug)
+			BODY END
+			RESPONSE: 200 OK
+			METHOD: HttpMethod(value=GET)
+			FROM: http://localhost/stubbed
+			BODY Content-Type: application/xml
+			BODY START
+			Fake content
+			BODY END
+			""".trimIndent(),
+			verifyAllLogsFor(Logger::debug)
+		)
+		verifyNoMoreLogLevelInteractions(Logger::debug)
 	}
+
 	@Test fun `trace logging displays all information`() {
 		whenever(mockLogger.isTraceEnabled).thenReturn(true)
 		sut.stubFakeRequestResponse()
@@ -133,41 +129,56 @@ class ConfigureLoggingTest {
 		}
 
 		assertEquals("Fake content", result)
-
-		inOrder(mockLogger) {
-			val ex: Throwable = captureSingle {
-				verify(mockLogger).debug(eq("Network call: http://localhost/stubbed"), capture())
-			}
-			assertEquals("net.twisterrob.ktor.client.NetworkCall", ex.javaClass.name)
-			assertEquals("Callsite for http://localhost/stubbed", ex.message)
-			assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
-			verify(mockLogger).trace("REQUEST: http://localhost/stubbed")
-			verify(mockLogger).trace("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).trace("COMMON HEADERS")
-			verify(mockLogger).trace("-> Accept: */*")
-			verify(mockLogger).trace("-> Accept-Charset: UTF-8")
-			verify(mockLogger).trace("-> X-Custom-Request-Header: x-custom-request-value")
-			verify(mockLogger).trace("CONTENT HEADERS")
-			verify(mockLogger).trace("-> Content-Length: 0")
-			verify(mockLogger).trace("BODY Content-Type: null")
-			verify(mockLogger).trace("BODY START")
-			verify(mockLogger).trace("")
-			verify(mockLogger).trace("BODY END")
-			verify(mockLogger).trace("RESPONSE: 200 OK")
-			verify(mockLogger).trace("METHOD: HttpMethod(value=GET)")
-			verify(mockLogger).trace("FROM: http://localhost/stubbed")
-			verify(mockLogger).trace("COMMON HEADERS")
-			verify(mockLogger).trace("-> Content-Type: application/xml")
-			verify(mockLogger).trace("-> X-Custom-Response-Header: x-Custom-Request-Value")
-			verify(mockLogger).trace("BODY Content-Type: application/xml")
-			verify(mockLogger).trace("BODY START")
-			verify(mockLogger).trace("Fake content")
-			verify(mockLogger).trace("BODY END")
-		}
-		verifyNoMoreLogLevelInteractions(mockLogger, Logger::trace)
+		verifyCallSite(expectedStack)
+		assertEquals(
+			"""
+			REQUEST: http://localhost/stubbed
+			METHOD: HttpMethod(value=GET)
+			COMMON HEADERS
+			-> Accept: */*
+			-> Accept-Charset: UTF-8
+			-> X-Custom-Request-Header: x-custom-request-value
+			CONTENT HEADERS
+			-> Content-Length: 0
+			BODY Content-Type: null
+			BODY START
+			
+			BODY END
+			RESPONSE: 200 OK
+			METHOD: HttpMethod(value=GET)
+			FROM: http://localhost/stubbed
+			COMMON HEADERS
+			-> Content-Type: application/xml
+			-> X-Custom-Response-Header: x-Custom-Request-Value
+			BODY Content-Type: application/xml
+			BODY START
+			Fake content
+			BODY END
+			""".trimIndent(),
+			verifyAllLogsFor(Logger::trace)
+		)
+		verifyNoMoreLogLevelInteractions(Logger::trace)
 	}
 
-	private fun verifyNoMoreLogLevelInteractions(mockLogger: Logger, method: Logger.(String) -> Unit) {
+	private fun verifyCallSite(expectedStack: StackTraceElement) {
+		val ex: Throwable = captureSingle {
+			verify(mockLogger).debug(eq("Network call: http://localhost/stubbed"), capture())
+		}
+		assertEquals("net.twisterrob.ktor.client.NetworkCall", ex.javaClass.name)
+		assertEquals("Callsite for http://localhost/stubbed", ex.message)
+		assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
+	}
+
+	private fun verifyAllLogsFor(method: Logger.(String) -> Unit): String {
+		val argumentCaptor = argumentCaptor<String> {
+			verify(mockLogger, atLeast(0)).method(capture())
+		}
+		return argumentCaptor
+			.allValues
+			.joinToString("\n")
+	}
+
+	private fun verifyNoMoreLogLevelInteractions(method: Logger.(String) -> Unit) {
 		verify(mockLogger, atMost(1)).isErrorEnabled
 		verify(mockLogger, atMost(1)).isWarnEnabled
 		verify(mockLogger, atMost(1)).isInfoEnabled
