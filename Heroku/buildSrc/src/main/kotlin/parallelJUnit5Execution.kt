@@ -13,7 +13,9 @@ fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
 
 	systemProperty("junit.jupiter.testinstance.lifecycle.default", "per_method")
 	systemProperty("junit.jupiter.execution.parallel.config.strategy", "dynamic")
-	when (concurrency) {
+	val overrideRaw = project.property("net.twisterrob.build.testConcurrencyOverride").toString()
+	val override = if (overrideRaw == "") null else Concurrency.valueOf(overrideRaw)
+	when (override ?: concurrency) {
 		Concurrency.PerSuite ->
 			systemProperties(
 				mapOf(

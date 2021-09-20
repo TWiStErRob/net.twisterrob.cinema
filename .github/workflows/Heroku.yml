@@ -67,6 +67,7 @@ jobs:
           --stacktrace
           check tests
           -Pnet.twisterrob.build.verboseReports=true
+          -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
