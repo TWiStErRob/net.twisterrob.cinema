@@ -3,8 +3,9 @@ package net.twisterrob.ktor.client
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.atLeast
 import com.nhaarman.mockitokotlin2.atMost
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
@@ -21,13 +22,21 @@ import net.twisterrob.test.captureSingle
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @TagFunctional
 class ConfigureLoggingTest {
 
-	private val mockLogger: Logger = mock()
+	private val mockLogger: Logger = spy(LoggerFactory.getLogger(ConfigureLoggingTest::class.java)).apply {
+		doReturn(false).whenever(this).isErrorEnabled
+		doReturn(false).whenever(this).isWarnEnabled
+		doReturn(false).whenever(this).isInfoEnabled
+		doReturn(false).whenever(this).isDebugEnabled
+		doReturn(false).whenever(this).isTraceEnabled
+	}
 
 	/**
 	 * Needs to be initialized after mock stubs, because it calls [mockLogger] methods.
@@ -36,6 +45,15 @@ class ConfigureLoggingTest {
 		HttpClient(mockEngine()).config {
 			// Real sut is the extension method.
 			configureLogging(mockLogger)
+		}
+	}
+
+	companion object {
+
+		@Suppress("unused")
+		@BeforeAll @JvmStatic fun forceSlf4jInitialization() {
+			// Uninitialized [LoggerFactory.getLogger] would return different types of loggers on each call.
+			LoggerFactory.getILoggerFactory()
 		}
 	}
 
@@ -58,7 +76,7 @@ class ConfigureLoggingTest {
 	}
 
 	@Test fun `info logging displays basic information`() {
-		whenever(mockLogger.isInfoEnabled).thenReturn(true)
+		doReturn(true).whenever(mockLogger).isInfoEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
@@ -84,7 +102,7 @@ class ConfigureLoggingTest {
 	}
 
 	@Test fun `debug logging displays detailed information`() {
-		whenever(mockLogger.isDebugEnabled).thenReturn(true)
+		doReturn(true).whenever(mockLogger).isDebugEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
@@ -118,7 +136,7 @@ class ConfigureLoggingTest {
 	}
 
 	@Test fun `trace logging displays all information`() {
-		whenever(mockLogger.isTraceEnabled).thenReturn(true)
+		doReturn(true).whenever(mockLogger).isTraceEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
