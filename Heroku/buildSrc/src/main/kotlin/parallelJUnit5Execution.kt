@@ -7,18 +7,12 @@ enum class Concurrency {
 }
 
 fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
-	// Split up work into as many processes as possible to ease memory pressure for each executor.
-	// But not as a workaround for https://github.com/gradle/gradle/issues/6453, as it is not necessary since Gradle 5.1.
-	maxParallelForks = Runtime.getRuntime().availableProcessors() / 2 + 1
-	println(Runtime.getRuntime().availableProcessors())
-	println(maxParallelForks)
-
 	systemProperty("junit.jupiter.testinstance.lifecycle.default", "per_method")
 	systemProperty("junit.jupiter.execution.parallel.config.strategy", "dynamic")
 	val overrideRaw = project.property("net.twisterrob.build.testConcurrencyOverride").toString()
 	val override = if (overrideRaw == "") null else Concurrency.valueOf(overrideRaw)
 	when (override ?: concurrency) {
-		Concurrency.PerSuite ->
+		Concurrency.PerSuite -> {
 			systemProperties(
 				mapOf(
 					"junit.jupiter.execution.parallel.enabled" to false,
@@ -26,7 +20,10 @@ fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
 					"junit.jupiter.execution.parallel.mode.classes.default" to "same_thread"
 				)
 			)
-		Concurrency.PerClass ->
+		}
+		Concurrency.PerClass -> {
+			// Split up work into as many processes as possible to ease memory pressure for each executor.
+			maxParallelForks = Runtime.getRuntime().availableProcessors() / 2 + 1
 			systemProperties(
 				mapOf(
 					"junit.jupiter.execution.parallel.enabled" to true,
@@ -34,7 +31,10 @@ fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
 					"junit.jupiter.execution.parallel.mode.classes.default" to "concurrent"
 				)
 			)
-		Concurrency.PerMethod ->
+		}
+		Concurrency.PerMethod -> {
+			// Split up work into as many processes as possible to ease memory pressure for each executor.
+			maxParallelForks = Runtime.getRuntime().availableProcessors() / 2 + 1
 			systemProperties(
 				mapOf(
 					"junit.jupiter.execution.parallel.enabled" to true,
@@ -42,5 +42,6 @@ fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
 					"junit.jupiter.execution.parallel.mode.classes.default" to "concurrent"
 				)
 			)
+		}
 	}
 }
