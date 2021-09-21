@@ -111,7 +111,7 @@ twister.cineworld = NS(twister.cineworld, {
 		twister.cineworld.cinemas.retrieveFilmsDelay.start();
 	},
 	displayCinemas: function(cinemas) {
-		var cinemasList = $('<ul id="cinemas" name="cinemas" class="selectors" />');
+		var cinemasList = $('<ul id="cinemas" name="cinemas" class="selectors"></ul>');
 		$.each(cinemas, function() {
 			var id = 'cinema' + this.id;
 			var li = $('<li>').addClass('selector').attr('id', id).data('cinema-name', this.name);

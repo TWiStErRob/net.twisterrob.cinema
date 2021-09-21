@@ -4,9 +4,9 @@
 	<div class="modal-body">
 		<form novalidate name="viewForm" class="form-horizontal" role="form">
 			<div class="form-group" ng-class="{'has-error': viewForm.film.$invalid, 'has-success': !viewForm.film.$invalid}">
-				<label for="film" class="col-sm-3 control-label">Film</label>
+				<label for="add-view-film" class="col-sm-3 control-label">Film</label>
 				<div class="col-sm-9">
-					<select name="film" class="form-control"
+					<select id="add-view-film" name="film" class="form-control"
 						ng-model="selected.film" required
 						ng-options="c.title group by filmGroup(c) for c in films | orderBy:[filmGroup, 'title']"
 						uib-popover="Which film have you seen?" popover-trigger="focus" popover-placement="top">
@@ -15,9 +15,9 @@
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': viewForm.cinema.$invalid, 'has-success': !viewForm.cinema.$invalid}">
-				<label for="cinema" class="col-sm-3 control-label">Cinema</label>
+				<label for="add-view-cinema" class="col-sm-3 control-label">Cinema</label>
 				<div class="col-sm-9">
-					<select name="cinema" class="form-control"
+					<select id="add-view-cinema" name="cinema" class="form-control"
 						ng-model="selected.cinema" required
 						ng-options="c.name group by cinemaGroup(c) for c in cinemas | orderBy:[cinemaGroup, 'name']"
 						uib-popover="Where did you watch this film?" popover-trigger="focus" popover-placement="top">
@@ -30,7 +30,7 @@
 				<div class="col-sm-9">
 					<!--<datepicker ng-model="selected.date" show-weeks="true"></datepicker>-->
 					<div class="input-group">
-						<input name="date" type="text"
+						<input id="add-view-date" name="date" type="text"
 							ng-model="selected.date" required
 							class="form-control" uib-datepicker-popup="shortDate" is-open="uiState.datePickerDisplayed"
 							uib-popover="When did you watch this film?" popover-trigger="focus" popover-placement="top" />
@@ -60,10 +60,10 @@
 					<div class="form-horizontal" ng-form name="friendsForm">
 						<div ng-form name="friendForm" ng-repeat="friend in selected.friends track by $index"
 							class="form-group" ng-class="{'has-error': friendForm.$invalid, 'has-success': !friendForm.$invalid}">
-							<label class="col-sm-3 control-label" for="friend-{{$index}}" title="selected.friends[$index]">Friend #{{$index+1}}</label>
+							<label class="col-sm-3 control-label" for="add-view-friend-{{$index}}" title="selected.friends[$index]">Friend #{{$index+1}}</label>
 							<div class="col-sm-9">
 								<div class="input-group">
-									<input name="friend-{{$index}}" type="text" class="form-control input-sm"
+									<input id="add-view-friend-{{$index}}" name="friend-{{$index}}" type="text" class="form-control input-sm"
 											ng-model="selected.friends[$index]" required
 											uib-popover="Who was there with you?" popover-trigger="focus" popover-placement="top" />
 									<span class="input-group-btn">
