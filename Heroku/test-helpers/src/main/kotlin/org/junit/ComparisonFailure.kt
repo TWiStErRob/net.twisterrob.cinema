@@ -3,6 +3,7 @@ package org.junit
 /**
  * Binary compatible version for shazamcrest.
  */
+@Suppress("unused")
 class ComparisonFailure(
 	message: String?,
 	val expected: String,

@@ -19,7 +19,6 @@ import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import javax.inject.Provider
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
@@ -32,7 +31,7 @@ class FilmMapperTest {
 	private lateinit var sut: FilmMapper
 
 	@BeforeEach fun setUp() {
-		sut = FilmMapper(Provider { mockViewMapper })
+		sut = FilmMapper { mockViewMapper }
 		fixture.applyCustomisation {
 			circularDependencyBehaviour().omitSpecimen() // View -> Film -> View
 		}
