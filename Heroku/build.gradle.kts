@@ -43,29 +43,38 @@ allprojects {
 				//	logger.quiet("Executing test ${descriptor.className}.${descriptor.name} with result: ${result.resultType}")
 				//}))
 			}
-			parallelJUnit5Execution()
+			jvmArgs(
+				"-Djava.util.logging.config.file=${rootProject.file("config/logging.properties")}"
+			)
 		}
 
 		// JUnit 5 Tag setup, see JUnit5Tags.kt
 		@Suppress("UnstableApiUsage")
 		this@allprojects.tasks {
 			val test = "test"(Test::class) {
+				parallelJUnit5Execution(Concurrency.PerMethod)
 				useJUnitPlatform {
 				}
 			}
 			val unitTest = register<Test>("unitTest") {
+				// Logging is not relevant in unit tests.
+				parallelJUnit5Execution(Concurrency.PerMethod)
 				useJUnitPlatform {
 					excludeTags("functional", "integration")
 				}
 				shouldRunAfter()
 			}
 			val functionalTest = register<Test>("functionalTest") {
+				// Logging is relevant in functional tests, so the methods need to be synchronized.
+				parallelJUnit5Execution(Concurrency.PerClass)
 				useJUnitPlatform {
 					includeTags("functional")
 				}
 				shouldRunAfter(unitTest)
 			}
 			val integrationTest = register<Test>("integrationTest") {
+				// Logging is relevant in integration tests, so the methods need to be synchronized.
+				parallelJUnit5Execution(Concurrency.PerClass)
 				// For for each test as it needs more memory to set up embedded Neo4j.
 				setForkEvery(1)
 				useJUnitPlatform {
@@ -75,6 +84,11 @@ allprojects {
 				shouldRunAfter(unitTest, functionalTest)
 			}
 			val integrationExternalTest = register<Test>("integrationExternalTest") {
+				// Logging is relevant in integration tests.
+				// In these tests global state may be used, so everything needs to be synchronized.
+				parallelJUnit5Execution(Concurrency.PerSuite)
+				// Separate integration tests as much as possible.
+				setForkEvery(1)
 				useJUnitPlatform {
 					includeTags("integration & external")
 				}
@@ -88,6 +102,25 @@ allprojects {
 				dependsOn(integrationTest)
 				// Don't want to run it automatically, ever.
 				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
+			}
+		}
+	}
+	plugins.withId("java") {
+		this@allprojects.tasks {
+			val sourceSets = this@allprojects.the<JavaPluginConvention>().sourceSets
+			val copyLoggingResources = register<Copy>("copyLoggingResources") {
+				from(rootProject.file("config/log4j2.xml"))
+				into(sourceSets["main"].resources.srcDirs.first())
+			}
+			"processResources" {
+				dependsOn(copyLoggingResources)
+			}
+			val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
+				from(rootProject.file("config/log4j2.xml"))
+				into(sourceSets["test"].resources.srcDirs.first())
+			}
+			"processTestResources"{
+				dependsOn(copyLoggingTestResources)
 			}
 		}
 	}

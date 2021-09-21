@@ -37,4 +37,5 @@ dependencies {
 	testImplementation(Deps.JFixture.jfixture)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(project(":test-helpers"))
+	Deps.Log4J2.slf4jForTest(project)
 }

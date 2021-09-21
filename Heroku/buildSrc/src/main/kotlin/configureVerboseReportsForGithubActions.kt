@@ -50,23 +50,40 @@ fun Test.configureVerboseReportsForGithubActions() {
 			}
 		}
 
+		val hasStdOut = info.stdOut.isNotEmpty()
+		val hasStdErr = info.stdErr.isNotEmpty()
+		val hasError = result.exception != null
+		val hasAnything = hasStdOut || hasStdErr || hasError
+
 		val groupName = when (val className = descriptor.className) {
 			null -> "Suite"
 			descriptor.name -> "Class"
 			else -> className
 		}
 		val name = descriptor.name
-		println("${groupName} > ${name} ${result.resultType}")
+		val fullName = "${groupName} > ${name}"
+		if (groupName == "Suite" && name.startsWith("Gradle Test Executor") && !hasAnything) {
+			// Don't log, this is because of concurrency.
+			return
+		} else if (groupName == "Suite" && name.startsWith("Gradle Test Run") && !hasAnything) {
+			// Don't log, this is because of Gradle's system.
+			return
+		} else if (groupName == "Class" && !hasAnything) {
+			// Don't log, individual tests are enough.
+			return
+		}
+		println("${fullName} ${result.resultType}")
 
-		fold("ex", result.exception != null) {
+		fold("ex", hasError) {
+			println("EXCEPTION ${fullName}")
 			result.exception!!.printStackTrace()
 		}
-		fold("out", info.stdOut.isNotEmpty()) {
-			println("STANDARD_OUT")
+		fold("out", hasStdOut) {
+			println("STANDARD_OUT ${fullName}")
 			println(info.stdOut)
 		}
-		fold("err", info.stdErr.isNotEmpty()) {
-			println("STANDARD_ERR")
+		fold("err", hasStdErr) {
+			println("STANDARD_ERR ${fullName}")
 			println(info.stdErr)
 		}
 	}

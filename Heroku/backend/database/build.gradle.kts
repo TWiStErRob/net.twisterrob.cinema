@@ -37,8 +37,7 @@ dependencies {
 		exclude(group = "org.slf4j", module = "slf4j-nop")
 	}
 
-	testRuntimeOnly(Deps.Log4J2.core)
-	testRuntimeOnly(Deps.Log4J2.slf4j)
+	Deps.Log4J2.slf4jForTest(project)
 
 	testFixturesImplementation(project(":backend:quickbook"))
 	testFixturesImplementation(Deps.Kotlin.core)

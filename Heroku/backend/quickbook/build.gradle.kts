@@ -10,7 +10,6 @@ dependencies {
 
 	Deps.Dagger2.default(project)
 	Deps.Ktor.client.default(project)
-	Deps.Log4J2.slf4j(project)
 	implementation(Deps.Jackson.datatype_java8)
 }
 
@@ -20,4 +19,5 @@ dependencies {
 	testImplementation(Deps.JFixture.jfixture)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(project(":test-helpers"))
+	Deps.Log4J2.slf4jForTest(project)
 }
