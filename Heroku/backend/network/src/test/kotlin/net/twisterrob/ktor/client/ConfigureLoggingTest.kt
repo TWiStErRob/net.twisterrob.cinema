@@ -11,14 +11,18 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.features.feature
+import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import net.twisterrob.test.TagFunctional
 import net.twisterrob.test.captureSingle
+import net.twisterrob.test.get
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -85,6 +89,7 @@ class ConfigureLoggingTest {
 				header("X-Custom-Request-Header", "x-custom-request-value")
 			}
 		}
+		sut.waitForLogs()
 
 		assertEquals("Fake content", result)
 		verifyCallSite(expectedStack)
@@ -111,6 +116,7 @@ class ConfigureLoggingTest {
 				header("X-Custom-Request-Header", "x-custom-request-value")
 			}
 		}
+		sut.waitForLogs()
 
 		assertEquals("Fake content", result)
 		verifyCallSite(expectedStack)
@@ -145,6 +151,7 @@ class ConfigureLoggingTest {
 				header("X-Custom-Request-Header", "x-custom-request-value")
 			}
 		}
+		sut.waitForLogs()
 
 		assertEquals("Fake content", result)
 		verifyCallSite(expectedStack)
@@ -221,3 +228,23 @@ private fun StackTraceElement.nextLine(lines: Int): StackTraceElement =
 		fileName,
 		lineNumber + lines,
 	)
+
+/**
+ * Some of the [HttpClient] [Logging] happens inside coroutines.
+ * Some are even dispatched to [kotlinx.coroutines.Dispatchers.Unconfined].
+ * To make sure we wait for those, we need to synchronize and make sure they finish logging before verifying them.
+ */
+private fun HttpClient.waitForLogs() = runBlocking {
+	// Luckily the installed feature uses a Mutex internally to signal begin/end of logging.
+	// Let's hack that mutex out of the Logging feature:
+	val mutex = this@waitForLogs.feature(Logging)!!.get<Mutex>("mutex")
+	// Then lock it. This subscribes to the Mutex and only continues if the lock is acquired,
+	// which will happen as soon as endLogging unlocks.
+	mutex.lock()
+	// Immediately unlock, we don't want to be blocking anything.
+	mutex.unlock()
+
+	// Alternative solutions considered:
+	// * Change Dispatchers.Unconfined to Main.immediate: fully dropped some logs
+	// * runBlocking { delay(10) }: enough to make it pass, but either slows things down or is flaky.
+}
