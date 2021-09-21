@@ -4,6 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.5.31" apply false
 	id("org.jetbrains.kotlin.kapt") version "1.5.31" apply false
+	// https://github.com/detekt/detekt/blob/3357abba87e1550c65b6610012bb291e0fbb64ce/build.gradle.kts#L280-L295 and whole file
+	id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
 
 allprojects {
@@ -123,6 +125,23 @@ allprojects {
 				dependsOn(copyLoggingTestResources)
 			}
 		}
+	}
+}
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	// Target version of the generated JVM bytecode. It is used for type resolution.
+	jvmTarget = "1.8"
+}
+detekt {
+	buildUponDefaultConfig = true // preconfigure defaults
+	allRules = false // activate all available (even unstable) rules.
+	config = files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+	baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+
+	reports {
+		html.enabled = true // observe findings in your browser with structure and code snippets
+		xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
+		txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
+		sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
 	}
 }
 
