@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.5.21" apply false
-	id("org.jetbrains.kotlin.kapt") version "1.5.21" apply false
+	id("org.jetbrains.kotlin.jvm") version "1.5.31" apply false
+	id("org.jetbrains.kotlin.kapt") version "1.5.31" apply false
 }
 
 allprojects {
