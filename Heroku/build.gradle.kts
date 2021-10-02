@@ -1,5 +1,6 @@
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+plugins {
+	id("io.gitlab.arturbosch.detekt")
+}
 
 allprojects {
 	repositories {
@@ -8,7 +9,7 @@ allprojects {
 	}
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
-		val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
+		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
 		kapt.apply {
 			includeCompileClasspath = false
 		}
@@ -22,7 +23,7 @@ allprojects {
 	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
-		tasks.withType<KotlinCompile> {
+		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
 				allWarningsAsErrors = true
 				verbose = true
@@ -154,6 +155,22 @@ allprojects {
 		}
 	}
 }
+
+val detektAll by tasks.registering(io.gitlab.arturbosch.detekt.Detekt::class) {
+	description = "Runs over whole code base without the starting overhead for each module."
+	setSource(files(rootProject.projectDir))
+	include("**/*.kt")
+	include("**/*.kts")
+	exclude("**/resources/**")
+	exclude("**/build/**")
+	reports {
+		html.enabled = true
+		xml.enabled = true
+		txt.enabled = true
+		sarif.enabled = true
+	}
+}
+
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 project.tasks.create<TestReport>("tests") {
