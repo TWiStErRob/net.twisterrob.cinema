@@ -167,7 +167,7 @@ twister.cineworld = NS(twister.cineworld, {
 		return dfd;
 	},
 	getFilmLengths: function(films) {
-		var filmLengthRequests = new Array();
+		var filmLengthRequests = [];
 		filmLengthRequests.push({
 			whenHack: "when returns the promise if there's only one, this object helps to create an array of deferreds"
 		});
@@ -214,20 +214,20 @@ twister.cineworld = NS(twister.cineworld, {
 				.done(function getFilmLength_parseResponse(response, status, xhr) {
 					// http://deanclatworthy.com/imdb/?q=World%20War%20Z&type=jsonp&callback=callback
 					/* callback({
-						imdbid: "tt0816711", 
-						imdburl: "http://www.imdb.com/title/tt0816711/", 
-						genres: "Action,Drama,Horror,Sci-Fi,Thriller", 
-						languages: "English", 
-						country: "USA,Malta", 
-						votes: "67357", 
-						stv: 0, 
-						series: 0, 
-						rating: "7.3", 
-						runtime: "116min", 
-						title: "World War Z", 
-						year: "2013", 
-						usascreens: 3607, 
-						ukscreens: 0, 
+						imdbid: "tt0816711",
+						imdburl: "http://www.imdb.com/title/tt0816711/",
+						genres: "Action,Drama,Horror,Sci-Fi,Thriller",
+						languages: "English",
+						country: "USA,Malta",
+						votes: "67357",
+						stv: 0,
+						series: 0,
+						rating: "7.3",
+						runtime: "116min",
+						title: "World War Z",
+						year: "2013",
+						usascreens: 3607,
+						ukscreens: 0,
 						cacheExpiry: 1374104898
 					}) */
 					if(response.error) {
