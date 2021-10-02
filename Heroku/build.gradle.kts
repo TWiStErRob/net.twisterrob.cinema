@@ -135,8 +135,9 @@ allprojects {
 			}
 		}
 	}
-	plugins.withId("detekt") {
-		val detekt = this@allprojects.extensions.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
+	plugins.withId("io.gitlab.arturbosch.detekt") {
+		val detekt = this@allprojects.extensions
+			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
 		detekt.apply {
 			buildUponDefaultConfig = true
 			allRules = true
@@ -157,20 +158,24 @@ allprojects {
 }
 
 val detektAll by tasks.registering(io.gitlab.arturbosch.detekt.Detekt::class) {
+	val detekt = project.extensions.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
 	description = "Runs over whole code base without the starting overhead for each module."
+	buildUponDefaultConfig = detekt.buildUponDefaultConfig
+	allRules = detekt.allRules
+	config.setFrom(detekt.config)
+	baseline.set(rootProject.file("config/detekt/detekt-baseline-${project.name}.xml"))
+
+	parallel = detekt.parallel
+
+	reports = detekt.reports
+
 	setSource(files(rootProject.projectDir))
+	// io.gitlab.arturbosch.detekt.DetektPlugin.defaultIncludes
 	include("**/*.kt")
 	include("**/*.kts")
-	exclude("**/resources/**")
+	// io.gitlab.arturbosch.detekt.DetektPlugin.defaultExcludes
 	exclude("**/build/**")
-	reports {
-		html.enabled = true
-		xml.enabled = true
-		txt.enabled = true
-		sarif.enabled = true
-	}
 }
-
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 project.tasks.create<TestReport>("tests") {
