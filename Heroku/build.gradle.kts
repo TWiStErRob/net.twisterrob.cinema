@@ -1,11 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-	// https://github.com/detekt/detekt/blob/3357abba87e1550c65b6610012bb291e0fbb64ce/build.gradle.kts#L280-L295 and whole file
-	id("io.gitlab.arturbosch.detekt") version "1.18.1"
-}
-
 allprojects {
 	repositories {
 		jcenter()
@@ -139,22 +134,24 @@ allprojects {
 			}
 		}
 	}
-}
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-	// Target version of the generated JVM bytecode. It is used for type resolution.
-	jvmTarget = "1.8"
-}
-detekt {
-	buildUponDefaultConfig = true // preconfigure defaults
-	allRules = false // activate all available (even unstable) rules.
-	config = files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
-	baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+	plugins.withId("detekt") {
+		val detekt = this@allprojects.extensions.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
+		detekt.apply {
+			buildUponDefaultConfig = true
+			allRules = true
+			config = rootProject.files("config/detekt/detekt.yml")
+			baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
 
-	reports {
-		html.enabled = true // observe findings in your browser with structure and code snippets
-		xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
-		txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
-		sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+			parallel = true
+
+			reports {
+				html.enabled = true // human
+				xml.enabled = true // checkstyle
+				txt.enabled = true // console
+				// https://sarifweb.azurewebsites.net
+				sarif.enabled = true // Github Code Scanning
+			}
+		}
 	}
 }
 

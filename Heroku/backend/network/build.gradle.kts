@@ -1,6 +1,7 @@
 plugins {
 	id("java")
 	id("org.jetbrains.kotlin.jvm")
+	id("io.gitlab.arturbosch.detekt")
 }
 
 dependencies {
