@@ -157,24 +157,15 @@ allprojects {
 	}
 }
 
-val detektAll by tasks.registering(io.gitlab.arturbosch.detekt.Detekt::class) {
-	val detekt = project.extensions.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
+// When running "gradlew detekt", it'll double-execute, be more specific:
+//  * gradlew :detekt
+//  * gradlew detekt -x :detekt
+tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
 	description = "Runs over whole code base without the starting overhead for each module."
-	buildUponDefaultConfig = detekt.buildUponDefaultConfig
-	allRules = detekt.allRules
-	config.setFrom(detekt.config)
-	baseline.set(rootProject.file("config/detekt/detekt-baseline-${project.name}.xml"))
-
-	parallel = detekt.parallel
-
-	reports = detekt.reports
-
+	// Reconfigure the detekt task rather than registering a separate detektAll task.
+	// This inherits the default configuration from the detekt extension, because it's created by the plugin.
+	// The root project has no source code, so we can include everything to check.
 	setSource(files(rootProject.projectDir))
-	// io.gitlab.arturbosch.detekt.DetektPlugin.defaultIncludes
-	include("**/*.kt")
-	include("**/*.kts")
-	// io.gitlab.arturbosch.detekt.DetektPlugin.defaultExcludes
-	exclude("**/build/**")
 }
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
