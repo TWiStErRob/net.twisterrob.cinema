@@ -1,5 +1,6 @@
 plugins {
 	`kotlin-dsl`
+	id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
 
 repositories {
@@ -13,4 +14,21 @@ dependencies {
 
 kotlinDslPluginOptions {
 	experimentalWarning.set(false)
+}
+
+detekt {
+	buildUponDefaultConfig = true
+	allRules = true
+	config = rootProject.files("../config/detekt/detekt.yml")
+	baseline = rootProject.file("../config/detekt/detekt-baseline-${project.name}.xml")
+
+	parallel = true
+
+	reports {
+		html.enabled = true // human
+		xml.enabled = true // checkstyle
+		txt.enabled = true // console
+		// https://sarifweb.azurewebsites.net
+		sarif.enabled = true // Github Code Scanning
+	}
 }

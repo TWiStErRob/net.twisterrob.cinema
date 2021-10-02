@@ -10,7 +10,7 @@ dependencies {
 	// Add them to testImplementation wherever testImplementation(project(":test-helpers")) is used.
 
 	compileOnly(Deps.JUnit.jupiter)
-	compileOnly(Deps.JFixture.jfixture)
+	compileOnly(Deps.JFixture.core)
 	compileOnly(Deps.Hamcrest.core)
 	compileOnly(Deps.Mockito.core3)
 	compileOnly(Deps.Mockito.kotlin)

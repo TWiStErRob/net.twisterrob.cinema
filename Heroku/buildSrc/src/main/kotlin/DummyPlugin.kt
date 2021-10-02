@@ -8,4 +8,5 @@
  * :buildSrc:jar: A valid plugin descriptor was found for dummy.properties but the implementation class DummyPlugin was not found in the jar.
  * ```
  */
+@Suppress("UnusedPrivateClass")
 private class DummyPlugin

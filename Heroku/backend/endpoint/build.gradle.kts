@@ -41,7 +41,7 @@ dependencies {
 // Test
 dependencies {
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.jfixture)
+	testImplementation(Deps.JFixture.core)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(Deps.Hamcrest.jsonAssert)
 	testImplementation(Deps.Hamcrest.shazamcrest) {

@@ -1,2 +1,6 @@
 config:
   warningsAsErrors: true
+
+style:
+  MaxLineLength:
+    excludeCommentStatements: true

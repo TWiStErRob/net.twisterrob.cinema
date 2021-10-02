@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.KotlinClosure2
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
+@Suppress("ComplexMethod")
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
 		// disable all events, output handled by custom callbacks below
@@ -39,8 +40,10 @@ fun Test.configureVerboseReportsForGithubActions() {
 			TestOutputEvent.Destination.StdErr -> info.stdErr.append(event.message)
 		}
 	}))
+
+	@Suppress("ReturnCount")
 	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
-		val info = lookup.remove(descriptor)!!
+
 		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
 			val id = descriptor.toString().hashCode().absoluteValue
 			if (condition) {
@@ -50,6 +53,7 @@ fun Test.configureVerboseReportsForGithubActions() {
 			}
 		}
 
+		val info = lookup.remove(descriptor)!!
 		val hasStdOut = info.stdOut.isNotEmpty()
 		val hasStdErr = info.stdErr.isNotEmpty()
 		val hasError = result.exception != null
@@ -72,6 +76,7 @@ fun Test.configureVerboseReportsForGithubActions() {
 			// Don't log, individual tests are enough.
 			return
 		}
+
 		println("${fullName} ${result.resultType}")
 
 		fold("ex", hasError) {
