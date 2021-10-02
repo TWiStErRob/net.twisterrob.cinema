@@ -2,8 +2,6 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.5.31" apply false
-	id("org.jetbrains.kotlin.kapt") version "1.5.31" apply false
 	// https://github.com/detekt/detekt/blob/3357abba87e1550c65b6610012bb291e0fbb64ce/build.gradle.kts#L280-L295 and whole file
 	id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
@@ -20,16 +18,31 @@ allprojects {
 			includeCompileClasspath = false
 		}
 	}
+
+	plugins.withId("java") {
+		configure<JavaPluginConvention> {
+			sourceCompatibility = JavaVersion.VERSION_1_8
+			targetCompatibility = JavaVersion.VERSION_1_8
+		}
+	}
+
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<KotlinCompile> {
 			kotlinOptions {
-				jvmTarget = JavaVersion.VERSION_1_8.toString()
 				allWarningsAsErrors = true
 				verbose = true
-				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+				freeCompilerArgs = freeCompilerArgs + listOf(
+					"-Xopt-in=kotlin.RequiresOptIn"
+				)
 			}
 		}
 	}
+
+	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		// Target version of the generated JVM bytecode. It is used for type resolution.
+		jvmTarget = JavaVersion.VERSION_1_8.toString()
+	}
+
 	plugins.withId("java") {
 		val base = this@allprojects.the<BasePluginConvention>()
 		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
