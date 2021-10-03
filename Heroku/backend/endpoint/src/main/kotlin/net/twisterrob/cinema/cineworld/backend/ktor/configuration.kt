@@ -95,14 +95,7 @@ internal fun Application.configuration(
 			disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
 			registerModule(object : SimpleModule("cineworld-backend") {
 				init {
-					addSerializer(OffsetDateTime::class.java, object : JsonSerializer<OffsetDateTime>() {
-						override fun serialize(
-							value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
-						) {
-							val utcTime = value.withOffsetSameInstant(ZoneOffset.UTC)
-							gen.writeString(ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(utcTime))
-						}
-					})
+					addSerializer(OffsetDateTime::class.java, OffsetDateTimeJsonSerializer())
 				}
 			})
 		}
@@ -162,5 +155,17 @@ internal fun Application.configuration(
 				absoluteUrl("/auth/google/return")//.encodeURLParameter(spaceToPlus = true)
 			}
 		}
+	}
+}
+
+/**
+ * @see OffsetDateTimeJsonSerializer
+ */
+class OffsetDateTimeJsonSerializer : JsonSerializer<OffsetDateTime>() {
+	override fun serialize(
+		value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
+	) {
+		val utcTime = value.withOffsetSameInstant(ZoneOffset.UTC)
+		gen.writeString(ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(utcTime))
 	}
 }
