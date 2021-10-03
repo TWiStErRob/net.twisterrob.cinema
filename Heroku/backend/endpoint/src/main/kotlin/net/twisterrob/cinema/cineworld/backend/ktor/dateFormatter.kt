@@ -9,7 +9,6 @@ import java.util.Locale
 /**
  * @see DateTimeFormatter.ISO_LOCAL_DATE
  */
-@Suppress("MagicNumber") // See appendValue parameter hints, they're all "width".
 val ISO_LOCAL_DATE_FORMATTER_NO_DASHES: DateTimeFormatter =
 	DateTimeFormatterBuilder()
 		.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
@@ -24,7 +23,6 @@ val ISO_LOCAL_DATE_FORMATTER_NO_DASHES: DateTimeFormatter =
  *
  * @see DateTimeFormatter.ISO_OFFSET_DATE_TIME
  */
-@Suppress("MagicNumber") // See appendValue parameter hints, they're all "width".
 val ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH: DateTimeFormatter =
 	DateTimeFormatterBuilder()
 		.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)

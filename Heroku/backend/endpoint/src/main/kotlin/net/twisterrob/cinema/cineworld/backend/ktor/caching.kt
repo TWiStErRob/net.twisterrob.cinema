@@ -35,7 +35,6 @@ var ApplicationCall.caching: CachingOptions
 
 @OptIn(ExperimentalTime::class)
 fun defaultCacheOptions(environment: Env): CachingOptions {
-	@Suppress("MagicNumber") // Self-explanatory.
 	val cacheLength = if (environment == Env.PRODUCTION) Duration.hours(10).inWholeSeconds else 0
 	return CachingOptions(
 		cacheControl = MaxAge(

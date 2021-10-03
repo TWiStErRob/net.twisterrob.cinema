@@ -36,7 +36,6 @@ class Main @Inject constructor(
 
 	companion object {
 
-		@Suppress("MemberNameEqualsClassName")
 		@JvmStatic
 		fun main(vararg args: String) {
 			val dagger = DaggerSyncAppComponent

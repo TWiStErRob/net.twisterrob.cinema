@@ -34,7 +34,6 @@ import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
 import io.ktor.sessions.get
 import io.ktor.sessions.sessions
-import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.h2
@@ -49,6 +48,8 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.openid
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.profile
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -57,7 +58,6 @@ import java.time.ZoneOffset
  * @param staticRootFolder `.` is the Heroku project folder when ran from IDEA.
  * @see RouteControllerRegistrar
  */
-@Suppress("LongMethod") // TODO find a way to split this up into smaller pieces, while keeping visibility.
 internal fun Application.configuration(
 	staticRootFolder: File = File("./deploy/static"),
 	fakeRootFolder: File = File("./backend/src/test/fake"),
@@ -103,7 +103,18 @@ internal fun Application.configuration(
 	install(StatusPages) {
 		exception<Throwable> { cause ->
 			call.respondHtml(HttpStatusCode.InternalServerError) {
-				render500InternalServerError(cause)
+				head {
+					title { +"Internal Server Error" }
+				}
+				body {
+					h1 {
+						+"Internal Server Error"
+					}
+					h2 { +"Exception" }
+					pre {
+						+StringWriter().apply { cause.printStackTrace(PrintWriter(this, true)) }.toString()
+					}
+				}
 			}
 			throw cause
 		}
@@ -143,21 +154,6 @@ internal fun Application.configuration(
 				// Manually encode? https://youtrack.jetbrains.com/issue/KTOR-2938
 				absoluteUrl("/auth/google/return")//.encodeURLParameter(spaceToPlus = true)
 			}
-		}
-	}
-}
-
-private fun HTML.render500InternalServerError(error: Throwable) {
-	head {
-		title { +"Internal Server Error" }
-	}
-	body {
-		h1 {
-			+"Internal Server Error"
-		}
-		h2 { +"Exception" }
-		pre {
-			+error.stackTraceToString()
 		}
 	}
 }

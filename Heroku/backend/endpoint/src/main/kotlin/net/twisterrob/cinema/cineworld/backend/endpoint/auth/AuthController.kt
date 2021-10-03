@@ -23,7 +23,6 @@ import io.ktor.sessions.set
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.CurrentUser
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
-import net.twisterrob.cinema.cineworld.backend.endpoint.app.AppController
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
@@ -53,16 +52,11 @@ class AuthController @Inject constructor(
 		}
 	}
 
-	/**
-	 * 1 below [AppController.order].
-	 */
-	@Suppress("MagicNumber") // TODO find a better mechanism for ordering, e.g. topological sort.
 	override val order: Int get() = -2
 
 	/**
 	 * @see Auth.Routes
 	 */
-	@Suppress("LongMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
 		intercept(ApplicationCallPipeline.Features) {
 			val session: AuthSession? = call.sessions.get()

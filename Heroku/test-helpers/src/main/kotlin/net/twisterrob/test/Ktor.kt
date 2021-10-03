@@ -19,7 +19,6 @@ import org.junit.jupiter.api.fail
 private val Url.hostWithPortIfRequired: String
 	get() = if (port == protocol.defaultPort) host else hostWithPort
 
-@Suppress("unused") // Might be useful in the future, let's keep it.
 private val Url.fullUrl: String
 	get() = "${protocol.name}://$hostWithPortIfRequired$fullPath"
 
