@@ -9,7 +9,7 @@ import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class QuickbookErrorsTest {
+class QuickbookErrorsKtTest {
 
 	private class FakeResponse(
 		val data: String,

@@ -10,14 +10,10 @@ import dagger.Component
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.TestApplicationRequest
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthIntgTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
@@ -27,7 +23,6 @@ import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
-import org.eclipse.jetty.http.HttpHeader
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -136,23 +131,3 @@ private fun serialized(film: Film): String =
 		"view": null
 	}
 	"""
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun AuthRepository.setupAuth(): User {
-	val fixtUser: User = JFixture().build()
-	whenever(this.findUser(AuthIntgTest.realisticUserId)).thenReturn(fixtUser)
-	return fixtUser
-}
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
-	handleRequest {
-		addHeader(HttpHeader.COOKIE.toString(), AuthIntgTest.realisticCookie)
-		block()
-	}

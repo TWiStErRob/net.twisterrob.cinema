@@ -10,7 +10,7 @@ data class Performances(
 	val performances: List<Performance>
 ) {
 
-	class Performance(
+	data class Performance(
 		val time: OffsetDateTime,
 		val available: Boolean,
 		val booking_url: URI,

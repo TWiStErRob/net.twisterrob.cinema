@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName") // calculateChanges is the entry point.
+
 package net.twisterrob.cinema.cineworld.sync
 
 data class SyncOperations<DB, Feed>(
