@@ -69,6 +69,12 @@ jobs:
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
+      - uses: github/codeql-action/upload-sarif@v1
+        if: success() || failure()
+        with:
+          checkout_path: Heroku
+          sarif_file: Heroku/build/reports/detekt/detekt.sarif
+
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
