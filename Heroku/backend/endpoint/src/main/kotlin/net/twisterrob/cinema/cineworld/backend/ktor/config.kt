@@ -1,3 +1,5 @@
+@Suppress("MatchingDeclarationName")
+
 package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.config.ApplicationConfig
