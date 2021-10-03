@@ -22,7 +22,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
-import net.twisterrob.cinema.cineworld.backend.ktor.ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH
+import net.twisterrob.cinema.cineworld.backend.endpoint.serialized
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
-import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -228,8 +227,8 @@ private fun serialized(cinema: Cinema): String =
 		"postcode": "${cinema.postcode}",
 		"telephone": "${cinema.telephone}",
 		"cinema_url": "${cinema.cinema_url}",
-		"_created": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(cinema._created.withOffsetSameInstant(ZoneOffset.UTC))}",
-		"_updated": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(cinema._updated?.withOffsetSameInstant(ZoneOffset.UTC))}",
+		"_created": "${serialized(cinema._created)}",
+		"_updated": "${serialized(cinema._updated)}",
 		"address": "${cinema.address}",
 		"fav": ${cinema.fav}
 	}
