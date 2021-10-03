@@ -68,7 +68,11 @@ data class SyncResults<DB : Historical>(
 
 	private fun identity(it: DB) = "${it::class.java}[${it.graphId}]"
 
+	/**
+	 * External (to [it]/[DB]) version of `it::_created.isInitialized`.
+	 */
 	private fun checkCreated(it: DB) {
+		@Suppress("SwallowedException") // We know exactly why and how the exception happens.
 		try {
 			it._created // lateinit, so need to access to check if it has been set
 		} catch (ex: UninitializedPropertyAccessException) {

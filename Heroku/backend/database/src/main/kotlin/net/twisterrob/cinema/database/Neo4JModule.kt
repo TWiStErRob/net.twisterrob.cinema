@@ -70,13 +70,25 @@ object Neo4JModule {
 		.flatMap { listOf(it) + it.allSuperclasses }
 		.toSet() - Any::class
 
+	/**
+	 * No idea why 30 seconds.
+	 */
+	@Suppress("MagicNumber")
+	private val CONNECTION_LIVENESS_CHECK_TIMEOUT: Int =
+		TimeUnit.SECONDS.toMillis(30).toInt()
+
+	/**
+	 * Triple [Configuration.DEFAULT_SESSION_POOL_SIZE], not a clue why.
+	 */
+	private const val CONNECTION_POOL_SIZE = 150
+
 	@Neo4J
 	@Provides
 	fun config(@Named(GRAPH_DB) uri: URI): Configuration = Configuration
 		.Builder()
 		.uri(uri.toString())
-		.connectionLivenessCheckTimeout(TimeUnit.SECONDS.toMillis(30).toInt())
-		.connectionPoolSize(150)
+		.connectionLivenessCheckTimeout(CONNECTION_LIVENESS_CHECK_TIMEOUT)
+		.connectionPoolSize(CONNECTION_POOL_SIZE)
 		// org.neo4j.ogm.drivers.bolt.driver.BoltDriver.CONFIG_PARAMETER_BOLT_LOGGING
 		.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
 		.useNativeTypes()
