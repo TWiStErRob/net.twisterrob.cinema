@@ -37,7 +37,14 @@ allprojects {
 	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		// Target version of the generated JVM bytecode. It is used for type resolution.
 		jvmTarget = JavaVersion.VERSION_1_8.toString()
-		// TODO unbundle from check for subprojects
+	}
+
+	if (this@allprojects.path != ":") {
+		afterEvaluate {
+			tasks.matching { it.name == LifecycleBasePlugin.CHECK_TASK_NAME }.configureEach {
+				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == "detekt" })
+			}
+		}
 	}
 
 	plugins.withId("java") {
