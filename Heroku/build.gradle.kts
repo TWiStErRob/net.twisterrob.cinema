@@ -108,12 +108,15 @@ allprojects {
 				}
 				shouldRunAfter(unitTest, functionalTest, integrationTest)
 			}
-			"check" {
-				// Remove default dependency, because it runs all tests.
-				notDependsOn { it.name == test.name }
+			val tests = register<Task>("tests") {
 				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
+			}
+			"check" {
+				// Remove default dependency, because it runs all tests.
+				notDependsOn { it.name == test.name }
+				dependsOn(tests)
 				// Don't want to run it automatically, ever.
 				notDependsOn { it.name == integrationExternalTest.name }
 			}
@@ -172,8 +175,21 @@ tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
 	setSource(files(rootProject.projectDir))
 }
 
+project.tasks.register<Task>("allDependencies") {
+	val projects = project.allprojects.sortedBy { it.name }
+	doFirst {
+		println("Printing dependencies for modules:")
+		projects.forEach { println(" * ${it}") }
+	}
+	val dependenciesTasks = projects.map { it.tasks.named("dependencies") }
+	// Builds a dependency chain: 1 <- 2 <- 3 <- 4, so when executed they're in order.
+	dependenciesTasks.reduce { acc, task -> task.apply { get().dependsOn(acc) } }
+	// Use finalizedBy instead of dependsOn to make sure this task executes first.
+	this@register.finalizedBy(dependenciesTasks)
+}
+
 // Need to eagerly create this, so that we can call tasks.withType in it.
-project.tasks.create<TestReport>("tests") {
+project.tasks.create<TestReport>("allTestsReport") {
 	destinationDir = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->

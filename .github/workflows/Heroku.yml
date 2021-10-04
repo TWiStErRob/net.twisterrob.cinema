@@ -16,7 +16,7 @@ jobs:
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
-    timeout-minutes: 12
+    timeout-minutes: 15
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -55,9 +55,39 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies | tee build/dependencies.txt
+
+      - name: Upload "Heroku Dependencies".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/build/dependencies.txt
+
+
+      - name: Check Heroku.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
+
+      - name: Upload "Heroku Detekt Results".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Detekt Results
+          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
+
+      - uses: github/codeql-action/upload-sarif@v1
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/detekt.sarif
+
+
       - name: Build Heroku.
         working-directory: Heroku
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
+
 
       - name: Test Heroku.
         working-directory: Heroku
@@ -66,28 +96,16 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          :detekt test :tests
+          tests :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
-
-      - uses: github/codeql-action/upload-sarif@v1
-        if: success() || failure()
-        with:
-          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/detekt.sarif
-
-      - name: Upload "Heroku Detekt Results".
-        if: success() || failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Heroku Detekt Results
-          path: ${{ github.workspace }}/**/build/reports/detekt/detekt.*
 
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: Heroku Test Results XMLs
-          path: ${{ github.workspace }}/**/build/test-results/*/TEST-*.xml
+          path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Upload "Heroku Test Results HTML".
         if: success() || failure()
@@ -101,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Heroku Test Results HTMLs
-          path: ${{ github.workspace }}/**/build/reports/tests/*/
+          path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
 
       - name: Cleanup Gradle files before caching.
         run: |
