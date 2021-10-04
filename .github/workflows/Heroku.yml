@@ -79,7 +79,7 @@ jobs:
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: Heroku Test Results XMLs
+          name: Heroku Detekt Results
           path: ${{ github.workspace }}/**/build/reports/detekt/detekt.*
 
       - name: Upload "Heroku Test Results XMLs".
@@ -137,7 +137,7 @@ jobs:
           comment_title: Test Results
           report_individual_runs: true
           test_changes_limit: 0
-          files: artifacts/Heroku Test Results XMLs/**/build/test-results/*/TEST-*.xml
+          files: artifacts/Heroku Test Results XMLs/**/*.xml
   check-npm:
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md

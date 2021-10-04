@@ -147,6 +147,7 @@ allprojects {
 		val detekt = this@allprojects.extensions
 			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
 		detekt.apply {
+			ignoreFailures = true
 			buildUponDefaultConfig = true
 			allRules = true
 			config = rootProject.files("config/detekt/detekt.yml")
