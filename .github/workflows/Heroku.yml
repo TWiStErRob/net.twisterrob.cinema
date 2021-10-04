@@ -75,6 +75,13 @@ jobs:
           checkout_path: Heroku
           sarif_file: Heroku/build/reports/detekt/detekt.sarif
 
+      - name: Upload "Heroku Detekt Results".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Test Results XMLs
+          path: ${{ github.workspace }}/**/build/reports/detekt/detekt.*
+
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
         uses: actions/upload-artifact@v2
