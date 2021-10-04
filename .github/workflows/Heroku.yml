@@ -57,7 +57,7 @@ jobs:
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies | tee build/dependencies.txt
+        run: (./gradlew --no-daemon --no-build-cache --stacktrace allDependencies | tee build/dependencies.txt) || true
 
       - name: Upload "Heroku Dependencies".
         if: success() || failure()
