@@ -2,6 +2,8 @@ plugins {
 	id("io.gitlab.arturbosch.detekt")
 }
 
+val javaVersion = JavaVersion.VERSION_1_8
+
 allprojects {
 	repositories {
 		jcenter()
@@ -17,14 +19,15 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<JavaPluginConvention> {
-			sourceCompatibility = JavaVersion.VERSION_1_8
-			targetCompatibility = JavaVersion.VERSION_1_8
+			sourceCompatibility = javaVersion
+			targetCompatibility = javaVersion
 		}
 	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
+				jvmTarget = javaVersion.toString()
 				allWarningsAsErrors = true
 				verbose = true
 				freeCompilerArgs = freeCompilerArgs + listOf(
@@ -36,15 +39,7 @@ allprojects {
 
 	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		// Target version of the generated JVM bytecode. It is used for type resolution.
-		jvmTarget = JavaVersion.VERSION_1_8.toString()
-	}
-
-	if (this@allprojects.path != ":") {
-		afterEvaluate {
-			tasks.matching { it.name == LifecycleBasePlugin.CHECK_TASK_NAME }.configureEach {
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == "detekt" })
-			}
-		}
+		jvmTarget = javaVersion.toString()
 	}
 
 	plugins.withId("java") {
@@ -115,12 +110,12 @@ allprojects {
 			}
 			"check" {
 				// Remove default dependency, because it runs all tests.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == test.name })
+				notDependsOn { it.name == test.name }
 				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
 				// Don't want to run it automatically, ever.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
+				notDependsOn { it.name == integrationExternalTest.name }
 			}
 		}
 	}
