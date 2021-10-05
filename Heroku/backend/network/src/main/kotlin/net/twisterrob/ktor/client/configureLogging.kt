@@ -54,7 +54,7 @@ private class LevelLogger(
 					.toTypedArray()
 			})
 		}
-		log.logAtLevel(message.shortenTo(MAX_LOG_LENGTH))
+		log.logAtLevel(message.shortenTo(5000))
 	}
 
 	private fun String.shortenTo(maxLength: Int): String =
@@ -63,13 +63,4 @@ private class LevelLogger(
 		} else {
 			this.substring(0, maxLength) + " ... [showing only ${maxLength}, ${this.length - maxLength} omitted]"
 		}
-
-	companion object {
-
-		/**
-		 * Arbitrary limit to make sure very long messages are shortened.
-		 * This helps to contain the size of the logged JSONs for example, but still should allow for full stack traces.
-		 */
-		private const val MAX_LOG_LENGTH: Int = 5000
-	}
 }

@@ -209,7 +209,6 @@ class ConfigureLoggingTest {
 		verify(mockLogger, atMost(1)).isInfoEnabled
 		verify(mockLogger, atMost(1)).isDebugEnabled
 		verify(mockLogger, atMost(1)).isTraceEnabled
-		@Suppress("SwallowedException")
 		try {
 			verifyNoMoreInteractions(mockLogger)
 		} catch (ex: AssertionError) {

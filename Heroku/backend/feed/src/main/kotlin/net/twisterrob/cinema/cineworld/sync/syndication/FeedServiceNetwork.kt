@@ -47,7 +47,7 @@ class FeedServiceNetwork @Inject constructor(
 		client.get {
 			url(source)
 			header(HttpHeaders.Connection, "close")
-			onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
+			onDownloadDebounceTrace("Downloading ${source}", 500)
 		}
 	}
 }

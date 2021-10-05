@@ -33,7 +33,6 @@ class TimestampConverter : AttributeConverter<OffsetDateTime, String> {
  *
  * @see DateTimeFormatter.ISO_OFFSET_DATE_TIME
  */
-@Suppress("MagicNumber") // See appendValue parameter hints, they're all "width".
 private val ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH: DateTimeFormatter =
 	DateTimeFormatterBuilder()
 		.appendValue(ChronoField.YEAR, 4, 4, SignStyle.NEVER)
