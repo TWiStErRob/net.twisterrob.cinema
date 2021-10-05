@@ -56,16 +56,16 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Dump Heroku Dependencies.
-        working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies | tee dependencies.txt
-
-      - name: Upload "Heroku Dependencies".
-        if: success() || failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies.txt
+#      - name: Dump Heroku Dependencies.
+#        working-directory: Heroku
+#        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+#
+#      - name: Upload "Heroku Dependencies".
+#        if: success() || failure()
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: Heroku Dependencies
+#          path: ${{ github.workspace }}/Heroku/dependencies.txt
 
 
       - name: Check Heroku.
