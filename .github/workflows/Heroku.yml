@@ -138,11 +138,12 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
+          name: Heroku Detekt Results
           path: artifacts
 
-      #- name: Display structure of downloaded files
-      #  run: ls -R
-      #  working-directory: artifacts
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: artifacts
 
       - name: Publish Detekt Results
         uses: github/codeql-action/upload-sarif@v1
