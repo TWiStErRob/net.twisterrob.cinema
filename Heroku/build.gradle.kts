@@ -2,6 +2,8 @@ plugins {
 	id("io.gitlab.arturbosch.detekt")
 }
 
+val javaVersion = JavaVersion.VERSION_1_8
+
 allprojects {
 	repositories {
 		jcenter()
@@ -17,14 +19,15 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<JavaPluginConvention> {
-			sourceCompatibility = JavaVersion.VERSION_1_8
-			targetCompatibility = JavaVersion.VERSION_1_8
+			sourceCompatibility = javaVersion
+			targetCompatibility = javaVersion
 		}
 	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
+				jvmTarget = javaVersion.toString()
 				allWarningsAsErrors = true
 				verbose = true
 				freeCompilerArgs = freeCompilerArgs + listOf(
@@ -36,7 +39,7 @@ allprojects {
 
 	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		// Target version of the generated JVM bytecode. It is used for type resolution.
-		jvmTarget = JavaVersion.VERSION_1_8.toString()
+		jvmTarget = javaVersion.toString()
 	}
 
 	plugins.withId("java") {
@@ -105,14 +108,17 @@ allprojects {
 				}
 				shouldRunAfter(unitTest, functionalTest, integrationTest)
 			}
-			"check" {
-				// Remove default dependency, because it runs all tests.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == test.name })
+			val tests = register<Task>("tests") {
 				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
+			}
+			"check" {
+				// Remove default dependency, because it runs all tests.
+				notDependsOn { it.name == test.name }
+				dependsOn(tests)
 				// Don't want to run it automatically, ever.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
+				notDependsOn { it.name == integrationExternalTest.name }
 			}
 		}
 	}
@@ -139,6 +145,7 @@ allprojects {
 		val detekt = this@allprojects.extensions
 			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
 		detekt.apply {
+			ignoreFailures = true
 			buildUponDefaultConfig = true
 			allRules = true
 			config = rootProject.files("config/detekt/detekt.yml")
@@ -168,8 +175,21 @@ tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
 	setSource(files(rootProject.projectDir))
 }
 
+project.tasks.register<Task>("allDependencies") {
+	val projects = project.allprojects.sortedBy { it.name }
+	doFirst {
+		println("Printing dependencies for modules:")
+		projects.forEach { println(" * ${it}") }
+	}
+	val dependenciesTasks = projects.map { it.tasks.named("dependencies") }
+	// Builds a dependency chain: 1 <- 2 <- 3 <- 4, so when executed they're in order.
+	dependenciesTasks.reduce { acc, task -> task.apply { get().dependsOn(acc) } }
+	// Use finalizedBy instead of dependsOn to make sure this task executes first.
+	this@register.finalizedBy(dependenciesTasks)
+}
+
 // Need to eagerly create this, so that we can call tasks.withType in it.
-project.tasks.create<TestReport>("tests") {
+project.tasks.create<TestReport>("allTestsReport") {
 	destinationDir = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
