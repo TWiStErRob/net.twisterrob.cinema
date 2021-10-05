@@ -10,7 +10,9 @@ concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
-  # Expected result: success, if a test or static check fails, it'll be reported separately.
+  # Expected result: success() or failure().
+  # If a static check fails, it'll be reported separately.
+  # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
     name: 1 🔨 Build & Check (Gradle)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
@@ -56,16 +58,16 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-#      - name: Dump Heroku Dependencies.
-#        working-directory: Heroku
-#        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
-#
-#      - name: Upload "Heroku Dependencies".
-#        if: success() || failure()
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: Heroku Dependencies
-#          path: ${{ github.workspace }}/Heroku/dependencies.txt
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+
+      - name: Upload "Heroku Dependencies".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/dependencies.txt
 
 
       - name: Check Heroku.
@@ -80,21 +82,21 @@ jobs:
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
 
 
-#      - name: Build Heroku.
-#        working-directory: Heroku
-#        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
+      - name: Build Heroku.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
 
 
-#      - name: Test Heroku.
-#        working-directory: Heroku
-#        run: >
-#          ./gradlew
-#          --no-daemon
-#          --no-build-cache
-#          --stacktrace
-#          tests :allTestsReport
-#          -Pnet.twisterrob.build.verboseReports=true
-#          -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
+      - name: Test Heroku.
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          tests :allTestsReport
+          -Pnet.twisterrob.build.verboseReports=true
+          -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
@@ -124,7 +126,9 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
 
-  # Separate job for parsing the output, since there are multiple steps when running checks.
+  # Separate job for parsing the output,
+  # since there are multiple steps when running checks.
+  # Expected result: failure() if there were Detekt issues.
   publish-detekt-results-gradle:
     name: 2 📢 Publish Detekt Results
     runs-on: ubuntu-latest
@@ -145,11 +149,11 @@ jobs:
         working-directory: artifacts
         run: ls -R
 
-#      - name: Fix detekt paths.
-#        run: >
-#          sed -re 's!"uri": "${{ github.workspace }}!"uri": "file://${{ github.workspace }}!g'\
-#              <artifacts/build/reports/detekt/detekt.sarif\
-#              >artifacts/build/reports/detekt/detekt-fixed.sarif
+      - name: Fix detekt paths.
+        run: >
+          sed -re 's!"uri": "${{ github.workspace }}!"uri": "file://${{ github.workspace }}!g'\
+              <artifacts/build/reports/detekt/detekt.sarif\
+              >artifacts/build/reports/detekt/detekt-fixed.sarif
 
       - name: Publish Detekt Results
         uses: github/codeql-action/upload-sarif@v1
@@ -161,14 +165,12 @@ jobs:
       - name: Fail if there are warnings or no report.
         working-directory: artifacts
         run: >
-          function fail {
-              echo "$1" >&2
-              exit 1
-          }
-          test -f 'build/reports/detekt/detekt.sarif' || fail "File does not exist"
-          test -s 'build/reports/detekt/detekt.sarif' && fail "There were detekt failures."
+          test -f 'build/reports/detekt/detekt.sarif' || (echo "File does not exist"; exit 1)
+          test -s 'build/reports/detekt/detekt.sarif' && (echo "There were detekt failures."; exit 1)
 
-  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
+  # Separate job for parsing the XML output,
+  # since the matrix runs on multiple machines.
+  # Expected result: failure() if there were Unit test failures.
   publish-test-results-gradle:
     name: 2 📢 Publish Tests Results
     runs-on: ubuntu-latest
