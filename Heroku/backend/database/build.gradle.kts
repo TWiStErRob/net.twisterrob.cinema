@@ -3,6 +3,7 @@ plugins {
 	id("java-test-fixtures")
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
+	id("io.gitlab.arturbosch.detekt")
 }
 
 dependencies {
@@ -24,7 +25,7 @@ dependencies {
 // Test
 dependencies {
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.jfixture)
+	testImplementation(Deps.JFixture.core)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(Deps.Hamcrest.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
@@ -41,7 +42,7 @@ dependencies {
 
 	testFixturesImplementation(project(":backend:quickbook"))
 	testFixturesImplementation(Deps.Kotlin.core)
-	testFixturesImplementation(Deps.JFixture.jfixture)
+	testFixturesImplementation(Deps.JFixture.core)
 	testFixturesImplementation(Deps.JUnit.jupiter)
 	testFixturesImplementation(project(":test-helpers"))
 }

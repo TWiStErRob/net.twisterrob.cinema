@@ -12,13 +12,13 @@ function( $scope,   $sce,   $timeout,   $uibModalInstance,   film,   performance
 	};
 
 	$scope.hasYouTubeTrailer = function () {
-		var parser = angular.element('<a/>')[0];
+		var parser = angular.element('<a></a>')[0];
 		parser.href = film.trailer;
 		return parser.hostname === 'www.youtube.com' || parser.hostname === 'youtu.be';
 	};
 
 	$scope.getYouTubeTrailerId = function () {
-		var parser = angular.element('<a/>')[0];
+		var parser = angular.element('<a></a>')[0];
 		parser.href = film.trailer;
 		if (parser.hostname === 'www.youtube.com') {
 			return /\bv=([^&]+)/.exec(parser.search)[1];

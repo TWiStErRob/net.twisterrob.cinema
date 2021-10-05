@@ -149,5 +149,4 @@ $(document).ready(function document_ready() {
 				$('#cinemas_checkLondon').click();
 			}
 		});
-	;
 });

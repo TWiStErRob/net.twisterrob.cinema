@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 import org.gradle.api.tasks.testing.Test
 
 enum class Concurrency {

@@ -4,38 +4,38 @@
 	<div class="modal-body">
 		<form novalidate name="plannerOptionsForm" class="form-horizontal" role="form">
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.minWait.$invalid, 'has-success': !plannerOptionsForm.minWait.$invalid}">
-				<label for="minWait" class="col-sm-3 control-label">Minimum&nbsp;wait between&nbsp;movies</label>
+				<label for="plan-options-minWait" class="col-sm-3 control-label">Minimum&nbsp;wait between&nbsp;movies</label>
 				<div class="col-sm-9">
-					<input name="minWait" type="range" min="0" max="{{options.maxWaitBetweenMovies}}" ng-model="options.minWaitBetweenMovies" class="form-control" />
+					<input id="plan-options-minWait" name="minWait" type="range" min="0" max="{{options.maxWaitBetweenMovies}}" ng-model="options.minWaitBetweenMovies" class="form-control" />
 					<p class="form-control-static">0 &lt;= {{options.minWaitBetweenMovies}} minutes &lt;= {{options.maxWaitBetweenMovies}}</p>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.maxWait.$invalid, 'has-success': !plannerOptionsForm.maxWait.$invalid}">
-				<label for="maxWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (still considered)</label>
+				<label for="plan-options-maxWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (still considered)</label>
 				<div class="col-sm-9">
-					<input name="maxWait" type="range" min="{{options.minWaitBetweenMovies}}" max="{{options.dealbreakingWaitBetweenMovies}}" ng-model="options.maxWaitBetweenMovies" class="form-control" />
+					<input id="plan-options-maxWait" name="maxWait" type="range" min="{{options.minWaitBetweenMovies}}" max="{{options.dealbreakingWaitBetweenMovies}}" ng-model="options.maxWaitBetweenMovies" class="form-control" />
 					<p class="form-control-static">{{options.minWaitBetweenMovies}} &lt;= {{options.maxWaitBetweenMovies}} minutes &lt;= {{options.dealbreakingWaitBetweenMovies}} minutes</p>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.breakingWait.$invalid, 'has-success': !plannerOptionsForm.breakingWait.$invalid}">
-				<label for="breakingWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (dealbreaker)</label>
+				<label for="plan-options-breakingWait" class="col-sm-3 control-label">Maximum&nbsp;wait between&nbsp;movies (dealbreaker)</label>
 				<div class="col-sm-9">
-					<input name="breakingWait" type="range" min="{{options.maxWaitBetweenMovies}}" max="600" ng-model="options.dealbreakingWaitBetweenMovies" class="form-control" />
+					<input id="plan-options-breakingWait" name="breakingWait" type="range" min="{{options.maxWaitBetweenMovies}}" max="600" ng-model="options.dealbreakingWaitBetweenMovies" class="form-control" />
 					<p class="form-control-static">{{options.maxWaitBetweenMovies}} &lt;= {{options.dealbreakingWaitBetweenMovies}} minutes &lt;= 10 hours</p>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.endOfWork.$invalid, 'has-success': !plannerOptionsForm.endOfWork.$invalid}">
-				<label for="endOfWork" class="col-sm-3 control-label">End of work</label>
+				<label for="plan-options-endOfWork" class="col-sm-3 control-label">End of work</label>
 				<div class="col-sm-9">
 					<!-- workaround to not being able to get $invalid state of the timepicker directive nor the child inputs are named -->
-					<input name="endOfWork" type="hidden" required ng-model="options.endOfWork" ng-change="fixTime('endOfWork')" />
+					<input id="plan-options-endOfWork" name="endOfWork" type="hidden" required ng-model="options.endOfWork" ng-change="fixTime('endOfWork')" />
 					<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="options.endOfWork"></div>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error': plannerOptionsForm.adLength.$invalid, 'has-success': !plannerOptionsForm.adLength.$invalid}">
-				<label for="adLength" class="col-sm-3 control-label">Estimated ad&nbsp;length</label>
+				<label for="plan-options-adLength" class="col-sm-3 control-label">Estimated ad&nbsp;length</label>
 				<div class="col-sm-9">
-					<input name="adLength" type="range" min="0" max="60" ng-model="options.estimatedAdvertisementLength" class="form-control" />
+					<input id="plan-options-adLength" name="adLength" type="range" min="0" max="60" ng-model="options.estimatedAdvertisementLength" class="form-control" />
 					<p class="form-control-static">{{options.estimatedAdvertisementLength}} minutes</p>
 				</div>
 			</div>

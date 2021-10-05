@@ -10,30 +10,24 @@ import dagger.Component
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.TestApplicationRequest
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthIntgTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.serialized
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
-import net.twisterrob.cinema.cineworld.backend.ktor.ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
-import org.eclipse.jetty.http.HttpHeader
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
-import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -113,10 +107,10 @@ private fun serialized(film: Film): String =
 		"class": "${film.`class`}",
 		"title": "${film.title}",
 		"cineworldID": ${film.cineworldID},
-		"_created": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film._created.atZoneSameInstant(ZoneOffset.UTC))}",
-		"_updated": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film._updated?.atZoneSameInstant(ZoneOffset.UTC))}",
+		"_created": "${serialized(film._created)}",
+		"_updated": "${serialized(film._updated)}",
 		"director": "${film.director}",
-		"release": "${ISO_OFFSET_DATE_TIME_FORMATTER_FIXED_WIDTH.format(film.release.atZoneSameInstant(ZoneOffset.UTC))}",
+		"release": "${serialized(film.release)}",
 		"format": "${film.format}",
 		"runtime": ${film.runtime},
 		"poster_url": "${film.poster_url}",
@@ -137,23 +131,3 @@ private fun serialized(film: Film): String =
 		"view": null
 	}
 	"""
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun AuthRepository.setupAuth(): User {
-	val fixtUser: User = JFixture().build()
-	whenever(this.findUser(AuthIntgTest.realisticUserId)).thenReturn(fixtUser)
-	return fixtUser
-}
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
-	handleRequest {
-		addHeader(HttpHeader.COOKIE.toString(), AuthIntgTest.realisticCookie)
-		block()
-	}

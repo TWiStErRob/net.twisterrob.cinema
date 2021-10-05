@@ -1,0 +1,23 @@
+config:
+  warningsAsErrors: true
+
+style:
+  MaxLineLength:
+    excludeCommentStatements: true
+
+  UnusedPrivateClass:
+    excludes:
+      - '**/*Test.kt'
+
+naming:
+  ConstructorParameterNaming:
+    excludes:
+      - '**/endpoint/*/data/*.kt'
+      - '**/quickbook/Quickbook*.kt'
+  VariableNaming:
+    excludes:
+      - '**/database/model/*.kt'
+
+performance:
+  SpreadOperator:
+    active: false

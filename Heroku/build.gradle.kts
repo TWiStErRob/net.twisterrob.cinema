@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.5.21" apply false
-	id("org.jetbrains.kotlin.kapt") version "1.5.21" apply false
+	id("io.gitlab.arturbosch.detekt")
 }
+
+val javaVersion = JavaVersion.VERSION_1_8
 
 allprojects {
 	repositories {
@@ -13,21 +11,37 @@ allprojects {
 	}
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
-		val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
+		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
 		kapt.apply {
 			includeCompileClasspath = false
 		}
 	}
+
+	plugins.withId("java") {
+		configure<JavaPluginConvention> {
+			sourceCompatibility = javaVersion
+			targetCompatibility = javaVersion
+		}
+	}
+
 	plugins.withId("org.jetbrains.kotlin.jvm") {
-		tasks.withType<KotlinCompile> {
+		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
-				jvmTarget = JavaVersion.VERSION_1_8.toString()
+				jvmTarget = javaVersion.toString()
 				allWarningsAsErrors = true
 				verbose = true
-				freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+				freeCompilerArgs = freeCompilerArgs + listOf(
+					"-Xopt-in=kotlin.RequiresOptIn"
+				)
 			}
 		}
 	}
+
+	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		// Target version of the generated JVM bytecode. It is used for type resolution.
+		jvmTarget = javaVersion.toString()
+	}
+
 	plugins.withId("java") {
 		val base = this@allprojects.the<BasePluginConvention>()
 		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
@@ -94,14 +108,17 @@ allprojects {
 				}
 				shouldRunAfter(unitTest, functionalTest, integrationTest)
 			}
-			"check" {
-				// Remove default dependency, because it runs all tests.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == test.name })
+			val tests = register<Task>("tests") {
 				dependsOn(unitTest)
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
+			}
+			"check" {
+				// Remove default dependency, because it runs all tests.
+				notDependsOn { it.name == test.name }
+				dependsOn(tests)
 				// Don't want to run it automatically, ever.
-				setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == integrationExternalTest.name })
+				notDependsOn { it.name == integrationExternalTest.name }
 			}
 		}
 	}
@@ -124,10 +141,55 @@ allprojects {
 			}
 		}
 	}
+	plugins.withId("io.gitlab.arturbosch.detekt") {
+		val detekt = this@allprojects.extensions
+			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
+		detekt.apply {
+			ignoreFailures = true
+			buildUponDefaultConfig = true
+			allRules = true
+			config = rootProject.files("config/detekt/detekt.yml")
+			baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
+
+			parallel = true
+
+			reports {
+				html.enabled = true // human
+				xml.enabled = true // checkstyle
+				txt.enabled = true // console
+				// https://sarifweb.azurewebsites.net
+				sarif.enabled = true // Github Code Scanning
+			}
+		}
+	}
+}
+
+// When running "gradlew detekt", it'll double-execute, be more specific:
+//  * gradlew :detekt
+//  * gradlew detekt -x :detekt
+tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
+	description = "Runs over whole code base without the starting overhead for each module."
+	// Reconfigure the detekt task rather than registering a separate detektAll task.
+	// This inherits the default configuration from the detekt extension, because it's created by the plugin.
+	// The root project has no source code, so we can include everything to check.
+	setSource(files(rootProject.projectDir))
+}
+
+project.tasks.register<Task>("allDependencies") {
+	val projects = project.allprojects.sortedBy { it.name }
+	doFirst {
+		println("Printing dependencies for modules:")
+		projects.forEach { println(" * ${it}") }
+	}
+	val dependenciesTasks = projects.map { it.tasks.named("dependencies") }
+	// Builds a dependency chain: 1 <- 2 <- 3 <- 4, so when executed they're in order.
+	dependenciesTasks.reduce { acc, task -> task.apply { get().dependsOn(acc) } }
+	// Use finalizedBy instead of dependsOn to make sure this task executes first.
+	this@register.finalizedBy(dependenciesTasks)
 }
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
-project.tasks.create<TestReport>("tests") {
+project.tasks.create<TestReport>("allTestsReport") {
 	destinationDir = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->

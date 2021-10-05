@@ -1,11 +1,11 @@
-@file:Suppress("RemoveCurlyBracesFromTemplate", "DEPRECATION_ERROR")
-
 package net.twisterrob.test
 
 import java.lang.reflect.Field
 
 inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
+	@Suppress("DEPRECATION_ERROR")
 	val field = this.findField(fieldName)
+
 	@Suppress("DEPRECATION")
 	val accessible = field.isAccessible
 	try {
@@ -22,13 +22,15 @@ inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
 }
 
 operator fun Any.set(fieldName: String, value: Any?) {
+	@Suppress("DEPRECATION_ERROR")
 	val field = this.findField(fieldName)
+
 	@Suppress("DEPRECATION")
 	val accessible = field.isAccessible
 	try {
 		field.isAccessible = true
 		field.set(this, value)
-	} catch (ex: java.lang.IllegalArgumentException) {
+	} catch (ex: IllegalArgumentException) {
 		val valueType = if (value != null) value::class else null
 		val message = "${field} = ${valueType} is not possible"
 		throw ClassCastException(message).initCause(ex)
@@ -41,9 +43,12 @@ operator fun Any.set(fieldName: String, value: Any?) {
 fun Any.findField(fieldName: String): Field {
 	val hierarchy = generateSequence<Class<*>>(this::class.java) { it.superclass }.toList()
 	val fields = hierarchy.mapNotNull {
+		@Suppress("SwallowedException")
 		try {
 			it.getDeclaredField(fieldName)
 		} catch (e: NoSuchFieldException) {
+			// Don't care about exact source, all we need to know is whether the field exists.
+			// ... and if it exists, we need the instance.
 			null
 		}
 	}

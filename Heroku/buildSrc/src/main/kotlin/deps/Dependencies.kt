@@ -125,7 +125,7 @@ object Hamcrest {
 object JFixture {
 	const val version = "2.7.2"
 
-	const val jfixture = "com.flextrade.jfixture:jfixture:${version}"
+	const val core = "com.flextrade.jfixture:jfixture:${version}"
 }
 
 object Kotlin {
@@ -134,12 +134,12 @@ object Kotlin {
 	 * @see Jackson.version
 	 * @see Ktor.version
 	 */
-	const val version = "1.5.21"
+	const val version = "1.5.31"
 
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
-	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
-	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.3"
+	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
 }
 
 /**
@@ -148,7 +148,7 @@ object Kotlin {
  */
 object Ktor {
 
-	const val version = "1.6.1"
+	const val version = "1.6.3"
 
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
@@ -337,7 +337,7 @@ object Neo4JOGM {
 }
 
 object Jackson {
-	const val version = "2.13.0-rc1" // 2.13 stable not released yet, but Kotlin 1.5.21 needs it.
+	const val version = "2.13.0-rc2" // 2.13 stable not released yet, but Kotlin 1.5.21 needs it.
 
 	const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
 	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"

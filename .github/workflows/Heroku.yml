@@ -10,12 +10,15 @@ concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
+  # Expected result: success() or failure().
+  # If a static check fails, it'll be reported separately.
+  # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
     name: 1 🔨 Build & Check (Gradle)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
-    timeout-minutes: 12
+    timeout-minutes: 15
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -54,9 +57,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
+
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+
+      - name: Upload "Heroku Dependencies".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/dependencies.txt
+
+
+      - name: Check Heroku.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
+
+      - name: Upload "Heroku Detekt Results".
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Heroku Detekt Results
+          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
+
+
       - name: Build Heroku.
         working-directory: Heroku
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
+
 
       - name: Test Heroku.
         working-directory: Heroku
@@ -65,7 +94,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          check tests
+          tests :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
@@ -74,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Heroku Test Results XMLs
-          path: ${{ github.workspace }}/**/build/test-results/*/TEST-*.xml
+          path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Upload "Heroku Test Results HTML".
         if: success() || failure()
@@ -88,7 +117,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Heroku Test Results HTMLs
-          path: ${{ github.workspace }}/**/build/reports/tests/*/
+          path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
 
       - name: Cleanup Gradle files before caching.
         run: |
@@ -97,7 +126,57 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
 
-  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
+  # Separate job for parsing the output,
+  # since there are multiple steps when running checks.
+  # Expected result: failure() if there were Detekt issues.
+  publish-detekt-results-gradle:
+    name: 2 📢 Publish Detekt Results
+    runs-on: ubuntu-latest
+    needs: check-gradle
+    # The dependency job might be skipped, we don't need to run this job then.
+    if: success() || failure()
+    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
+    timeout-minutes: 5
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Heroku Detekt Results
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        working-directory: artifacts
+        run: ls -R
+
+      - name: Fix detekt paths.
+        run: >
+          sed -re 's!"uri": "${{ github.workspace }}!"uri": "file://${{ github.workspace }}!g'\
+              <artifacts/build/reports/detekt/detekt.sarif\
+              >artifacts/build/reports/detekt/detekt-fixed.sarif
+
+      - name: Publish Detekt Results
+        uses: github/codeql-action/upload-sarif@v1
+        if: success() || failure()
+        with:
+          checkout_path: ${{ github.workspace }}
+          sarif_file: artifacts/build/reports/detekt/detekt-fixed.sarif
+
+      - name: Fail if there are warnings or no report.
+        working-directory: artifacts
+        run: |
+          if [ ! -f 'detekt.txt' ]; then # -f: Path exists and is regular file.
+            echo "File does not exist"
+            exit 2
+          fi
+          if [ -s 'detekt.txt' ]; then # -s: File has contents.
+            echo "There were detekt failures."
+            exit 3
+          fi
+
+  # Separate job for parsing the XML output,
+  # since the matrix runs on multiple machines.
+  # Expected result: failure() if there were Unit test failures.
   publish-test-results-gradle:
     name: 2 📢 Publish Tests Results
     runs-on: ubuntu-latest
@@ -111,11 +190,12 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
+          name: Heroku Test Results XMLs
           path: artifacts
 
-      #- name: Display structure of downloaded files
-      #  run: ls -R
-      #  working-directory: artifacts
+      - name: Display structure of downloaded files
+        working-directory: artifacts
+        run: ls -R
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
@@ -124,7 +204,8 @@ jobs:
           comment_title: Test Results
           report_individual_runs: true
           test_changes_limit: 0
-          files: artifacts/Heroku Test Results XMLs/**/*.xml
+          files: artifacts/**/*.xml
+
   check-npm:
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md

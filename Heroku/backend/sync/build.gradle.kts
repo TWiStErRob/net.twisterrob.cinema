@@ -35,7 +35,7 @@ dependencies {
 // Test
 dependencies {
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.jfixture)
+	testImplementation(Deps.JFixture.core)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(Deps.Hamcrest.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
@@ -56,7 +56,7 @@ dependencies {
 	testFixturesImplementation(project(":backend:database"))
 	testFixturesImplementation(project(":test-helpers"))
 	testFixturesImplementation(Deps.Kotlin.core)
-	testFixturesImplementation(Deps.JFixture.jfixture)
+	testFixturesImplementation(Deps.JFixture.core)
 }
 
 configurations.all {

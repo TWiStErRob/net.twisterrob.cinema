@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-@Suppress("ClassName")
+@Suppress("ClassName", "RemoveExplicitTypeArguments")
 class SyncResultsTest {
 
 	private class Data : Historical()

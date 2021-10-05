@@ -5,6 +5,7 @@ plugins {
 	id("application")
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
+	id("io.gitlab.arturbosch.detekt")
 }
 
 application {
@@ -40,7 +41,7 @@ dependencies {
 // Test
 dependencies {
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.jfixture)
+	testImplementation(Deps.JFixture.core)
 	testImplementation(Deps.Hamcrest.core)
 	testImplementation(Deps.Hamcrest.jsonAssert)
 	testImplementation(Deps.Hamcrest.shazamcrest) {
@@ -61,7 +62,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"
+			"-Xopt-in=io.ktor.locations.KtorExperimentalLocationsAPI"
 		)
 	}
 }

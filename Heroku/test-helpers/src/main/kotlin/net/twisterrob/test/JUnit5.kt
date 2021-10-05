@@ -1,3 +1,4 @@
+@file:Suppress("MatchingDeclarationName")
 package net.twisterrob.test
 
 import org.hamcrest.Matcher
@@ -10,7 +11,7 @@ import kotlin.DeprecationLevel.ERROR
 /**
  * Kotlin-friendly version of [org.junit.jupiter.api.AssertAll.assertAll].
  * Kotlin-friendly in a sense that it totally eliminates from the compiled binary.
- * The JUpiter version results in an inner class with captured fields and two methods each.
+ * The Jupiter version results in an inner class with captured fields and two methods each.
  * The `vararg` triggers this behavior.
  *
  * Syntax changes from
@@ -30,6 +31,7 @@ import kotlin.DeprecationLevel.ERROR
  * Note the `{}` placement around `assertAll` and the `o` listing of lambdas instead of `,` separated enumeration.
  */
 @Suppress("DEPRECATION_ERROR") // Deprecated members are meant to be used internally by this class only.
+// Cannot use an interface to hide implementation details if we want to allow inlining [o] function.
 class AllAsserter
 @Deprecated("Internal constructor, only visible because of inlining, do not use!", level = ERROR)
 constructor(
