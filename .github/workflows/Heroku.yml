@@ -179,9 +179,9 @@ jobs:
           name: Heroku Test Results XMLs
           path: artifacts
 
-      #- name: Display structure of downloaded files
-      #  working-directory: artifacts
-      #  run: ls -R
+      - name: Display structure of downloaded files
+        working-directory: artifacts
+        run: ls -R
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
