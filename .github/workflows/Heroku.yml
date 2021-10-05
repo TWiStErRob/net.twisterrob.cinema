@@ -165,8 +165,8 @@ jobs:
       - name: Fail if there are warnings or no report.
         working-directory: artifacts
         run: |
-          test -f 'build/reports/detekt/detekt.sarif' || (echo "File does not exist"; exit 1)
-          test -s 'build/reports/detekt/detekt.sarif' && (echo "There were detekt failures."; exit 1)
+          test -f 'build/reports/detekt/detekt.txt' || (echo "File does not exist"; exit 1)
+          test -s 'build/reports/detekt/detekt.txt' && (echo "There were detekt failures."; exit 1)
 
   # Separate job for parsing the XML output,
   # since the matrix runs on multiple machines.
