@@ -145,11 +145,11 @@ jobs:
         working-directory: artifacts
         run: ls -R
 
-      - name: Fix detekt paths.
-        run: >
-          sed -re 's!"uri": "${{ github.workspace }}!"uri": "file://${{ github.workspace }}!g'\
-              <artifacts/build/reports/detekt/detekt.sarif\
-              >artifacts/build/reports/detekt/detekt-fixed.sarif
+#      - name: Fix detekt paths.
+#        run: >
+#          sed -re 's!"uri": "${{ github.workspace }}!"uri": "file://${{ github.workspace }}!g'\
+#              <artifacts/build/reports/detekt/detekt.sarif\
+#              >artifacts/build/reports/detekt/detekt-fixed.sarif
 
       - name: Publish Detekt Results
         uses: github/codeql-action/upload-sarif@v1
