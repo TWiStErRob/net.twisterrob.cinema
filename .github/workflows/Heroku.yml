@@ -142,24 +142,25 @@ jobs:
           path: artifacts
 
       - name: Display structure of downloaded files
-        run: ls -R
         working-directory: artifacts
+        run: ls -R
 
       - name: Publish Detekt Results
         uses: github/codeql-action/upload-sarif@v1
         if: success() || failure()
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif
+          sarif_file: artifacts/build/reports/detekt/detekt.sarif
 
       - name: Fail if there are warnings or no report.
+        working-directory: artifacts
         run: >
           function fail {
               echo "$1" >&2
               exit 1
           }
-          test -f 'artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif' || fail "File does not exist"
-          test -s 'artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif' && fail "There were detekt failures."
+          test -f 'build/reports/detekt/detekt.sarif' || fail "File does not exist"
+          test -s 'build/reports/detekt/detekt.sarif' && fail "There were detekt failures."
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results-gradle:
@@ -175,11 +176,12 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
+          name: Heroku Test Results XMLs
           path: artifacts
 
       #- name: Display structure of downloaded files
-      #  run: ls -R
       #  working-directory: artifacts
+      #  run: ls -R
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
@@ -188,7 +190,7 @@ jobs:
           comment_title: Test Results
           report_individual_runs: true
           test_changes_limit: 0
-          files: artifacts/Heroku Test Results XMLs/**/*.xml
+          files: artifacts/**/*.xml
 
   check-npm:
     name: 1 🔨 Build & Check (NPM)
