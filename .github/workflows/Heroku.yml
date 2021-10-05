@@ -150,7 +150,7 @@ jobs:
         if: success() || failure()
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: artifacts/Heroku Detekt Results/Heroku/build/reports/detekt/detekt.sarif
+          sarif_file: artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif
 
       - name: Fail if there are warnings or no report.
         run: >
@@ -158,8 +158,8 @@ jobs:
               echo "$1" >&2
               exit 1
           }
-          test -f 'artifacts/Heroku Detekt Results/Heroku/build/reports/detekt/detekt.sarif' || fail "File does not exist"
-          test -s 'artifacts/Heroku Detekt Results/Heroku/build/reports/detekt/detekt.sarif' && fail "There were detekt failures."
+          test -f 'artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif' || fail "File does not exist"
+          test -s 'artifacts/Heroku Detekt Results/build/reports/detekt/detekt.sarif' && fail "There were detekt failures."
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results-gradle:
