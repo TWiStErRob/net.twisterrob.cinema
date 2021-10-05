@@ -160,7 +160,7 @@ jobs:
         if: success() || failure()
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: artifacts/build/reports/detekt/detekt.sarif
+          sarif_file: artifacts/build/reports/detekt/detekt-fixed.sarif
 
       - name: Fail if there are warnings or no report.
         working-directory: artifacts
