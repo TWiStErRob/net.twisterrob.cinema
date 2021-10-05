@@ -27,6 +27,10 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
+      - name: Where
+        run: >
+          echo ${{ github.workspace }}
+
       - name: Download Gradle running the build.
         working-directory: Heroku
         run: |
@@ -144,6 +148,10 @@ jobs:
       - name: Display structure of downloaded files
         working-directory: artifacts
         run: ls -R
+
+      - name: Where
+        run: >
+          echo ${{ github.workspace }}
 
       - name: Publish Detekt Results
         uses: github/codeql-action/upload-sarif@v1
