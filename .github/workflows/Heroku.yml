@@ -164,7 +164,7 @@ jobs:
 
       - name: Fail if there are warnings or no report.
         working-directory: artifacts
-        run: >
+        run: |
           test -f 'build/reports/detekt/detekt.sarif' || (echo "File does not exist"; exit 1)
           test -s 'build/reports/detekt/detekt.sarif' && (echo "There were detekt failures."; exit 1)
 
