@@ -150,7 +150,7 @@ allprojects {
 			allRules = true
 			config = rootProject.files("config/detekt/detekt.yml")
 			baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
-			basePath = rootProject.projectDir.absolutePath
+			basePath = rootProject.projectDir.parentFile.absolutePath
 
 			parallel = true
 
