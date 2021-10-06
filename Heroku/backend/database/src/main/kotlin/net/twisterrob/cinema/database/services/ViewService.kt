@@ -53,7 +53,7 @@ class ViewService @Inject constructor(
 	 * @param user [User.id]
 	 * @param time [View.date]
 	 */
-	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime): Unit = run {
+	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime) {
 		session.query(
 			"""
 			MATCH (v:View {date: ${"$"}dateEpochUTC })

@@ -38,15 +38,16 @@ class FilmService @Inject constructor(
 	 * Find a film by [edi].
 	 * @param edi [Film.edi]
 	 */
-	fun getFilm(edi: Long): Film? = session.queryForObject(
-		"""
-		MATCH (f:Film { edi: ${"$"}filmEDI })
-		RETURN f AS film
-		""",
-		mapOf(
-			"filmEDI" to edi
+	fun getFilm(edi: Long): Film? =
+		session.queryForObject(
+			"""
+			MATCH (f:Film { edi: ${"$"}filmEDI })
+			RETURN f AS film
+			""",
+			mapOf(
+				"filmEDI" to edi
+			)
 		)
-	)
 
 	/**
 	 * Find a list of films by edis.
