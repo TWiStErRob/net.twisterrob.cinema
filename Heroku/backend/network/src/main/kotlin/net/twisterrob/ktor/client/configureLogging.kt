@@ -5,6 +5,7 @@ import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import org.slf4j.Logger
 
+fun f(){}
 fun HttpClientConfig<*>.configureLogging(log: Logger) {
 	install(Logging) {
 		when {
