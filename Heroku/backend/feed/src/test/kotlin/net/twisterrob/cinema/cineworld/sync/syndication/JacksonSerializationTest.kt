@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
@@ -32,11 +33,13 @@ class JacksonSerializationTest {
 		@JacksonXmlProperty(isAttribute = true)
 		val attr1: String,
 
+		@JsonProperty(index = 1)
 		val sub1: Int,
 
 		@JacksonXmlProperty(isAttribute = true)
 		val attr2: Int,
 
+		@JsonProperty(index = 2)
 		val sub2: String
 	)
 
@@ -178,10 +181,13 @@ class JacksonSerializationTest {
 	data class RootElementWithChildren(
 		@JacksonXmlElementWrapper(localName = "element1s")
 		@JacksonXmlProperty(localName = "element1")
+		@JsonProperty(index = 1)
 		val element1s: List<Element1>,
+
 		@JacksonXmlElementWrapper(localName = "element2s")
 		@JacksonXmlProperty(localName = "element2")
-		val element2s: List<Element2>
+		@JsonProperty(index = 2)
+		val element2s: List<Element2>,
 	) {
 
 		data class Element1(
