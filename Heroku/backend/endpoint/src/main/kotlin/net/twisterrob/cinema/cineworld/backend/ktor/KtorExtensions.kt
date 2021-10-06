@@ -14,7 +14,16 @@ private const val DEFAULT_PORT_SECURE: Int = 443
  */
 fun ApplicationCall.absoluteUrl(path: String = "/"): String {
 	val defaultPort = if (request.origin.scheme == "http") DEFAULT_PORT_UNSECURE else DEFAULT_PORT_SECURE
-	val hostPort = request.host() + request.port().let { port -> if (port == defaultPort) "" else ":$port" }
+	val hostPort = request.host() + request.port().let { port ->
+		// isProduction() to prevent:
+		// > Error 400: redirect_uri_mismatch
+		// > You can't sign in to this app because it doesn't comply with Google's OAuth 2.0 policy.
+		// > redirect_uri: http://cinema.twisterrob.net:6741/auth/google/return
+		if (port == defaultPort || isProduction()) "" else ":$port"
+	}
 	val protocol = request.origin.scheme
 	return "$protocol://$hostPort$path"
 }
+
+private fun ApplicationCall.isProduction(): Boolean =
+	application.environment.config.environment == Env.PRODUCTION
