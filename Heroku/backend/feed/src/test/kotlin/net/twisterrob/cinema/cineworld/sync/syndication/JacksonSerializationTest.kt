@@ -133,7 +133,6 @@ class JacksonSerializationTest {
 			}
 
 			// missing from serialized
-			@Suppress("JoinDeclarationAndAssignment") // TODEL https://youtrack.jetbrains.com/issue/KTIJ-19705
 			@JsonBackReference("childRef")
 			@JacksonXmlProperty(isAttribute = true)
 			private lateinit var child: Child
