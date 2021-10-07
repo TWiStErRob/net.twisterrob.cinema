@@ -75,16 +75,24 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
 @JacksonXmlRootElement(localName = "feed")
 data class Feed(
 	@JacksonXmlElementWrapper(localName = "attributes")
+//	@JacksonXmlProperty(localName = "attribute")
+	@JsonProperty(index = 1)
 	val attributes: List<Attribute>,
 
 	@JacksonXmlElementWrapper(localName = "cinemas")
+//	@JacksonXmlProperty(localName = "cinema")
+	@JsonProperty(index = 2)
 	val cinemas: List<Cinema>,
 
 	@JacksonXmlElementWrapper(localName = "films")
+//	@JacksonXmlProperty(localName = "film")
+	@JsonProperty(index = 3)
 	val films: List<Film>,
 
 	@JacksonXmlElementWrapper(localName = "performances")
-	val performances: List<Performance>
+//	@JacksonXmlProperty(localName = "screening")
+	@JsonProperty(index = 4)
+	val performances: List<Performance>,
 ) {
 
 	constructor(
