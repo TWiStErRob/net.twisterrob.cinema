@@ -22,29 +22,31 @@ class CinemaService @Inject constructor(
 	/**
 	 * Get all the Cinemas which are active.
 	 */
-	fun getActiveCinemas(): Iterable<Cinema> = session.query<Cinema>(
-		"""
-		MATCH (c:Cinema)
-		WHERE NOT exists (c._deleted)
-		RETURN c AS cinema
-		""",
-		mapOf()
-	)
+	fun getActiveCinemas(): Iterable<Cinema> =
+		session.query<Cinema>(
+			"""
+			MATCH (c:Cinema)
+			WHERE NOT exists (c._deleted)
+			RETURN c AS cinema
+			""",
+			mapOf()
+		)
 
 	/**
 	 * Get all the Cinemas associated with a User.
 	 * @param userId ID of the user whose favorite cinemas will be loaded.
 	 */
-	fun getFavoriteCinemas(userId: String): Iterable<Cinema> = session.query<Cinema>(
-		"""
-		MATCH
-			(u:User { id: ${"$"}userID })-[:GOESTO]->(c:Cinema)
-		RETURN c AS cinema
-		""",
-		mapOf(
-			"userID" to userId
+	fun getFavoriteCinemas(userId: String): Iterable<Cinema> =
+		session.query<Cinema>(
+			"""
+			MATCH
+				(u:User { id: ${"$"}userID })-[:GOESTO]->(c:Cinema)
+			RETURN c AS cinema
+			""",
+			mapOf(
+				"userID" to userId
+			)
 		)
-	)
 
 	/**
 	 * Get all the Cinemas which are active and whether it is favorited by the User.

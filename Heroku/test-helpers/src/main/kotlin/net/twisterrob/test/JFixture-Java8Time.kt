@@ -1,8 +1,10 @@
 package net.twisterrob.test
 
+import com.flextrade.jfixture.JFixture
 import com.flextrade.jfixture.customisation.Customisation
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -14,6 +16,7 @@ fun java8TimeRealistic(): Customisation =
 	Customisation { fixture ->
 		offsetDateTimeRealistic().customise(fixture)
 		zonedDateTimeRealistic().customise(fixture)
+		localDateRealistic().customise(fixture)
 	}
 
 /**
@@ -23,10 +26,18 @@ fun java8TimeRealistic(): Customisation =
 fun offsetDateTimeRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_YEARS): Customisation =
 	Customisation { fixture ->
 		fixture.customise().lazyInstance(OffsetDateTime::class.java) {
-			val now = System.currentTimeMillis()
-			val millis = fixture.buildRange((now - minOffset)..(now + maxOffset))
-			val zone = fixture.create().fromList(*ZoneId.getAvailableZoneIds().toTypedArray())
-			OffsetDateTime.now(Clock.fixed(Instant.ofEpochMilli(millis), ZoneId.of(zone)))
+			OffsetDateTime.now(fakeClock(fixture, minOffset, maxOffset))
+		}
+	}
+
+/**
+ * @param minOffset 0 to make time in future only
+ * @param maxOffset 0 to make time in past only
+ */
+fun localDateRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_YEARS): Customisation =
+	Customisation { fixture ->
+		fixture.customise().lazyInstance(LocalDate::class.java) {
+			LocalDate.now(fakeClock(fixture, minOffset, maxOffset))
 		}
 	}
 
@@ -37,9 +48,13 @@ fun offsetDateTimeRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_Y
 fun zonedDateTimeRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_YEARS): Customisation =
 	Customisation { fixture ->
 		fixture.customise().lazyInstance(ZonedDateTime::class.java) {
-			val now = System.currentTimeMillis()
-			val millis = fixture.buildRange((now - minOffset)..(now + maxOffset))
-			val zone = fixture.create().fromList(*ZoneId.getAvailableZoneIds().toTypedArray())
-			ZonedDateTime.now(Clock.fixed(Instant.ofEpochMilli(millis), ZoneId.of(zone)))
+			ZonedDateTime.now(fakeClock(fixture, minOffset, maxOffset))
 		}
 	}
+
+private fun fakeClock(fixture: JFixture, minOffset: Long, maxOffset: Long): Clock? {
+	val now = System.currentTimeMillis()
+	val millis = fixture.buildRange((now - minOffset)..(now + maxOffset))
+	val zone = fixture.create().fromList(*ZoneId.getAvailableZoneIds().toTypedArray())
+	return Clock.fixed(Instant.ofEpochMilli(millis), ZoneId.of(zone))
+}
