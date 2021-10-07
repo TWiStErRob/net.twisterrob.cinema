@@ -23,10 +23,9 @@ class ViewService @Inject constructor(
 	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
 		session.queryForObject(
 			"""
-			MATCH
-				(c:Cinema { cineworldID: ${"$"}cinemaID }),
-				(f:Film { edi: ${"$"}filmEDI }),
-				(u:User { id: ${"$"}userID })
+			MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
+			MATCH (f:Film { edi: ${"$"}filmEDI })
+			MATCH (u:User { id: ${"$"}userID })
 			MERGE (u)-[t:ATTENDED]->(v:View {
 				film: ${"$"}filmEDI,
 				cinema: ${"$"}cinemaID,
