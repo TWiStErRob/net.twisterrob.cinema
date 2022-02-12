@@ -6,7 +6,7 @@ val javaVersion = JavaVersion.VERSION_1_8
 
 allprojects {
 	repositories {
-		jcenter()
+		mavenCentral()
 		Deps.Ktor.repo(this@allprojects)
 	}
 
