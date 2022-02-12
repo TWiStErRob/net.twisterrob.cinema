@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -203,6 +204,7 @@ data class Feed(
 		/**
 		 * @sample `"http://www1.cineworld.co.uk/films/deadpool-2"`
 		 */
+		@JsonDeserialize(using = UriEncodingFixingUriDeserializer::class)
 		val url: URI,
 
 		/**
