@@ -1,9 +1,14 @@
 name: Release to Heroku from master
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for release'
+        required: false
+        default: 'Publish latest changes from master'
 jobs:
   release:
-    name: Release to heroku branch
+    name: Release to heroku branch (${{ github.event.inputs.reason }})
     # Doesn't matter which one, simple git commands only.
     runs-on: ubuntu-latest
     # Simple fast-forward merge, shouldn't take long.
