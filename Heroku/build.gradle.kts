@@ -211,7 +211,7 @@ project.tasks.register<Task>("allDependencies") {
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 project.tasks.create<TestReport>("allTestsReport") {
-	destinationDir = file("${buildDir}/reports/tests/all")
+	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
