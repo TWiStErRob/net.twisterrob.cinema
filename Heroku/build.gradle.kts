@@ -11,8 +11,8 @@ allprojects {
 	}
 
 	dependencyLocking {
-		@Suppress("UnstableApiUsage")
-		lockMode.set(LockMode.STRICT)
+		//@Suppress("UnstableApiUsage")
+		//lockMode.set(LockMode.STRICT)
 		lockAllConfigurations()
 		//lockFile.set(file("$projectDir/locking/gradle-${scalaVersion}.lockfile"))
 		tasks.register("updateDependencies") {
