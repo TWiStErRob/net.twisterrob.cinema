@@ -223,7 +223,7 @@ project.tasks.create<TestReport>("allTestsReport") {
 		}
 	}
 	doLast {
-		val reportFile = File(destinationDir, "index.html")
+		val reportFile = destinationDirectory.file("index.html").get().asFile
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
