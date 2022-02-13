@@ -10,6 +10,26 @@ allprojects {
 		Deps.Ktor.repo(this@allprojects)
 	}
 
+	dependencyLocking {
+		@Suppress("UnstableApiUsage")
+		lockMode.set(LockMode.STRICT)
+		lockAllConfigurations()
+		//lockFile.set(file("$projectDir/locking/gradle-${scalaVersion}.lockfile"))
+		tasks.register("updateDependencies") {
+			outputs.doNotCacheIf("Always execute") { false }
+			outputs.upToDateWhen { false }
+			doFirst {
+				require(gradle.startParameter.isWriteDependencyLocks) {
+					"Please make sure to call ${this} with --write-locks parameter."
+				}
+			}
+			doLast {
+				// Add any custom filtering on the configurations to be resolved
+				configurations.filter { it.isCanBeResolved }.forEach { it.resolve() }
+			}
+		}
+	}
+
 	plugins.withId("org.jetbrains.kotlin.kapt") {
 		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
 		kapt.apply {
