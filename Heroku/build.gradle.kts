@@ -217,7 +217,7 @@ project.tasks.create<TestReport>("allTestsReport") {
 		subproject.tasks.withType<Test> {
 			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
 				ignoreFailures = true
-				reports.junitXml.isEnabled = true
+				reports.junitXml.required.set(true)
 				this@create.reportOn(this@withType)
 			}
 		}
