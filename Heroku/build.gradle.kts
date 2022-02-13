@@ -139,10 +139,10 @@ allprojects {
 			}
 			"check" {
 				// Remove default dependency, because it runs all tests.
-				notDependsOn { it.name == test.name }
+				notDependsOn { it == test.name }
 				dependsOn(tests)
 				// Don't want to run it automatically, ever.
-				notDependsOn { it.name == integrationExternalTest.name }
+				notDependsOn { it == integrationExternalTest.name }
 			}
 		}
 	}
