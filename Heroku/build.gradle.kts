@@ -57,11 +57,6 @@ allprojects {
 		}
 	}
 
-	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-		// Target version of the generated JVM bytecode. It is used for type resolution.
-		jvmTarget = javaVersion.toString()
-	}
-
 	plugins.withId("java") {
 		val base = this@allprojects.the<BasePluginConvention>()
 		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
@@ -174,12 +169,16 @@ allprojects {
 
 			parallel = true
 
-			reports {
-				html.enabled = true // human
-				xml.enabled = true // checkstyle
-				txt.enabled = true // console
-				// https://sarifweb.azurewebsites.net
-				sarif.enabled = true // Github Code Scanning
+			tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+				// Target version of the generated JVM bytecode. It is used for type resolution.
+				jvmTarget = javaVersion.toString()
+				reports {
+					html.required.set(true) // human
+					xml.required.set(true) // checkstyle
+					txt.required.set(true) // console
+					// https://sarifweb.azurewebsites.net
+					sarif.required.set(true) // Github Code Scanning
+				}
 			}
 		}
 	}

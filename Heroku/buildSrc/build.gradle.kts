@@ -1,6 +1,6 @@
 plugins {
 	`kotlin-dsl`
-	id("io.gitlab.arturbosch.detekt") version "1.18.1"
+	id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
 
 repositories {
@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.32")
-	implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.18.1")
+	implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0")
 }
 
 detekt {
@@ -20,11 +20,13 @@ detekt {
 
 	parallel = true
 
-	reports {
-		html.enabled = true // human
-		xml.enabled = true // checkstyle
-		txt.enabled = true // console
-		// https://sarifweb.azurewebsites.net
-		sarif.enabled = true // Github Code Scanning
+	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		reports {
+			html.required.set(true) // human
+			xml.required.set(true) // checkstyle
+			txt.required.set(true) // console
+			// https://sarifweb.azurewebsites.net
+			sarif.required.set(true) // GitHub Code Scanning
+		}
 	}
 }
