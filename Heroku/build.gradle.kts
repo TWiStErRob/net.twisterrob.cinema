@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.util.prefixIfNot
-
 plugins {
 	id("io.gitlab.arturbosch.detekt")
 }
@@ -7,28 +5,47 @@ plugins {
 val javaVersion = JavaVersion.VERSION_1_8
 
 allprojects {
+	val slug: String? = this@allprojects
+		.path // Project's Gradle path -> ":a:b".
+		.substringAfter(":") // Remove first colon -> "a:b".
+		.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
+		.takeIf { it.isNotEmpty() }
+
 	repositories {
 		mavenCentral()
 		Deps.Ktor.repo(this@allprojects)
 	}
 
-	dependencyLocking {
-		//@Suppress("UnstableApiUsage")
-		//lockMode.set(LockMode.STRICT)
-		lockAllConfigurations()
-		//lockFile.set(file("$projectDir/locking/gradle-${scalaVersion}.lockfile"))
-		tasks.register("updateDependencies") {
-			outputs.doNotCacheIf("Always execute") { false }
-			outputs.upToDateWhen { false }
-			doFirst {
-				require(gradle.startParameter.isWriteDependencyLocks) {
-					"Please make sure to call ${this} with --write-locks parameter."
-				}
+	configurations { // see https://docs.gradle.org/current/userguide/dependency_locking.html
+		val lockWorthy = setOf(
+			"compileClasspath", "runtimeClasspath", "kapt",
+			"testCompileClasspath", "testRuntimeClasspath", "kaptTest"
+		)
+		this.configureEach {
+			if (name in lockWorthy) {
+				resolutionStrategy.activateDependencyLocking()
 			}
-			doLast {
-				// Add any custom filtering on the configurations to be resolved
-				configurations.filter { it.isCanBeResolved }.forEach { it.resolve() }
+		}
+		dependencyLocking {
+			@Suppress("UnstableApiUsage")
+			lockMode.set(LockMode.STRICT)
+			// See org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER
+			lockFile.set(rootProject.file("gradle/dependency-locks/${slug ?: "rootProject"}.lockfile"))
+		}
+	}
+	tasks.register("resolveAndLockAll") {
+		// https://docs.gradle.org/current/userguide/dependency_locking.html#lock_all_configurations_in_one_build_execution
+		group = LifecycleBasePlugin.BUILD_GROUP
+		description = "Lock all configurations in one build execution"
+		outputs.doNotCacheIf("Always execute") { false }
+		outputs.upToDateWhen { false }
+		doFirst {
+			require(gradle.startParameter.isWriteDependencyLocks) {
+				"Please make sure to call ${this} with --write-locks parameter."
 			}
+		}
+		doLast {
+			configurations.filter { it.isCanBeResolved }.forEach { it.resolve() }
 		}
 	}
 
@@ -61,12 +78,7 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<BasePluginExtension> {
-			val baseName = this@allprojects
-				.path // Project's Gradle path -> ":a:b".
-				.substringAfter(":") // Remove first colon -> "a:b".
-				.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
-				.prefixIfNot("twisterrob-cinema-") // Prefix -> "twisterrob-cinema-a-b".
-			archivesName.set(baseName)
+			archivesName.set("twisterrob-cinema-${slug ?: "root"}")
 		}
 	}
 
