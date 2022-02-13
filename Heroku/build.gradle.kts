@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.util.prefixIfNot
+
 plugins {
 	id("io.gitlab.arturbosch.detekt")
 }
@@ -38,7 +40,7 @@ allprojects {
 	}
 
 	plugins.withId("java") {
-		configure<JavaPluginConvention> {
+		configure<JavaPluginExtension> {
 			sourceCompatibility = javaVersion
 			targetCompatibility = javaVersion
 		}
@@ -58,9 +60,16 @@ allprojects {
 	}
 
 	plugins.withId("java") {
-		val base = this@allprojects.the<BasePluginConvention>()
-		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
+		configure<BasePluginExtension> {
+			val baseName = this@allprojects
+				.path // Project's Gradle path -> ":a:b".
+				.substringAfter(":") // Remove first colon -> "a:b".
+				.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
+				.prefixIfNot("twisterrob-cinema-") // Prefix -> "twisterrob-cinema-a-b".
+			archivesName.set(baseName)
+		}
 	}
+
 	plugins.withId("java") {
 		tasks.withType<Test> {
 			maxHeapSize = "512M"
@@ -139,7 +148,7 @@ allprojects {
 	}
 	plugins.withId("java") {
 		this@allprojects.tasks {
-			val sourceSets = this@allprojects.the<JavaPluginConvention>().sourceSets
+			val sourceSets = this@allprojects.the<JavaPluginExtension>().sourceSets
 			val copyLoggingResources = register<Copy>("copyLoggingResources") {
 				from(rootProject.file("config/log4j2.xml"))
 				into(sourceSets["main"].resources.srcDirs.first())
