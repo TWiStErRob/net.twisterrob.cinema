@@ -6,9 +6,10 @@ val javaVersion = JavaVersion.VERSION_1_8
 
 allprojects {
 	repositories {
-		jcenter()
+		mavenCentral()
 		Deps.Ktor.repo(this@allprojects)
 	}
+	this@allprojects.configureDependencyLocking()
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
 		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
@@ -18,7 +19,7 @@ allprojects {
 	}
 
 	plugins.withId("java") {
-		configure<JavaPluginConvention> {
+		configure<JavaPluginExtension> {
 			sourceCompatibility = javaVersion
 			targetCompatibility = javaVersion
 		}
@@ -37,15 +38,12 @@ allprojects {
 		}
 	}
 
-	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-		// Target version of the generated JVM bytecode. It is used for type resolution.
-		jvmTarget = javaVersion.toString()
+	plugins.withId("java") {
+		configure<BasePluginExtension> {
+			archivesName.set("twisterrob-cinema-${slug ?: "root"}")
+		}
 	}
 
-	plugins.withId("java") {
-		val base = this@allprojects.the<BasePluginConvention>()
-		base.archivesBaseName = "twisterrob-cinema-" + this@allprojects.path.substringAfter(":").replace(":", "-")
-	}
 	plugins.withId("java") {
 		tasks.withType<Test> {
 			maxHeapSize = "512M"
@@ -115,16 +113,16 @@ allprojects {
 			}
 			"check" {
 				// Remove default dependency, because it runs all tests.
-				notDependsOn { it.name == test.name }
+				notDependsOn { it == test.name }
 				dependsOn(tests)
 				// Don't want to run it automatically, ever.
-				notDependsOn { it.name == integrationExternalTest.name }
+				notDependsOn { it == integrationExternalTest.name }
 			}
 		}
 	}
 	plugins.withId("java") {
 		this@allprojects.tasks {
-			val sourceSets = this@allprojects.the<JavaPluginConvention>().sourceSets
+			val sourceSets = this@allprojects.the<JavaPluginExtension>().sourceSets
 			val copyLoggingResources = register<Copy>("copyLoggingResources") {
 				from(rootProject.file("config/log4j2.xml"))
 				into(sourceSets["main"].resources.srcDirs.first())
@@ -154,12 +152,16 @@ allprojects {
 
 			parallel = true
 
-			reports {
-				html.enabled = true // human
-				xml.enabled = true // checkstyle
-				txt.enabled = true // console
-				// https://sarifweb.azurewebsites.net
-				sarif.enabled = true // Github Code Scanning
+			tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+				// Target version of the generated JVM bytecode. It is used for type resolution.
+				jvmTarget = javaVersion.toString()
+				reports {
+					html.required.set(true) // human
+					xml.required.set(true) // checkstyle
+					txt.required.set(true) // console
+					// https://sarifweb.azurewebsites.net
+					sarif.required.set(true) // Github Code Scanning
+				}
 			}
 		}
 	}
@@ -191,19 +193,19 @@ project.tasks.register<Task>("allDependencies") {
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 project.tasks.create<TestReport>("allTestsReport") {
-	destinationDir = file("${buildDir}/reports/tests/all")
+	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
 			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
 				ignoreFailures = true
-				reports.junitXml.isEnabled = true
-				this@create.reportOn(this@withType)
+				reports.junitXml.required.set(true)
+				this@create.testResults.from(this@withType)
 			}
 		}
 	}
 	doLast {
-		val reportFile = File(destinationDir, "index.html")
+		val reportFile = destinationDirectory.file("index.html").get().asFile
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
