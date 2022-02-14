@@ -1,4 +1,5 @@
 import org.gradle.api.Named
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
 
@@ -10,3 +11,10 @@ fun Task.notDependsOn(predicate: (String) -> Boolean) {
 			.filterNot { it is Named && predicate(it.name) }
 	)
 }
+
+val Project.slug: String?
+	get() = this
+		.path // Project's Gradle path -> ":a:b".
+		.substringAfter(":") // Remove first colon -> "a:b".
+		.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
+		.takeIf { it.isNotEmpty() }

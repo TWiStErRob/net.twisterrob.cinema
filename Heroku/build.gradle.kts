@@ -5,49 +5,11 @@ plugins {
 val javaVersion = JavaVersion.VERSION_1_8
 
 allprojects {
-	val slug: String? = this@allprojects
-		.path // Project's Gradle path -> ":a:b".
-		.substringAfter(":") // Remove first colon -> "a:b".
-		.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
-		.takeIf { it.isNotEmpty() }
-
 	repositories {
 		mavenCentral()
 		Deps.Ktor.repo(this@allprojects)
 	}
-
-	configurations { // see https://docs.gradle.org/current/userguide/dependency_locking.html
-		val lockWorthy = setOf(
-			"compileClasspath", "runtimeClasspath", "kapt",
-			"testCompileClasspath", "testRuntimeClasspath", "kaptTest"
-		)
-		this.configureEach {
-			if (name in lockWorthy) {
-				resolutionStrategy.activateDependencyLocking()
-			}
-		}
-		dependencyLocking {
-			@Suppress("UnstableApiUsage")
-			lockMode.set(LockMode.STRICT)
-			// See org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER
-			lockFile.set(rootProject.file("gradle/dependency-locks/${slug ?: "rootProject"}.lockfile"))
-		}
-	}
-	tasks.register("resolveAndLockAll") {
-		// https://docs.gradle.org/current/userguide/dependency_locking.html#lock_all_configurations_in_one_build_execution
-		group = LifecycleBasePlugin.BUILD_GROUP
-		description = "Lock all configurations in one build execution"
-		outputs.doNotCacheIf("Always execute") { false }
-		outputs.upToDateWhen { false }
-		doFirst {
-			require(gradle.startParameter.isWriteDependencyLocks) {
-				"Please make sure to call ${this} with --write-locks parameter."
-			}
-		}
-		doLast {
-			configurations.filter { it.isCanBeResolved }.forEach { it.resolve() }
-		}
-	}
+	this@allprojects.configureDependencyLocking()
 
 	plugins.withId("org.jetbrains.kotlin.kapt") {
 		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
