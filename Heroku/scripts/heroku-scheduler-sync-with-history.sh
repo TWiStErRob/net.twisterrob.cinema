@@ -42,4 +42,6 @@ git add .
 git config user.email "heroku-scheduler+sync@twisterrob.net"
 git config user.name "Heroku Scheduler"
 git commit -m "Heroku Scheduler: Sync"
-git push
+if [ "$HEROKU_ENV" == "1" ]; then
+  git push
+fi
