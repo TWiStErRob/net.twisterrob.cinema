@@ -1,1 +1,1 @@
-heroku run --app twisterrob-cinema sh scripts/heroku-scheduler-sync.sh
+heroku run --app twisterrob-cinema scripts/heroku-scheduler-sync.sh
