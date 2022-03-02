@@ -22,5 +22,10 @@ package-lock.json
 # General
 /temp/
 
+# Sync History files
+/build/sync/
+/history/
+/sync-key.private
+
 # Temporary outputs
 /deploy/static/

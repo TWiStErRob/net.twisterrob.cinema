@@ -1,1 +1,1 @@
-heroku run --app twisterrob-cinema java -jar backend/sync/build/libs/twisterrob-cinema-backend-sync.jar cinemas films performances
+heroku run --app twisterrob-cinema scripts/heroku-scheduler-sync.sh
