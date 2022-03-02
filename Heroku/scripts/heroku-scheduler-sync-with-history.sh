@@ -1,4 +1,6 @@
+#!/usr/bin/env bash
 set -e
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
 # Set up GitHub authentication.
 eval "$(ssh-agent -s)"
@@ -32,7 +34,7 @@ rm --verbose --force build/sync/weekly_film_times_ie.xml
 rm --verbose --force build/sync/weekly_film_times.log
 
 # Execute sync.
-(sh heroku-scheduler-sync.sh || true) | tee build/sync/weekly_film_times.log
+("${SCRIPT_DIR}/heroku-scheduler-sync.sh" || true) | tee build/sync/weekly_film_times.log
 
 # Save and publish execution output.
 cd build/sync
