@@ -22,6 +22,7 @@ ssh-add sync-key.private
 # > The authenticity of host 'github.com (140.82.121.4)' can't be established.
 # > ECDSA key fingerprint is SHA256:p2QAMXNIC1TJYWeIOttrVc98/R1BUFWu3/LiyKgUfQM.
 # Workaround: https://superuser.com/a/1111974/145861
+mkdir -p ~/.ssh/
 ssh-keyscan -t rsa -H github.com >> ~/.ssh/known_hosts
 
 # Get a clean clone.
