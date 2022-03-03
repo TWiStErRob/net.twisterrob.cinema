@@ -22,23 +22,23 @@
 		"angular-animate": "1.8.2",
 		"angular-ui-bootstrap": "2.5.6",
 		"moment": "2.29.1",
-		"moment-timezone": "0.5.33",
+		"moment-timezone": "0.5.34",
 		"moment-range": "4.0.2"
 	},
 	"devDependencies": {
-		"webpack": "5.52.1",
-		"webpack-cli": "4.8.0",
-		"webpack-dev-server": "4.2.0",
-		"html-webpack-plugin": "5.3.2",
-		"copy-webpack-plugin": "9.0.1",
-		"mini-css-extract-plugin": "2.3.0",
+		"webpack": "5.70.0",
+		"webpack-cli": "4.9.2",
+		"webpack-dev-server": "4.7.4",
+		"html-webpack-plugin": "5.5.0",
+		"copy-webpack-plugin": "10.2.4",
+		"mini-css-extract-plugin": "2.6.0",
 		"raw-loader": "4.0.2",
-		"css-loader": "6.2.0",
-		"sass-loader": "12.1.0",
-		"style-loader": "3.2.1",
+		"css-loader": "6.6.0",
+		"sass-loader": "12.6.0",
+		"style-loader": "3.3.1",
 		"url-loader": "4.1.1",
 		"file-loader": "6.2.0",
-		"jshint": "2.13.1",
-		"node-sass": "6.0.1"
+		"jshint": "2.13.4",
+		"node-sass": "7.0.1"
 	}
 }
