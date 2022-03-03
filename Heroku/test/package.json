@@ -23,7 +23,7 @@
 		"protractor": "7.0.0",
 		"protractor-helpers": "1.1.813",
 		"protractor-browser-logs": "1.0.456",
-		"selenium-webdriver": "3.6.0"
+		"selenium-webdriver": "4.1.1"
 	},
 	"devDependencies": {
 		"@types/jasminewd2": "2.0.10",
@@ -33,7 +33,7 @@
 		"npm-run-all": "4.1.5",
 		"protractor-screenshoter-plugin": "0.10.3",
 		"webdriver-manager": "12.1.8",
-		"jshint": "2.13.1",
-		"mocha": "9.1.1"
+		"jshint": "2.13.4",
+		"mocha": "9.2.1"
 	}
 }
