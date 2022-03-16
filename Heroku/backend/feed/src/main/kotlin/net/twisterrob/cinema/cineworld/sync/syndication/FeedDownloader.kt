@@ -23,10 +23,10 @@ internal class FeedDownloader(
 ) {
 
 	suspend fun getUKWeeklyFilmTimes(): HttpResponse =
-		downloadFeed("https://www.cineworld.co.uk/syndication/weekly_film_times.xml")
+		downloadFeed("https://classic.cineworld.co.uk/syndication/weekly_film_times.xml")
 
 	suspend fun getIrelandWeeklyFilmTimes(): HttpResponse =
-		downloadFeed("https://www.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
+		downloadFeed("https://classic.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
 
 	private suspend fun downloadFeed(source: String): HttpResponse =
 		client

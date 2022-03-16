@@ -30,7 +30,7 @@ class FeedServiceNetworkIntgTest {
 	@Test fun `read weekly film times XML`() {
 		mockClient.stub { request ->
 			when {
-				request.url.toString().startsWith("https://www.cineworld.co.uk/syndication/") -> {
+				request.url.toString().startsWith("https://classic.cineworld.co.uk/syndication/") -> {
 					val fileName = request.url.encodedPath.split("/").last()
 					val responseHeaders = headersOf(
 						HttpHeaders.ContentType to listOf(Application.Xml.toString()),
