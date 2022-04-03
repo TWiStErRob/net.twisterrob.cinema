@@ -19,7 +19,7 @@
 		"jasmine-expect": "5.0.0",
 		"jasmine-expect-moment": "0.1.1",
 		"lodash": "4.17.21",
-		"moment": "2.29.1",
+		"moment": "2.29.2",
 		"protractor": "7.0.0",
 		"protractor-helpers": "1.1.813",
 		"protractor-browser-logs": "1.0.456",
