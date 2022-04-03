@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":disableDependencyDashboard"
+  ],
+  "ignorePaths": [
+    "/android",
+    "/AppEngine",
+    "/Database",
+    "/Models"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "passed:skipped"
+      ],
+      "enabled": false
+    }
+  ]
+}
