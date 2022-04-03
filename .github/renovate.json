@@ -5,10 +5,10 @@
     ":disableDependencyDashboard"
   ],
   "ignorePaths": [
-    "/android",
-    "/AppEngine",
-    "/Database",
-    "/Models"
+    "android/",
+    "AppEngine/",
+    "Database/",
+    "Models/"
   ],
   "packageRules": [
     {
