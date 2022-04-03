@@ -27,7 +27,7 @@ jobs:
       #JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Gradle running the build.
         working-directory: Heroku
@@ -40,7 +40,7 @@ jobs:
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
       - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
@@ -64,7 +64,7 @@ jobs:
 
       - name: Upload "Heroku Dependencies".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
           path: ${{ github.workspace }}/Heroku/dependencies.txt
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Detekt Results
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
@@ -100,21 +100,21 @@ jobs:
 
       - name: Upload "Heroku Test Results XMLs".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results XMLs
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Upload "Heroku Test Results HTML".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results HTML
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
       - name: Upload "Heroku Test Results HTMLs".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results HTMLs
           path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Heroku Detekt Results
           path: artifacts
@@ -182,7 +182,7 @@ jobs:
 
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Heroku Test Results XMLs
           path: artifacts
@@ -211,7 +211,7 @@ jobs:
       PORT: 8080
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
@@ -318,7 +318,7 @@ jobs:
 
       - name: Upload "Heroku Test Logs".
         if: success() || failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Logs
           path: |
