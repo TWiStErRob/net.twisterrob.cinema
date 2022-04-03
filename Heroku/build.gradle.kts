@@ -7,16 +7,9 @@ val javaVersion = JavaVersion.VERSION_1_8
 allprojects {
 	repositories {
 		mavenCentral()
-		Deps.Ktor.repo(this@allprojects)
 	}
 	this@allprojects.configureDependencyLocking()
-
-	plugins.withId("org.jetbrains.kotlin.kapt") {
-		val kapt = this@allprojects.extensions.getByName<org.jetbrains.kotlin.gradle.plugin.KaptExtension>("kapt")
-		kapt.apply {
-			includeCompileClasspath = false
-		}
-	}
+	this@allprojects.forceKotlinVersion()
 
 	plugins.withId("java") {
 		configure<JavaPluginExtension> {
@@ -31,9 +24,6 @@ allprojects {
 				jvmTarget = javaVersion.toString()
 				allWarningsAsErrors = true
 				verbose = true
-				freeCompilerArgs = freeCompilerArgs + listOf(
-					"-Xopt-in=kotlin.RequiresOptIn"
-				)
 			}
 		}
 	}
