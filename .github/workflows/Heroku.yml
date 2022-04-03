@@ -139,6 +139,10 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      # TODEL https://github.com/github/codeql-action/issues/944, need to clone the repo otherwise Detekt doesn't upload.
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
@@ -152,6 +156,7 @@ jobs:
       - name: Fail if there is no report or warnings.
         working-directory: artifacts
         run: |
+          # Validate build/reports/detekt/detekt.txt results.
           if [ ! -f 'build/reports/detekt/detekt.txt' ]; then # -f: Path exists and is regular file.
             echo "Detekt report file does not exist"
             exit 2
