@@ -9,6 +9,7 @@ allprojects {
 		mavenCentral()
 	}
 	this@allprojects.configureDependencyLocking()
+	this@allprojects.forceKotlinVersion()
 
 	plugins.withId("java") {
 		configure<JavaPluginExtension> {

@@ -136,6 +136,7 @@ object Kotlin {
 	 */
 	const val version = "1.6.20"
 
+	const val bom = "org.jetbrains.kotlin:kotlin-bom:${version}"
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
 	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.3"

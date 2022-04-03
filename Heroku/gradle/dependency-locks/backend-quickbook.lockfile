@@ -54,6 +54,7 @@ org.checkerframework:checker-qual:2.5.2=kapt,kaptTest
 org.codehaus.mojo:animal-sniffer-annotations:1.17=kapt,kaptTest
 org.hamcrest:hamcrest-core:2.2=testCompileClasspath,testRuntimeClasspath
 org.hamcrest:hamcrest:2.2=testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-bom:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlin:kotlin-reflect:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0=kapt,kaptTest
 org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
