@@ -18,7 +18,7 @@ jobs:
       RELEASE_BRANCH: 'master'
     steps:
       - name: Checkout ${{ env.HEROKU_BRANCH }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ env.HEROKU_BRANCH }}
 
