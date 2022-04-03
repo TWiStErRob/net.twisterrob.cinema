@@ -13,7 +13,8 @@
   "packageRules": [
     {
       "matchPackageNames": [
-        "passed:skipped"
+        "passed:skipped",
+        "cinemas:films"
       ],
       "enabled": false
     }
