@@ -62,7 +62,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-Xopt-in=io.ktor.locations.KtorExperimentalLocationsAPI"
+			"-opt-in=io.ktor.locations.KtorExperimentalLocationsAPI"
 		)
 	}
 }

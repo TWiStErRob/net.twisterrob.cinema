@@ -11,8 +11,7 @@ import io.ktor.http.content.caching
 import io.ktor.response.ApplicationSendPipeline
 import io.ktor.util.pipeline.PipelineContext
 import java.time.ZonedDateTime
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.hours
 
 inline fun PipelineContext<Unit, ApplicationCall>.cached(
 	caching: CachingOptions = defaultCacheOptions(application.environment.config.environment),
@@ -33,10 +32,8 @@ var ApplicationCall.caching: CachingOptions
 		}
 	}
 
-@OptIn(ExperimentalTime::class)
 fun defaultCacheOptions(environment: Env): CachingOptions {
-	@Suppress("MagicNumber") // Self-explanatory.
-	val cacheLength = if (environment == Env.PRODUCTION) Duration.hours(10).inWholeSeconds else 0
+	val cacheLength = if (environment == Env.PRODUCTION) 10.hours.inWholeSeconds else 0
 	return CachingOptions(
 		cacheControl = MaxAge(
 			visibility = Visibility.Public,
