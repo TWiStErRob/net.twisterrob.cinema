@@ -1,12 +1,12 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
-com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-com.fasterxml.jackson.core:jackson-core:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-com.fasterxml.jackson.core:jackson-databind:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-com.fasterxml.jackson:jackson-bom:2.13.0-rc2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-annotations:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-core:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-databind:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.fasterxml.jackson:jackson-bom:2.13.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.flextrade.jfixture:jfixture:2.7.2=testCompileClasspath,testRuntimeClasspath
 com.google.code.findbugs:jsr305:3.0.2=kapt,kaptTest
 com.google.dagger:dagger-compiler:2.37=kapt,kaptTest
@@ -54,13 +54,13 @@ org.checkerframework:checker-qual:2.5.2=kapt,kaptTest
 org.codehaus.mojo:animal-sniffer-annotations:1.17=kapt,kaptTest
 org.hamcrest:hamcrest-core:2.2=testCompileClasspath,testRuntimeClasspath
 org.hamcrest:hamcrest:2.2=testCompileClasspath,testRuntimeClasspath
-org.jetbrains.kotlin:kotlin-reflect:1.5.32=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-reflect:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0=kapt,kaptTest
-org.jetbrains.kotlin:kotlin-stdlib-common:1.5.32=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.32=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.32=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlin:kotlin-stdlib:1.5.0=kapt,kaptTest
-org.jetbrains.kotlin:kotlin-stdlib:1.5.32=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.jetbrains.kotlin:kotlin-stdlib:1.6.20=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0-native-mt=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.3.0=kapt,kaptTest
