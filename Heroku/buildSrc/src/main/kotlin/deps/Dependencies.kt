@@ -134,7 +134,7 @@ object Kotlin {
 	 * @see Jackson.version
 	 * @see Ktor.version
 	 */
-	const val version = "1.5.32"
+	const val version = "1.6.20"
 
 	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
@@ -211,12 +211,6 @@ object Ktor {
 					exclude(group = "ch.qos.logback", module = "logback-classic")
 				}
 			}
-		}
-	}
-
-	fun repo(project: Project) {
-		project.repositories {
-			maven { name = "ktor"; setUrl("https://dl.bintray.com/kotlin/ktor") }
 		}
 	}
 }
@@ -337,7 +331,7 @@ object Neo4JOGM {
 }
 
 object Jackson {
-	const val version = "2.13.0-rc2" // 2.13 stable not released yet, but Kotlin 1.5.21 needs it.
+	const val version = "2.13.2"
 
 	const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
 	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
