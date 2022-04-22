@@ -1,6 +1,6 @@
 plugins {
 	`kotlin-dsl`
-	id("io.gitlab.arturbosch.detekt") version "1.19.0"
+	id("io.gitlab.arturbosch.detekt") version "1.20.0"
 }
 
 repositories {
