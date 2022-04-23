@@ -8,13 +8,5 @@
     "AppEngine/",
     "Database/",
     "Models/"
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": [
-        "cinemas:films"
-      ],
-      "enabled": false
-    }
   ]
 }
