@@ -42,10 +42,10 @@ object Films {
 	 * Internal dependencies in this route group.
 	 */
 	@Module
-	abstract class BackendModule {
+	interface BackendModule {
 
 		@Binds
-		abstract fun quickbook(impl: QuickbookServiceNetwork): QuickbookService
+		fun quickbook(impl: QuickbookServiceNetwork): QuickbookService
 
 		companion object {
 
