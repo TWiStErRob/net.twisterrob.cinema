@@ -233,7 +233,11 @@ jobs:
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+        run: |
+          # Warmup
+          ./gradlew --no-daemon --no-build-cache --stacktrace --version
+          # Pure output
+          ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
 
       - name: Upload "Heroku Dependencies - Previous".
         if: success() || failure()
@@ -256,7 +260,9 @@ jobs:
 
       - name: Diff
         run: |
-          diff diff/prev/dependencies.txt diff/curr/dependencies.txt > diff/dependencies.txt
+          wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
+          chmod +x ./dependency-tree-diff.jar
+          ./dependency-tree-diff.jar diff/prev/dependencies.txt diff/curr/dependencies.txt > diff/dependencies.txt
 
       - name: Upload "Heroku Dependencies - Diff".
         if: success() || failure()
