@@ -205,6 +205,66 @@ jobs:
           test_changes_limit: 0
           files: artifacts/**/*.xml
 
+  deps:
+    name: Dependencies Diff
+    needs: check-gradle
+    # Don't execute on master, as it'll just verify against itself.
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
+        id: current_pr
+        uses: 8BitJonny/gh-get-current-pr@2.0.0
+        with:
+          # TODEL https://github.com/8BitJonny/gh-get-current-pr/pull/83
+          github-token: ${{ github.token }}
+
+      - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
+        id: pull_request
+        run: |
+          # Simulate github.event.pull_request.base.ref on push trigger.
+          echo "::set-output name=base_ref::${{ fromJSON(steps.current_pr.outputs.pr).base.ref }}"
+
+      - name: Checkout ${{ steps.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.base_ref) }}
+
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+
+      - name: Upload "Heroku Dependencies - Previous".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Previous
+          path: ${{ github.workspace }}/Heroku/dependencies.txt
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Heroku Dependencies - Previous
+          path: diff/prev
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Heroku Dependencies
+          path: diff/curr
+
+      - name: Diff
+        run: |
+          diff diff/prev/dependencies.txt diff/curr/dependencies.txt > diff/dependencies.txt
+
+      - name: Upload "Heroku Dependencies - Diff".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Diff
+          path: ${{ github.workspace }}/diff/dependencies.txt
+
   check-npm:
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
