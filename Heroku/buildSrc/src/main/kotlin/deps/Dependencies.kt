@@ -258,7 +258,7 @@ object Log4J2 {
 }
 
 object Dagger2 {
-	const val version = "2.37"
+	const val version = "2.42"
 
 	const val inject = "javax.inject:javax.inject:1"
 	const val core = "com.google.dagger:dagger:${version}"
