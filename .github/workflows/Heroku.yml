@@ -18,7 +18,7 @@ jobs:
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -221,7 +221,7 @@ jobs:
     # Don't execute on master, as it'll just verify against itself.
     if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 15
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
