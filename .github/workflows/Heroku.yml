@@ -280,34 +280,24 @@ jobs:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
             const fs = require("fs");
+            const diff = fs.readFileSync("diff/dependencies.txt", {encoding: "utf8"});
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha: context.sha,
-              name: "Dependency Diff",
-              status: "completed",
-              conclusion: "success",
-              output: {
-                title: "Dependency Report",
-                summary: `
-                  ## Dependency Diff
-                  \`\`\`diff
-                  ${fs.readFileSync("diff/dependencies.txt", { encoding: "utf8" })}
-                  \`\`\`
-                `,
-                text: `
-                  ## Previous Dependencies
-                  \`\`\`
-                  ${fs.readFileSync("diff/prev/dependencies.txt", { encoding: "utf8" })}
-                  \`\`\`
-            
-                  ## Current Dependencies
-                  \`\`\`
-                  ${fs.readFileSync("diff/curr/dependencies.txt", { encoding: "utf8" })}
-                  \`\`\`
-                `,
-              }
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	head_sha: context.sha,
+            	name: "Dependency Diff",
+            	status: "completed",
+            	conclusion: diff !== "" ? "success" : "neutral",
+            	output: {
+            		title: "Dependency Report",
+            		summary: diff !== "" ? "No differences." : `
+            			## Dependencies Diff
+            			\`\`\`diff
+            			${diff}
+            			\`\`\`
+            		`
+            	}
             });
 
   check-npm:
