@@ -271,6 +271,45 @@ jobs:
           name: Heroku Dependencies - Diff
           path: ${{ github.workspace }}/diff/dependencies.txt
 
+      - name: output
+        run: cat diff/dependencies.txt
+
+      - name: Create a check run.
+        uses: actions/github-script@v6
+        with:
+          debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
+          script: |
+            const fs = require("fs");
+            // https://octokit.github.io/rest.js/v18#checks-create
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head_sha: context.sha,
+              name: "Dependency Diff",
+              status: "completed",
+              conclusion: "success",
+              output: {
+                title: "Dependency Report",
+                summary: `
+                  ## Dependency Diff
+                  \`\`\`diff
+                  ${fs.readFileSync("diff/dependencies.txt", { encoding: "utf8" })}
+                  \`\`\`
+                `,
+                text: `
+                  ## Previous Dependencies
+                  \`\`\`
+                  ${fs.readFileSync("diff/prev/dependencies.txt", { encoding: "utf8" })}
+                  \`\`\`
+            
+                  ## Current Dependencies
+                  \`\`\`
+                  ${fs.readFileSync("diff/curr/dependencies.txt", { encoding: "utf8" })}
+                  \`\`\`
+                `,
+              }
+            });
+
   check-npm:
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
