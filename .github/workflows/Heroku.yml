@@ -60,14 +60,24 @@ jobs:
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+        run: |
+          ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
 
       - name: Upload "Heroku Dependencies".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies.txt
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
       - name: Check Heroku.
@@ -206,7 +216,7 @@ jobs:
           files: artifacts/**/*.xml
 
   deps:
-    name: Dependencies Diff
+    name: Dependencies Diffs
     needs: check-gradle
     # Don't execute on master, as it'll just verify against itself.
     if: github.ref != 'refs/heads/master'
@@ -238,13 +248,22 @@ jobs:
           ./gradlew --no-daemon --no-build-cache --stacktrace --version
           # Pure output
           ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
+          ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
 
       - name: Upload "Heroku Dependencies - Previous".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Previous
-          path: ${{ github.workspace }}/Heroku/dependencies.txt
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
       - name: Download Artifacts
         uses: actions/download-artifact@v3
@@ -260,19 +279,32 @@ jobs:
 
       - name: Diff
         run: |
-          wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
+          # TODEL use Jake's version when https://github.com/JakeWharton/dependency-tree-diff/pull/13 gets merged.
+          wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
+          #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
           chmod +x ./dependency-tree-diff.jar
-          ./dependency-tree-diff.jar diff/prev/dependencies.txt diff/curr/dependencies.txt > diff/dependencies.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-root.txt diff/curr/dependencies-root.txt > diff/dependencies-root.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend.txt diff/curr/dependencies-backend.txt > diff/dependencies-backend.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-sync.txt diff/curr/dependencies-backend-sync.txt > diff/dependencies-backend-sync.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-feed.txt diff/curr/dependencies-backend-feed.txt > diff/dependencies-backend-feed.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-quickbook.txt diff/curr/dependencies-backend-quickbook.txt > diff/dependencies-backend-quickbook.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-database.txt diff/curr/dependencies-backend-database.txt > diff/dependencies-backend-database.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-network.txt diff/curr/dependencies-backend-network.txt > diff/dependencies-backend-network.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-backend-endpoint.txt diff/curr/dependencies-backend-endpoint.txt > diff/dependencies-backend-endpoint.txt
+          ./dependency-tree-diff.jar diff/prev/dependencies-test-helpers.txt diff/curr/dependencies-test-helpers.txt > diff/dependencies-test-helpers.txt
 
-      - name: Upload "Heroku Dependencies - Diff".
+      - name: Merge diffs
+        run: |
+          # `cat dependencies-*.txt > dependencies-diffs.txt` with a bit more control and fluff.
+          # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
+          ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
+
+      - name: Upload "Heroku Dependencies - Diffs".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Dependencies - Diff
-          path: ${{ github.workspace }}/diff/dependencies.txt
-
-      - name: output
-        run: cat diff/dependencies.txt
+          name: Heroku Dependencies - Diffs
+          path: ${{ github.workspace }}/diff/dependencies*.txt
 
       - name: Create a check run.
         uses: actions/github-script@v6
@@ -280,7 +312,7 @@ jobs:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
             const fs = require("fs");
-            const diff = fs.readFileSync("diff/dependencies.txt", {encoding: "utf8"});
+            const diff = fs.readFileSync("diff/dependencies-diffs.txt", {encoding: "utf8"});
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -288,11 +320,11 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: diff !== "" ? "success" : "neutral",
+            	conclusion: "success",
             	output: {
             		title: "Dependency Report",
-            		summary: diff !== "" ? "No differences." : `
-            			## Dependencies Diff
+            		summary: `
+            			## Dependencies Diffs
             			\`\`\`diff
             			${diff}
             			\`\`\`
