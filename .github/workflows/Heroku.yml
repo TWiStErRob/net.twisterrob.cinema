@@ -222,7 +222,7 @@ jobs:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.base_ref) }}
 
       - name: Get the script from PR (so both head and base run the same command).
-        run: git restore --source $GITHUB_SHA -- scripts/dependencies.sh
+        run: git restore --source $GITHUB_REF -- scripts/dependencies.sh
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
