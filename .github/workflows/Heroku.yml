@@ -222,7 +222,7 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.base_ref) }}
 
-      - name: Get the script from PR (so both head and base run the same command).
+      - name: Get the script from ${{ steps.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
         run: |
           git show-ref
           git fetch
@@ -241,6 +241,11 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
       - name: "Debug before checkout"
+        working-directory: Heroku
+        run: ls -la
+
+      - name: "Debug before checkout"
+        working-directory: Heroku/scripts
         run: ls -la
 
       - name: Checkout ${{ steps.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
@@ -249,6 +254,11 @@ jobs:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
 
       - name: "Debug after checkout"
+        working-directory: Heroku
+        run: ls -la
+
+      - name: "Debug after checkout"
+        working-directory: Heroku/scripts
         run: ls -la
 
       - name: Dump Heroku Dependencies.
@@ -263,13 +273,13 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifacts
+      - name: Download Artifact "Heroku Dependencies - Previous".
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies - Previous
           path: diff/prev
 
-      - name: Download Artifacts
+      - name: Download Artifact "Heroku Dependencies".
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies
@@ -336,7 +346,8 @@ jobs:
             		summary: `
             			## Dependencies Diffs
             			\`\`\`diff
-            			${diff}
+            			-a
+            			+b
             			\`\`\`
             		`.replaceAll(/^\s+/mg, ""),
             		annotations: Object.keys(moduleData).map((moduleCoordinate) => ({
