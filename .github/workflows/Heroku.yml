@@ -224,7 +224,7 @@ jobs:
       - name: Get the script from PR (so both head and base run the same command).
         run: |
           git show-ref
-          #git fetch
+          git fetch
           git show-ref
           git checkout $GITHUB_REF -- scripts/dependencies.sh
 
