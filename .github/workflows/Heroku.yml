@@ -245,7 +245,7 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
 
-        - name: Dump Heroku Dependencies.
+      - name: Dump Heroku Dependencies.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -257,7 +257,7 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifact "Heroku Dependencies Previous".
+      - name: Download Artifact "Heroku Dependencies - Previous".
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies - Previous
