@@ -275,15 +275,15 @@ jobs:
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
           #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
           chmod +x ./dependency-tree-diff.jar
-#          ./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
-#          ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
+          #./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
+          #./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
           ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
-#          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
+          #./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
 
       - name: Merge diffs into a single file (dependencies-diffs.txt).
         working-directory: diff
