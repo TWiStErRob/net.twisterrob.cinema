@@ -312,7 +312,17 @@ jobs:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
             const fs = require("fs");
-            const diff = fs.readFileSync("diff/dependencies-diffs.txt", {encoding: "utf8"});
+            const moduleData = {
+            	":": { diffName: "root", path: "/"},
+            	":backend": { diffName: "backend", path: "backend/"},
+            	":backend:sync": { diffName: "backend-sync", path: "backend/sync/"},
+            	":backend:feed": { diffName: "backend-feed", path: "backend/feed/"},
+            	":backend:quickbook": { diffName: "backend-quickbook", path: "backend/quickbook/"},
+            	":backend:database": { diffName: "backend-database", path: "backend/database/"},
+            	":backend:network": { diffName: "backend-network", path: "backend/network/"},
+            	":backend:endpoint": { diffName: "backend-endpoint", path: "backend/endpoint/"},
+            	":test-helpers": { diffName: "test-helpers", path: "test-helpers/"},
+            }
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -328,7 +338,20 @@ jobs:
             			\`\`\`diff
             			${diff}
             			\`\`\`
-            		`
+            		`.replaceAll(/^\s+/mg, ""),
+            		annotations: Object.keys(moduleData).map((moduleCoordinate) => ({
+            			path: `Heroku/${moduleData[moduleCoordinate].path}/build.gradle.kts`,
+            			start_line: 0,
+            			end_line: 0,
+            			annotation_level: "notice",
+            			title: `Dependency diff for ${moduleCoordinate}`,
+            			message: `
+            				## Dependencies Diffs
+            				\`\`\`diff
+            				${fs.readFileSync("diff/dependencies-${moduleData[moduleCoordinate].diffName}.txt", {encoding: "utf8"}) || "No difference."}
+            				\`\`\`
+            			`.replaceAll(/^\s+/mg, ""),
+            		})),
             	}
             });
 
