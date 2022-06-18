@@ -257,7 +257,7 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifact "Heroku Dependencies - Previous".
+      - name: Download Artifact "Heroku Dependencies Previous".
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies - Previous
@@ -316,7 +316,7 @@ jobs:
             	":backend:network": { diffName: "backend-network", path: "backend/network/"},
             	":backend:endpoint": { diffName: "backend-endpoint", path: "backend/endpoint/"},
             	":test-helpers": { diffName: "test-helpers", path: "test-helpers/"},
-            }
+            };
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -347,7 +347,7 @@ jobs:
             				\`\`\`
             			`.replaceAll(/^\s+/mg, ""),
             		})),
-            	}
+            	},
             });
 
   check-npm:
