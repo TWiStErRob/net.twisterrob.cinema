@@ -278,22 +278,24 @@ jobs:
           path: diff/curr
 
       - name: Diff
+        working-directory: diff
         run: |
           # TODEL use Jake's version when https://github.com/JakeWharton/dependency-tree-diff/pull/13 gets merged.
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
           #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
           chmod +x ./dependency-tree-diff.jar
-          ./dependency-tree-diff.jar diff/prev/dependencies-root.txt diff/curr/dependencies-root.txt > diff/dependencies-root.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend.txt diff/curr/dependencies-backend.txt > diff/dependencies-backend.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-sync.txt diff/curr/dependencies-backend-sync.txt > diff/dependencies-backend-sync.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-feed.txt diff/curr/dependencies-backend-feed.txt > diff/dependencies-backend-feed.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-quickbook.txt diff/curr/dependencies-backend-quickbook.txt > diff/dependencies-backend-quickbook.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-database.txt diff/curr/dependencies-backend-database.txt > diff/dependencies-backend-database.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-network.txt diff/curr/dependencies-backend-network.txt > diff/dependencies-backend-network.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-backend-endpoint.txt diff/curr/dependencies-backend-endpoint.txt > diff/dependencies-backend-endpoint.txt
-          ./dependency-tree-diff.jar diff/prev/dependencies-test-helpers.txt diff/curr/dependencies-test-helpers.txt > diff/dependencies-test-helpers.txt
+          ./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
+          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > diff/dependencies-test-helpers.txt
 
       - name: Merge diffs
+        working-directory: diff
         run: |
           # `cat dependencies-*.txt > dependencies-diffs.txt` with a bit more control and fluff.
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
