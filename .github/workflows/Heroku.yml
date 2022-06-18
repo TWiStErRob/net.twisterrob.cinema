@@ -18,7 +18,7 @@ jobs:
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -58,21 +58,9 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Dump Heroku Dependencies.
-        working-directory: Heroku
-        run: scripts/dependencies.sh
-
-      - name: Upload "Heroku Dependencies".
-        if: success() || failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies*.txt
-
-
       - name: Check Heroku.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt -x detekt
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
@@ -94,7 +82,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          tests :allTestsReport -x test
+          tests :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
@@ -207,7 +195,6 @@ jobs:
 
   deps:
     name: Dependencies Diffs
-    needs: check-gradle
     # Don't execute on master, as it'll just verify against itself.
     if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
@@ -223,13 +210,36 @@ jobs:
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
         id: pull_request
         run: |
+          # Simulate github.event.pull_request.head.ref on push trigger.
+          echo "::set-output name=head_ref::${{ fromJSON(steps.current_pr.outputs.pr).head.ref }}"
           # Simulate github.event.pull_request.base.ref on push trigger.
           echo "::set-output name=base_ref::${{ fromJSON(steps.current_pr.outputs.pr).base.ref }}"
+
 
       - name: Checkout ${{ steps.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.base_ref) }}
+
+      - name: Get the script from PR (so both head and base run the same command).
+        run: git restore --source $GITHUB_SHA -- scripts/dependencies.sh
+
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: scripts/dependencies.sh
+
+      - name: Upload "Heroku Dependencies".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+
+
+      - name: Checkout ${{ steps.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
@@ -241,6 +251,7 @@ jobs:
         with:
           name: Heroku Dependencies - Previous
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
+
 
       - name: Download Artifacts
         uses: actions/download-artifact@v3

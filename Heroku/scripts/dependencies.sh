@@ -1,33 +1,37 @@
 # Warmup
-./gradlew --no-daemon --no-build-cache --stacktrace --version
+./gradlew --stacktrace --version
 
 # Pure outputs
 echo 'allDependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+./gradlew --stacktrace allDependencies > dependencies.txt
 
 echo ':dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
+./gradlew --stacktrace :dependencies > dependencies-root.txt
 
 echo ':backend:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
+./gradlew --stacktrace :backend:dependencies > dependencies-backend.txt
 
 echo ':backend:sync:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
+./gradlew --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
 
 echo ':backend:feed:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
+./gradlew --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
 
 echo ':backend:quickbook:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
+./gradlew --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
 
 echo ':backend:database:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
+./gradlew --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
 
 echo ':backend:network:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
+./gradlew --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
 
 echo ':backend:endpoint:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
+./gradlew --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
 
 echo ':test-helpers:dependencies'
-./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
+./gradlew --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
+
+# Teardown
+echo 'Stopping daemon'
+./gradlew --stop
