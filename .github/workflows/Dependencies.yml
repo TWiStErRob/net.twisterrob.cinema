@@ -1,0 +1,13 @@
+name: Dependencies
+on:
+  check_run:
+    types:
+      - requested_action
+jobs:
+  dependency-diff-approve:
+    name: Approve Dependency diff
+    if: github.event.requested_action.identifier == 'dependency-diff-approve'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do the thing
+        run: echo "all good"
