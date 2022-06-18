@@ -307,16 +307,20 @@ jobs:
           script: |
             const fs = require("fs");
             const moduleData = {
-            	":": { diffName: "root", path: "/"},
-            	":backend": { diffName: "backend", path: "backend/"},
-            	":backend:sync": { diffName: "backend-sync", path: "backend/sync/"},
-            	":backend:feed": { diffName: "backend-feed", path: "backend/feed/"},
-            	":backend:quickbook": { diffName: "backend-quickbook", path: "backend/quickbook/"},
-            	":backend:database": { diffName: "backend-database", path: "backend/database/"},
-            	":backend:network": { diffName: "backend-network", path: "backend/network/"},
-            	":backend:endpoint": { diffName: "backend-endpoint", path: "backend/endpoint/"},
-            	":test-helpers": { diffName: "test-helpers", path: "test-helpers/"},
+            	":": {diffName: "root", path: ""},
+            	":backend": {diffName: "backend", path: "backend"},
+            	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
+            	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
+            	":backend:database": {diffName: "backend-database", path: "backend/database"},
+            	":backend:network": {diffName: "backend-network", path: "backend/network"},
+            	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
+            	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
+            Object.keys(moduleData).forEach((module) => {
+            	const diffPath = `diff/dependencies-${moduleData[module].diffName}.txt`;
+            	moduleData["diff"] = fs.readFileSync(diffPath, {encoding: "utf8"});
+            });
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -324,29 +328,41 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: "success",
+            	conclusion: Object
+            			.keys(moduleData)
+            			.some((module) => moduleData[module].diff)
+            			? "action_required"
+            			: "success",
             	output: {
             		title: "Dependency Report",
             		summary: `
             			## Dependencies Diffs
-            			\`\`\`diff
-            			-a
-            			+b
-            			\`\`\`
+            			_See annotations for more details._
+            			
+            			| Module | Added | Removed |
+            			| - | - | - |
+            			${Object
+            				.keys(moduleData)
+            				.map((module) => {
+            					const added = ((moduleData[module].diff || "").match(/^\+/gm) || []).length;
+            					const removed = ((moduleData[module].diff || "").match(/^-/gm) || []).length;
+            					return `| ${module} | ${added} | ${removed} |`
+            				})
+            				.join("\n")
+            			}
             		`.replaceAll(/^\s+/mg, ""),
-            		annotations: Object.keys(moduleData).map((moduleCoordinate) => ({
-            			path: `Heroku/${moduleData[moduleCoordinate].path}/build.gradle.kts`,
-            			start_line: 0,
-            			end_line: 0,
-            			annotation_level: "notice",
-            			title: `Dependency diff for ${moduleCoordinate}`,
-            			message: `
-            				## Dependencies Diffs
-            				\`\`\`diff
-            				${fs.readFileSync(`diff/dependencies-${moduleData[moduleCoordinate].diffName}.txt`, {encoding: "utf8"}) || "No difference."}
-            				\`\`\`
-            			`.replaceAll(/^\s+/mg, ""),
-            		})),
+            		annotations: Object
+            				.keys(moduleData)
+            				.filter((module) => moduleData[module].diff !== "")
+            				.map((module) => ({
+            					path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
+            					start_line: 0,
+            					end_line: 0,
+            					annotation_level: moduleData[module].diff ? "warning" : "failure",
+            					title: `Dependency diff for ${module}`,
+            					message: ``,
+            					raw_details: moduleData[module].diff || "Missing diff!",
+            				})),
             	},
             });
 
