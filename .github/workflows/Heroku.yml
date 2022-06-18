@@ -228,28 +228,33 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies".
+      - name: Upload "Heroku Dependencies - Previous".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Dependencies
+          name: Heroku Dependencies - Previous
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
+      - name: "Debug before checkout"
+        run: ls -la
 
       - name: Checkout ${{ steps.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
 
+      - name: "Debug after checkout"
+        run: ls -la
+
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Previous".
+      - name: Upload "Heroku Dependencies".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Dependencies - Previous
+          name: Heroku Dependencies
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
