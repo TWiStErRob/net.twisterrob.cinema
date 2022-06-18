@@ -6,7 +6,7 @@ on:
 jobs:
   dependency-diff-approve:
     name: Approve Dependency diff
-    if: github.event.requested_action.identifier == 'dependency-diff-approve'
+    if: github.event.requested_action.identifier == 'dep-diff-approve'
     runs-on: ubuntu-latest
     steps:
       - name: Do the thing

@@ -368,7 +368,7 @@ jobs:
             		{
             			label: "Approve",
             			description: "This dependency diff looks good!",
-            			identifier: "dependency-diff-approve",
+            			identifier: "dep-diff-approve",
             		},
             	],
             });
