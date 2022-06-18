@@ -300,7 +300,7 @@ jobs:
           path: ${{ github.workspace }}/diff/dependencies*.txt
 
 
-      - name: Create a check run.
+      - name: Create a check run "Dependency Diff".
         uses: actions/github-script@v6
         with:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
@@ -319,7 +319,7 @@ jobs:
             };
             Object.keys(moduleData).forEach((module) => {
             	const diffPath = `diff/dependencies-${moduleData[module].diffName}.txt`;
-            	moduleData["diff"] = fs.readFileSync(diffPath, {encoding: "utf8"});
+            	moduleData[module].diff = fs.readFileSync(diffPath, {encoding: "utf8"});
             });
             // https://octokit.github.io/rest.js/v18#checks-create
             await github.rest.checks.create({
