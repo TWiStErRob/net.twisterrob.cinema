@@ -240,28 +240,12 @@ jobs:
           name: Heroku Dependencies - Previous
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
-      - name: "Debug before checkout"
-        working-directory: Heroku
-        run: ls -la
-
-      - name: "Debug before checkout"
-        working-directory: Heroku/scripts
-        run: ls -la
-
       - name: Checkout ${{ steps.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
 
-      - name: "Debug after checkout"
-        working-directory: Heroku
-        run: ls -la
-
-      - name: "Debug after checkout"
-        working-directory: Heroku/scripts
-        run: ls -la
-
-      - name: Dump Heroku Dependencies.
+        - name: Dump Heroku Dependencies.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -359,7 +343,7 @@ jobs:
             			message: `
             				## Dependencies Diffs
             				\`\`\`diff
-            				${fs.readFileSync("diff/dependencies-${moduleData[moduleCoordinate].diffName}.txt", {encoding: "utf8"}) || "No difference."}
+            				${fs.readFileSync(`diff/dependencies-${moduleData[moduleCoordinate].diffName}.txt`, {encoding: "utf8"}) || "No difference."}
             				\`\`\`
             			`.replaceAll(/^\s+/mg, ""),
             		})),
