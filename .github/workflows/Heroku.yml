@@ -364,11 +364,11 @@ jobs:
             					raw_details: moduleData[module].diff || "Missing diff!",
             				})),
             		actions: [
-			            {
-                            label: "Approve",
-                            description: "This dependency diff looks good!",
-                            identifier: "dependency-diff-approve",
-                        }
+            			{
+            				label: "Approve",
+            				description: "This dependency diff looks good!",
+            				identifier: "dependency-diff-approve",
+            			},
             		],
             	},
             });
