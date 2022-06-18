@@ -227,7 +227,7 @@ jobs:
           git show-ref
           git fetch
           git show-ref
-          git checkout refs/remotes/origin/${{ steps.pull_request.outputs.head_ref }} -- scripts/dependencies.sh
+          git restore --source refs/remotes/origin/${{ steps.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
