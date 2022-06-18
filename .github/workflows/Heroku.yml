@@ -360,7 +360,7 @@ jobs:
             					end_line: 0,
             					annotation_level: moduleData[module].diff ? "warning" : "failure",
             					title: `Dependency diff for ${module}`,
-            					message: ``,
+            					message: `Output of ./dependency-tree-diff.jar prev/dependencies-${moduleData[module].diffName}.txt curr/dependencies-${moduleData[module].diffName}.txt > dependencies-${moduleData[module].diffName}.txt`,
             					raw_details: moduleData[module].diff || "Missing diff!",
             				})),
             	},
