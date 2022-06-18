@@ -227,7 +227,7 @@ jobs:
           git show-ref
           git fetch
           git show-ref
-          git restore --source ${GITHUB_REF##*/} -- scripts/dependencies.sh
+          git restore --source ${{ steps.pull_request.outputs.head_ref }} -- scripts/dependencies.sh
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
