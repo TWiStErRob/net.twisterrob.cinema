@@ -363,14 +363,14 @@ jobs:
             					message: `Output of ./dependency-tree-diff.jar prev/dependencies-${moduleData[module].diffName}.txt curr/dependencies-${moduleData[module].diffName}.txt > dependencies-${moduleData[module].diffName}.txt`,
             					raw_details: moduleData[module].diff || "Missing diff!",
             				})),
-            		actions: [
-            			{
-            				label: "Approve",
-            				description: "This dependency diff looks good!",
-            				identifier: "dependency-diff-approve",
-            			},
-            		],
             	},
+            	actions: [
+            		{
+            			label: "Approve",
+            			description: "This dependency diff looks good!",
+            			identifier: "dependency-diff-approve",
+            		},
+            	],
             });
 
   check-npm:
