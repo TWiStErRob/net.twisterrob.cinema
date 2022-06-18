@@ -61,16 +61,16 @@ jobs:
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
+          echo 'allDependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+          echo ':dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
+          echo ':backend:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
+          echo ':backend:sync:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
+          echo ':backend:feed:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
+          echo ':backend:quickbook:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
+          echo ':backend:database:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
+          echo ':backend:network:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
+          echo ':backend:endpoint:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
+          echo ':test-helpers:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
 
       - name: Upload "Heroku Dependencies".
         if: success() || failure()
@@ -82,7 +82,7 @@ jobs:
 
       - name: Check Heroku.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt -x detekt
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
@@ -104,7 +104,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          tests :allTestsReport
+          tests :allTestsReport -x test
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
@@ -219,7 +219,7 @@ jobs:
     name: Dependencies Diffs
     needs: check-gradle
     # Don't execute on master, as it'll just verify against itself.
-    if: github.ref != 'refs/heads/master'
+    if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -247,16 +247,16 @@ jobs:
           # Warmup
           ./gradlew --no-daemon --no-build-cache --stacktrace --version
           # Pure output
-          ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
-          ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
+          echo 'allDependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
+          echo ':dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :dependencies > dependencies-root.txt
+          echo ':backend:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:dependencies > dependencies-backend.txt
+          echo ':backend:sync:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:sync:dependencies > dependencies-backend-sync.txt
+          echo ':backend:feed:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:feed:dependencies > dependencies-backend-feed.txt
+          echo ':backend:quickbook:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:quickbook:dependencies > dependencies-backend-quickbook.txt
+          echo ':backend:database:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:database:dependencies > dependencies-backend-database.txt
+          echo ':backend:network:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:network:dependencies > dependencies-backend-network.txt
+          echo ':backend:endpoint:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :backend:endpoint:dependencies > dependencies-backend-endpoint.txt
+          echo ':test-helpers:dependencies'; ./gradlew --no-daemon --no-build-cache --stacktrace :test-helpers:dependencies > dependencies-test-helpers.txt
 
       - name: Upload "Heroku Dependencies - Previous".
         if: success() || failure()
@@ -292,7 +292,7 @@ jobs:
           ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
           ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
           ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
-          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > diff/dependencies-test-helpers.txt
+          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
 
       - name: Merge diffs
         working-directory: diff
