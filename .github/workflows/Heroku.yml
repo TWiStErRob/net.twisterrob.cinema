@@ -205,9 +205,9 @@ jobs:
     outputs:
       found: ${{ steps.current_pr.outputs.number == null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
-      base_ref: ${{ fromJSON(steps.current_pr.outputs.pr).base.ref }}
+      base_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).base.ref }}
       # Simulate github.event.pull_request.head.ref on push trigger.
-      head_ref: ${{ fromJSON(steps.current_pr.outputs.pr).head.ref }}
+      head_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).head.ref }}
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
