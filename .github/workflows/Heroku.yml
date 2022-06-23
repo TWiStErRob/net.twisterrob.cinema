@@ -205,10 +205,22 @@ jobs:
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
-        uses: 8BitJonny/gh-get-current-pr@2.0.0
+        uses: 8BitJonny/gh-get-current-pr@2.1.0
+
+      - name: "Cancel if no PR found."
+        if: steps.current_pr.outputs.number == null
+        uses: actions/github-script@v6
         with:
-          # TODEL https://github.com/8BitJonny/gh-get-current-pr/pull/83
-          github-token: ${{ github.token }}
+          script: |
+            await github.actions.cancelWorkflowRun({
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	run_id: ${{ github.run_id }},
+            });
+
+      - name: "Wait for cancellation, so next steps don't fail due to lack of PR."
+        if: steps.current_pr.outputs.number == null
+        run: sleep 60
 
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
         id: pull_request
