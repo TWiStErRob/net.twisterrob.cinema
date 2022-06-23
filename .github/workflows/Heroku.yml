@@ -14,6 +14,7 @@ jobs:
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
+    if: false
     name: 1 🔨 Build & Check (Gradle)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
@@ -394,6 +395,7 @@ jobs:
             }
 
   check-npm:
+    if: false
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
