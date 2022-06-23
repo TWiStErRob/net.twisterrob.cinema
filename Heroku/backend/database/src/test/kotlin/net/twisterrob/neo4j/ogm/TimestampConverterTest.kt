@@ -28,7 +28,7 @@ class TimestampConverterTest {
 	@CsvSource(
 		value = [
 			"2014-12-23T15:36:47.891Z,     2014-12-23T15:36:47.891Z", // full time stamp is serialized
-			"2014-05-06T07:08:09.100Z,     2014-05-06T07:08:09.100Z", // optional parts are kept
+			"2014-05-06T07:08:09.110Z,     2014-05-06T07:08:09.100Z", // optional parts are kept
 			"2000-01-01T00:00:00.000Z,     2000-01-01T00:00:00.000Z", // zero parts are kept
 			"2021-12-21T15:36:47.891+04:30,2021-12-21T11:06:47.891Z", // time zone is serialized without offset
 		]
