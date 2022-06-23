@@ -339,6 +339,10 @@ jobs:
             	// "": no diff, null: missing diff, "...": dependency changes 
             	.some((module) => moduleData[module].diff !== "");
             
+            if (!hasAnyChanges) {
+            	core.notice(`Dependency diff was empty.`);
+            	return;
+            }
             // https://octokit.github.io/rest.js/v18#checks-create
             const check = await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -346,15 +350,16 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: hasAnyChanges ? "action_required" : "success",
+            	conclusion: "action_required",
             	output: {
             		title: "Dependency Report",
             		summary: `
             			## Dependencies Diffs
             			_See annotations for more details._
             			
-            			[Click HERE to approve/reject this dependency change](${process.env.action_url}).
-            			Run the "Dependency Review" workflow with \`workflow_dispatch\` on \`${process.env.branch}\`.
+            			To approve/reject this dependency change.
+            			Run the ["Dependency Review" workflow](${process.env.action_url})
+            			with \`workflow_dispatch\` on \`${process.env.branch}\`.
             			
             			| Module | Added | Removed |
             			| - | - | - |
@@ -371,30 +376,32 @@ jobs:
             		annotations: Object
             				.keys(moduleData)
             				.filter((module) => moduleData[module].diff !== "")
-            				.map((module) => ({
-            					path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
-            					start_line: 0,
-            					end_line: 0,
-            					annotation_level: moduleData[module].diff ? "warning" : "failure",
-            					title: `Dependency diff for ${module}`,
-            					message: `Output of ./dependency-tree-diff.jar prev/dependencies-${moduleData[module].diffName}.txt curr/dependencies-${moduleData[module].diffName}.txt > dependencies-${moduleData[module].diffName}.txt`,
-            					raw_details: moduleData[module].diff || "Missing diff!",
-            				})),
+            				.map((module) => {
+            					const txt = `dependencies-${moduleData[module].diffName}.txt`;
+            					const diff = moduleData[module].diff;
+            					return {
+            						path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
+            						start_line: 0,
+            						end_line: 0,
+            						annotation_level: diff === null ? "failure" : "warning",
+            						title: `Dependency diff for ${module}`,
+            						message: `Output of ./dependency-tree-diff.jar prev/${txt} curr/${txt} > ${txt}`,
+            						raw_details: diff || "Missing diff!",
+            					}
+            				}),
             	},
             });
-            
-            if (hasAnyChanges) {
-            	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
-            	await github.rest.repos.createCommitStatus({
-            		owner: context.repo.owner,
-            		repo: context.repo.repo,
-            		sha: context.sha,
-            		context: 'Heroku / Dependency Review',
-            		description: "Review dependency changes!",
-            		state: "pending",
-            		target_url: check.data.html_url,
-            	});
-            }
+            // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            await github.rest.repos.createCommitStatus({
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	sha: context.sha,
+            	context: 'Heroku / Dependency Review',
+            	description: "Review dependency changes!",
+            	state: "pending",
+            	target_url: check.data.html_url,
+            });
+
 
   check-npm:
     name: 1 🔨 Build & Check (NPM)
