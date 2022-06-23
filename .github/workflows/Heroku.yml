@@ -302,6 +302,8 @@ jobs:
 
       - name: Create a check run "Dependency Diff".
         uses: actions/github-script@v6
+        env:
+          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency Review.yml?query=branch%3A${{ github.ref }}'
         with:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
@@ -322,7 +324,7 @@ jobs:
             	moduleData[module].diff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
             });
             // https://octokit.github.io/rest.js/v18#checks-create
-            await github.rest.checks.create({
+            const check = await github.rest.checks.create({
             	owner: context.repo.owner,
             	repo: context.repo.repo,
             	head_sha: context.sha,
@@ -338,6 +340,7 @@ jobs:
             		summary: `
             			## Dependencies Diffs
             			_See annotations for more details._
+            			[Click HERE to approve/reject this dependency change](${process.env.action_url}).
             			
             			| Module | Added | Removed |
             			| - | - | - |
@@ -350,7 +353,7 @@ jobs:
             				})
             				.join("\n")
             			}
-            		`.replaceAll(/^\s+/mg, ""),
+            		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Object
             				.keys(moduleData)
             				.filter((module) => moduleData[module].diff !== "")
@@ -364,13 +367,16 @@ jobs:
             					raw_details: moduleData[module].diff || "Missing diff!",
             				})),
             	},
-            	actions: [
-            		{
-            			label: "Approve",
-            			description: "This dependency diff looks good!",
-            			identifier: "dep-diff-approve",
-            		},
-            	],
+            });
+            // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            await github.rest.repos.createCommitStatus({
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	sha: context.sha,
+            	context: 'Dependency Review',
+            	description: "Review dependency changes!",
+            	state: "pending",
+            	target_url: check.data.html_url,
             });
 
   check-npm:
