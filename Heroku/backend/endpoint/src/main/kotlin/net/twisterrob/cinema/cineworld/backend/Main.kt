@@ -5,8 +5,6 @@ import io.ktor.server.netty.Netty
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import java.io.File
-import java.lang.Runnable
-import java.util.Collections
 
 fun main(vararg args: String) {
 	val port = getPort()
@@ -27,6 +25,6 @@ fun main(vararg args: String) {
 
 private fun getPort(): Int {
 	val port = System.getenv("PORT")
-		?: error("PORT environment variable must be defined (=1234).")
+		?: error("PORT environment variable must be defined (=1234) asdfasdf asdf asdf asd fasdfasdf asdf asdf asd fasdf asd fasd fasd fasd fasd fasdf asdfasdf asdfasdf asdfasdfasd fasdfasdfasd fasd fasdf asdfasdfasdf sdafasdfasd fasdf.")
 	return port.toInt()
 }

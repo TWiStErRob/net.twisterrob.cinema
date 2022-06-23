@@ -58,7 +58,7 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Check Heroku.
+      - name: Check Heroku with Detekt.
         working-directory: Heroku
         run: >
           ./gradlew
