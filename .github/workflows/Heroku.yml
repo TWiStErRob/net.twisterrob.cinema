@@ -86,21 +86,21 @@ jobs:
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
-      - name: Upload "Heroku Test Results XMLs".
+      - name: Upload "Heroku Test Results XMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results XMLs
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
-      - name: Upload "Heroku Test Results HTML".
+      - name: Upload "Heroku Test Results HTML" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results HTML
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
-      - name: Upload "Heroku Test Results HTMLs".
+      - name: Upload "Heroku Test Results HTMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -236,11 +236,11 @@ jobs:
           git fetch
           git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
-      - name: Dump Heroku Dependencies.
+      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.base_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Base".
+      - name: Upload "Heroku Dependencies - Base" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -253,11 +253,11 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
-      - name: Dump Heroku Dependencies.
+      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies".
+      - name: Upload "Heroku Dependencies" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -265,13 +265,13 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifact "Heroku Dependencies - Base".
+      - name: Download "Heroku Dependencies - Base" artifact.
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies - Base
           path: diff/prev
 
-      - name: Download Artifact "Heroku Dependencies".
+      - name: Download "Heroku Dependencies" artifact.
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies
@@ -301,7 +301,7 @@ jobs:
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
           ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
 
-      - name: Upload "Heroku Dependencies - Diffs".
+      - name: Upload "Heroku Dependencies - Diffs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -309,7 +309,7 @@ jobs:
           path: ${{ github.workspace }}/diff/dependencies*.txt
 
 
-      - name: Create a check run "Dependency Diff".
+      - name: Create "Dependency Diff" check run (if any diffs).
         uses: actions/github-script@v6
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
@@ -443,7 +443,7 @@ jobs:
           export CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")
           echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
 
-      - name: Install Compatible Chrome Driver
+      - name: Install Compatible Chrome Driver.
         working-directory: Heroku/test
         run: |
           npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
@@ -455,43 +455,43 @@ jobs:
           cd frontend && npm run build:prod
 
       # Pre-build artifacts for more immediate and deterministic startup.
-      - name: Build Frontend
+      - name: Build Frontend.
         working-directory: Heroku/frontend
         run: npm run build:dev
 
-      - name: Build Sync & Backend
+      - name: Build Sync & Backend.
         working-directory: Heroku
         run: ./gradlew --no-daemon --stacktrace :backend:sync:jar :backend:endpoint:jar
 
-      - name: Start Sync
+      - name: Start Sync.
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:sync:run >sync.log 2>&1 &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
           sleep 30
 
-      - name: Start Backend
+      - name: Start Backend.
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../../test/fake-data" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Start Frontend
+      - name: Start Frontend.
         working-directory: Heroku/frontend
         run: |
           npm run start >../frontend.log 2>&1 &
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Start Selenium
+      - name: Start Selenium.
         working-directory: Heroku/test
         run: |
           npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} >../selenium.log 2>&1 &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Run Protractor tests
+      - name: Run Protractor tests.
         working-directory: Heroku/test
         run: |
           mkdir logs
@@ -501,24 +501,24 @@ jobs:
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
 
-      - name: Stop Sync (at ${{ env.PID_SYNC }})
+      - name: Stop Sync (at ${{ env.PID_SYNC }}).
         if: always()
         run: kill ${{ env.PID_SYNC }} || true
         # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Backend (at ${{ env.PID_ENDPOINT }})
+      - name: Stop Backend (at ${{ env.PID_ENDPOINT }}).
         if: always()
         run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Frontend (at ${{ env.PID_FRONTEND }})
+      - name: Stop Frontend (at ${{ env.PID_FRONTEND }}).
         if: always()
         run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
+      - name: Stop Selenium (at ${{ env.PID_SELENIUM }}).
         if: always()
         run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Upload "Heroku Test Logs".
+      - name: Upload "Heroku Test Logs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
