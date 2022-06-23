@@ -14,7 +14,6 @@ jobs:
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
-    if: false
     name: 1 🔨 Build & Check (Gradle)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
@@ -115,6 +114,7 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
 
+
   # Separate job for parsing the output,
   # since there are multiple steps when running checks.
   # Expected result: failure() if there were Detekt issues.
@@ -162,6 +162,7 @@ jobs:
           checkout_path: ${{ github.workspace }}
           sarif_file: artifacts/build/reports/detekt/detekt.sarif
 
+
   # Separate job for parsing the XML output,
   # since the matrix runs on multiple machines.
   # Expected result: failure() if there were Unit test failures.
@@ -193,6 +194,7 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           files: artifacts/**/*.xml
+
 
   deps:
     name: Dependencies Diffs
@@ -275,15 +277,15 @@ jobs:
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
           #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
           chmod +x ./dependency-tree-diff.jar
-          #./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
-          #./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
+          ./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
           ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
-          #./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
+          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
 
       - name: Merge diffs into a single file (dependencies-diffs.txt).
         working-directory: diff
@@ -379,8 +381,8 @@ jobs:
             	target_url: check.data.html_url,
             });
 
+
   check-npm:
-    if: false
     name: 1 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
