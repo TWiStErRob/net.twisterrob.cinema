@@ -196,51 +196,46 @@ jobs:
           files: artifacts/**/*.xml
 
 
-  deps:
-    name: Generate Dependency Diffs
-    # Don't execute on master, as it'll just verify against itself.
+  pull_request:
+    name: Get PR details
+    # Don't execute on master, it'll never be PR'd.
     if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    outputs:
+      found: ${{ steps.current_pr.outputs.number == null }}
+      # Simulate github.event.pull_request.base.ref on push trigger.
+      base_ref: ${{ fromJSON(steps.current_pr.outputs.pr).base.ref }}
+      # Simulate github.event.pull_request.head.ref on push trigger.
+      head_ref: ${{ fromJSON(steps.current_pr.outputs.pr).head.ref }}
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
         uses: 8BitJonny/gh-get-current-pr@2.1.0
 
-      - name: "Cancel if no PR found."
-        if: steps.current_pr.outputs.number == null
-        uses: actions/github-script@v6
-        with:
-          script: |
-            // https://docs.github.com/en/rest/actions/workflow-runs#cancel-a-workflow-run
-            await github.rest.actions.cancelWorkflowRun({
-            	owner: context.repo.owner,
-            	repo: context.repo.repo,
-            	run_id: ${{ github.run_id }},
-            });
-
-      - name: "Wait for cancellation, so next steps don't fail due to lack of PR."
-        if: steps.current_pr.outputs.number == null
-        run: sleep 60
-
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
-        id: pull_request
-        run: |
-          # Simulate github.event.pull_request.head.ref on push trigger.
-          echo "::set-output name=head_ref::${{ fromJSON(steps.current_pr.outputs.pr).head.ref }}"
-          # Simulate github.event.pull_request.base.ref on push trigger.
-          echo "::set-output name=base_ref::${{ fromJSON(steps.current_pr.outputs.pr).base.ref }}"
+        run: true
 
 
-      - name: Checkout ${{ steps.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
+  deps:
+    name: Generate Dependency Diffs
+    needs: pull_request
+    if: needs.pull_request.outputs.found
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: found=${{ toJSON(needs.pull_request.outputs.found) }}
+        run: true
+
+      - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
-          ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.base_ref) }}
+          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
-      - name: Get the script from ${{ steps.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
+      - name: Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
         run: |
           git fetch
-          git restore --source refs/remotes/origin/${{ steps.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
+          git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
@@ -254,10 +249,10 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Checkout ${{ steps.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
+      - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
-          ref: ${{ format('refs/heads/{0}', steps.pull_request.outputs.head_ref) }}
+          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
       - name: Dump Heroku Dependencies.
         working-directory: Heroku
