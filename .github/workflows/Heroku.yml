@@ -201,7 +201,7 @@ jobs:
     # Don't execute on master, it'll never be PR'd.
     if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 1
     outputs:
       found: ${{ steps.current_pr.outputs.number != null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
@@ -222,17 +222,16 @@ jobs:
     needs: pull_request
     if: needs.pull_request.outputs.found == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - name: Output ${{ toJSON(needs.pull_request.outputs.found) }}, ${{ toJSON(needs.pull_request.outputs.copy) }}
-        run: true
-
       - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
       - name: Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
+        # Disable this step, once the PR with this script is merged, it'll exist on both SHAs.
+        if: false
         run: |
           git fetch
           git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
