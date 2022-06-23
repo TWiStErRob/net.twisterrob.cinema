@@ -206,6 +206,7 @@ jobs:
     outputs:
       found: ${{ steps.current_pr.outputs.number != null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
+      copy: ${{ job.outputs.found }}
       base_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).base.ref }}
       # Simulate github.event.pull_request.head.ref on push trigger.
       head_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).head.ref }}
@@ -225,6 +226,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Output ${{ toJSON(needs.pull_request.outputs.found) }}, ${{ toJSON(needs.pull_request.outputs.copy) }}
       - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
@@ -239,11 +241,11 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Previous".
+      - name: Upload "Heroku Dependencies - Base".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Dependencies - Previous
+          name: Heroku Dependencies - Base
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
@@ -264,10 +266,10 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifact "Heroku Dependencies - Previous".
+      - name: Download Artifact "Heroku Dependencies - Base".
         uses: actions/download-artifact@v3
         with:
-          name: Heroku Dependencies - Previous
+          name: Heroku Dependencies - Base
           path: diff/prev
 
       - name: Download Artifact "Heroku Dependencies".
