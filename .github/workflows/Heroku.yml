@@ -197,7 +197,7 @@ jobs:
 
 
   deps:
-    name: Dependencies Diffs
+    name: Generate Dependency Diffs
     # Don't execute on master, as it'll just verify against itself.
     if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
@@ -306,6 +306,7 @@ jobs:
         uses: actions/github-script@v6
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
+          branch: '${{ github.ref }}'
         with:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
@@ -342,7 +343,9 @@ jobs:
             		summary: `
             			## Dependencies Diffs
             			_See annotations for more details._
+            			
             			[Click HERE to approve/reject this dependency change](${process.env.action_url}).
+            			Run the "Dependency Review" workflow with \`workflow_dispatch\` on \`${process.env.branch}\`.
             			
             			| Module | Added | Removed |
             			| - | - | - |
@@ -380,7 +383,6 @@ jobs:
             	state: "pending",
             	target_url: check.data.html_url,
             });
-
 
   check-npm:
     name: 1 🔨 Build & Check (NPM)
