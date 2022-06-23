@@ -197,7 +197,7 @@ jobs:
 
 
   pull_request:
-    name: Get PR details
+    name: Find PR
     # Don't execute on master, it'll never be PR'd.
     if: github.ref != 'refs/heads/master' && (success() || failure())
     runs-on: ubuntu-latest
@@ -205,9 +205,9 @@ jobs:
     outputs:
       found: ${{ steps.current_pr.outputs.number == null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
-      base_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).base.ref }}
+      base_ref: ${{ steps.current_pr.outputs.number == null && fromJSON(steps.current_pr.outputs.pr).base.ref }}
       # Simulate github.event.pull_request.head.ref on push trigger.
-      head_ref: ${{ job.outputs.found && fromJSON(steps.current_pr.outputs.pr).head.ref }}
+      head_ref: ${{ steps.current_pr.outputs.number == null && fromJSON(steps.current_pr.outputs.pr).head.ref }}
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
