@@ -326,6 +326,11 @@ jobs:
             	const diffPath = `diff/dependencies-${moduleData[module].diffName}.txt`;
             	moduleData[module].diff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
             });
+            const hasAnyChanges = Object
+            	.keys(moduleData)
+            	// "": no diff, null: missing diff, "...": dependency changes 
+            	.some((module) => moduleData[module].diff !== "");
+            
             // https://octokit.github.io/rest.js/v18#checks-create
             const check = await github.rest.checks.create({
             	owner: context.repo.owner,
@@ -333,11 +338,7 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: Object
-            			.keys(moduleData)
-            			.some((module) => moduleData[module].diff)
-            			? "action_required"
-            			: "success",
+            	conclusion: hasAnyChanges ? "action_required" : "success",
             	output: {
             		title: "Dependency Report",
             		summary: `
@@ -373,16 +374,19 @@ jobs:
             				})),
             	},
             });
-            // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
-            await github.rest.repos.createCommitStatus({
-            	owner: context.repo.owner,
-            	repo: context.repo.repo,
-            	sha: context.sha,
-            	context: 'Heroku / Dependency Review',
-            	description: "Review dependency changes!",
-            	state: "pending",
-            	target_url: check.data.html_url,
-            });
+            
+            if (hasAnyChanges) {
+            	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            	await github.rest.repos.createCommitStatus({
+            		owner: context.repo.owner,
+            		repo: context.repo.repo,
+            		sha: context.sha,
+            		context: 'Heroku / Dependency Review',
+            		description: "Review dependency changes!",
+            		state: "pending",
+            		target_url: check.data.html_url,
+            	});
+            }
 
   check-npm:
     name: 1 🔨 Build & Check (NPM)
