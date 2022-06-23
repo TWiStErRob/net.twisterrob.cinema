@@ -303,7 +303,7 @@ jobs:
       - name: Create a check run "Dependency Diff".
         uses: actions/github-script@v6
         env:
-          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency Review.yml?query=branch%3A${{ github.ref }}'
+          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
         with:
           debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
@@ -373,7 +373,7 @@ jobs:
             	owner: context.repo.owner,
             	repo: context.repo.repo,
             	sha: context.sha,
-            	context: 'Dependency Review',
+            	context: 'Heroku / Dependency Review',
             	description: "Review dependency changes!",
             	state: "pending",
             	target_url: check.data.html_url,
