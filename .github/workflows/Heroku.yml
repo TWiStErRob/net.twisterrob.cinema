@@ -74,6 +74,11 @@ jobs:
           name: Heroku Detekt Results
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
 
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/detekt.sarif
 
       - name: Build Heroku.
         working-directory: Heroku
@@ -135,54 +140,6 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/modules-2.lock
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
-
-
-  # Separate job for parsing the output,
-  # since there are multiple steps when running checks.
-  # Expected result: failure() if there were Detekt issues.
-  publish-detekt-results-gradle:
-    name: 2 📢 Publish Detekt Results
-    runs-on: ubuntu-latest
-    needs: check-gradle
-    # The dependency job might be skipped, we don't need to run this job then.
-    if: success() || failure()
-    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
-    timeout-minutes: 5
-
-    steps:
-      # TODEL https://github.com/github/codeql-action/issues/944, need to clone the repo otherwise Detekt doesn't upload.
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Heroku Detekt Results
-          path: artifacts
-
-      - name: Display structure of downloaded files
-        working-directory: artifacts
-        run: ls -R
-
-      - name: Fail if there is no report or warnings.
-        working-directory: artifacts
-        run: |
-          # Validate build/reports/detekt/detekt.txt results.
-          if [ ! -f 'build/reports/detekt/detekt.txt' ]; then # -f: Path exists and is regular file.
-            echo "Detekt report file does not exist"
-            exit 2
-          fi
-          if [ -s 'build/reports/detekt/detekt.txt' ]; then # -s: File has contents.
-            echo "There were detekt failures."
-            exit 3
-          fi
-
-      - name: Publish Detekt Results
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
-        with:
-          checkout_path: ${{ github.workspace }}
-          sarif_file: artifacts/build/reports/detekt/detekt.sarif
 
 
   pull_request:
