@@ -58,18 +58,6 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Dump Heroku Dependencies.
-        working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace allDependencies > dependencies.txt
-
-      - name: Upload "Heroku Dependencies".
-        if: success() || failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies.txt
-
-
       - name: Check Heroku.
         working-directory: Heroku
         run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
@@ -126,6 +114,7 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
 
+
   # Separate job for parsing the output,
   # since there are multiple steps when running checks.
   # Expected result: failure() if there were Detekt issues.
@@ -173,6 +162,7 @@ jobs:
           checkout_path: ${{ github.workspace }}
           sarif_file: artifacts/build/reports/detekt/detekt.sarif
 
+
   # Separate job for parsing the XML output,
   # since the matrix runs on multiple machines.
   # Expected result: failure() if there were Unit test failures.
@@ -204,6 +194,213 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           files: artifacts/**/*.xml
+
+
+  pull_request:
+    name: Find PR
+    # Don't execute on master, it'll never be PR'd.
+    if: github.ref != 'refs/heads/master' && (success() || failure())
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      found: ${{ steps.current_pr.outputs.number != null }}
+      # Simulate github.event.pull_request.base.ref on push trigger.
+      base_ref: ${{ steps.current_pr.outputs.number != null && fromJSON(steps.current_pr.outputs.pr).base.ref }}
+      # Simulate github.event.pull_request.head.ref on push trigger.
+      head_ref: ${{ steps.current_pr.outputs.number != null && fromJSON(steps.current_pr.outputs.pr).head.ref }}
+    steps:
+      - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
+        id: current_pr
+        uses: 8BitJonny/gh-get-current-pr@2.1.0
+
+      - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
+        run: true
+
+
+  deps:
+    name: Generate Dependency Diffs
+    needs: pull_request
+    if: needs.pull_request.outputs.found == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
+
+      - name: Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
+        # Disable this step, once the PR with this script is merged, it'll exist on both SHAs.
+        if: false
+        run: |
+          git fetch
+          git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
+
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: scripts/dependencies.sh
+
+      - name: Upload "Heroku Dependencies - Base".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Base
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+
+
+      - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
+
+      - name: Dump Heroku Dependencies.
+        working-directory: Heroku
+        run: scripts/dependencies.sh
+
+      - name: Upload "Heroku Dependencies".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+
+
+      - name: Download Artifact "Heroku Dependencies - Base".
+        uses: actions/download-artifact@v3
+        with:
+          name: Heroku Dependencies - Base
+          path: diff/prev
+
+      - name: Download Artifact "Heroku Dependencies".
+        uses: actions/download-artifact@v3
+        with:
+          name: Heroku Dependencies
+          path: diff/curr
+
+      - name: Diff using dependency-tree-diff from Jake Wharton.
+        working-directory: diff
+        run: |
+          # TODEL use Jake's version when https://github.com/JakeWharton/dependency-tree-diff/pull/13 gets merged.
+          wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
+          #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
+          chmod +x ./dependency-tree-diff.jar
+          ./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
+          ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
+          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
+
+      - name: Merge diffs into a single file (dependencies-diffs.txt).
+        working-directory: diff
+        run: |
+          # `cat dependencies-*.txt > dependencies-diffs.txt` with a bit more control and fluff.
+          # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
+          ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
+
+      - name: Upload "Heroku Dependencies - Diffs".
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Diffs
+          path: ${{ github.workspace }}/diff/dependencies*.txt
+
+
+      - name: Create a check run "Dependency Diff".
+        uses: actions/github-script@v6
+        env:
+          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
+          branch: '${{ github.ref }}'
+        with:
+          debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
+          script: |
+            const fs = require("fs");
+            const moduleData = {
+            	":": {diffName: "root", path: ""},
+            	":backend": {diffName: "backend", path: "backend"},
+            	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
+            	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
+            	":backend:database": {diffName: "backend-database", path: "backend/database"},
+            	":backend:network": {diffName: "backend-network", path: "backend/network"},
+            	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
+            	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
+            };
+            Object.keys(moduleData).forEach((module) => {
+            	const diffPath = `diff/dependencies-${moduleData[module].diffName}.txt`;
+            	moduleData[module].diff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
+            });
+            const hasAnyChanges = Object
+            	.keys(moduleData)
+            	// "": no diff, null: missing diff, "...": dependency changes 
+            	.some((module) => moduleData[module].diff !== "");
+            
+            if (!hasAnyChanges) {
+            	core.notice(`Dependency diff was empty.`);
+            	return;
+            }
+            // https://octokit.github.io/rest.js/v18#checks-create
+            const check = await github.rest.checks.create({
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	head_sha: context.sha,
+            	name: "Dependency Diff",
+            	status: "completed",
+            	conclusion: "action_required",
+            	output: {
+            		title: "Dependency Report",
+            		summary: `
+            			## Dependencies Diffs
+            			_See annotations for more details._
+            			
+            			To approve/reject this dependency change.
+            			Run the ["Dependency Review" workflow](${process.env.action_url})
+            			with \`workflow_dispatch\` on \`${process.env.branch}\`.
+            			
+            			| Module | Added | Removed |
+            			| - | - | - |
+            			${Object
+            				.keys(moduleData)
+            				.map((module) => {
+            					const added = ((moduleData[module].diff || "").match(/^\+/gm) || []).length;
+            					const removed = ((moduleData[module].diff || "").match(/^-/gm) || []).length;
+            					return `| ${module} | ${added} | ${removed} |`
+            				})
+            				.join("\n")
+            			}
+            		`.replaceAll(/^[ \t]+/mg, ""),
+            		annotations: Object
+            				.keys(moduleData)
+            				.filter((module) => moduleData[module].diff !== "")
+            				.map((module) => {
+            					const txt = `dependencies-${moduleData[module].diffName}.txt`;
+            					const diff = moduleData[module].diff;
+            					return {
+            						path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
+            						start_line: 0,
+            						end_line: 0,
+            						annotation_level: diff === null ? "failure" : "warning",
+            						title: `Dependency diff for ${module}`,
+            						message: `Output of ./dependency-tree-diff.jar prev/${txt} curr/${txt} > ${txt}`,
+            						raw_details: diff || "Missing diff!",
+            					}
+            				}),
+            	},
+            });
+            // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            await github.rest.repos.createCommitStatus({
+            	owner: context.repo.owner,
+            	repo: context.repo.repo,
+            	sha: context.sha,
+            	context: 'Heroku / Dependency Review',
+            	description: "Review dependency changes!",
+            	state: "pending",
+            	target_url: check.data.html_url,
+            });
+
 
   check-npm:
     name: 1 🔨 Build & Check (NPM)
