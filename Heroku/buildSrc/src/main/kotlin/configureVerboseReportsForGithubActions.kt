@@ -59,20 +59,22 @@ fun Test.configureVerboseReportsForGithubActions() {
 		val hasError = result.exception != null
 		val hasAnything = hasStdOut || hasStdErr || hasError
 
+		val groupSuite = "Suite"
+		val groupClass = "Class"
 		val groupName = when (val className = descriptor.className) {
-			null -> "Suite"
-			descriptor.name -> "Class"
+			null -> groupSuite
+			descriptor.name -> groupClass
 			else -> className
 		}
 		val name = descriptor.name
 		val fullName = "${groupName} > ${name}"
-		if (groupName == "Suite" && name.startsWith("Gradle Test Executor") && !hasAnything) {
+		if (groupName == groupSuite && name.startsWith("Gradle Test Executor") && !hasAnything) {
 			// Don't log, this is because of concurrency.
 			return
-		} else if (groupName == "Suite" && name.startsWith("Gradle Test Run") && !hasAnything) {
+		} else if (groupName == groupSuite && name.startsWith("Gradle Test Run") && !hasAnything) {
 			// Don't log, this is because of Gradle's system.
 			return
-		} else if (groupName == "Class" && !hasAnything) {
+		} else if (groupName == groupClass && !hasAnything) {
 			// Don't log, individual tests are enough.
 			return
 		}
