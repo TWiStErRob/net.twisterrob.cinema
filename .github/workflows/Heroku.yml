@@ -285,7 +285,15 @@ jobs:
             	.some((module) => moduleData[module].diff !== "");
             
             if (!hasAnyChanges) {
-            	core.notice(`Dependency diff was empty.`);
+            	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            	await github.rest.repos.createCommitStatus({
+            		owner: context.repo.owner,
+            		repo: context.repo.repo,
+            		sha: context.sha,
+            		context: "Heroku / Dependency Review",
+            		description: "No dependency changes.",
+            		state: "success",
+            	});
             	return;
             }
             // https://octokit.github.io/rest.js/v18#checks-create
@@ -341,7 +349,7 @@ jobs:
             	owner: context.repo.owner,
             	repo: context.repo.repo,
             	sha: context.sha,
-            	context: 'Heroku / Dependency Review',
+            	context: "Heroku / Dependency Review",
             	description: "Review dependency changes!",
             	state: "pending",
             	target_url: check.data.html_url,
