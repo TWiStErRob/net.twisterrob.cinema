@@ -25,6 +25,6 @@ fun main(vararg args: String) {
 
 private fun getPort(): Int {
 	val port = System.getenv("PORT")
-		?: error("PORT environment variable must be defined (=1234) asdfasdf asdf asdf asd fasdfasdf asdf asdf asd fasdf asd fasd fasd fasd fasd fasdf asdfasdf asdfasdf asdfasdfasd fasdfasdfasd fasd fasdf asdfasdfasdf sdafasdfasd fasdf.")
+		?: error("PORT environment variable must be defined (=1234).")
 	return port.toInt()
 }

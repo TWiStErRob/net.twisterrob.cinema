@@ -199,10 +199,12 @@ project.tasks.create<TestReport>("allTestsReport") {
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			val message = "There were failing tests. See the report at: ${reportFile.toURI()}"
-			if (!isCI) {
-				throw GradleException(message)
-			} else {
+			if (isCI) {
+				// On CI we follow the ignoreFailures = true of tests for this task too. Report will fail the check run.
 				logger.warn(message)
+			} else {
+				// Locally blow up.
+				throw GradleException(message)
 			}
 		}
 	}
