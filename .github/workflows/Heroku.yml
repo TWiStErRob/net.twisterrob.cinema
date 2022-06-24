@@ -14,7 +14,7 @@ jobs:
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
-    name: 1 🔨 Build & Check (Gradle)
+    name: 🔨 Build & Check (Gradle)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
@@ -58,9 +58,14 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Check Heroku.
+      - name: Check Heroku with Detekt.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace :detekt
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          :detekt
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
@@ -69,10 +74,21 @@ jobs:
           name: Heroku Detekt Results
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
 
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/detekt.sarif
 
       - name: Build Heroku.
         working-directory: Heroku
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble testClasses
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          assemble testClasses
 
 
       - name: Test Heroku.
@@ -82,30 +98,41 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
+          --continue
           tests :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
-      - name: Upload "Heroku Test Results XMLs".
+      - name: Upload "Heroku Test Results XMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results XMLs
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
-      - name: Upload "Heroku Test Results HTML".
+      - name: Upload "Heroku Test Results HTML" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results HTML
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
-      - name: Upload "Heroku Test Results HTMLs".
+      - name: Upload "Heroku Test Results HTMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Test Results HTMLs
           path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
+
+      - name: Publish "🔔 Test Results" check run.
+        if: success() || failure()
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          check_name: 🔔 Test Results
+          comment_mode: off
+          report_individual_runs: true
+          test_changes_limit: 0
+          files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Cleanup Gradle files before caching.
         run: |
@@ -113,87 +140,6 @@ jobs:
           rm -f  ~/.gradle/caches/modules-2/modules-2.lock
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
-
-
-  # Separate job for parsing the output,
-  # since there are multiple steps when running checks.
-  # Expected result: failure() if there were Detekt issues.
-  publish-detekt-results-gradle:
-    name: 2 📢 Publish Detekt Results
-    runs-on: ubuntu-latest
-    needs: check-gradle
-    # The dependency job might be skipped, we don't need to run this job then.
-    if: success() || failure()
-    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
-    timeout-minutes: 5
-
-    steps:
-      # TODEL https://github.com/github/codeql-action/issues/944, need to clone the repo otherwise Detekt doesn't upload.
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Heroku Detekt Results
-          path: artifacts
-
-      - name: Display structure of downloaded files
-        working-directory: artifacts
-        run: ls -R
-
-      - name: Fail if there is no report or warnings.
-        working-directory: artifacts
-        run: |
-          # Validate build/reports/detekt/detekt.txt results.
-          if [ ! -f 'build/reports/detekt/detekt.txt' ]; then # -f: Path exists and is regular file.
-            echo "Detekt report file does not exist"
-            exit 2
-          fi
-          if [ -s 'build/reports/detekt/detekt.txt' ]; then # -s: File has contents.
-            echo "There were detekt failures."
-            exit 3
-          fi
-
-      - name: Publish Detekt Results
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
-        with:
-          checkout_path: ${{ github.workspace }}
-          sarif_file: artifacts/build/reports/detekt/detekt.sarif
-
-
-  # Separate job for parsing the XML output,
-  # since the matrix runs on multiple machines.
-  # Expected result: failure() if there were Unit test failures.
-  publish-test-results-gradle:
-    name: 2 📢 Publish Tests Results
-    runs-on: ubuntu-latest
-    needs: check-gradle
-    # The dependency job might be skipped, we don't need to run this job then.
-    if: success() || failure()
-    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
-    timeout-minutes: 5
-
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Heroku Test Results XMLs
-          path: artifacts
-
-      - name: Display structure of downloaded files
-        working-directory: artifacts
-        run: ls -R
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          check_name: 0 🔔 Test Results
-          comment_title: Test Results
-          report_individual_runs: true
-          test_changes_limit: 0
-          files: artifacts/**/*.xml
 
 
   pull_request:
@@ -236,11 +182,11 @@ jobs:
           git fetch
           git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
-      - name: Dump Heroku Dependencies.
+      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.base_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Base".
+      - name: Upload "Heroku Dependencies - Base" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -253,11 +199,11 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
-      - name: Dump Heroku Dependencies.
+      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies".
+      - name: Upload "Heroku Dependencies" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -265,13 +211,13 @@ jobs:
           path: ${{ github.workspace }}/Heroku/dependencies*.txt
 
 
-      - name: Download Artifact "Heroku Dependencies - Base".
+      - name: Download "Heroku Dependencies - Base" artifact.
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies - Base
           path: diff/prev
 
-      - name: Download Artifact "Heroku Dependencies".
+      - name: Download "Heroku Dependencies" artifact.
         uses: actions/download-artifact@v3
         with:
           name: Heroku Dependencies
@@ -301,7 +247,7 @@ jobs:
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
           ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
 
-      - name: Upload "Heroku Dependencies - Diffs".
+      - name: Upload "Heroku Dependencies - Diffs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -309,7 +255,7 @@ jobs:
           path: ${{ github.workspace }}/diff/dependencies*.txt
 
 
-      - name: Create a check run "Dependency Diff".
+      - name: Create "Dependency Diff" check run (if any diffs).
         uses: actions/github-script@v6
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
@@ -403,7 +349,7 @@ jobs:
 
 
   check-npm:
-    name: 1 🔨 Build & Check (NPM)
+    name: 🔨 Build & Check (NPM)
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # Setup takes 1+3+1 minute, and protractor runs for 7 minutes
@@ -443,7 +389,7 @@ jobs:
           export CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")
           echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
 
-      - name: Install Compatible Chrome Driver
+      - name: Install Compatible Chrome Driver.
         working-directory: Heroku/test
         run: |
           npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
@@ -455,43 +401,43 @@ jobs:
           cd frontend && npm run build:prod
 
       # Pre-build artifacts for more immediate and deterministic startup.
-      - name: Build Frontend
+      - name: Build Frontend.
         working-directory: Heroku/frontend
         run: npm run build:dev
 
-      - name: Build Sync & Backend
+      - name: Build Sync & Backend.
         working-directory: Heroku
         run: ./gradlew --no-daemon --stacktrace :backend:sync:jar :backend:endpoint:jar
 
-      - name: Start Sync
+      - name: Start Sync.
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:sync:run >sync.log 2>&1 &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
           sleep 30
 
-      - name: Start Backend
+      - name: Start Backend.
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../../test/fake-data" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Start Frontend
+      - name: Start Frontend.
         working-directory: Heroku/frontend
         run: |
           npm run start >../frontend.log 2>&1 &
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Start Selenium
+      - name: Start Selenium.
         working-directory: Heroku/test
         run: |
           npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} >../selenium.log 2>&1 &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Run Protractor tests
+      - name: Run Protractor tests.
         working-directory: Heroku/test
         run: |
           mkdir logs
@@ -501,24 +447,24 @@ jobs:
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
 
-      - name: Stop Sync (at ${{ env.PID_SYNC }})
+      - name: Stop Sync (at ${{ env.PID_SYNC }}).
         if: always()
         run: kill ${{ env.PID_SYNC }} || true
         # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Backend (at ${{ env.PID_ENDPOINT }})
+      - name: Stop Backend (at ${{ env.PID_ENDPOINT }}).
         if: always()
         run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Frontend (at ${{ env.PID_FRONTEND }})
+      - name: Stop Frontend (at ${{ env.PID_FRONTEND }}).
         if: always()
         run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Selenium (at ${{ env.PID_SELENIUM }})
+      - name: Stop Selenium (at ${{ env.PID_SELENIUM }}).
         if: always()
         run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Upload "Heroku Test Logs".
+      - name: Upload "Heroku Test Logs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
