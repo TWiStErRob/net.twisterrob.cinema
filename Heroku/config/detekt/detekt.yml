@@ -1,20 +1,45 @@
 config:
+  # If a property in the configuration is deprecated, that'll fail Detekt execution.
   warningsAsErrors: true
 
-style:
-  ForbiddenComment:
-    values:
-      - 'FIXME'
-      - 'STOPSHIP'
+processors:
+  # Blanket disable processors as they are not used.
+  # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
+  active: false
 
-  MaxLineLength:
-    excludeCommentStatements: true
+console-reports:
+  exclude:
+    # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
+    - 'NotificationReport'
+    # Enabled, because it gives the category of the rules.
+    #- 'FindingsReport'
+    # Disabled, because it's very verbose, even more so than FindingsReport.
+    - 'FileBasedFindingsReport'
+    # Disabled, because this gives enough context to see the problems, but doesn't group rules.
+    - 'LiteFindingsReport'
 
-  UnusedPrivateClass:
-    excludes:
-      - '**/*Test.kt'
+comments:
+
+  UndocumentedPublicClass:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicFunction:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicProperty:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
 
 naming:
+
   ConstructorParameterNaming:
     excludes:
       - '**/endpoint/*/data/*.kt'
@@ -24,5 +49,32 @@ naming:
       - '**/database/model/*.kt'
 
 performance:
+
   SpreadOperator:
     active: false
+
+potential-bugs:
+
+  MissingPackageDeclaration:
+    # It's often desirable to declare functions and classes on the default package,
+    # so that it can be used unqualified from gradle.build.kts files.
+    excludes:
+      - '**/buildSrc/src/main/kotlin/**'
+
+style:
+
+  ForbiddenComment:
+    values:
+      - 'FIXME'
+      - 'STOPSHIP'
+
+  NoTabs:
+    # I'm a tab guy, I don't pay for space in advance.
+    active: false
+
+  MaxLineLength:
+    excludeCommentStatements: true
+
+  UnusedPrivateClass:
+    excludes:
+      - '**/*Test.kt'
