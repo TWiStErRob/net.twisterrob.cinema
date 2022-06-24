@@ -13,10 +13,10 @@ on:
           - reject
 jobs:
   custom-check-run-action:
-    name: React to Dependencies Diffs Summary click
+    name: React to Dependency Change Summary action
     runs-on: ubuntu-latest
     steps:
-      - name: "Update a check run"
+      - name: Update "Dependency Diff" check run.
         uses: actions/github-script@v6
         env:
           ref: ${{ github.ref }}
@@ -40,6 +40,7 @@ jobs:
               return;
             }
             const check = checks.data.check_runs[0];
+            console.log(`Found check run: ${check.url}`);
             if (check.conclusion !== "action_required") {
               console.log(checks);
               core.warning(`Status was already resolved as ${check.conclusion}.`);

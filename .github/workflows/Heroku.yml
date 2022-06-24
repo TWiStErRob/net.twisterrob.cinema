@@ -164,7 +164,7 @@ jobs:
 
 
   deps:
-    name: Generate Dependency Diffs
+    name: Calculate Dependency Diff
     needs: pull_request
     if: needs.pull_request.outputs.found == 'true'
     runs-on: ubuntu-latest
@@ -305,15 +305,14 @@ jobs:
             	status: "completed",
             	conclusion: "action_required",
             	output: {
-            		title: "Dependency Report",
+            		title: "Dependency Change Report",
             		summary: `
-            			## Dependencies Diffs
-            			_See annotations for more details._
-            			
-            			To approve/reject this dependency change.
-            			Run the ["Dependency Review" workflow](${process.env.action_url})
+            			To approve/reject these dependency changes \
+            			run the ["Dependency Review" workflow](${process.env.action_url}) \
             			with \`workflow_dispatch\` on \`${process.env.branch}\`.
             			
+            			## Dependencies Changes
+            			_See annotations for more details._
             			| Module | Added | Removed |
             			| - | - | - |
             			${Object
