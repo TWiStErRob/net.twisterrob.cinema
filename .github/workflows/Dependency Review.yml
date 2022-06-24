@@ -52,8 +52,6 @@ jobs:
               conclusion: process.env.resolution === "approve"
                 ? "success"
                 : "failure",
-              output: check.output,
-              actions: check.actions,
             });
             // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
             await github.rest.repos.createCommitStatus({
