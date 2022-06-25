@@ -13,80 +13,13 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import org.gradle.kotlin.dsl.repositories
 
-private object Versions {
-	const val okhttp3 = "3.10.0"
-}
-
-object OkHttp3 {
-	const val version = "3.10.0"
-
-	const val core = "com.squareup.okhttp3:okhttp:${version}"
-	const val interceptor_logging = "com.squareup.okhttp3:logging-interceptor:${version}"
-
-	/** `exclude module: 'junit'` */
-	const val mockwebserver = "com.squareup.okhttp3:mockwebserver:${version}"
-
-	fun default(project: Project) {
-		project.dependencies {
-			add("implementation", core)
-			add("implementation", interceptor_logging)
-			add("testImplementation", mockwebserver) {
-				exclude(module = "junit")
-			}
-		}
-	}
-}
-
-object Retrofit2 {
-	const val version = "2.4.0"
-
-	const val core = "com.squareup.retrofit2:retrofit:${version}"
-	const val mock = "com.squareup.retrofit2:retrofit-mock:${version}"
-
-	const val converter_scalars = "com.squareup.retrofit2:converter-scalars:${version}"
-	const val converter_simplexml = "com.squareup.retrift2:converter-simplexml:${version}"
-	const val converter_gson = "com.squareup.retrift2:converter-gson:${version}"
-	const val converter_moshi = "com.squareup.retrift2:converter-moshi:${version}"
-	const val converter_jackson = "com.squareup.retrift2:converter-jackson:${version}"
-	const val converter_wire = "com.squareup.retrift2:converter-wire:${version}"
-	const val converter_protobuf = "com.squareup.retrift2:converter-protobuf:${version}"
-
-	const val adapter_java8 = "com.squareup.retrofit2:adapter-java8:${version}"
-
-	/** `exclude module: 'rxjava'` */
-	const val adapter_rxjava = "com.squareup.retrofit2:adapter-rxjava:${version}"
-
-	/** `exclude module: 'rxjava'` */
-	const val adapter_rxjava2 = "com.squareup.retrofit2:adapter-rxjava2:${version}"
-	const val adapter_guava = "com.squareup.retrofit2:adapter-guava:${version}"
-
-	fun default(project: Project) {
-		project.dependencies {
-			add("implementation", core) {
-				exclude(module = "okhttp")
-			}
-			add("implementation", converter_scalars)
-			add("testImplementation", mock)
-		}
-	}
-}
-
-object RxJava2 {
-	const val version = "2.1.13"
-
-	const val core = "io.reactivex.rxjava2:rxjava:${version}"
-}
-
 object JUnit {
-	const val version4 = "4.13.2"
 	const val versionPlatform = "1.7.2"
 	const val versionJupiter = "5.7.2"
 
-	const val junit4 = "junit:junit:${version4}"
 	const val platform = "org.junit.platform:junit-platform-launcher:${versionPlatform}"
 	const val jupiter = "org.junit.jupiter:junit-jupiter-api:${versionJupiter}"
 	const val jupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${versionJupiter}"
-	const val vintage = junit4
 	const val vintageEngine = "org.junit.vintage:junit-vintage-engine:${versionJupiter}"
 
 	fun junit5(project: Project) {
@@ -100,13 +33,9 @@ object JUnit {
 }
 
 object Mockito {
-	const val version1 = "1.10.19"
-	const val version2 = "2.28.2"
 	const val version3 = "3.2.4"
 	const val versionKotlin = "2.2.0"
 
-	const val core1 = "org.mockito:mockito-core:${version1}"
-	const val core2 = "org.mockito:mockito-core:${version2}"
 	const val core3 = "org.mockito:mockito-core:${version3}"
 	const val core3Inline = "org.mockito:mockito-inline:${version3}"
 	const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionKotlin}"
@@ -222,12 +151,6 @@ object SLF4J {
 	const val core = "org.slf4j:slf4j-api:${version}"
 	const val log4j12 = "org.slf4j:slf4j-log4j12:${version}"
 	const val jul = "org.slf4j:jul-to-slf4j:${version}"
-}
-
-object Log4J {
-	const val version = "1.2.17"
-
-	const val core = "log4j:log4j:${version}"
 }
 
 object Log4J2 {
