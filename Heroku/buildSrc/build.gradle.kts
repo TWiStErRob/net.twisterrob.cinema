@@ -11,6 +11,9 @@ dependencies {
 	// TODO Review validation.mode in gradle.properties when bumping version.
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
 	implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.20.0")
+
+	// TODEL https://github.com/gradle/gradle/issues/15383
+	implementation(files(libs::class.java.protectionDomain.codeSource.location))
 }
 
 detekt {

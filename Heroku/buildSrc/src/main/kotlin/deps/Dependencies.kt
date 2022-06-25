@@ -12,6 +12,7 @@ import org.gradle.kotlin.dsl.add
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import org.gradle.kotlin.dsl.repositories
+import net.twisterrob.cinema.heroku.plugins.internal.libs
 
 object JUnit {
 	const val versionPlatform = "1.7.2"

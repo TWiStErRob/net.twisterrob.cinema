@@ -1,1 +1,7 @@
-// Placeholder to make sure buildSrc is an independent Gradle project.
+dependencyResolutionManagement {
+	versionCatalogs {
+		create("libs") {
+			from(files("../gradle/libs.versions.toml"))
+		}
+	}
+}
