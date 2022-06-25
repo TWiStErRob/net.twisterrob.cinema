@@ -8,7 +8,7 @@ dependencies {
 	implementation(Deps.Kotlin.core)
 	implementation(Deps.Ktor.client.client)
 	implementation(Deps.Ktor.client.logging_jvm)
-	implementation(Deps.SLF4J.core)
+	implementation(libs.slf4j.core)
 }
 
 // Test

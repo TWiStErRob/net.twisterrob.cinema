@@ -12,7 +12,6 @@ object Deps {
 	val Ktor = deps.Ktor
 	val Dagger2 = deps.Dagger2
 	val Neo4JOGM = deps.Neo4JOGM
-	val SLF4J = deps.SLF4J
 	val Log4J2 = deps.Log4J2
 	val Jackson = deps.Jackson
 	val JUnit = deps.JUnit

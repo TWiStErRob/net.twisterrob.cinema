@@ -29,7 +29,7 @@ dependencies {
 
 // Logging
 dependencies {
-	implementation(Deps.SLF4J.core)
+	implementation(libs.slf4j.core)
 }
 
 // Test

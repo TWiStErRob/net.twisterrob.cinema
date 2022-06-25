@@ -146,14 +146,6 @@ object Ktor {
 	}
 }
 
-object SLF4J {
-	const val version = "1.7.31"
-
-	const val core = "org.slf4j:slf4j-api:${version}"
-	const val log4j12 = "org.slf4j:slf4j-log4j12:${version}"
-	const val jul = "org.slf4j:jul-to-slf4j:${version}"
-}
-
 object Log4J2 {
 	const val version = "2.14.1"
 
@@ -164,7 +156,7 @@ object Log4J2 {
 
 	fun slf4j(project: Project) {
 		project.dependencies {
-			add("implementation", SLF4J.core)
+			add("implementation", project.libs.slf4j.core)
 			add("runtimeOnly", api)
 			add("runtimeOnly", core)
 			add("runtimeOnly", slf4j)
@@ -173,7 +165,7 @@ object Log4J2 {
 
 	fun slf4jForTest(project: Project) {
 		project.dependencies {
-			add("testRuntimeOnly", SLF4J.core)
+			add("testRuntimeOnly", project.libs.slf4j.core)
 			add("testRuntimeOnly", api)
 			add("testRuntimeOnly", core)
 			add("testRuntimeOnly", slf4j)

@@ -21,7 +21,7 @@ dependencies {
 	compileOnly(Deps.Ktor.server.test)
 
 	// Expose this to every module to make sure java.util.logging.config.file / logging.properties can pick it up.
-	runtimeOnly(Deps.SLF4J.jul)
+	runtimeOnly(libs.slf4j.jul)
 
 	Deps.JUnit.junit5(project)
 	testImplementation(Deps.JUnit.jupiter)
