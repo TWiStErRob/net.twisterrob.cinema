@@ -143,5 +143,6 @@ test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "te
 test-mockito-kotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version.ref = "test-mockito-kotlin" }
 
 [bundles]
+log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 
 [plugins]

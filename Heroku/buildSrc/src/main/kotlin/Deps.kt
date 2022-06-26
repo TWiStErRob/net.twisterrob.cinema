@@ -16,18 +16,14 @@ object Deps {
 	fun slf4jToLog4j(project: Project) {
 		project.dependencies {
 			add("implementation", project.libs.slf4j.core)
-			add("runtimeOnly", project.libs.log4j.api)
-			add("runtimeOnly", project.libs.log4j.core)
-			add("runtimeOnly", project.libs.log4j.slf4j)
+			add("runtimeOnly", project.libs.bundles.log4j)
 		}
 	}
 
 	fun slf4jToLog4jForTest(project: Project) {
 		project.dependencies {
 			add("testRuntimeOnly", project.libs.slf4j.core)
-			add("testRuntimeOnly", project.libs.log4j.api)
-			add("testRuntimeOnly", project.libs.log4j.core)
-			add("testRuntimeOnly", project.libs.log4j.slf4j)
+			add("testRuntimeOnly", project.libs.bundles.log4j)
 		}
 	}
 
