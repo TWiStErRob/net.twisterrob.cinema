@@ -26,7 +26,7 @@ neo4j-ogm = "3.2.25"
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 neo4j = "4.2.4"
 
-jackson = "2.13.2"
+jackson = "2.13.3"
 
 slf4j = "1.7.31"
 log4j = "2.14.1"
