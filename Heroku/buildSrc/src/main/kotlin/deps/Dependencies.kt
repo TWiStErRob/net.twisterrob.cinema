@@ -7,12 +7,15 @@
 
 package deps
 
+import net.twisterrob.cinema.heroku.plugins.internal.libs
+import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.add
+import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
+import org.gradle.api.provider.Provider
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
-import org.gradle.kotlin.dsl.repositories
-import net.twisterrob.cinema.heroku.plugins.internal.libs
 
 object JUnit {
 	fun junit5(project: Project) {
@@ -25,42 +28,21 @@ object JUnit {
 	}
 }
 
-/**
- * http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
- * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
- */
 object Ktor {
-
-	const val version = "1.6.3"
 
 	val client = _client // hack for "Nested object '*' accessed via instance reference"
 
 	object _client {
-		const val client = "io.ktor:ktor-client:${version}"
-		const val logging_jvm = "io.ktor:ktor-client-logging-jvm:${version}"
-		const val core_jvm = "io.ktor:ktor-client-core-jvm:${version}"
-		const val engine_okhttp = "io.ktor:ktor-client-okhttp:${version}"
-
-		const val json = "io.ktor:ktor-client-json:${version}"
-		const val json_jvm = "io.ktor:ktor-client-json-jvm:${version}"
-		const val gson = "io.ktor:ktor-client-gson:${version}"
-		const val jackson = "io.ktor:ktor-client-jackson:${version}"
-		const val kotlinx_serialization = "io.ktor:ktor-client-serialization-jvm:${version}"
-
-		const val mock = "io.ktor:ktor-client-mock:${version}"
-		const val mock_jvm = "io.ktor:ktor-client-mock-jvm:${version}"
-		const val mock_js = "io.ktor:ktor-client-mock-js:${version}"
-		const val mock_native = "io.ktor:ktor-client-mock-native:${version}"
 
 		fun default(project: Project) {
 			project.dependencies {
-				add("api", core_jvm)
-				add("implementation", client)
-				add("implementation", jackson)
-				add("testImplementation", mock_jvm)
-				add("testImplementation", logging_jvm)
-				add("testRuntimeOnly", engine_okhttp)
-				//add("implementation", libs.kotlinx.coroutines)
+				add("api", project.libs.ktor.client.core.jvm)
+				add("implementation", project.libs.ktor.client.client)
+				add("implementation", project.libs.ktor.client.jackson)
+				add("testImplementation", project.libs.ktor.client.mock.jvm)
+				add("testImplementation", project.libs.ktor.client.logging.jvm)
+				add("testRuntimeOnly", project.libs.ktor.client.engine.okhttp)
+				//add("implementation", project.libs.kotlinx.coroutines)
 			}
 		}
 	}
@@ -68,29 +50,16 @@ object Ktor {
 	val server = _server // hack for "Nested object '*' accessed via instance reference"
 
 	object _server {
-		const val core = "io.ktor:ktor-server-core:${version}"
-		const val test = "io.ktor:ktor-server-tests:${version}"
-		const val locations = "io.ktor:ktor-locations:${version}"
-
-		object engine {
-			const val netty = "io.ktor:ktor-server-netty:${version}"
-		}
-
-		object content {
-			const val jackson = "io.ktor:ktor-jackson:${version}"
-			const val html = "io.ktor:ktor-html-builder:${version}"
-			const val freemarker = "io.ktor:ktor-freemarker:${version}"
-		}
 
 		fun default(project: Project) {
 			project.dependencies {
-				add("implementation", core)
-				add("implementation", locations)
-				add("implementation", engine.netty)
-				add("implementation", content.jackson)
-				add("implementation", content.html)
-				add("testImplementation", client.mock_jvm)
-				add("testImplementation", test) {
+				add("implementation", project.libs.ktor.server.core)
+				add("implementation", project.libs.ktor.server.locations)
+				add("implementation", project.libs.ktor.server.engine.netty)
+				add("implementation", project.libs.ktor.server.content.jackson)
+				add("implementation", project.libs.ktor.server.content.html)
+				add("testImplementation", project.libs.ktor.client.mock.jvm)
+				add("testImplementation", project.libs.ktor.server.test) {
 					exclude(group = "ch.qos.logback", module = "logback-classic")
 				}
 			}
@@ -127,3 +96,12 @@ object Dagger2 {
 		}
 	}
 }
+
+private fun DependencyHandlerScope.add(
+	configurationName: String,
+	dependencyNotation: Provider<MinimalExternalModuleDependency>,
+	configuration: Action<ExternalModuleDependency>
+) {
+	addProvider(configurationName, dependencyNotation, configuration)
+}
+

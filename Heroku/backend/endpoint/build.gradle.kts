@@ -32,8 +32,8 @@ dependencies {
 
 	implementation(libs.kotlin.stdlib8)
 	Deps.Ktor.server.default(project)
-	runtimeOnly(Deps.Ktor.client.engine_okhttp)
-	implementation(Deps.Ktor.client.jackson)
+	runtimeOnly(libs.ktor.client.engine.okhttp)
+	implementation(libs.ktor.client.jackson)
 	Deps.Log4J2.slf4j(project)
 	Deps.Dagger2.default(project)
 }

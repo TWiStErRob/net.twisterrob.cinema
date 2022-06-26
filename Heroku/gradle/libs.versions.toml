@@ -11,6 +11,10 @@ kotlinx-coroutines = "1.5.2"
 
 dagger = "2.42"
 
+# http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
+# `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
+ktor = "1.6.3"
+
 # @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 neo4j-ogm = "3.2.25"
 
@@ -51,6 +55,27 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-apt = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+
+ktor-client-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
+ktor-client-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor" }
+ktor-client-core-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
+ktor-client-json-jvm = { module = "io.ktor:ktor-client-json-jvm", version.ref = "ktor" }
+ktor-client-gson = { module = "io.ktor:ktor-client-gson", version.ref = "ktor" }
+ktor-client-jackson = { module = "io.ktor:ktor-client-jackson", version.ref = "ktor" }
+ktor-client-kotlinxSerialization = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+ktor-client-mock-jvm = { module = "io.ktor:ktor-client-mock-jvm", version.ref = "ktor" }
+ktor-client-mock-js = { module = "io.ktor:ktor-client-mock-js", version.ref = "ktor" }
+ktor-client-mock-native = { module = "io.ktor:ktor-client-mock-native", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
+ktor-server-locations = { module = "io.ktor:ktor-locations", version.ref = "ktor" }
+ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
+ktor-server-content-html = { module = "io.ktor:ktor-html-builder", version.ref = "ktor" }
+ktor-server-content-freemarker = { module = "io.ktor:ktor-freemarker", version.ref = "ktor" }
 
 # Warning "The following annotation processors were detected on the compile classpath:"
 #  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'

@@ -17,8 +17,8 @@ dependencies {
 
 	compileOnly(libs.neo4j.harness)
 
-	compileOnly(Deps.Ktor.client.mock_jvm)
-	compileOnly(Deps.Ktor.server.test)
+	compileOnly(libs.ktor.client.mock.jvm)
+	compileOnly(libs.ktor.server.test)
 
 	// Expose this to every module to make sure java.util.logging.config.file / logging.properties can pick it up.
 	runtimeOnly(libs.slf4j.jul)

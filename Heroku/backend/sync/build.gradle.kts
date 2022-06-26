@@ -27,7 +27,7 @@ dependencies {
 	implementation(project(":backend:network"))
 
 	implementation(libs.kotlin.stdlib8)
-	runtimeOnly(Deps.Ktor.client.engine_okhttp)
+	runtimeOnly(libs.ktor.client.engine.okhttp)
 	Deps.Log4J2.slf4j(project)
 	Deps.Dagger2.default(project)
 }
