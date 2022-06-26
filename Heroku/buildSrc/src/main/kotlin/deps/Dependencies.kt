@@ -145,19 +145,11 @@ object Log4J2 {
 }
 
 object Dagger2 {
-	const val version = "2.42"
-
-	const val inject = "javax.inject:javax.inject:1"
-	const val core = "com.google.dagger:dagger:${version}"
-	const val apt = "com.google.dagger:dagger-compiler:${version}"
-
-	const val jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
-
 	fun default(project: Project) {
 		project.dependencies {
-			add("implementation", core)
-			add("kapt", apt)
-			add("kaptTest", apt)
+			add("implementation", project.libs.dagger)
+			add("kapt", project.libs.dagger.apt)
+			add("kaptTest", project.libs.dagger.apt)
 		}
 	}
 }

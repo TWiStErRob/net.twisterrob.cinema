@@ -56,7 +56,7 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
-	kaptTest(Deps.Dagger2.apt)
+	kaptTest(libs.dagger.apt)
 }
 
 tasks.withType<KotlinCompile> {
