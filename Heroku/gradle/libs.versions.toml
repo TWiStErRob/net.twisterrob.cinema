@@ -17,6 +17,8 @@ test-junit-jupiter = "5.7.2"
 # @see test-junit-jupiter
 test-junit-platform = "1.7.2"
 
+test-jfixture = "2.7.2"
+
 [libraries]
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -34,6 +36,8 @@ test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", v
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
 test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+
+test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
 
 [bundles]
 

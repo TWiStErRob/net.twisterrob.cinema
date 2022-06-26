@@ -44,12 +44,6 @@ object Hamcrest {
 	const val jsonAssert = "org.skyscreamer:jsonassert:${versionJsonAssert}"
 }
 
-object JFixture {
-	const val version = "2.7.2"
-
-	const val core = "com.flextrade.jfixture:jfixture:${version}"
-}
-
 /**
  * http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
  * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
