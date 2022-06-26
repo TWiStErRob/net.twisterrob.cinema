@@ -15,19 +15,11 @@ import org.gradle.kotlin.dsl.repositories
 import net.twisterrob.cinema.heroku.plugins.internal.libs
 
 object JUnit {
-	const val versionPlatform = "1.7.2"
-	const val versionJupiter = "5.7.2"
-
-	const val platform = "org.junit.platform:junit-platform-launcher:${versionPlatform}"
-	const val jupiter = "org.junit.jupiter:junit-jupiter-api:${versionJupiter}"
-	const val jupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${versionJupiter}"
-	const val vintageEngine = "org.junit.vintage:junit-vintage-engine:${versionJupiter}"
-
 	fun junit5(project: Project) {
 		project.dependencies {
-			add("testImplementation", jupiter)
-			add("testRuntimeOnly", platform)
-			add("testRuntimeOnly", jupiterEngine)
+			add("testImplementation", project.libs.test.junit.jupiter)
+			add("testRuntimeOnly", project.libs.test.junit.platform)
+			add("testRuntimeOnly", project.libs.test.junit.jupiter.engine)
 		}
 		//project.tasks.named<Test>("test").configure { useJUnitPlatform() }
 	}

@@ -43,6 +43,6 @@ dependencies {
 	testFixturesImplementation(project(":backend:quickbook"))
 	testFixturesImplementation(libs.kotlin.stdlib8)
 	testFixturesImplementation(Deps.JFixture.core)
-	testFixturesImplementation(Deps.JUnit.jupiter)
+	testFixturesImplementation(libs.test.junit.jupiter)
 	testFixturesImplementation(project(":test-helpers"))
 }

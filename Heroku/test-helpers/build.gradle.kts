@@ -9,7 +9,7 @@ dependencies {
 	// Note all these are optional dependencies.
 	// Add them to testImplementation wherever testImplementation(project(":test-helpers")) is used.
 
-	compileOnly(Deps.JUnit.jupiter)
+	compileOnly(libs.test.junit.jupiter)
 	compileOnly(Deps.JFixture.core)
 	compileOnly(Deps.Hamcrest.core)
 	compileOnly(Deps.Mockito.core3)
@@ -24,7 +24,7 @@ dependencies {
 	runtimeOnly(libs.slf4j.jul)
 
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JUnit.jupiter)
+	testImplementation(libs.test.junit.jupiter)
 	testImplementation(Deps.Hamcrest.core)
 	Deps.Log4J2.slf4jForTest(project)
 	// TODO add more testImplementation when writing tests

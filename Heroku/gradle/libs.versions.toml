@@ -11,6 +11,11 @@ kotlinx-coroutines = "1.5.2"
 
 slf4j = "1.7.31"
 
+# @see test-junit-platform
+test-junit-jupiter = "5.7.2"
+# @see test-junit-jupiter
+test-junit-platform = "1.7.2"
+
 [libraries]
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -23,6 +28,10 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 slf4j-core = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-log4j12 = { module = "org.slf4j:slf4j-log4j12", version.ref = "slf4j" }
 slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
+
+test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-junit-platform" }
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
+test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
 
 [bundles]
 
