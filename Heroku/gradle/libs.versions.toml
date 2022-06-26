@@ -11,6 +11,7 @@ kotlinx-coroutines = "1.5.2"
 
 slf4j = "1.7.31"
 
+test-junit-vintage = "4.13.2"
 # @see test-junit-platform
 test-junit-jupiter = "5.7.2"
 # @see test-junit-jupiter
@@ -32,6 +33,7 @@ slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-junit-platform" }
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
+test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 [bundles]
 

@@ -47,7 +47,7 @@ dependencies {
 	testImplementation(Deps.Hamcrest.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
 		// Except for ComparisonFailure, which is provided by :test-helpers.
-		exclude(group = "junit", module = "junit")
+		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
 	testImplementation(Deps.Mockito.core3Inline)
 	testImplementation(Deps.Mockito.kotlin)
