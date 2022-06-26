@@ -99,28 +99,21 @@ object Ktor {
 }
 
 object Log4J2 {
-	const val version = "2.14.1"
-
-	const val core = "org.apache.logging.log4j:log4j-core:${version}"
-	const val api = "org.apache.logging.log4j:log4j-api:${version}"
-	const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:${version}"
-	const val jul = "org.apache.logging.log4j:log4j-jul:${version}"
-
 	fun slf4j(project: Project) {
 		project.dependencies {
 			add("implementation", project.libs.slf4j.core)
-			add("runtimeOnly", api)
-			add("runtimeOnly", core)
-			add("runtimeOnly", slf4j)
+			add("runtimeOnly", project.libs.log4j.api)
+			add("runtimeOnly", project.libs.log4j.core)
+			add("runtimeOnly", project.libs.log4j.slf4j)
 		}
 	}
 
 	fun slf4jForTest(project: Project) {
 		project.dependencies {
 			add("testRuntimeOnly", project.libs.slf4j.core)
-			add("testRuntimeOnly", api)
-			add("testRuntimeOnly", core)
-			add("testRuntimeOnly", slf4j)
+			add("testRuntimeOnly", project.libs.log4j.api)
+			add("testRuntimeOnly", project.libs.log4j.core)
+			add("testRuntimeOnly", project.libs.log4j.slf4j)
 		}
 	}
 }

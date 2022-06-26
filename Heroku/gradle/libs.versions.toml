@@ -17,12 +17,13 @@ neo4j-ogm = "3.2.25"
 # https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Match version of DB at https://console.neo4j.io/#databases, exactly to minor.
 # @see neo4j-ogm should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
-# @see log4j2 should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
+# @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 neo4j = "4.2.4"
 
 jackson = "2.13.2"
 
 slf4j = "1.7.31"
+log4j = "2.14.1"
 
 test-junit-vintage = "4.13.2"
 # @see test-junit-platform
@@ -94,6 +95,11 @@ slf4j-core = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-log4j12 = { module = "org.slf4j:slf4j-log4j12", version.ref = "slf4j" }
 slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+log4j-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log4j" }
 
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-junit-platform" }
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
