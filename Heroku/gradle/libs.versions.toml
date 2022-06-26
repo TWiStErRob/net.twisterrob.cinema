@@ -1,8 +1,24 @@
 [versions]
 
+# @see jackson
+# @see ktor
+# @see kotlinx-coroutines
+# Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
+kotlin = "1.6.20"
+kotlinx-html = "0.7.3"
+# @see kotlin
+kotlinx-coroutines = "1.5.2"
+
 slf4j = "1.7.31"
 
 [libraries]
+
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 slf4j-core = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-log4j12 = { module = "org.slf4j:slf4j-log4j12", version.ref = "slf4j" }

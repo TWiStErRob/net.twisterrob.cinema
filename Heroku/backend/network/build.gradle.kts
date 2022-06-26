@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
+	implementation(libs.kotlin.stdlib8)
 	implementation(Deps.Ktor.client.client)
 	implementation(Deps.Ktor.client.logging_jvm)
 	implementation(libs.slf4j.core)

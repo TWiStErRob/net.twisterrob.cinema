@@ -12,8 +12,8 @@ sourceSets {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
-	implementation(Deps.Kotlin.reflect)
+	implementation(libs.kotlin.stdlib8)
+	implementation(libs.kotlin.reflect)
 
 	Deps.Dagger2.default(project)
 

@@ -8,7 +8,6 @@
 @Suppress("unused")
 object Deps {
 
-	val Kotlin = deps.Kotlin
 	val Ktor = deps.Ktor
 	val Dagger2 = deps.Dagger2
 	val Neo4JOGM = deps.Neo4JOGM

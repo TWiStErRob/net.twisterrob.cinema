@@ -58,21 +58,6 @@ object JFixture {
 	const val core = "com.flextrade.jfixture:jfixture:${version}"
 }
 
-object Kotlin {
-
-	/**
-	 * @see Jackson.version
-	 * @see Ktor.version
-	 */
-	const val version = "1.6.20"
-
-	const val bom = "org.jetbrains.kotlin:kotlin-bom:${version}"
-	const val core = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
-	const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
-	const val kotlinx_html = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.3"
-	const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
-}
-
 /**
  * http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
  * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
@@ -108,7 +93,7 @@ object Ktor {
 				add("testImplementation", mock_jvm)
 				add("testImplementation", logging_jvm)
 				add("testRuntimeOnly", engine_okhttp)
-				//add("implementation", Kotlin.coroutines)
+				//add("implementation", libs.kotlinx.coroutines)
 			}
 		}
 	}

@@ -26,7 +26,7 @@ dependencies {
 	implementation(project(":backend:feed"))
 	implementation(project(":backend:network"))
 
-	implementation(Deps.Kotlin.core)
+	implementation(libs.kotlin.stdlib8)
 	runtimeOnly(Deps.Ktor.client.engine_okhttp)
 	Deps.Log4J2.slf4j(project)
 	Deps.Dagger2.default(project)
@@ -55,7 +55,7 @@ dependencies {
 
 	testFixturesImplementation(project(":backend:database"))
 	testFixturesImplementation(project(":test-helpers"))
-	testFixturesImplementation(Deps.Kotlin.core)
+	testFixturesImplementation(libs.kotlin.stdlib8)
 	testFixturesImplementation(Deps.JFixture.core)
 }
 

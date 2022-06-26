@@ -7,8 +7,8 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
-	implementation(Deps.Kotlin.reflect)
+	implementation(libs.kotlin.stdlib8)
+	implementation(libs.kotlin.reflect)
 
 	Deps.Dagger2.default(project)
 }
@@ -41,7 +41,7 @@ dependencies {
 	Deps.Log4J2.slf4jForTest(project)
 
 	testFixturesImplementation(project(":backend:quickbook"))
-	testFixturesImplementation(Deps.Kotlin.core)
+	testFixturesImplementation(libs.kotlin.stdlib8)
 	testFixturesImplementation(Deps.JFixture.core)
 	testFixturesImplementation(Deps.JUnit.jupiter)
 	testFixturesImplementation(project(":test-helpers"))

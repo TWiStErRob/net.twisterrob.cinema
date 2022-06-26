@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
+	implementation(libs.kotlin.stdlib8)
 
 	// Note all these are optional dependencies.
 	// Add them to testImplementation wherever testImplementation(project(":test-helpers")) is used.

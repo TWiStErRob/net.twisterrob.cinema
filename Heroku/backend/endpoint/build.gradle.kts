@@ -30,7 +30,7 @@ dependencies {
 	implementation(project(":backend:quickbook"))
 	implementation(project(":backend:network"))
 
-	implementation(Deps.Kotlin.core)
+	implementation(libs.kotlin.stdlib8)
 	Deps.Ktor.server.default(project)
 	runtimeOnly(Deps.Ktor.client.engine_okhttp)
 	implementation(Deps.Ktor.client.jackson)
