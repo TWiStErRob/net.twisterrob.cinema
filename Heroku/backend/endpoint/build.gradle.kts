@@ -31,7 +31,13 @@ dependencies {
 	implementation(project(":backend:network"))
 
 	implementation(libs.kotlin.stdlib8)
-	Deps.ktorServer(project)
+
+	implementation(libs.ktor.server.core)
+	implementation(libs.ktor.server.locations)
+	implementation(libs.ktor.server.engine.netty)
+	implementation(libs.ktor.server.content.jackson)
+	implementation(libs.ktor.server.content.html)
+
 	runtimeOnly(libs.ktor.client.engine.okhttp)
 	implementation(libs.ktor.client.jackson)
 	Deps.slf4jToLog4j(project)
@@ -56,6 +62,10 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
+	testImplementation(libs.ktor.client.mock.jvm)
+	testImplementation(libs.ktor.server.test) {
+		exclude(group = "ch.qos.logback", module = "logback-classic")
+	}
 	kaptTest(libs.dagger.apt)
 }
 

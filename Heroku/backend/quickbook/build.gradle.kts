@@ -10,7 +10,10 @@ dependencies {
 	implementation(libs.kotlin.reflect)
 
 	Deps.dagger(project)
-	Deps.ktorClient(project)
+
+	api(libs.ktor.client.core.jvm)
+	implementation(libs.ktor.client.client)
+	implementation(libs.ktor.client.jackson)
 	implementation(libs.jackson.datatype.java8)
 }
 
@@ -20,5 +23,10 @@ dependencies {
 	testImplementation(libs.test.jfixture)
 	testImplementation(libs.test.hamcrest)
 	testImplementation(project(":test-helpers"))
+
+	testImplementation(libs.ktor.client.mock.jvm)
+	testImplementation(libs.ktor.client.logging.jvm)
+	testRuntimeOnly(libs.ktor.client.engine.okhttp)
+
 	Deps.slf4jToLog4jForTest(project)
 }
