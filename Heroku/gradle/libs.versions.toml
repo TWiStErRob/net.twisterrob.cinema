@@ -33,9 +33,9 @@ log4j = "2.14.1"
 
 test-junit-vintage = "4.13.2"
 # @see test-junit-platform
-test-junit-jupiter = "5.7.2"
+test-junit-jupiter = "5.8.2"
 # @see test-junit-jupiter
-test-junit-platform = "1.7.2"
+test-junit-platform = "1.8.2"
 
 test-hamcrest = "2.2"
 test-shazamcrest = "0.11"
