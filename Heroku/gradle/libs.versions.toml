@@ -1,0 +1,153 @@
+[versions]
+
+# @see jackson
+# @see ktor
+# @see kotlinx-coroutines
+# Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
+# TODO Review validation.mode in gradle.properties when bumping version.
+kotlin = "1.6.21"
+kotlinx-html = "0.7.3"
+# @see kotlin
+kotlinx-coroutines = "1.5.2"
+detekt = "1.20.0"
+
+dagger = "2.42"
+
+# http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
+# `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
+ktor = "1.6.3"
+
+# @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+neo4j-ogm = "3.2.25"
+
+# https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
+# Match version of DB at https://console.neo4j.io/#databases, exactly to minor.
+# @see neo4j-ogm should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
+# @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
+neo4j = "4.2.4"
+
+jackson = "2.13.2"
+
+slf4j = "1.7.31"
+log4j = "2.14.1"
+
+test-junit-vintage = "4.13.2"
+# @see test-junit-platform
+test-junit-jupiter = "5.7.2"
+# @see test-junit-jupiter
+test-junit-platform = "1.7.2"
+
+test-hamcrest = "2.2"
+test-shazamcrest = "0.11"
+test-jsonAssert = "1.5.0"
+
+test-jfixture = "2.7.2"
+
+test-mockito = "3.2.4"
+test-mockito-kotlin = "2.2.0"
+
+[libraries]
+
+detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+dagger-apt = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+
+ktor-client-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
+ktor-client-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor" }
+ktor-client-core-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
+ktor-client-json-jvm = { module = "io.ktor:ktor-client-json-jvm", version.ref = "ktor" }
+ktor-client-gson = { module = "io.ktor:ktor-client-gson", version.ref = "ktor" }
+ktor-client-jackson = { module = "io.ktor:ktor-client-jackson", version.ref = "ktor" }
+ktor-client-kotlinxSerialization = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+ktor-client-mock-jvm = { module = "io.ktor:ktor-client-mock-jvm", version.ref = "ktor" }
+ktor-client-mock-js = { module = "io.ktor:ktor-client-mock-js", version.ref = "ktor" }
+ktor-client-mock-native = { module = "io.ktor:ktor-client-mock-native", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
+ktor-server-locations = { module = "io.ktor:ktor-locations", version.ref = "ktor" }
+ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
+ktor-server-content-html = { module = "io.ktor:ktor-html-builder", version.ref = "ktor" }
+ktor-server-content-freemarker = { module = "io.ktor:ktor-freemarker", version.ref = "ktor" }
+
+# Warning "The following annotation processors were detected on the compile classpath:"
+#  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'
+#  * 'org.neo4j.kernel.impl.annotations.DocumentationProcessor'
+#
+# Solution (remove processors): `exclude module: 'neo4j-kernel'`
+#
+# Solution (disable classpath detection):
+# ```kotlin
+# plugins.withId("org.jetbrains.kotlin.kapt") {
+#     val kapt = this@allprojects.extensions.getByName<KaptExtension>("kapt")
+#     kapt.apply {
+#       includeCompileClasspath = false
+#     }
+# }
+# ```
+# @see [https://neo4j.com/docs/ogm-manual/current/]
+neo4j-ogm = { module = "org.neo4j:neo4j-ogm-core", version.ref = "neo4j-ogm" }
+neo4j-ogm-driver = { module = "org.neo4j.driver:neo4j-java-driver", version.ref = "neo4j" }
+neo4j-ogm-driver-bolt = { module = "org.neo4j:neo4j-ogm-bolt-driver", version.ref = "neo4j-ogm" }
+
+#  * [Opt-in to use native types](https://neo4j.com/docs/ogm-manual/current/reference/#reference:native-property-types:optin)
+#  * [Native vs Java 8 types](https://neo4j.com/docs/ogm-manual/current/reference/#reference:native-property-types:mapping)
+#  * [Cypher temporal functions](https://neo4j.com/docs/cypher-manual/current/syntax/temporal/)
+neo4j-ogm-driver-bolt-nativeTypes = { module = "org.neo4j:neo4j-ogm-bolt-native-types", version.ref = "neo4j-ogm" }
+
+# When using this, mind https://github.com/neo4j/neo4j/issues/12770.
+# To work around, use:
+# ```
+# testImplementation(libs.neo4j.harness) {
+#     exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
+# }
+# ```
+neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j" }
+
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-dataformat-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-datatype-java8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+
+slf4j-core = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-log4j12 = { module = "org.slf4j:slf4j-log4j12", version.ref = "slf4j" }
+slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+log4j-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log4j" }
+
+test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-junit-platform" }
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
+test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
+test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+
+test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
+test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }
+test-jsonAssert = { module = "org.skyscreamer:jsonassert", version.ref = "test-jsonAssert" }
+
+test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
+
+# TODO why am I using both?
+test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
+test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "test-mockito" }
+test-mockito-kotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version.ref = "test-mockito-kotlin" }
+
+[bundles]
+log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

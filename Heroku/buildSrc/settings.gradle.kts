@@ -1,1 +1,8 @@
-// Placeholder to make sure buildSrc is an independent Gradle project.
+dependencyResolutionManagement {
+	@Suppress("UnstableApiUsage")
+	versionCatalogs {
+		create("libs") {
+			from(files("../gradle/libs.versions.toml"))
+		}
+	}
+}

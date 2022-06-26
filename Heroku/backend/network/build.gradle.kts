@@ -5,19 +5,19 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
-	implementation(Deps.Ktor.client.client)
-	implementation(Deps.Ktor.client.logging_jvm)
-	implementation(Deps.SLF4J.core)
+	implementation(libs.kotlin.stdlib8)
+	implementation(libs.ktor.client.client)
+	implementation(libs.ktor.client.logging.jvm)
+	implementation(libs.slf4j.core)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
-	testImplementation(Deps.Mockito.core3)
-	testImplementation(Deps.Mockito.kotlin)
-	testImplementation(Deps.Ktor.client.mock_jvm)
-	testImplementation(Deps.Ktor.client.logging_jvm)
-	testImplementation(project(":test-helpers"))
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.junit5(project)
+	testImplementation(libs.test.mockito)
+	testImplementation(libs.test.mockito.kotlin)
+	testImplementation(libs.ktor.client.mock.jvm)
+	testImplementation(libs.ktor.client.logging.jvm)
+	testImplementation(projects.testHelpers)
+	Deps.slf4jToLog4jForTest(project)
 }

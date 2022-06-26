@@ -6,19 +6,27 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
-	implementation(Deps.Kotlin.reflect)
+	implementation(libs.kotlin.stdlib8)
+	implementation(libs.kotlin.reflect)
 
-	Deps.Dagger2.default(project)
-	Deps.Ktor.client.default(project)
-	implementation(Deps.Jackson.datatype_java8)
+	Deps.dagger(project)
+
+	api(libs.ktor.client.core.jvm)
+	implementation(libs.ktor.client.client)
+	implementation(libs.ktor.client.jackson)
+	implementation(libs.jackson.datatype.java8)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.core)
-	testImplementation(Deps.Hamcrest.core)
-	testImplementation(project(":test-helpers"))
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.junit5(project)
+	testImplementation(libs.test.jfixture)
+	testImplementation(libs.test.hamcrest)
+	testImplementation(projects.testHelpers)
+
+	testImplementation(libs.ktor.client.mock.jvm)
+	testImplementation(libs.ktor.client.logging.jvm)
+	testRuntimeOnly(libs.ktor.client.engine.okhttp)
+
+	Deps.slf4jToLog4jForTest(project)
 }

@@ -22,41 +22,41 @@ application {
 }
 
 dependencies {
-	implementation(project(":backend:database"))
-	implementation(project(":backend:feed"))
-	implementation(project(":backend:network"))
+	implementation(projects.backend.database)
+	implementation(projects.backend.feed)
+	implementation(projects.backend.network)
 
-	implementation(Deps.Kotlin.core)
-	runtimeOnly(Deps.Ktor.client.engine_okhttp)
-	Deps.Log4J2.slf4j(project)
-	Deps.Dagger2.default(project)
+	implementation(libs.kotlin.stdlib8)
+	runtimeOnly(libs.ktor.client.engine.okhttp)
+	Deps.slf4jToLog4j(project)
+	Deps.dagger(project)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.core)
-	testImplementation(Deps.Hamcrest.core)
-	testImplementation(Deps.Hamcrest.shazamcrest) {
+	Deps.junit5(project)
+	testImplementation(libs.test.jfixture)
+	testImplementation(libs.test.hamcrest)
+	testImplementation(libs.test.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
 		// Except for ComparisonFailure, which is provided by :test-helpers.
-		exclude(group = "junit", module = "junit")
+		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
-	testImplementation(Deps.Mockito.core3Inline)
-	testImplementation(Deps.Mockito.kotlin)
-	testImplementation(project(":test-helpers"))
-	testImplementation(testFixtures(project(":backend:database")))
+	testImplementation(libs.test.mockito.inline)
+	testImplementation(libs.test.mockito.kotlin)
+	testImplementation(projects.testHelpers)
+	testImplementation(testFixtures(projects.backend.database))
 
-	testImplementation(Deps.Jackson.module_kotlin)
-	testImplementation(Deps.Jackson.datatype_java8)
-	testImplementation(Deps.Neo4JOGM.harness) {
-		exclude(group = "org.slf4j", module = "slf4j-nop")
+	testImplementation(libs.jackson.module.kotlin)
+	testImplementation(libs.jackson.datatype.java8)
+	testImplementation(libs.neo4j.harness) {
+		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
-	testFixturesImplementation(project(":backend:database"))
-	testFixturesImplementation(project(":test-helpers"))
-	testFixturesImplementation(Deps.Kotlin.core)
-	testFixturesImplementation(Deps.JFixture.core)
+	testFixturesImplementation(projects.backend.database)
+	testFixturesImplementation(projects.testHelpers)
+	testFixturesImplementation(libs.kotlin.stdlib8)
+	testFixturesImplementation(libs.test.jfixture)
 }
 
 configurations.all {

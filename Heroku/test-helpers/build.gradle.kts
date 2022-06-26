@@ -4,28 +4,28 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
+	implementation(libs.kotlin.stdlib8)
 
 	// Note all these are optional dependencies.
-	// Add them to testImplementation wherever testImplementation(project(":test-helpers")) is used.
+	// Add them to testImplementation wherever testImplementation(projects.testHelpers) is used.
 
-	compileOnly(Deps.JUnit.jupiter)
-	compileOnly(Deps.JFixture.core)
-	compileOnly(Deps.Hamcrest.core)
-	compileOnly(Deps.Mockito.core3)
-	compileOnly(Deps.Mockito.kotlin)
+	compileOnly(libs.test.junit.jupiter)
+	compileOnly(libs.test.jfixture)
+	compileOnly(libs.test.hamcrest)
+	compileOnly(libs.test.mockito)
+	compileOnly(libs.test.mockito.kotlin)
 
-	compileOnly(Deps.Neo4JOGM.harness)
+	compileOnly(libs.neo4j.harness)
 
-	compileOnly(Deps.Ktor.client.mock_jvm)
-	compileOnly(Deps.Ktor.server.test)
+	compileOnly(libs.ktor.client.mock.jvm)
+	compileOnly(libs.ktor.server.test)
 
 	// Expose this to every module to make sure java.util.logging.config.file / logging.properties can pick it up.
-	runtimeOnly(Deps.SLF4J.jul)
+	runtimeOnly(libs.slf4j.jul)
 
-	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JUnit.jupiter)
-	testImplementation(Deps.Hamcrest.core)
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.junit5(project)
+	testImplementation(libs.test.junit.jupiter)
+	testImplementation(libs.test.hamcrest)
+	Deps.slf4jToLog4jForTest(project)
 	// TODO add more testImplementation when writing tests
 }

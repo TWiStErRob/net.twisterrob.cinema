@@ -7,42 +7,42 @@ plugins {
 }
 
 dependencies {
-	implementation(Deps.Kotlin.core)
-	implementation(Deps.Kotlin.reflect)
+	implementation(libs.kotlin.stdlib8)
+	implementation(libs.kotlin.reflect)
 
-	Deps.Dagger2.default(project)
+	Deps.dagger(project)
 }
 
 // Graph database
 dependencies {
-	api(Deps.Jackson.databind) // override to equalize versions
-	api(Deps.Neo4JOGM.core)
-	implementation(Deps.Neo4JOGM.driver)
-	runtimeOnly(Deps.Neo4JOGM.driver_bolt)
-	runtimeOnly(Deps.Neo4JOGM.driver_bolt_native_types)
+	api(libs.jackson.databind) // override to equalize versions
+	api(libs.neo4j.ogm)
+	implementation(libs.neo4j.ogm.driver)
+	runtimeOnly(libs.neo4j.ogm.driver.bolt)
+	runtimeOnly(libs.neo4j.ogm.driver.bolt.nativeTypes)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
-	testImplementation(Deps.JFixture.core)
-	testImplementation(Deps.Hamcrest.core)
-	testImplementation(Deps.Hamcrest.shazamcrest) {
+	Deps.junit5(project)
+	testImplementation(libs.test.jfixture)
+	testImplementation(libs.test.hamcrest)
+	testImplementation(libs.test.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
 		// Except for ComparisonFailure, which is provided by :test-helpers.
-		exclude(group = "junit", module = "junit")
+		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
-	testImplementation(project(":test-helpers"))
+	testImplementation(projects.testHelpers)
 
-	testImplementation(Deps.Neo4JOGM.harness) {
-		exclude(group = "org.slf4j", module = "slf4j-nop")
+	testImplementation(libs.neo4j.harness) {
+		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.slf4jToLog4jForTest(project)
 
-	testFixturesImplementation(project(":backend:quickbook"))
-	testFixturesImplementation(Deps.Kotlin.core)
-	testFixturesImplementation(Deps.JFixture.core)
-	testFixturesImplementation(Deps.JUnit.jupiter)
-	testFixturesImplementation(project(":test-helpers"))
+	testFixturesImplementation(projects.backend.quickbook)
+	testFixturesImplementation(libs.kotlin.stdlib8)
+	testFixturesImplementation(libs.test.jfixture)
+	testFixturesImplementation(libs.test.junit.jupiter)
+	testFixturesImplementation(projects.testHelpers)
 }

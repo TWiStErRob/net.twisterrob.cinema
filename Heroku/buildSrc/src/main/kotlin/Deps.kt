@@ -1,26 +1,37 @@
-/**
- * Rules:
- *  * `val Library = deps.Library` to have a central place (and also to prevent "UnnecessaryQualifiedReference"
- *  * `object Library` on top level in deps package, so Deps.* auto-complete is clean
- *  * `object Library` contains a `version` constant
- *  * `object Library` contains a `core` constant
- */
-@Suppress("unused")
+import net.twisterrob.cinema.heroku.plugins.internal.libs
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
+
 object Deps {
 
-	val Kotlin = deps.Kotlin
-	val Ktor = deps.Ktor
-	val Retrofit2 = deps.Retrofit2
-	val RxJava2 = deps.RxJava2
-	val Dagger2 = deps.Dagger2
-	val OkHttp3 = deps.OkHttp3
-	val Neo4JOGM = deps.Neo4JOGM
-	val Log4J = deps.Log4J
-	val SLF4J = deps.SLF4J
-	val Log4J2 = deps.Log4J2
-	val Jackson = deps.Jackson
-	val JUnit = deps.JUnit
-	val Hamcrest = deps.Hamcrest
-	val JFixture = deps.JFixture
-	val Mockito = deps.Mockito
+	fun junit5(project: Project) {
+		project.dependencies {
+			add("testImplementation", project.libs.test.junit.jupiter)
+			add("testRuntimeOnly", project.libs.test.junit.platform)
+			add("testRuntimeOnly", project.libs.test.junit.jupiter.engine)
+		}
+		//project.tasks.named<Test>("test").configure { useJUnitPlatform() }
+	}
+
+	fun slf4jToLog4j(project: Project) {
+		project.dependencies {
+			add("implementation", project.libs.slf4j.core)
+			add("runtimeOnly", project.libs.bundles.log4j)
+		}
+	}
+
+	fun slf4jToLog4jForTest(project: Project) {
+		project.dependencies {
+			add("testRuntimeOnly", project.libs.slf4j.core)
+			add("testRuntimeOnly", project.libs.bundles.log4j)
+		}
+	}
+
+	fun dagger(project: Project) {
+		project.dependencies {
+			add("implementation", project.libs.dagger)
+			add("kapt", project.libs.dagger.apt)
+			add("kaptTest", project.libs.dagger.apt)
+		}
+	}
 }
