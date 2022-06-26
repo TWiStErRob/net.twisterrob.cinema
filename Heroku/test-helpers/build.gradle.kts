@@ -7,7 +7,7 @@ dependencies {
 	implementation(libs.kotlin.stdlib8)
 
 	// Note all these are optional dependencies.
-	// Add them to testImplementation wherever testImplementation(project(":test-helpers")) is used.
+	// Add them to testImplementation wherever testImplementation(projects.testHelpers) is used.
 
 	compileOnly(libs.test.junit.jupiter)
 	compileOnly(libs.test.jfixture)

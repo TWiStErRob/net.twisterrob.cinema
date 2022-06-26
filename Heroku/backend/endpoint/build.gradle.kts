@@ -26,9 +26,9 @@ application {
 }
 
 dependencies {
-	implementation(project(":backend:database"))
-	implementation(project(":backend:quickbook"))
-	implementation(project(":backend:network"))
+	implementation(projects.backend.database)
+	implementation(projects.backend.quickbook)
+	implementation(projects.backend.network)
 
 	implementation(libs.kotlin.stdlib8)
 
@@ -57,8 +57,8 @@ dependencies {
 	}
 	testImplementation(libs.test.mockito.inline)
 	testImplementation(libs.test.mockito.kotlin)
-	testImplementation(project(":test-helpers"))
-	testImplementation(testFixtures(project(":backend:database")))
+	testImplementation(projects.testHelpers)
+	testImplementation(testFixtures(projects.backend.database))
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)

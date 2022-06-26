@@ -7,7 +7,7 @@ plugins {
 
 sourceSets {
 	test {
-		resources.srcDir(project(":backend:sync").file("test"))
+		resources.srcDir(projects.backend.sync.dependencyProject.file("test"))
 	}
 }
 
@@ -39,7 +39,7 @@ dependencies {
 	Deps.junit5(project)
 	testImplementation(libs.test.jfixture)
 	testImplementation(libs.test.hamcrest)
-	testImplementation(project(":test-helpers"))
+	testImplementation(projects.testHelpers)
 
 	testImplementation(libs.ktor.client.mock.jvm)
 	testImplementation(libs.ktor.client.logging.jvm)

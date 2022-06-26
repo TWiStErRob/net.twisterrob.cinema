@@ -32,7 +32,7 @@ dependencies {
 		// Except for ComparisonFailure, which is provided by :test-helpers.
 		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
-	testImplementation(project(":test-helpers"))
+	testImplementation(projects.testHelpers)
 
 	testImplementation(libs.neo4j.harness) {
 		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
@@ -40,9 +40,9 @@ dependencies {
 
 	Deps.slf4jToLog4jForTest(project)
 
-	testFixturesImplementation(project(":backend:quickbook"))
+	testFixturesImplementation(projects.backend.quickbook)
 	testFixturesImplementation(libs.kotlin.stdlib8)
 	testFixturesImplementation(libs.test.jfixture)
 	testFixturesImplementation(libs.test.junit.jupiter)
-	testFixturesImplementation(project(":test-helpers"))
+	testFixturesImplementation(projects.testHelpers)
 }

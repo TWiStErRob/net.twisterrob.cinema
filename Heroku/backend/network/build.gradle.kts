@@ -18,6 +18,6 @@ dependencies {
 	testImplementation(libs.test.mockito.kotlin)
 	testImplementation(libs.ktor.client.mock.jvm)
 	testImplementation(libs.ktor.client.logging.jvm)
-	testImplementation(project(":test-helpers"))
+	testImplementation(projects.testHelpers)
 	Deps.slf4jToLog4jForTest(project)
 }

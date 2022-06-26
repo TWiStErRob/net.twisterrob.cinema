@@ -22,9 +22,9 @@ application {
 }
 
 dependencies {
-	implementation(project(":backend:database"))
-	implementation(project(":backend:feed"))
-	implementation(project(":backend:network"))
+	implementation(projects.backend.database)
+	implementation(projects.backend.feed)
+	implementation(projects.backend.network)
 
 	implementation(libs.kotlin.stdlib8)
 	runtimeOnly(libs.ktor.client.engine.okhttp)
@@ -44,8 +44,8 @@ dependencies {
 	}
 	testImplementation(libs.test.mockito.inline)
 	testImplementation(libs.test.mockito.kotlin)
-	testImplementation(project(":test-helpers"))
-	testImplementation(testFixtures(project(":backend:database")))
+	testImplementation(projects.testHelpers)
+	testImplementation(testFixtures(projects.backend.database))
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
@@ -53,8 +53,8 @@ dependencies {
 		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
-	testFixturesImplementation(project(":backend:database"))
-	testFixturesImplementation(project(":test-helpers"))
+	testFixturesImplementation(projects.backend.database)
+	testFixturesImplementation(projects.testHelpers)
 	testFixturesImplementation(libs.kotlin.stdlib8)
 	testFixturesImplementation(libs.test.jfixture)
 }
