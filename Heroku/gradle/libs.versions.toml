@@ -15,7 +15,7 @@ dagger = "2.42"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "1.6.3"
+ktor = "1.6.8"
 
 # @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 neo4j-ogm = "3.2.25"
