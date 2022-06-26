@@ -26,8 +26,8 @@ dependencies {
 dependencies {
 	Deps.JUnit.junit5(project)
 	testImplementation(libs.test.jfixture)
-	testImplementation(Deps.Hamcrest.core)
-	testImplementation(Deps.Hamcrest.shazamcrest) {
+	testImplementation(libs.test.hamcrest)
+	testImplementation(libs.test.shazamcrest) {
 		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
 		// Except for ComparisonFailure, which is provided by :test-helpers.
 		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)

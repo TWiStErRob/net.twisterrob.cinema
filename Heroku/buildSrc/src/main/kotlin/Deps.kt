@@ -12,5 +12,4 @@ object Deps {
 	val Dagger2 = deps.Dagger2
 	val Log4J2 = deps.Log4J2
 	val JUnit = deps.JUnit
-	val Hamcrest = deps.Hamcrest
 }

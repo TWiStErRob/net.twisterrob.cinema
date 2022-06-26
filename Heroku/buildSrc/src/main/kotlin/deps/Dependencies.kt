@@ -25,16 +25,6 @@ object JUnit {
 	}
 }
 
-object Hamcrest {
-	const val version = "2.2"
-	const val versionShazamcrest = "0.11"
-	const val versionJsonAssert = "1.5.0"
-
-	const val core = "org.hamcrest:hamcrest-core:${version}"
-	const val shazamcrest = "com.shazam:shazamcrest:${versionShazamcrest}"
-	const val jsonAssert = "org.skyscreamer:jsonassert:${versionJsonAssert}"
-}
-
 /**
  * http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
  * `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`

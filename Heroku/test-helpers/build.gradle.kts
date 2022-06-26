@@ -11,7 +11,7 @@ dependencies {
 
 	compileOnly(libs.test.junit.jupiter)
 	compileOnly(libs.test.jfixture)
-	compileOnly(Deps.Hamcrest.core)
+	compileOnly(libs.test.hamcrest)
 	compileOnly(libs.test.mockito)
 	compileOnly(libs.test.mockito.kotlin)
 
@@ -25,7 +25,7 @@ dependencies {
 
 	Deps.JUnit.junit5(project)
 	testImplementation(libs.test.junit.jupiter)
-	testImplementation(Deps.Hamcrest.core)
+	testImplementation(libs.test.hamcrest)
 	Deps.Log4J2.slf4jForTest(project)
 	// TODO add more testImplementation when writing tests
 }

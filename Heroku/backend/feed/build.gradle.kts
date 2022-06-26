@@ -36,7 +36,7 @@ dependencies {
 dependencies {
 	Deps.JUnit.junit5(project)
 	testImplementation(libs.test.jfixture)
-	testImplementation(Deps.Hamcrest.core)
+	testImplementation(libs.test.hamcrest)
 	testImplementation(project(":test-helpers"))
 	Deps.Log4J2.slf4jForTest(project)
 }
