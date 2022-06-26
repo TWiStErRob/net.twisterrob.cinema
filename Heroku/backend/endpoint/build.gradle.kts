@@ -57,6 +57,7 @@ dependencies {
 	}
 	testImplementation(libs.test.mockito.inline)
 	testImplementation(libs.test.mockito.kotlin)
+	testImplementation(libs.test.mockito.jupiter)
 	testImplementation(projects.testHelpers)
 	testImplementation(testFixtures(projects.backend.database))
 

@@ -145,6 +145,7 @@ test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "tes
 test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
 test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "test-mockito" }
 test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "test-mockito-kotlin" }
+test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "test-mockito" }
 
 [bundles]
 log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]

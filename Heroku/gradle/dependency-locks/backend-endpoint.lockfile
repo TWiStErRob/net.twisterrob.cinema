@@ -143,6 +143,7 @@ org.junit:junit-bom:5.8.2=testCompileClasspath,testRuntimeClasspath
 org.mockito.kotlin:mockito-kotlin:4.0.0=testCompileClasspath,testRuntimeClasspath
 org.mockito:mockito-core:4.6.1=testCompileClasspath,testRuntimeClasspath
 org.mockito:mockito-inline:4.6.1=testCompileClasspath,testRuntimeClasspath
+org.mockito:mockito-junit-jupiter:4.6.1=testCompileClasspath,testRuntimeClasspath
 org.neo4j.driver:neo4j-java-driver:4.2.4=runtimeClasspath,testRuntimeClasspath
 org.neo4j:neo4j-ogm-api:3.2.25=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.neo4j:neo4j-ogm-bolt-driver:3.2.25=runtimeClasspath,testRuntimeClasspath
