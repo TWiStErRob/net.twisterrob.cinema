@@ -10,7 +10,7 @@ dependencies {
 	implementation(libs.kotlin.stdlib8)
 	implementation(libs.kotlin.reflect)
 
-	Deps.Dagger2.default(project)
+	Deps.dagger(project)
 }
 
 // Graph database
@@ -24,7 +24,7 @@ dependencies {
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
+	Deps.junit5(project)
 	testImplementation(libs.test.jfixture)
 	testImplementation(libs.test.hamcrest)
 	testImplementation(libs.test.shazamcrest) {
@@ -38,7 +38,7 @@ dependencies {
 		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.slf4jToLog4jForTest(project)
 
 	testFixturesImplementation(project(":backend:quickbook"))
 	testFixturesImplementation(libs.kotlin.stdlib8)

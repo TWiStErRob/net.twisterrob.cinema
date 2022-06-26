@@ -9,16 +9,16 @@ dependencies {
 	implementation(libs.kotlin.stdlib8)
 	implementation(libs.kotlin.reflect)
 
-	Deps.Dagger2.default(project)
-	Deps.Ktor.client.default(project)
+	Deps.dagger(project)
+	Deps.ktorClient(project)
 	implementation(libs.jackson.datatype.java8)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
+	Deps.junit5(project)
 	testImplementation(libs.test.jfixture)
 	testImplementation(libs.test.hamcrest)
 	testImplementation(project(":test-helpers"))
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.slf4jToLog4jForTest(project)
 }

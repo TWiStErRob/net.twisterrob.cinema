@@ -31,16 +31,16 @@ dependencies {
 	implementation(project(":backend:network"))
 
 	implementation(libs.kotlin.stdlib8)
-	Deps.Ktor.server.default(project)
+	Deps.ktorServer(project)
 	runtimeOnly(libs.ktor.client.engine.okhttp)
 	implementation(libs.ktor.client.jackson)
-	Deps.Log4J2.slf4j(project)
-	Deps.Dagger2.default(project)
+	Deps.slf4jToLog4j(project)
+	Deps.dagger(project)
 }
 
 // Test
 dependencies {
-	Deps.JUnit.junit5(project)
+	Deps.junit5(project)
 	testImplementation(libs.test.jfixture)
 	testImplementation(libs.test.hamcrest)
 	testImplementation(libs.test.jsonAssert)

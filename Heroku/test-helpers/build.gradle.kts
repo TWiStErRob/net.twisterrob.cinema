@@ -23,9 +23,9 @@ dependencies {
 	// Expose this to every module to make sure java.util.logging.config.file / logging.properties can pick it up.
 	runtimeOnly(libs.slf4j.jul)
 
-	Deps.JUnit.junit5(project)
+	Deps.junit5(project)
 	testImplementation(libs.test.junit.jupiter)
 	testImplementation(libs.test.hamcrest)
-	Deps.Log4J2.slf4jForTest(project)
+	Deps.slf4jToLog4jForTest(project)
 	// TODO add more testImplementation when writing tests
 }
