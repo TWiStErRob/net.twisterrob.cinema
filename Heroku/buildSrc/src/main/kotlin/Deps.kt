@@ -13,5 +13,4 @@ object Deps {
 	val Log4J2 = deps.Log4J2
 	val JUnit = deps.JUnit
 	val Hamcrest = deps.Hamcrest
-	val Mockito = deps.Mockito
 }

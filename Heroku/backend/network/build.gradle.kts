@@ -14,8 +14,8 @@ dependencies {
 // Test
 dependencies {
 	Deps.JUnit.junit5(project)
-	testImplementation(Deps.Mockito.core3)
-	testImplementation(Deps.Mockito.kotlin)
+	testImplementation(libs.test.mockito)
+	testImplementation(libs.test.mockito.kotlin)
 	testImplementation(Deps.Ktor.client.mock_jvm)
 	testImplementation(Deps.Ktor.client.logging_jvm)
 	testImplementation(project(":test-helpers"))

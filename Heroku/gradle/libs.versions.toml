@@ -32,6 +32,9 @@ test-junit-platform = "1.7.2"
 
 test-jfixture = "2.7.2"
 
+test-mockito = "3.2.4"
+test-mockito-kotlin = "2.2.0"
+
 [libraries]
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -94,6 +97,11 @@ test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine",
 test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
+
+# TODO why am I using both?
+test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
+test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "test-mockito" }
+test-mockito-kotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version.ref = "test-mockito-kotlin" }
 
 [bundles]
 

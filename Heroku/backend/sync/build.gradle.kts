@@ -42,8 +42,8 @@ dependencies {
 		// Except for ComparisonFailure, which is provided by :test-helpers.
 		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
-	testImplementation(Deps.Mockito.core3Inline)
-	testImplementation(Deps.Mockito.kotlin)
+	testImplementation(libs.test.mockito.inline)
+	testImplementation(libs.test.mockito.kotlin)
 	testImplementation(project(":test-helpers"))
 	testImplementation(testFixtures(project(":backend:database")))
 

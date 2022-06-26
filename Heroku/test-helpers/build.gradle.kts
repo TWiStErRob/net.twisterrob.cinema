@@ -12,8 +12,8 @@ dependencies {
 	compileOnly(libs.test.junit.jupiter)
 	compileOnly(libs.test.jfixture)
 	compileOnly(Deps.Hamcrest.core)
-	compileOnly(Deps.Mockito.core3)
-	compileOnly(Deps.Mockito.kotlin)
+	compileOnly(libs.test.mockito)
+	compileOnly(libs.test.mockito.kotlin)
 
 	compileOnly(libs.neo4j.harness)
 

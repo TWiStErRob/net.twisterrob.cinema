@@ -25,15 +25,6 @@ object JUnit {
 	}
 }
 
-object Mockito {
-	const val version3 = "3.2.4"
-	const val versionKotlin = "2.2.0"
-
-	const val core3 = "org.mockito:mockito-core:${version3}"
-	const val core3Inline = "org.mockito:mockito-inline:${version3}"
-	const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionKotlin}"
-}
-
 object Hamcrest {
 	const val version = "2.2"
 	const val versionShazamcrest = "0.11"
