@@ -15,7 +15,7 @@ dependencies {
 
 // Graph database
 dependencies {
-	api(Deps.Jackson.databind) // override to equalize versions
+	api(libs.jackson.databind) // override to equalize versions
 	api(Deps.Neo4JOGM.core)
 	implementation(Deps.Neo4JOGM.driver)
 	runtimeOnly(Deps.Neo4JOGM.driver_bolt)

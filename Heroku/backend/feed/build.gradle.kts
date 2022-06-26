@@ -17,9 +17,9 @@ dependencies {
 
 	Deps.Dagger2.default(project)
 
-	implementation(Deps.Jackson.dataformat_xml)
-	implementation(Deps.Jackson.module_kotlin)
-	implementation(Deps.Jackson.datatype_java8)
+	implementation(libs.jackson.dataformat.xml)
+	implementation(libs.jackson.module.kotlin)
+	implementation(libs.jackson.datatype.java8)
 }
 
 // Network

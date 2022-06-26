@@ -217,12 +217,3 @@ object Neo4JOGM {
 	 */
 	const val harness = "org.neo4j.test:neo4j-harness:${version_neo4j}"
 }
-
-object Jackson {
-	const val version = "2.13.2"
-
-	const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
-	const val dataformat_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
-	const val module_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
-	const val datatype_java8 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${version}"
-}

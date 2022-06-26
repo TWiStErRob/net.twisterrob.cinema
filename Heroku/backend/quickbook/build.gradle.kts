@@ -11,7 +11,7 @@ dependencies {
 
 	Deps.Dagger2.default(project)
 	Deps.Ktor.client.default(project)
-	implementation(Deps.Jackson.datatype_java8)
+	implementation(libs.jackson.datatype.java8)
 }
 
 // Test

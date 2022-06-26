@@ -54,8 +54,8 @@ dependencies {
 	testImplementation(project(":test-helpers"))
 	testImplementation(testFixtures(project(":backend:database")))
 
-	testImplementation(Deps.Jackson.module_kotlin)
-	testImplementation(Deps.Jackson.datatype_java8)
+	testImplementation(libs.jackson.module.kotlin)
+	testImplementation(libs.jackson.datatype.java8)
 	kaptTest(Deps.Dagger2.apt)
 }
 
