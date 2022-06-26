@@ -17,8 +17,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import java.time.OffsetDateTime
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
@@ -50,7 +50,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -68,7 +68,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockUpdater) }
+			o { verifyNoInteractions(mockUpdater) }
 			o { verify(mockCreator).invoke(fixtFilm, feed); verifyNoMoreInteractions(mockCreator) }
 		}
 	}
@@ -89,7 +89,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, contains(fixtDbFilm))
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -109,7 +109,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, contains(fixtDbFilm))
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -131,7 +131,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator) }
+			o { verifyNoInteractions(mockCreator) }
 			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}
@@ -154,7 +154,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, contains(fixtDbFilm))
-			o { verifyZeroInteractions(mockCreator) }
+			o { verifyNoInteractions(mockCreator) }
 			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}

@@ -16,8 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
@@ -80,7 +80,7 @@ class FilmMapperTest {
 		assertProperties(fixtDBFilm, film)
 		assertThat(film.view, nullValue())
 
-		verifyZeroInteractions(mockViewMapper)
+		verifyNoInteractions(mockViewMapper)
 	}
 
 	@Test fun `map a film without views`() {
@@ -91,7 +91,7 @@ class FilmMapperTest {
 		assertProperties(fixtDBFilm, film)
 		assertThat(film.view, nullValue())
 
-		verifyZeroInteractions(mockViewMapper)
+		verifyNoInteractions(mockViewMapper)
 	}
 
 	private fun assertProperties(expected: DBFilm, actual: FrontendFilm) {

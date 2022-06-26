@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -100,7 +100,7 @@ class CinemasIntgTest {
 	@Test fun `list all favorite cinemas (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/favs" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
@@ -133,7 +133,7 @@ class CinemasIntgTest {
 	@Test fun `add cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Put; uri = "/cinema/123/favorite" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 
@@ -156,7 +156,7 @@ class CinemasIntgTest {
 	@Test fun `remove cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Delete; uri = "/cinema/123/favorite" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 

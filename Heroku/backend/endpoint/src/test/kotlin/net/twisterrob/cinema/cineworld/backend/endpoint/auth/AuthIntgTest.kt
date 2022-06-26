@@ -28,8 +28,8 @@ import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import net.twisterrob.test.verify
+import net.twisterrob.test.verifyNoInteractions
 import net.twisterrob.test.verifyNoMoreInteractions
-import net.twisterrob.test.verifyZeroInteractions
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,8 +39,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -89,8 +89,8 @@ class AuthIntgTest {
 			daggerApp = createAppForAuthIntgTest(stubClient)
 		) {
 			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeClientId)
-			stubClient.verifyZeroInteractions()
-			verifyZeroInteractions(mockRepository)
+			stubClient.verifyNoInteractions()
+			verifyNoInteractions(mockRepository)
 			stubClient.stubGoogleToken(fakeAccessToken, fakeRefreshToken)
 			stubClient.stubGoogleOpenIdUserInfo(fakeUserId, fakeEmail, fakeName)
 
