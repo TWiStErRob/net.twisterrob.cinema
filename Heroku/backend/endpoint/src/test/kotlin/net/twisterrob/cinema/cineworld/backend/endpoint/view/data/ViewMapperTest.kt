@@ -1,10 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.view.data
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserMapper
@@ -19,6 +15,10 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import net.twisterrob.cinema.database.model.View as DBView
 
 @ExtendWith(ModelFixtureExtension::class)

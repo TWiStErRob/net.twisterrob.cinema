@@ -1,9 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.film.data
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookService
 import net.twisterrob.cinema.database.model.ModelFixtureExtension
@@ -15,6 +12,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as FrontendFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 

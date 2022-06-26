@@ -1,9 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.performance.data
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookPerformance
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
@@ -14,6 +11,9 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime

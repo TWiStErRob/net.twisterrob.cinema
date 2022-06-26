@@ -1,16 +1,16 @@
 package net.twisterrob.cinema.cineworld.sync
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.test.build
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.neo4j.ogm.session.SessionFactory
 
 class MainTest {

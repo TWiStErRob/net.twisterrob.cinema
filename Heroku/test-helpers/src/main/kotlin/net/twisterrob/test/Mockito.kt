@@ -1,7 +1,7 @@
 package net.twisterrob.test
 
-import com.nhaarman.mockitokotlin2.KArgumentCaptor
-import com.nhaarman.mockitokotlin2.argumentCaptor
+import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.argumentCaptor
 
 inline fun <reified T> captureSingle(block: KArgumentCaptor<T>.() -> Unit): T {
 	val captor: KArgumentCaptor<T> = argumentCaptor()
