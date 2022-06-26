@@ -49,8 +49,8 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
-	testImplementation(Deps.Neo4JOGM.harness) {
-		exclude(group = "org.slf4j", module = "slf4j-nop")
+	testImplementation(libs.neo4j.harness) {
+		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
 	testFixturesImplementation(project(":backend:database"))

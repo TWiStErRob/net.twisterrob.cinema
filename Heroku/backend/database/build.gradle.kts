@@ -16,10 +16,10 @@ dependencies {
 // Graph database
 dependencies {
 	api(libs.jackson.databind) // override to equalize versions
-	api(Deps.Neo4JOGM.core)
-	implementation(Deps.Neo4JOGM.driver)
-	runtimeOnly(Deps.Neo4JOGM.driver_bolt)
-	runtimeOnly(Deps.Neo4JOGM.driver_bolt_native_types)
+	api(libs.neo4j.ogm)
+	implementation(libs.neo4j.ogm.driver)
+	runtimeOnly(libs.neo4j.ogm.driver.bolt)
+	runtimeOnly(libs.neo4j.ogm.driver.bolt.nativeTypes)
 }
 
 // Test
@@ -34,8 +34,8 @@ dependencies {
 	}
 	testImplementation(project(":test-helpers"))
 
-	testImplementation(Deps.Neo4JOGM.harness) {
-		exclude(group = "org.slf4j", module = "slf4j-nop")
+	testImplementation(libs.neo4j.harness) {
+		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
 
 	Deps.Log4J2.slf4jForTest(project)

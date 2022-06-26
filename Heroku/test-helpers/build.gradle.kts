@@ -15,7 +15,7 @@ dependencies {
 	compileOnly(Deps.Mockito.core3)
 	compileOnly(Deps.Mockito.kotlin)
 
-	compileOnly(Deps.Neo4JOGM.harness)
+	compileOnly(libs.neo4j.harness)
 
 	compileOnly(Deps.Ktor.client.mock_jvm)
 	compileOnly(Deps.Ktor.server.test)
