@@ -1,10 +1,5 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.inOrder
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.application.Application
 import io.ktor.routing.Routing
 import net.twisterrob.test.KtorExtension
@@ -13,6 +8,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.inOrder
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @ExtendWith(KtorExtension::class)
 class RouteControllerRegistrarTest {

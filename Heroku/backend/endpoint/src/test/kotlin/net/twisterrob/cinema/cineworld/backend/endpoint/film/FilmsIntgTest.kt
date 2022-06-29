@@ -1,10 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.film
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
@@ -26,6 +22,10 @@ import net.twisterrob.test.mockEngine
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
 import javax.inject.Inject

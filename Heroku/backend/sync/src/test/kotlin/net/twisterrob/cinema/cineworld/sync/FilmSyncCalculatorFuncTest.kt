@@ -1,13 +1,6 @@
 package net.twisterrob.cinema.cineworld.sync
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.test.TagFunctional
@@ -20,6 +13,13 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import java.time.OffsetDateTime
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
@@ -50,7 +50,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -68,7 +68,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockUpdater) }
+			o { verifyNoInteractions(mockUpdater) }
 			o { verify(mockCreator).invoke(fixtFilm, feed); verifyNoMoreInteractions(mockCreator) }
 		}
 	}
@@ -89,7 +89,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, contains(fixtDbFilm))
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -109,7 +109,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, contains(fixtDbFilm))
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator, mockUpdater) }
+			o { verifyNoInteractions(mockCreator, mockUpdater) }
 		}
 	}
 
@@ -131,7 +131,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, empty())
-			o { verifyZeroInteractions(mockCreator) }
+			o { verifyNoInteractions(mockCreator) }
 			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}
@@ -154,7 +154,7 @@ class FilmSyncCalculatorFuncTest {
 			that("delete", result.delete, empty())
 			that("alreadyDeleted", result.alreadyDeleted, empty())
 			that("restore", result.restore, contains(fixtDbFilm))
-			o { verifyZeroInteractions(mockCreator) }
+			o { verifyNoInteractions(mockCreator) }
 			o { verify(mockUpdater).invoke(fixtDbFilm, fixtFilm, feed); verifyNoMoreInteractions(mockUpdater) }
 		}
 	}

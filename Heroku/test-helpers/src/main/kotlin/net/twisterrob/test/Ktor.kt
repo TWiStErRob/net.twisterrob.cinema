@@ -73,7 +73,7 @@ fun HttpClient.verify(url: String, block: (appRequest: HttpRequestData, stubbedR
 	responseHistory.removeAt(0)
 }
 
-fun HttpClient.verifyZeroInteractions() = verifyNoMoreInteractions()
+fun HttpClient.verifyNoInteractions() = verifyNoMoreInteractions()
 
 fun HttpClient.verifyNoMoreInteractions() {
 	val engine = this.engine as MockEngine

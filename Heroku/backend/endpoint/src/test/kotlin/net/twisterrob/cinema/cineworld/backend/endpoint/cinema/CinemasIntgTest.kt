@@ -1,11 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
@@ -32,6 +27,11 @@ import org.eclipse.jetty.http.HttpHeader
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
 import javax.inject.Inject
@@ -100,7 +100,7 @@ class CinemasIntgTest {
 	@Test fun `list all favorite cinemas (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/favs" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
@@ -133,7 +133,7 @@ class CinemasIntgTest {
 	@Test fun `add cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Put; uri = "/cinema/123/favorite" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 
@@ -156,7 +156,7 @@ class CinemasIntgTest {
 	@Test fun `remove cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
 		val call = handleRequest { method = HttpMethod.Delete; uri = "/cinema/123/favorite" }
 
-		verifyZeroInteractions(mockRepository)
+		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 

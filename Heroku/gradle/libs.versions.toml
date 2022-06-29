@@ -8,14 +8,14 @@
 kotlin = "1.6.21"
 kotlinx-html = "0.7.3"
 # @see kotlin
-kotlinx-coroutines = "1.5.2"
+kotlinx-coroutines = "1.6.3"
 detekt = "1.20.0"
 
 dagger = "2.42"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "1.6.3"
+ktor = "1.6.8"
 
 # @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 neo4j-ogm = "3.2.25"
@@ -26,16 +26,16 @@ neo4j-ogm = "3.2.25"
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 neo4j = "4.2.4"
 
-jackson = "2.13.2"
+jackson = "2.13.3"
 
-slf4j = "1.7.31"
-log4j = "2.14.1"
+slf4j = "1.7.36"
+log4j = "2.17.2"
 
 test-junit-vintage = "4.13.2"
 # @see test-junit-platform
-test-junit-jupiter = "5.7.2"
+test-junit-jupiter = "5.8.2"
 # @see test-junit-jupiter
-test-junit-platform = "1.7.2"
+test-junit-platform = "1.8.2"
 
 test-hamcrest = "2.2"
 test-shazamcrest = "0.11"
@@ -43,8 +43,8 @@ test-jsonAssert = "1.5.0"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "3.2.4"
-test-mockito-kotlin = "2.2.0"
+test-mockito = "4.6.1"
+test-mockito-kotlin = "4.0.0"
 
 [libraries]
 
@@ -144,7 +144,8 @@ test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "tes
 # TODO why am I using both?
 test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
 test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "test-mockito" }
-test-mockito-kotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version.ref = "test-mockito-kotlin" }
+test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "test-mockito-kotlin" }
+test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "test-mockito" }
 
 [bundles]
 log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
