@@ -269,9 +269,7 @@ private fun TestApplicationEngine.authorizeWithGoogle(host: String, relativeUri:
 		assertEquals(
 			"https://accounts.google.com/o/oauth2/auth" +
 					"?client_id=${clientId}" +
-					// Verify unencoded for now. https://youtrack.jetbrains.com/issue/KTOR-2938
-					"&redirect_uri=http://${host}${relativeUri}" +
-					//"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
+					"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
 					"&scope=openid+email+profile" +
 					"&state=****" +
 					"&response_type=code",
