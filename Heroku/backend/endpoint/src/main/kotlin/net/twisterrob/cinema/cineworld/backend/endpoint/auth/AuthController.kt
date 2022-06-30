@@ -34,6 +34,7 @@ import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.ktor.client.call.body
+import io.ktor.server.response.respondText
 
 /**
  * See [Docs](https://developers.google.com/identity/protocols/OpenIDConnect).
@@ -81,7 +82,11 @@ class AuthController @Inject constructor(
 		authenticate(optional = true) {
 			get<Auth.Routes.Account> {
 				val currentUser = call.attributes.currentUser
-				call.respond(currentUser ?: "no user")
+				if (currentUser != null) {
+					call.respond(currentUser)
+				} else {
+					call.respondText("no user")
+				}
 			}
 		}
 
