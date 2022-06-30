@@ -75,10 +75,11 @@ ktor-client-mock-js = { module = "io.ktor:ktor-client-mock-js", version.ref = "k
 ktor-client-mock-native = { module = "io.ktor:ktor-client-mock-native", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
-ktor-server-locations = { module = "io.ktor:ktor-locations", version.ref = "ktor" }
+# STOPSHIP https://ktor.io/docs/locations.html
+ktor-server-locations = { module = "io.ktor:ktor-server-locations", version.ref = "ktor" }
 ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
-ktor-server-content-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
-ktor-server-content-html = { module = "io.ktor:ktor-html-builder", version.ref = "ktor" }
+ktor-server-content-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
+ktor-server-content-html = { module = "io.ktor:ktor-server-html-builder", version.ref = "ktor" }
 ktor-server-content-freemarker = { module = "io.ktor:ktor-freemarker", version.ref = "ktor" }
 
 # Warning "The following annotation processors were detected on the compile classpath:"
