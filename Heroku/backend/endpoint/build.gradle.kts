@@ -31,6 +31,7 @@ dependencies {
 	implementation(projects.backend.network)
 
 	implementation(libs.kotlin.stdlib8)
+	testImplementation(libs.kotlin.stdlib8)
 
 	implementation(libs.ktor.server)
 	implementation(libs.ktor.server.content)

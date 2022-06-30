@@ -303,7 +303,7 @@ private fun TestApplicationEngine.receiveAuthorizationFromGoogle(
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
-	stub("https://oauth2.googleapis.com:443/token") {
+	stub("https://oauth2.googleapis.com/token") {
 		respond(
 			//language=JSON
 			content = """
@@ -324,7 +324,7 @@ private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String
 private fun HttpClient.verifyGoogleTokenRequest(
 	host: String, relativeUri: String, state: String, clientId: String, clientSecret: String
 ) {
-	verify("https://oauth2.googleapis.com:443/token") { request, _ ->
+	verify("https://oauth2.googleapis.com/token") { request, _ ->
 		val textContent = request.body as TextContent
 		assertEquals(ContentType.Application.FormUrlEncoded, textContent.contentType)
 		assertEquals(
