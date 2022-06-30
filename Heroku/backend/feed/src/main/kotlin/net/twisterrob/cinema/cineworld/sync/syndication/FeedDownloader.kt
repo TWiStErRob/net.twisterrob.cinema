@@ -8,7 +8,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.HttpStatement
 import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.fullPath
@@ -29,14 +28,12 @@ internal class FeedDownloader(
 		downloadFeed("https://classic.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
 
 	private suspend fun downloadFeed(source: String): HttpResponse =
-		client.get(source) {
-			url(source)
-			header(HttpHeaders.Connection, "close")
-			onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
-		}
-			// STOPSHIP
-			.body<HttpStatement>()
-			.execute()
+		client
+			.get {
+				url(source)
+				header(HttpHeaders.Connection, "close")
+				onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
+			}
 			.also {
 				val raw = it.body<ByteArray>()
 				require(baseFolder.isDirectory || baseFolder.mkdirs())
