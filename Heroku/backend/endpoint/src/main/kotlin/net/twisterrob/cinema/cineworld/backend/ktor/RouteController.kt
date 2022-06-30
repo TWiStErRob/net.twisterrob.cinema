@@ -1,9 +1,9 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.application.Application
-import io.ktor.locations.Location
-import io.ktor.locations.locations
-import io.ktor.routing.Routing
+import io.ktor.server.application.Application
+import io.ktor.server.locations.Location
+import io.ktor.server.locations.locations
+import io.ktor.server.routing.Routing
 
 /**
  * Base class for Controllers handling routes.

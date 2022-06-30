@@ -1,16 +1,16 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.log
-import io.ktor.http.content.default
-import io.ktor.http.content.files
-import io.ktor.http.content.static
-import io.ktor.http.content.staticRootFolder
-import io.ktor.response.respondRedirect
-import io.ktor.routing.Routing
-import io.ktor.routing.application
-import io.ktor.routing.get
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.application.log
+import io.ktor.server.http.content.default
+import io.ktor.server.http.content.files
+import io.ktor.server.http.content.static
+import io.ktor.server.http.content.staticRootFolder
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.application
+import io.ktor.server.routing.get
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import javax.inject.Inject

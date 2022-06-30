@@ -1,9 +1,9 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.application.ApplicationCall
-import io.ktor.features.origin
-import io.ktor.request.host
-import io.ktor.request.port
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.plugins.origin
+import io.ktor.server.request.host
+import io.ktor.server.request.port
 
 private const val DEFAULT_PORT_UNSECURE: Int = 80
 private const val DEFAULT_PORT_SECURE: Int = 443

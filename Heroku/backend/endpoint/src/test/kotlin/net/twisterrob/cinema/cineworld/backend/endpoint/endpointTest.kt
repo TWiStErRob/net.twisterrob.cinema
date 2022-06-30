@@ -1,7 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint
 
-import io.ktor.application.Application
-import io.ktor.application.log
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.withApplication
@@ -19,6 +19,7 @@ fun endpointTest(
 	daggerApp: Application.() -> Unit = { daggerApplication() },
 	test: TestApplicationEngine.() -> Unit
 ) {
+	@Suppress("DEPRECATION") // STOPSHIP
 	withApplication(
 		environment = createTestEnvironment {
 			val originalLog = log

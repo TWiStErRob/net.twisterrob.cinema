@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.ktor.client.HttpClient
-import io.ktor.locations.Location
+import io.ktor.server.locations.Location
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.ktor.client.configureLogging

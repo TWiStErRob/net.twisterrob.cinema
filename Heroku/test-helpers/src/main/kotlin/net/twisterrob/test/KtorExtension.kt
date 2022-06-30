@@ -1,7 +1,7 @@
 package net.twisterrob.test
 
-import io.ktor.application.Application
-import io.ktor.application.log
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
@@ -47,7 +47,7 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 		private val SUPPORTED_PARAMETER_TYPES = setOf(
 			io.ktor.server.testing.TestApplicationEngine::class.java,
 			io.ktor.server.engine.ApplicationEngine::class.java,
-			io.ktor.application.Application::class.java,
+			io.ktor.server.application.Application::class.java,
 		)
 	}
 }

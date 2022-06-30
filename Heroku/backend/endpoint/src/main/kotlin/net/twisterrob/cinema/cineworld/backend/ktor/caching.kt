@@ -1,17 +1,19 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.application
-import io.ktor.application.call
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.application
+import io.ktor.server.application.call
 import io.ktor.http.CacheControl.MaxAge
 import io.ktor.http.CacheControl.Visibility
 import io.ktor.http.content.CachingOptions
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.caching
-import io.ktor.response.ApplicationSendPipeline
+import io.ktor.server.response.ApplicationSendPipeline
+import io.ktor.util.date.GMTDate
+import io.ktor.util.date.plus
 import io.ktor.util.pipeline.PipelineContext
-import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.seconds
 
 inline fun PipelineContext<Unit, ApplicationCall>.cached(
 	caching: CachingOptions = defaultCacheOptions(application.environment.config.environment),
@@ -39,6 +41,6 @@ fun defaultCacheOptions(environment: Env): CachingOptions {
 			visibility = Visibility.Public,
 			maxAgeSeconds = cacheLength.toInt()
 		),
-		expires = ZonedDateTime.now().plusSeconds(cacheLength)
+		expires = GMTDate() + cacheLength.seconds
 	)
 }

@@ -29,6 +29,7 @@ io.ktor:ktor-client-core:2.0.3=compileClasspath
 io.ktor:ktor-client-jetty-jvm:2.0.3=compileClasspath
 io.ktor:ktor-client-jetty:2.0.3=compileClasspath
 io.ktor:ktor-client-mock-jvm:2.0.3=compileClasspath
+io.ktor:ktor-client-mock:2.0.3=compileClasspath
 io.ktor:ktor-events-jvm:2.0.3=compileClasspath
 io.ktor:ktor-events:2.0.3=compileClasspath
 io.ktor:ktor-http-cio-jvm:2.0.3=compileClasspath

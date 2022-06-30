@@ -1,10 +1,10 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
 import io.ktor.client.HttpClient
-import io.ktor.client.features.logging.DEFAULT
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logger
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import net.twisterrob.test.TagExternal
 import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat

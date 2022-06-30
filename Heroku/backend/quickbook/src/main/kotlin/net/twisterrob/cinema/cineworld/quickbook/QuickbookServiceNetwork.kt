@@ -3,8 +3,9 @@ package net.twisterrob.cinema.cineworld.quickbook
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.call.body
+import io.ktor.serialization.jackson.jackson
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -26,13 +27,12 @@ class QuickbookServiceNetwork @Inject constructor(
 ) : QuickbookService {
 
 	private val client = client.config {
-		install(JsonFeature) {
-			serializer = JacksonSerializer {
+		install(ContentNegotiation) {
+			jackson(contentType = ContentType.Application.Json) {
 				// Deserialize whatever is thrown at us, maybe stricten this to specific types?
 				registerModule(JavaTimeModule())
 				disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
 			}
-			acceptContentTypes = listOf(ContentType.Application.Json)
 		}
 	}
 
@@ -63,13 +63,13 @@ class QuickbookServiceNetwork @Inject constructor(
 	}
 
 	override fun performances(date: LocalDate, cinema: Long, film: Long): List<QuickbookPerformance> = runBlocking {
-		client.get<PerformancesResponse> {
+		client.get {
 			url("https://www.cineworld.co.uk/api/quickbook/performances")
 			parameter("key", key)
 			parameter("date", date.formatDateParam())
 			parameter("cinema", cinema)
 			parameter("film", film)
-		}.throwErrorOrReturn { it.performances }
+		}.body<PerformancesResponse>().throwErrorOrReturn { it.performances }
 	}
 }
 
@@ -82,9 +82,9 @@ private suspend inline fun HttpClient.getCinemas(
 	block: HttpRequestBuilder.() -> Unit = {}
 ): CinemasResponse<out QuickbookCinema> =
 	if (full) {
-		get<CinemasResponse<QuickbookCinemaFull>>(block = block)
+		get(block = block).body<CinemasResponse<QuickbookCinemaFull>>()
 	} else {
-		get<CinemasResponse<QuickbookCinemaSimple>>(block = block)
+		get(block = block).body<CinemasResponse<QuickbookCinemaSimple>>()
 	}
 
 /**
@@ -96,9 +96,9 @@ private suspend inline fun HttpClient.getFilms(
 	block: HttpRequestBuilder.() -> Unit = {}
 ): FilmsResponse<out QuickbookFilm> =
 	if (full) {
-		get<FilmsResponse<QuickbookFilmFull>>(block = block)
+		get(block = block).body<FilmsResponse<QuickbookFilmFull>>()
 	} else {
-		get<FilmsResponse<QuickbookFilmSimple>>(block = block)
+		get(block = block).body<FilmsResponse<QuickbookFilmSimple>>()
 	}
 
 /**

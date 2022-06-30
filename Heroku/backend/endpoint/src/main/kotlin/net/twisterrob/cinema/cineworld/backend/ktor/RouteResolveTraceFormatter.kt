@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.routing.RoutingResolveTrace
+import io.ktor.server.routing.RoutingResolveTrace
 import javax.inject.Inject
 
 class RouteResolveTraceFormatter @Inject constructor() {

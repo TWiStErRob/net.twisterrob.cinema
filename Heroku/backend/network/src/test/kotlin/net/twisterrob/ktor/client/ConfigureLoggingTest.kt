@@ -2,10 +2,11 @@ package net.twisterrob.ktor.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
-import io.ktor.client.features.feature
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.plugin
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
@@ -85,9 +86,9 @@ class ConfigureLoggingTest {
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
 		val result = runBlocking {
-			sut.get<String>("http://localhost/stubbed") {
+			sut.get("http://localhost/stubbed") {
 				header("X-Custom-Request-Header", "x-custom-request-value")
-			}
+			}.bodyAsText()
 		}
 		sut.waitForLogs()
 
@@ -112,9 +113,9 @@ class ConfigureLoggingTest {
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
 		val result = runBlocking {
-			sut.get<String>("http://localhost/stubbed") {
+			sut.get("http://localhost/stubbed") {
 				header("X-Custom-Request-Header", "x-custom-request-value")
-			}
+			}.bodyAsText()
 		}
 		sut.waitForLogs()
 
@@ -147,9 +148,9 @@ class ConfigureLoggingTest {
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
 		val result = runBlocking {
-			sut.get<String>("http://localhost/stubbed") {
+			sut.get("http://localhost/stubbed") {
 				header("X-Custom-Request-Header", "x-custom-request-value")
-			}
+			}.bodyAsText()
 		}
 		sut.waitForLogs()
 
@@ -238,7 +239,7 @@ private fun StackTraceElement.nextLine(lines: Int): StackTraceElement =
 private fun HttpClient.waitForLogs() = runBlocking {
 	// Luckily the installed feature uses a Mutex internally to signal begin/end of logging.
 	// Let's hack that mutex out of the Logging feature:
-	val mutex = this@waitForLogs.feature(Logging)!!.get<Mutex>("mutex")
+	val mutex = this@waitForLogs.plugin(Logging).get<Mutex>("mutex")
 	// Then lock it. This subscribes to the Mutex and only continues if the lock is acquired,
 	// which will happen as soon as endLogging unlocks.
 	mutex.lock()

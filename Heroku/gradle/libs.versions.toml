@@ -61,18 +61,15 @@ dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-apt = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
 ktor-client-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
-ktor-client-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor" }
-ktor-client-core-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
-ktor-client-json-jvm = { module = "io.ktor:ktor-client-json-jvm", version.ref = "ktor" }
 ktor-client-gson = { module = "io.ktor:ktor-client-gson", version.ref = "ktor" }
+# STOPSHIP single class in jar that's deprecated in ktor.
 ktor-client-jackson = { module = "io.ktor:ktor-client-jackson", version.ref = "ktor" }
 ktor-client-kotlinxSerialization = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
-ktor-client-mock-jvm = { module = "io.ktor:ktor-client-mock-jvm", version.ref = "ktor" }
-ktor-client-mock-js = { module = "io.ktor:ktor-client-mock-js", version.ref = "ktor" }
-ktor-client-mock-native = { module = "io.ktor:ktor-client-mock-native", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
 # STOPSHIP https://ktor.io/docs/locations.html
@@ -80,7 +77,14 @@ ktor-server-locations = { module = "io.ktor:ktor-server-locations", version.ref 
 ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-server-content-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
 ktor-server-content-html = { module = "io.ktor:ktor-server-html-builder", version.ref = "ktor" }
-ktor-server-content-freemarker = { module = "io.ktor:ktor-freemarker", version.ref = "ktor" }
+ktor-server-content-freemarker = { module = "io.ktor:ktor-server-freemarker", version.ref = "ktor" }
+ktor-client-content = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-server-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-caching = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktor" }
+ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
+ktor-server-content = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
+ktor-server-status = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 
 # Warning "The following annotation processors were detected on the compile classpath:"
 #  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'

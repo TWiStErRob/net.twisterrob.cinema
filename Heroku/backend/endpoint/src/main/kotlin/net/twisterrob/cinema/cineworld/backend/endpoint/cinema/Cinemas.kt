@@ -3,7 +3,7 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import io.ktor.locations.Location
+import io.ktor.server.locations.Location
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.GraphCinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute

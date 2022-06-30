@@ -5,7 +5,7 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
-import io.ktor.application.Application
+import io.ktor.server.application.Application
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.content.TextContent

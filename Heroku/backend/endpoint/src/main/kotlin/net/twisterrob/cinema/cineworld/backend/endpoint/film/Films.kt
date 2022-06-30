@@ -4,7 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import io.ktor.locations.Location
+import io.ktor.server.locations.Location
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.GraphFilmRepository

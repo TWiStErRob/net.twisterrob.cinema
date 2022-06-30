@@ -1,9 +1,9 @@
 package net.twisterrob.cinema.cineworld.backend.app
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.routing.Routing
-import io.ktor.routing.RoutingApplicationCall
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.RoutingApplicationCall
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import java.io.File

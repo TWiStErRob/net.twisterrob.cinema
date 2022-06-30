@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
-import io.ktor.client.features.onDownload
+import io.ktor.client.call.body
+import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -34,10 +34,11 @@ internal class FeedDownloader(
 			header(HttpHeaders.Connection, "close")
 			onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
 		}
+			// STOPSHIP
 			.body<HttpStatement>()
 			.execute()
 			.also {
-				val raw = it.receive<ByteArray>()
+				val raw = it.body<ByteArray>()
 				require(baseFolder.isDirectory || baseFolder.mkdirs())
 				val fileName = it.request.url.fullPath.substringAfterLast('/')
 				val output = baseFolder.resolve(fileName)

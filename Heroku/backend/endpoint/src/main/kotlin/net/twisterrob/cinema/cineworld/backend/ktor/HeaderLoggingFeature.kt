@@ -1,15 +1,16 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.log
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
+import io.ktor.server.application.log
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelineContext
+import io.ktor.server.application.BaseApplicationPlugin
 
 class HeaderLoggingFeature private constructor() {
 	companion object Feature :
-		ApplicationPlugin<ApplicationCallPipeline, HeaderLoggingConfiguration, HeaderLoggingFeature> {
+		BaseApplicationPlugin<ApplicationCallPipeline, HeaderLoggingConfiguration, HeaderLoggingFeature> {
 
 		override val key = AttributeKey<HeaderLoggingFeature>("HeaderLoggingFeature")
 

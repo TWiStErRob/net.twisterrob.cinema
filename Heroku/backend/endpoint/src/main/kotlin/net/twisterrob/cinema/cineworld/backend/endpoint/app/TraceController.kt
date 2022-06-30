@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
-import io.ktor.application.Application
-import io.ktor.application.log
-import io.ktor.routing.Routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
+import io.ktor.server.routing.Routing
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteResolveTraceFormatter
 import javax.inject.Inject

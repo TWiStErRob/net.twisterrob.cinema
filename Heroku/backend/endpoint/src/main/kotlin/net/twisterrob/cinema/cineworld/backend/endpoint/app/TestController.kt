@@ -1,17 +1,17 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.log
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
+import io.ktor.server.application.log
 import io.ktor.http.HttpHeaders
 import io.ktor.http.encodeURLPath
-import io.ktor.request.path
-import io.ktor.request.uri
-import io.ktor.response.header
-import io.ktor.response.respondFile
-import io.ktor.routing.Routing
+import io.ktor.server.request.path
+import io.ktor.server.request.uri
+import io.ktor.server.response.header
+import io.ktor.server.response.respondFile
+import io.ktor.server.routing.Routing
 import io.ktor.util.pipeline.PipelineContext
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
