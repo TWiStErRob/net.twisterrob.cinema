@@ -46,7 +46,6 @@ dependencies {
 
 	runtimeOnly(libs.ktor.client.engine.okhttp)
 	implementation(libs.ktor.client.content)
-	implementation(libs.ktor.client.jackson)
 	Deps.slf4jToLog4j(project)
 	Deps.dagger(project)
 }

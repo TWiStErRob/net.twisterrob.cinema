@@ -64,11 +64,6 @@ ktor-client-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
-ktor-client-gson = { module = "io.ktor:ktor-client-gson", version.ref = "ktor" }
-# STOPSHIP single class in jar that's deprecated in ktor.
-ktor-client-jackson = { module = "io.ktor:ktor-client-jackson", version.ref = "ktor" }
-ktor-client-kotlinxSerialization = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
