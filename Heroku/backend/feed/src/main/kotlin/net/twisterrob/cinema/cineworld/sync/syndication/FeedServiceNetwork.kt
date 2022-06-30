@@ -2,7 +2,6 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.JsonSerializer
 import io.ktor.http.ContentType
@@ -10,7 +9,6 @@ import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.utils.io.core.Input
-import io.ktor.utils.io.core.readText
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -30,10 +28,10 @@ class FeedServiceNetwork @Inject constructor(
 		getUKWeeklyFilmTimes() + getIrelandWeeklyFilmTimes()
 
 	private fun getUKWeeklyFilmTimes(): Feed =
-		runBlocking { FeedDownloader(client).getUKWeeklyFilmTimes().receive() }
+		runBlocking { FeedDownloader(client).getUKWeeklyFilmTimes().body() }
 
 	private fun getIrelandWeeklyFilmTimes(): Feed =
-		runBlocking { FeedDownloader(client).getIrelandWeeklyFilmTimes().receive() }
+		runBlocking { FeedDownloader(client).getIrelandWeeklyFilmTimes().body() }
 }
 
 private class JacksonXmlSerializer(

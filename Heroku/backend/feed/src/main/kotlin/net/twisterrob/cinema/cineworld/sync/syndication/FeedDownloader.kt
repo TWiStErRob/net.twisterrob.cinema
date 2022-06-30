@@ -29,12 +29,12 @@ internal class FeedDownloader(
 		downloadFeed("https://classic.cineworld.co.uk/syndication/weekly_film_times_ie.xml")
 
 	private suspend fun downloadFeed(source: String): HttpResponse =
-		client
-			.get<HttpStatement>(source) {
-				url(source)
-				header(HttpHeaders.Connection, "close")
-				onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
-			}
+		client.get(source) {
+			url(source)
+			header(HttpHeaders.Connection, "close")
+			onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
+		}
+			.body<HttpStatement>()
 			.execute()
 			.also {
 				val raw = it.receive<ByteArray>()

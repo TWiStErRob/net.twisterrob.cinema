@@ -122,7 +122,7 @@ class AuthController @Inject constructor(
 
 				val data: UserInfoOpenID = httpClient.get(UserInfoOpenID.URL.toString()) {
 					header("Authorization", "Bearer ${principal.accessToken}")
-				}
+				}.body<UserInfoOpenID>()
 				authRepository.addUser(
 					userId = data.sub,
 					email = data.email!!,

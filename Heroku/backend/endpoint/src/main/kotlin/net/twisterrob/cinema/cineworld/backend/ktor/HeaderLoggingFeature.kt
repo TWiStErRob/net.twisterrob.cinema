@@ -2,7 +2,6 @@ package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.ApplicationFeature
 import io.ktor.application.call
 import io.ktor.application.log
 import io.ktor.util.AttributeKey
@@ -10,7 +9,7 @@ import io.ktor.util.pipeline.PipelineContext
 
 class HeaderLoggingFeature private constructor() {
 	companion object Feature :
-		ApplicationFeature<ApplicationCallPipeline, HeaderLoggingConfiguration, HeaderLoggingFeature> {
+		ApplicationPlugin<ApplicationCallPipeline, HeaderLoggingConfiguration, HeaderLoggingFeature> {
 
 		override val key = AttributeKey<HeaderLoggingFeature>("HeaderLoggingFeature")
 
