@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
 	implementation(libs.kotlin.stdlib8)
-	implementation(libs.ktor.client.client)
+	implementation(libs.ktor.client)
 	implementation(libs.ktor.client.logging)
 	implementation(libs.slf4j.core)
 }

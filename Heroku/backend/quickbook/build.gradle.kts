@@ -11,10 +11,10 @@ dependencies {
 
 	Deps.dagger(project)
 
-	api(libs.ktor.client.core)
-	implementation(libs.ktor.client.client)
+	api(libs.ktor.client)
+	implementation(libs.ktor.client)
 	implementation(libs.ktor.client.content)
-	implementation(libs.ktor.server.content.jackson)
+	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.jackson.datatype.java8)
 }
 

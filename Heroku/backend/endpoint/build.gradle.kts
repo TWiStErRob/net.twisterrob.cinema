@@ -32,8 +32,9 @@ dependencies {
 
 	implementation(libs.kotlin.stdlib8)
 
-	implementation(libs.ktor.server.core)
+	implementation(libs.ktor.server)
 	implementation(libs.ktor.server.content)
+	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.ktor.server.logging)
 	implementation(libs.ktor.server.caching)
 	implementation(libs.ktor.server.compression)
@@ -41,7 +42,6 @@ dependencies {
 	implementation(libs.ktor.server.status)
 	implementation(libs.ktor.server.locations)
 	implementation(libs.ktor.server.engine.netty)
-	implementation(libs.ktor.server.content.jackson)
 	implementation(libs.ktor.server.content.html)
 
 	runtimeOnly(libs.ktor.client.engine.okhttp)

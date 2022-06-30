@@ -25,7 +25,7 @@ fun Project.configureDependencyLocking(vararg lockWorthy: String) {
 	this.configurations.activateDependencyLockingFor(lockWorthy.toSet())
 	this.dependencyLocking {
 		@Suppress("UnstableApiUsage")
-		lockMode.set(LockMode.STRICT)
+		lockMode.set(LockMode.LENIENT)
 
 		val fileName = this@configureDependencyLocking.slug ?: "rootProject"
 		/** @see org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER */
