@@ -40,7 +40,7 @@ private class LevelLogger(
 
 	override fun log(message: String) {
 		if (message.startsWith("REQUEST: ")) {
-			val url = message.substringAfter("REQUEST: ")
+			val url = message.substringAfter("REQUEST: ").substringBefore("\n")
 			log.debug("Network call: $url", NetworkCall(url).apply {
 				stackTrace = stackTrace
 					.drop(1)
