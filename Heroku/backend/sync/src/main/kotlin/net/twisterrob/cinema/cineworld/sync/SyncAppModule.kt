@@ -1,12 +1,13 @@
 package net.twisterrob.cinema.cineworld.sync
 
-import dagger.Binds
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
+import net.twisterrob.cinema.cineworld.sync.syndication.FeedServiceFolder
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedServiceNetwork
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
@@ -17,6 +18,7 @@ import net.twisterrob.cinema.database.services.Services
 import net.twisterrob.ktor.client.configureLogging
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Component(modules = [Neo4JModule::class, SyncAppModule::class])
@@ -29,11 +31,14 @@ interface SyncAppComponent : Services {
 	@Component.Builder
 	interface Builder : Neo4JModule.Dependencies<Builder> {
 
+		@BindsInstance
+		fun params(params: MainParameters): Builder
+
 		fun build(): SyncAppComponent
 	}
 }
 
-@Module(includes = [SyncAppModule.Bindings::class])
+@Module
 class SyncAppModule {
 
 	@Provides
@@ -73,10 +78,11 @@ class SyncAppModule {
 			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
 		}
 
-	@Module
-	interface Bindings {
-
-		@Binds
-		fun bindFeedService(impl: FeedServiceNetwork): FeedService
-	}
+	@Provides
+	fun feedService(params: MainParameters, network: Provider<FeedServiceNetwork>): FeedService =
+		if (params.fromFolder != null) {
+			FeedServiceFolder(params.fromFolder)
+		} else {
+			network.get()
+		}
 }
