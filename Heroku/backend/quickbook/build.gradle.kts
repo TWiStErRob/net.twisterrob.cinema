@@ -12,7 +12,6 @@ dependencies {
 	Deps.dagger(project)
 
 	api(libs.ktor.client)
-	implementation(libs.ktor.client)
 	implementation(libs.ktor.client.content)
 	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.jackson.datatype.java8)

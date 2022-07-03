@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.serialization.jackson.jackson
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
@@ -37,39 +37,48 @@ class QuickbookServiceNetwork @Inject constructor(
 	}
 
 	fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
-		client.getCinemas(full) {
-			url("https://www.cineworld.co.uk/api/quickbook/cinemas")
-			parameter("key", key)
-			parameter("full", full)
-		}.throwErrorOrReturn { it.cinemas }
+		client
+			.getCinemas(full) {
+				url("https://www.cineworld.co.uk/api/quickbook/cinemas")
+				parameter("key", key)
+				parameter("full", full)
+			}
+			.throwErrorOrReturn { it.cinemas }
 	}
 
 	fun films(full: Boolean): List<QuickbookFilm> = runBlocking {
-		client.getFilms(full) {
-			url("https://www.cineworld.co.uk/api/quickbook/films")
-			parameter("key", key)
-			parameter("full", full)
-		}.throwErrorOrReturn { it.films }
+		client
+			.getFilms(full) {
+				url("https://www.cineworld.co.uk/api/quickbook/films")
+				parameter("key", key)
+				parameter("full", full)
+			}
+			.throwErrorOrReturn { it.films }
 	}
 
 	override fun films(date: LocalDate, cinemas: List<Long>, full: Boolean): List<QuickbookFilm> = runBlocking {
-		client.getFilms(full) {
-			url("https://www.cineworld.co.uk/api/quickbook/films")
-			parameter("key", key)
-			parameter("date", date.formatDateParam())
-			parameter("full", full)
-			cinemas.forEach { parameter("cinema", it) }
-		}.throwErrorOrReturn { it.films }
+		client
+			.getFilms(full) {
+				url("https://www.cineworld.co.uk/api/quickbook/films")
+				parameter("key", key)
+				parameter("date", date.formatDateParam())
+				parameter("full", full)
+				cinemas.forEach { parameter("cinema", it) }
+			}
+			.throwErrorOrReturn { it.films }
 	}
 
 	override fun performances(date: LocalDate, cinema: Long, film: Long): List<QuickbookPerformance> = runBlocking {
-		client.get {
-			url("https://www.cineworld.co.uk/api/quickbook/performances")
-			parameter("key", key)
-			parameter("date", date.formatDateParam())
-			parameter("cinema", cinema)
-			parameter("film", film)
-		}.body<PerformancesResponse>().throwErrorOrReturn { it.performances }
+		client
+			.get {
+				url("https://www.cineworld.co.uk/api/quickbook/performances")
+				parameter("key", key)
+				parameter("date", date.formatDateParam())
+				parameter("cinema", cinema)
+				parameter("film", film)
+			}
+			.body<PerformancesResponse>()
+			.throwErrorOrReturn { it.performances }
 	}
 }
 

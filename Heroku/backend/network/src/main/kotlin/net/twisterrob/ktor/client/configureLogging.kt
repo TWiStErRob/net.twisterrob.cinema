@@ -4,6 +4,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import org.slf4j.Logger
+import io.ktor.client.plugins.logging.Logger as KtorLogger
 
 fun HttpClientConfig<*>.configureLogging(log: Logger) {
 	install(Logging) {
@@ -36,7 +37,7 @@ private class NetworkCall(url: String) : Exception("Callsite for $url")
 private class LevelLogger(
 	private val log: Logger,
 	private val logAtLevel: Logger.(message: String) -> Unit,
-) : io.ktor.client.plugins.logging.Logger {
+) : KtorLogger {
 
 	override fun log(message: String) {
 		if (message.startsWith("REQUEST: ")) {
