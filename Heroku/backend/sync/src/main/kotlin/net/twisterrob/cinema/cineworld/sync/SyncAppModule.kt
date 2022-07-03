@@ -76,6 +76,7 @@ class SyncAppModule {
 	fun httpClient(): HttpClient =
 		HttpClient().config {
 			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
+			expectSuccess = true
 		}
 
 	@Provides

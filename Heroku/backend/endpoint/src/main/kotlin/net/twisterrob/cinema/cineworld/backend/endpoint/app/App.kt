@@ -41,6 +41,7 @@ object App {
 		@Provides
 		fun httpClient() = HttpClient().config {
 			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
+			expectSuccess = true
 		}
 	}
 }

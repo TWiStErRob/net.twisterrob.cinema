@@ -126,9 +126,11 @@ class AuthController @Inject constructor(
 				val principal: OAuthAccessTokenResponse.OAuth2 = call.authentication.principal()
 					?: error("No principal, authentication failed?")
 
-				val data: UserInfoOpenID = httpClient.get(UserInfoOpenID.URL.toString()) {
-					header("Authorization", "Bearer ${principal.accessToken}")
-				}.body()
+				val data: UserInfoOpenID = httpClient
+					.get(UserInfoOpenID.URL.toString()) {
+						header("Authorization", "Bearer ${principal.accessToken}")
+					}
+					.body()
 				authRepository.addUser(
 					userId = data.sub,
 					email = data.email!!,

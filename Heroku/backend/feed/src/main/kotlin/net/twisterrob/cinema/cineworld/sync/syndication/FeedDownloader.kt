@@ -35,6 +35,7 @@ internal class FeedDownloader(
 				onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
 			}
 			.also {
+				// TODO consider using DoubleDoubleReceive plugin.
 				val raw = it.body<ByteArray>()
 				require(baseFolder.isDirectory || baseFolder.mkdirs())
 				val fileName = it.request.url.fullPath.substringAfterLast('/')
