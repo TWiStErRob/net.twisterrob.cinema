@@ -264,14 +264,6 @@ jobs:
           ./dependency-tree-diff-to-patch.sh dependencies-backend-endpoint.txt "${BASE}" "${HEAD}" > dependencies-backend-endpoint.patch
           ./dependency-tree-diff-to-patch.sh dependencies-test-helpers.txt "${BASE}" "${HEAD}" > dependencies-test-helpers.patch
 
-      - name: What's here?
-        working-directory: diff
-        run: ls -la
-
-      - name: What's here? - specific
-        working-directory: diff
-        run: ls --format=single-column --time=ctime --reverse dependencies-*.txt
-
       - name: Merge diffs into a single file (dependencies-diffs.txt).
         working-directory: diff
         run: |
