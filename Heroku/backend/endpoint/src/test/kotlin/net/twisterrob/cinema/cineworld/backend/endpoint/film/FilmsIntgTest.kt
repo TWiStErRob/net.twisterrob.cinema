@@ -10,6 +10,8 @@ import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.handleRequestAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
@@ -18,16 +20,20 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
+import net.twisterrob.test.buildList
 import net.twisterrob.test.mockEngine
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import java.time.LocalDate
+import java.time.Month
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,19 +49,93 @@ class FilmsIntgTest {
 
 	private val fixture = JFixture()
 
+	/** @see Films.Routes.ListFilms */
+	@Test fun `list all films (unauthenticated)`() = filmsEndpointTest {
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
+		val fixtFilms: List<Film> = fixture.buildList(size = 2)
+		val queryCinemaIDs: List<Long> = listOf(123, 456)
+		val queryDate = LocalDate.of(2019, Month.MAY, 30)
+		whenever(mockRepository.getFilms(any(), any())).thenReturn(fixtFilms)
+
+		val call = handleRequest {
+			method = HttpMethod.Get
+			uri = "/film?cinemaIDs=123&cinemaIDs=456&date=20190530"
+		}
+
+		verify(mockRepository).getFilms(queryDate, queryCinemaIDs)
+		verifyNoMoreInteractions(mockRepository)
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		JSONAssert.assertEquals(
+			"""
+			[
+				${serialized(fixtFilms[0])},
+				${serialized(fixtFilms[1])}
+			]
+			""",
+			call.response.content,
+			JSONCompareMode.STRICT
+		)
+	}
+
+	/** @see Films.Routes.ListFilms */
+	@Test fun `list all films (authenticated)`() = filmsEndpointTest {
+		val fixtUser = mockAuth.setupAuth()
+		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
+		val fixtFilms: List<Film> = fixture.buildList(size = 2)
+		val queryCinemaIDs: List<Long> = listOf(123, 456)
+		val queryDate = LocalDate.of(2019, Month.MAY, 30)
+		whenever(mockRepository.getFilmsAuth(any(), any(), any())).thenReturn(fixtFilms)
+
+		val call = handleRequestAuth {
+			method = HttpMethod.Get
+			uri = "/film?cinemaIDs=123&cinemaIDs=456&date=20190530"
+		}
+
+		verify(mockRepository).getFilmsAuth(fixtUser.id, queryDate, queryCinemaIDs)
+		verifyNoMoreInteractions(mockRepository)
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		JSONAssert.assertEquals(
+			"""
+			[
+				${serialized(fixtFilms[0])},
+				${serialized(fixtFilms[1])}
+			]
+			""",
+			call.response.content,
+			JSONCompareMode.STRICT
+		)
+	}
+
 	/** @see Films.Routes.GetFilm */
 	@Test fun `get film by edi`() = filmsEndpointTest {
 		fixture.customise().sameInstance(View::class.java, null) // prevent loop in val Film.view: View
 		val fixtFilm: Film = fixture.build()
-		whenever(mockRepository.getFilm(123)).thenReturn(fixtFilm)
+		val fixtEdi: Long = fixture.build()
+		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(fixtFilm)
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/film/123" }
+		val call = handleRequest { method = HttpMethod.Get; uri = "/film/${fixtEdi}" }
 
-		verify(mockRepository).getFilm(123)
+		verify(mockRepository).getFilm(fixtEdi)
 		verifyNoMoreInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(serialized(fixtFilm), call.response.content, JSONCompareMode.STRICT)
+	}
+
+	/** @see Films.Routes.GetFilm */
+	@Test fun `get film by edi not found`() = filmsEndpointTest {
+		val fixtEdi: Long = fixture.build()
+		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(null)
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/film/${fixtEdi}" }
+
+		verify(mockRepository).getFilm(fixtEdi)
+		verifyNoMoreInteractions(mockRepository)
+
+		assertEquals(HttpStatusCode.NotFound, call.response.status())
+		assertEquals("Film with EDI #${fixtEdi} is not found.", call.response.content)
 	}
 
 	private fun filmsEndpointTest(test: TestApplicationEngine.() -> Unit) {

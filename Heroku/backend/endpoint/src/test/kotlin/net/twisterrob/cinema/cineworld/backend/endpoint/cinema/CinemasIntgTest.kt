@@ -70,7 +70,7 @@ class CinemasIntgTest {
 	}
 
 	/** @see Cinemas.Routes.ListCinemas */
-	@Test fun `list all cinemas`() = cinemasEndpointTest {
+	@Test fun `list all cinemas (authenticated)`() = cinemasEndpointTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getCinemasAuth(fixtUser.id)).thenReturn(fixtCinemas)
@@ -103,7 +103,7 @@ class CinemasIntgTest {
 	}
 
 	/** @see Cinemas.Routes.ListFavoriteCinemas */
-	@Test fun `list all favorite cinemas`() = cinemasEndpointTest {
+	@Test fun `list all favorite cinemas (authenticated)`() = cinemasEndpointTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getFavoriteCinemas(fixtUser.id)).thenReturn(fixtCinemas)
