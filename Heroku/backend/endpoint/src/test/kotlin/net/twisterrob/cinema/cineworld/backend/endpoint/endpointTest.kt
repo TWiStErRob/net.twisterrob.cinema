@@ -24,6 +24,15 @@ fun endpointTest(
 		environment = createTestEnvironment {
 			val originalLog = log
 			log = object : Logger by originalLog {
+
+				override fun debug(msg: String?) {
+					when {
+						// Don't show very long classpath on test startup.
+						msg?.startsWith("Class Loader: ") == true -> Unit
+						else -> originalLog.debug(msg)
+					}
+				}
+
 				override fun info(msg: String?) {
 					when (msg) {
 						"No ktor.deployment.watch patterns specified, automatic reload is not active" -> Unit
