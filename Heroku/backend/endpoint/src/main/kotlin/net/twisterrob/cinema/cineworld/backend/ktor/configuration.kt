@@ -28,6 +28,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.dataconversion.DataConversion
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.resources.Resources
 import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
@@ -109,6 +110,7 @@ internal fun Application.configuration(
 		}
 	}
 	install(Locations) // support @Location
+	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
 			val secretSignKey = "twister".toByteArray()

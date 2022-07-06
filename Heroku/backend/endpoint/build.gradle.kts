@@ -5,6 +5,7 @@ plugins {
 	id("application")
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
+	id("org.jetbrains.kotlin.plugin.serialization")
 	id("io.gitlab.arturbosch.detekt")
 }
 
@@ -42,6 +43,8 @@ dependencies {
 	implementation(libs.ktor.server.headers)
 	implementation(libs.ktor.server.status)
 	implementation(libs.ktor.server.locations)
+	implementation(libs.ktor.server.resources)
+	implementation(libs.kotlinx.datetime)
 	implementation(libs.ktor.server.engine.netty)
 	implementation(libs.ktor.server.content.html)
 

@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
 	implementation(libs.kotlin.gradle)
+	implementation(libs.kotlin.serialization.gradle)
 	implementation(libs.detekt.gradle)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
