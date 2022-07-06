@@ -1,13 +1,13 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.application
-import io.ktor.server.application.call
 import io.ktor.http.CacheControl.MaxAge
 import io.ktor.http.CacheControl.Visibility
 import io.ktor.http.content.CachingOptions
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.caching
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.application
+import io.ktor.server.application.call
 import io.ktor.server.response.ApplicationSendPipeline
 import io.ktor.util.date.GMTDate
 import io.ktor.util.date.plus

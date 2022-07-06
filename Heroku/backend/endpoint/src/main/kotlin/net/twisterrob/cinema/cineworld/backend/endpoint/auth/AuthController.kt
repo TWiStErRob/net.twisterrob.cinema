@@ -1,5 +1,11 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.call
@@ -7,14 +13,10 @@ import io.ktor.server.application.log
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.authentication
-import io.ktor.client.HttpClient
-import io.ktor.serialization.jackson.jackson
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.server.locations.get
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
@@ -33,8 +35,6 @@ import net.twisterrob.cinema.cineworld.backend.ktor.absoluteUrl
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
-import io.ktor.client.call.body
-import io.ktor.server.response.respondText
 
 /**
  * See [Docs](https://developers.google.com/identity/protocols/OpenIDConnect).

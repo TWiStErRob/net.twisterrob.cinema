@@ -5,7 +5,6 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
-import io.ktor.server.application.Application
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.content.TextContent
@@ -14,6 +13,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import io.ktor.server.application.Application
 import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent

@@ -2,11 +2,11 @@ package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelineContext
-import io.ktor.server.application.BaseApplicationPlugin
 
 class HeaderLoggingFeature private constructor() {
 	companion object Feature :

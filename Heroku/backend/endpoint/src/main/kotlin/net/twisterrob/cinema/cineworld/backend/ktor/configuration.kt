@@ -9,14 +9,18 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.client.HttpClient
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.OAuthServerSettings
 import io.ktor.server.auth.oauth
-import io.ktor.client.HttpClient
+import io.ktor.server.html.respondHtml
+import io.ktor.server.locations.Locations
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.compression.Compression
@@ -24,11 +28,6 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.dataconversion.DataConversion
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.html.respondHtml
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
-import io.ktor.server.locations.Locations
 import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
