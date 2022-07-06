@@ -101,6 +101,7 @@ internal fun Application.configuration(
 	}
 	install(StatusPages) {
 		exception<Throwable> { call, cause ->
+			call.application.log.error("Unhandled exception", cause)
 			call.respondHtml(HttpStatusCode.InternalServerError) {
 				render500InternalServerError(cause)
 			}
