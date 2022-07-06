@@ -2,6 +2,11 @@ config:
   warningsAsErrors: true
 
 style:
+  ForbiddenComment:
+    values:
+      - 'FIXME'
+      - 'STOPSHIP'
+
   MaxLineLength:
     excludeCommentStatements: true
 
