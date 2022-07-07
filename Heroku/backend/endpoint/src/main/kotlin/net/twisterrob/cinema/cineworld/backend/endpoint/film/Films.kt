@@ -4,11 +4,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import io.ktor.server.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.GraphFilmRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.QuickbookFilmRepository
+import net.twisterrob.cinema.cineworld.backend.ktor.LocalDateNoDashesSerializer
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.quickbook.QuickbookService
@@ -20,11 +22,19 @@ object Films {
 
 	object Routes {
 
-		@Location("/film")
-		data class ListFilms(val cinemaIDs: List<Long>, val date: LocalDate) : LocationRoute
+		@Serializable
+		@Resource("/film")
+		data class ListFilms(
+			val cinemaIDs: List<Long>,
+			@Serializable(with = LocalDateNoDashesSerializer::class)
+			val date: LocalDate,
+		) : LocationRoute
 
-		@Location("/film/{edi}")
-		data class GetFilm(val edi: Long) : LocationRoute
+		@Serializable
+		@Resource("/film/{edi}")
+		data class GetFilm(
+			val edi: Long,
+		) : LocationRoute
 	}
 
 	/**

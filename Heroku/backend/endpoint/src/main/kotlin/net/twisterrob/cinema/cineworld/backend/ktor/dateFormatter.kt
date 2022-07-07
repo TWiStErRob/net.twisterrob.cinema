@@ -1,5 +1,12 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.SignStyle
@@ -16,6 +23,19 @@ val ISO_LOCAL_DATE_FORMATTER_NO_DASHES: DateTimeFormatter =
 		.appendValue(ChronoField.MONTH_OF_YEAR, 2)
 		.appendValue(ChronoField.DAY_OF_MONTH, 2)
 		.toFormatter(Locale.ROOT)
+
+object LocalDateNoDashesSerializer : KSerializer<LocalDate> {
+
+	override val descriptor: SerialDescriptor =
+		PrimitiveSerialDescriptor("LocalDate", PrimitiveKind.STRING)
+
+	override fun serialize(encoder: Encoder, value: LocalDate) {
+		encoder.encodeString(ISO_LOCAL_DATE_FORMATTER_NO_DASHES.format(value))
+	}
+
+	override fun deserialize(decoder: Decoder): LocalDate =
+		LocalDate.from(ISO_LOCAL_DATE_FORMATTER_NO_DASHES.parse(decoder.decodeString()))
+}
 
 /**
  * Make sure trailing zeros are serialized.
