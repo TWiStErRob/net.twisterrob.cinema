@@ -22,7 +22,7 @@ fun endpointTest(
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
 	test: TestApplicationEngine.() -> Unit
 ) {
-	@Suppress("DEPRECATION") // STOPSHIP
+	@Suppress("DEPRECATION") // TODO https://github.com/TWiStErRob/net.twisterrob.cinema/issues/167
 	withApplication(
 		environment = createTestEnvironment {
 			developmentMode = true
