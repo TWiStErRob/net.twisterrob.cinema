@@ -3,9 +3,9 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.locations.delete
-import io.ktor.server.locations.get
-import io.ktor.server.locations.put
+import io.ktor.server.resources.delete
+import io.ktor.server.resources.get
+import io.ktor.server.resources.put
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing

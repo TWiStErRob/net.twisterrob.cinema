@@ -3,7 +3,8 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import io.ktor.server.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.GraphCinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
@@ -13,16 +14,20 @@ object Cinemas {
 
 	object Routes {
 
-		@Location("/cinema")
+		@Serializable
+		@Resource("/cinema")
 		object ListCinemas : LocationRoute
 
-		@Location("/cinema/favs")
+		@Serializable
+		@Resource("/cinema/favs")
 		object ListFavoriteCinemas : LocationRoute
 
-		@Location("/cinema/{cinema}/favorite")
+		@Serializable
+		@Resource("/cinema/{cinema}/favorite")
 		data class AddFavorite(val cinema: Long) : LocationRoute
 
-		@Location("/cinema/{cinema}/favorite")
+		@Serializable
+		@Resource("/cinema/{cinema}/favorite")
 		data class RemoveFavorite(val cinema: Long) : LocationRoute
 	}
 
