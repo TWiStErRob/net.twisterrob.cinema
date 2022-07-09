@@ -132,7 +132,7 @@ jobs:
           comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
-          files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
+          junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Cleanup Gradle files before caching.
         run: |
