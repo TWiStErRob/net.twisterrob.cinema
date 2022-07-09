@@ -19,7 +19,7 @@ abstract class RouteController(
 	 * @see io.ktor.locations.href similar to this, but flipped
 	 *                             (`application.href(it)` vs `it.href` inside a [RouteController])
 	 */
-	val LocationRoute.href
+	val LocationRoute.href: String
 		get() = application.locations.href(this)
 
 	/**

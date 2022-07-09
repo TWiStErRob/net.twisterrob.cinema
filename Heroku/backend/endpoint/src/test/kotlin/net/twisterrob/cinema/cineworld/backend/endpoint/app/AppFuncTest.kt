@@ -14,6 +14,9 @@ import java.io.File
 @TagFunctional
 class AppFuncTest {
 
+	/**
+	 * @see App.Routes.Home
+	 */
 	@Test fun `root serves index html`(@TempDir tempDir: File) = endpointTest(
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {

@@ -52,6 +52,10 @@ class AuthIntgTest {
 
 	@Inject lateinit var mockRepository: AuthRepository
 
+	/**
+	 * @see Auth.Routes.Google
+	 * @see Auth.Routes.GoogleReturn
+	 */
 	@Test
 	fun `successful Google OAuth 2 login`() {
 		val fakeHost = "fake.host.name"
@@ -87,6 +91,24 @@ class AuthIntgTest {
 		}
 	}
 
+	/**
+	 * @see Auth.Routes.Login
+	 */
+	@Test
+	fun `login redirects to google`() = endpointTest(
+		daggerApp = createAppForAuthIntgTest()
+	) {
+		handleRequest {
+			method = HttpMethod.Get
+			uri = "/login"
+		}.apply {
+			assertRedirect("/auth/google")
+		}
+	}
+
+	/**
+	 * @see Auth.Routes.Logout
+	 */
 	@Test
 	fun `logout clears auth cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -103,6 +125,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Google
+	 */
 	@Test
 	fun `authorizing already logged in session with Google redirects to home`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -118,6 +143,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows no user without session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -130,6 +158,9 @@ class AuthIntgTest {
 		}
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows error when invalid user in session`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -146,6 +177,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows user data with session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -173,6 +207,7 @@ class AuthIntgTest {
 
 	/**
 	 * TODO it should redirect to Google
+	 * @see Auth.Routes.Google
 	 */
 	@Test
 	fun `authorizing new session with Google redirects to google-return`() = endpointTest(
