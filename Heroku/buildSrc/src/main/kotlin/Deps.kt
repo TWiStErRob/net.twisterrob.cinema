@@ -7,6 +7,7 @@ object Deps {
 	fun junit5(project: Project) {
 		project.dependencies {
 			add("testImplementation", project.libs.test.junit.jupiter)
+			add("testImplementation", project.libs.test.junit.jupiter.params)
 			add("testRuntimeOnly", project.libs.test.junit.platform)
 			add("testRuntimeOnly", project.libs.test.junit.jupiter.engine)
 		}

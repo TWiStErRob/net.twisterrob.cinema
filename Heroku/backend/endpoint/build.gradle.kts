@@ -44,7 +44,6 @@ dependencies {
 	implementation(libs.ktor.server.headers)
 	implementation(libs.ktor.server.status)
 	implementation(libs.ktor.server.resources)
-	implementation(libs.kotlinx.datetime)
 	implementation(libs.ktor.server.engine.netty)
 	implementation(libs.ktor.server.content.html)
 
@@ -73,6 +72,7 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
+	testImplementation(libs.kotlinx.serialization.json)
 	testImplementation(libs.ktor.client.mock)
 	testImplementation(libs.ktor.server.test) {
 		exclude(group = "ch.qos.logback", module = "logback-classic")
