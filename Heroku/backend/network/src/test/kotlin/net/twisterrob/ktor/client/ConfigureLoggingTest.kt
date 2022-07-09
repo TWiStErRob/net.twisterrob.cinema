@@ -16,6 +16,8 @@ import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.atMost
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory
  * @see configureLogging
  */
 @TagFunctional
+// Shared state: slf4j Logger instance. Spying on that would steal logs between test methods.
+@Execution(ExecutionMode.SAME_THREAD)
 class ConfigureLoggingTest {
 
 	private val mockLogger: Logger = spy(LoggerFactory.getLogger(ConfigureLoggingTest::class.java)).apply {
