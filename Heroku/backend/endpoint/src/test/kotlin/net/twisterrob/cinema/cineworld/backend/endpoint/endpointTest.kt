@@ -19,11 +19,13 @@ import org.slf4j.Logger
 fun endpointTest(
 	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { daggerApplication() },
+	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
 	test: TestApplicationEngine.() -> Unit
 ) {
 	@Suppress("DEPRECATION") // STOPSHIP
 	withApplication(
 		environment = createTestEnvironment {
+			developmentMode = true
 			val originalLog = log
 			log = object : Logger by originalLog {
 
@@ -46,7 +48,7 @@ fun endpointTest(
 	) {
 		application.install(ServerLogging) {
 			logger = application.log
-			level = ServerLogging.LogLevel.ALL
+			level = logLevel
 		}
 		application.apply {
 			configure()
