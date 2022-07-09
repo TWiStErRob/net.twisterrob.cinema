@@ -19,11 +19,11 @@
 		"jasmine-expect": "5.0.0",
 		"jasmine-expect-moment": "0.1.1",
 		"lodash": "4.17.21",
-		"moment": "2.29.3",
+		"moment": "2.29.4",
 		"protractor": "7.0.0",
 		"protractor-helpers": "1.1.813",
 		"protractor-browser-logs": "1.0.456",
-		"selenium-webdriver": "4.3.0"
+		"selenium-webdriver": "4.3.1"
 	},
 	"devDependencies": {
 		"@types/jasminewd2": "2.0.10",
@@ -33,6 +33,6 @@
 		"npm-run-all": "4.1.5",
 		"protractor-screenshoter-plugin": "0.10.3",
 		"webdriver-manager": "12.1.8",
-		"jshint": "2.13.4"
+		"jshint": "2.13.5"
 	}
 }
