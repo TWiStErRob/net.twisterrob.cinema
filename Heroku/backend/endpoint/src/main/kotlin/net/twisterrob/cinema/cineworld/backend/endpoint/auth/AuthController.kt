@@ -13,7 +13,7 @@ import io.ktor.server.application.log
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.authentication
-import io.ktor.server.locations.get
+import io.ktor.server.resources.get
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
@@ -92,7 +92,7 @@ class AuthController @Inject constructor(
 
 		get<Auth.Routes.Login> {
 			// TODO how to do internal redirect?
-			call.respondRedirect(Auth.Routes.Google.href)
+			call.respondRedirect(Auth.Routes.Google.href())
 		}
 
 		authenticate(optional = true) {
@@ -101,10 +101,10 @@ class AuthController @Inject constructor(
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Logging out {}.", currentUser)
 					call.sessions.clear<AuthSession>()
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				} else {
 					call.application.log.warn("Already logged out.")
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				}
 			}
 		}
@@ -114,9 +114,9 @@ class AuthController @Inject constructor(
 				if (call.hasUser) {
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Already logged in as {}.", currentUser)
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				} else {
-					call.respondRedirect(Auth.Routes.GoogleReturn.href)
+					call.respondRedirect(Auth.Routes.GoogleReturn.href())
 				}
 			}
 		}
@@ -142,7 +142,7 @@ class AuthController @Inject constructor(
 				call.sessions.set(
 					AuthSession(userId = data.sub)
 				)
-				call.respondRedirect(App.Routes.Home.href)
+				call.respondRedirect(App.Routes.Home.href())
 			}
 		}
 	}

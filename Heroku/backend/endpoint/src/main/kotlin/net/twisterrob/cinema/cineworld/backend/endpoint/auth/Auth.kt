@@ -3,7 +3,8 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import io.ktor.server.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 
@@ -11,19 +12,24 @@ object Auth {
 
 	object Routes {
 
-		@Location("/login")
+		@Serializable
+		@Resource("/login")
 		object Login : LocationRoute
 
-		@Location("/logout")
+		@Serializable
+		@Resource("/logout")
 		object Logout : LocationRoute
 
-		@Location("/account")
+		@Serializable
+		@Resource("/account")
 		object Account : LocationRoute
 
-		@Location("/auth/google")
+		@Serializable
+		@Resource("/auth/google")
 		object Google : LocationRoute
 
-		@Location("/auth/google/return")
+		@Serializable
+		@Resource("/auth/google/return")
 		object GoogleReturn : LocationRoute
 	}
 
