@@ -1,10 +1,10 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.performance
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.locations.get
-import io.ktor.response.respond
-import io.ktor.routing.Routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.resources.get
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Routing
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.PerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.cached

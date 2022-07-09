@@ -1,25 +1,27 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.log
-import io.ktor.auth.OAuthAccessTokenResponse
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.locations.get
-import io.ktor.response.respond
-import io.ktor.response.respondRedirect
-import io.ktor.routing.Routing
-import io.ktor.sessions.clear
-import io.ktor.sessions.get
-import io.ktor.sessions.sessions
-import io.ktor.sessions.set
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
+import io.ktor.server.application.log
+import io.ktor.server.auth.OAuthAccessTokenResponse
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.authentication
+import io.ktor.server.resources.get
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Routing
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.CurrentUser
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
@@ -48,8 +50,8 @@ class AuthController @Inject constructor(
 
 	private val httpClient = httpClient.config {
 		// to handle UserInfo
-		install(JsonFeature) {
-			serializer = JacksonSerializer()
+		install(ContentNegotiation) {
+			jackson()
 		}
 	}
 
@@ -64,7 +66,7 @@ class AuthController @Inject constructor(
 	 */
 	@Suppress("LongMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
-		intercept(ApplicationCallPipeline.Features) {
+		intercept(ApplicationCallPipeline.Plugins) {
 			val session: AuthSession? = call.sessions.get()
 			if (session != null) {
 				try {
@@ -80,13 +82,17 @@ class AuthController @Inject constructor(
 		authenticate(optional = true) {
 			get<Auth.Routes.Account> {
 				val currentUser = call.attributes.currentUser
-				call.respond(currentUser ?: "no user")
+				if (currentUser != null) {
+					call.respond(currentUser)
+				} else {
+					call.respondText("no user")
+				}
 			}
 		}
 
 		get<Auth.Routes.Login> {
 			// TODO how to do internal redirect?
-			call.respondRedirect(Auth.Routes.Google.href)
+			call.respondRedirect(Auth.Routes.Google.href())
 		}
 
 		authenticate(optional = true) {
@@ -95,10 +101,10 @@ class AuthController @Inject constructor(
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Logging out {}.", currentUser)
 					call.sessions.clear<AuthSession>()
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				} else {
 					call.application.log.warn("Already logged out.")
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				}
 			}
 		}
@@ -108,9 +114,9 @@ class AuthController @Inject constructor(
 				if (call.hasUser) {
 					val currentUser = call.attributes.currentUser!!
 					call.application.log.trace("Already logged in as {}.", currentUser)
-					call.respondRedirect(App.Routes.Home.href)
+					call.respondRedirect(App.Routes.Home.href())
 				} else {
-					call.respondRedirect(Auth.Routes.GoogleReturn.href)
+					call.respondRedirect(Auth.Routes.GoogleReturn.href())
 				}
 			}
 		}
@@ -120,9 +126,11 @@ class AuthController @Inject constructor(
 				val principal: OAuthAccessTokenResponse.OAuth2 = call.authentication.principal()
 					?: error("No principal, authentication failed?")
 
-				val data: UserInfoOpenID = httpClient.get(UserInfoOpenID.URL.toString()) {
-					header("Authorization", "Bearer ${principal.accessToken}")
-				}
+				val data: UserInfoOpenID = httpClient
+					.get(UserInfoOpenID.URL.toString()) {
+						header("Authorization", "Bearer ${principal.accessToken}")
+					}
+					.body()
 				authRepository.addUser(
 					userId = data.sub,
 					email = data.email!!,
@@ -134,7 +142,7 @@ class AuthController @Inject constructor(
 				call.sessions.set(
 					AuthSession(userId = data.sub)
 				)
-				call.respondRedirect(App.Routes.Home.href)
+				call.respondRedirect(App.Routes.Home.href())
 			}
 		}
 	}

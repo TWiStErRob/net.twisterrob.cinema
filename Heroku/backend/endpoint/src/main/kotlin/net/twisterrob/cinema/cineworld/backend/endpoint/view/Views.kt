@@ -3,7 +3,8 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.view
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import io.ktor.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.GraphViewRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
@@ -16,17 +17,20 @@ object Views {
 
 	object Routes {
 
-		@Location("/film/{edi}/view")
+		@Serializable
+		@Resource("/film/{edi}/view")
 		data class AddView(val edi: Long/*, val cinema: Long, val date: Long*/) : LocationRoute
 
-		@Location("/film/{edi}/view")
+		@Serializable
+		@Resource("/film/{edi}/view")
 		data class RemoveView(val edi: Long, val cinema: Long, val date: Long) : LocationRoute {
 
 			val time: OffsetDateTime
 				get() = OffsetDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.of("UTC"))
 		}
 
-		@Location("/film/{edi}/ignore")
+		@Serializable
+		@Resource("/film/{edi}/ignore")
 		data class IgnoreView(val edi: Long, val reason: String) : LocationRoute
 
 		// TODO remove this in favor of Location POST properties, but frontend needs to unwrap the object in payload

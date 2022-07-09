@@ -5,7 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.ktor.client.HttpClient
-import io.ktor.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.ktor.client.configureLogging
@@ -15,7 +16,8 @@ object App {
 
 	object Routes {
 
-		@Location("/")
+		@Serializable
+		@Resource("/")
 		object Home : LocationRoute
 	}
 
@@ -41,6 +43,7 @@ object App {
 		@Provides
 		fun httpClient() = HttpClient().config {
 			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
+			expectSuccess = true
 		}
 	}
 }

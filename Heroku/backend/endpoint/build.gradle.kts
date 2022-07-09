@@ -5,6 +5,7 @@ plugins {
 	id("application")
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
+	id("org.jetbrains.kotlin.plugin.serialization")
 	id("io.gitlab.arturbosch.detekt")
 }
 
@@ -31,15 +32,23 @@ dependencies {
 	implementation(projects.backend.network)
 
 	implementation(libs.kotlin.stdlib8)
+	testImplementation(libs.kotlin.stdlib8)
 
-	implementation(libs.ktor.server.core)
-	implementation(libs.ktor.server.locations)
+	implementation(libs.ktor.server)
+	implementation(libs.ktor.server.auth)
+	implementation(libs.ktor.server.content)
+	implementation(libs.ktor.serialization.jackson)
+	implementation(libs.ktor.server.logging)
+	implementation(libs.ktor.server.caching)
+	implementation(libs.ktor.server.compression)
+	implementation(libs.ktor.server.headers)
+	implementation(libs.ktor.server.status)
+	implementation(libs.ktor.server.resources)
 	implementation(libs.ktor.server.engine.netty)
-	implementation(libs.ktor.server.content.jackson)
 	implementation(libs.ktor.server.content.html)
 
 	runtimeOnly(libs.ktor.client.engine.okhttp)
-	implementation(libs.ktor.client.jackson)
+	implementation(libs.ktor.client.content)
 	Deps.slf4jToLog4j(project)
 	Deps.dagger(project)
 }
@@ -63,17 +72,10 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
-	testImplementation(libs.ktor.client.mock.jvm)
+	testImplementation(libs.kotlinx.serialization.json)
+	testImplementation(libs.ktor.client.mock)
 	testImplementation(libs.ktor.server.test) {
 		exclude(group = "ch.qos.logback", module = "logback-classic")
 	}
 	kaptTest(libs.dagger.apt)
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-opt-in=io.ktor.locations.KtorExperimentalLocationsAPI"
-		)
-	}
 }

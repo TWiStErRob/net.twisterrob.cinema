@@ -22,6 +22,7 @@
 		"start:fake:documentation": "echo http://localhost:8080/planner?cineworldDate=&c=103&d=2017-07-14&f=160231&f=160454&f=184739&f=189108&f=223046",
 		"start:fake": "gradlew :backend:endpoint:run --args \"../../deploy/static ../../test/fake-data\"",
 		"updateFromCineworld": "gradlew :backend:sync:run --args \"cinemas films performances\"",
+		"updateFromCineworldFromTestFolder": "gradlew :backend:sync:run --args \"cinemas films performances --folder=test\"",
 		"updateFromCineworldPerformances": "gradlew :backend:sync:run --args \"performances\"",
 		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
 		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",

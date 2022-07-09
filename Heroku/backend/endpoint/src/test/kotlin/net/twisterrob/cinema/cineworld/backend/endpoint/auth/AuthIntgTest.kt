@@ -1,11 +1,8 @@
-@file:Suppress("RemoveCurlyBracesFromTemplate")
-
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
 import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
-import io.ktor.application.Application
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.content.TextContent
@@ -14,9 +11,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import io.ktor.server.application.Application
 import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthTestConstants.realisticCookie
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthTestConstants.realisticUserId
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
@@ -50,27 +50,12 @@ import javax.inject.Singleton
 @TagIntegration
 class AuthIntgTest {
 
-	companion object {
-
-		/**
-		 * It needs to be a cookie that uses the right secretSignKey in Sessions Ktor feature.
-		 * If this is broken, debug a test where [receiveAuthorizationFromGoogle] is visible and capture the value.
-		 * The rest of the [HttpHeaders.SetCookie] is omitted as it's not relevant here.
-		 *
-		 * @see configuration
-		 * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
-		 */
-		const val realisticCookie =
-			"auth=userId%3D%2523srealistic%5Fgoogle%5Fsub%2F1d9f41780441596d9ec55c20219873d813180e8d1d7caab07e1463fcb6462622"
-
-		/**
-		 * User ID contained within [realisticCookie]. Needed to ensure session data is passed through the right way.
-		 */
-		const val realisticUserId = "realistic_google_sub"
-	}
-
 	@Inject lateinit var mockRepository: AuthRepository
 
+	/**
+	 * @see Auth.Routes.Google
+	 * @see Auth.Routes.GoogleReturn
+	 */
 	@Test
 	fun `successful Google OAuth 2 login`() {
 		val fakeHost = "fake.host.name"
@@ -106,6 +91,24 @@ class AuthIntgTest {
 		}
 	}
 
+	/**
+	 * @see Auth.Routes.Login
+	 */
+	@Test
+	fun `login redirects to google`() = endpointTest(
+		daggerApp = createAppForAuthIntgTest()
+	) {
+		handleRequest {
+			method = HttpMethod.Get
+			uri = "/login"
+		}.apply {
+			assertRedirect("/auth/google")
+		}
+	}
+
+	/**
+	 * @see Auth.Routes.Logout
+	 */
 	@Test
 	fun `logout clears auth cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -122,6 +125,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Google
+	 */
 	@Test
 	fun `authorizing already logged in session with Google redirects to home`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -137,6 +143,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows no user without session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -149,6 +158,9 @@ class AuthIntgTest {
 		}
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows error when invalid user in session`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -165,6 +177,9 @@ class AuthIntgTest {
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
+	/**
+	 * @see Auth.Routes.Account
+	 */
 	@Test
 	fun `account page shows user data with session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
@@ -192,6 +207,7 @@ class AuthIntgTest {
 
 	/**
 	 * TODO it should redirect to Google
+	 * @see Auth.Routes.Google
 	 */
 	@Test
 	fun `authorizing new session with Google redirects to google-return`() = endpointTest(
@@ -269,9 +285,7 @@ private fun TestApplicationEngine.authorizeWithGoogle(host: String, relativeUri:
 		assertEquals(
 			"https://accounts.google.com/o/oauth2/auth" +
 					"?client_id=${clientId}" +
-					// Verify unencoded for now. https://youtrack.jetbrains.com/issue/KTOR-2938
-					"&redirect_uri=http://${host}${relativeUri}" +
-					//"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
+					"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
 					"&scope=openid+email+profile" +
 					"&state=****" +
 					"&response_type=code",
@@ -305,7 +319,7 @@ private fun TestApplicationEngine.receiveAuthorizationFromGoogle(
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
-	stub("https://oauth2.googleapis.com:443/token") {
+	stub("https://oauth2.googleapis.com/token") {
 		respond(
 			//language=JSON
 			content = """
@@ -326,7 +340,7 @@ private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String
 private fun HttpClient.verifyGoogleTokenRequest(
 	host: String, relativeUri: String, state: String, clientId: String, clientSecret: String
 ) {
-	verify("https://oauth2.googleapis.com:443/token") { request, _ ->
+	verify("https://oauth2.googleapis.com/token") { request, _ ->
 		val textContent = request.body as TextContent
 		assertEquals(ContentType.Application.FormUrlEncoded, textContent.contentType)
 		assertEquals(

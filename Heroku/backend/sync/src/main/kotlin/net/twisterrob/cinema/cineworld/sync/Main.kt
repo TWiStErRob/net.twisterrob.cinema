@@ -39,11 +39,13 @@ class Main @Inject constructor(
 		@Suppress("MemberNameEqualsClassName")
 		@JvmStatic
 		fun main(vararg args: String) {
+			val params = MainParametersParser().parse(*args)
 			val dagger = DaggerSyncAppComponent
 				.builder()
 				.graphDBUri(getNeo4jUrl())
+				.params(params)
 				.build()
-			dagger.main.sync(MainParametersParser().parse(*args))
+			dagger.main.sync(params)
 		}
 
 		private fun getNeo4jUrl(): URI {

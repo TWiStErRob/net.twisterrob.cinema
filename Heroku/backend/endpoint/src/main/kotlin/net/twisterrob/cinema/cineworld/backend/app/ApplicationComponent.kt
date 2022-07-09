@@ -2,7 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.app
 
 import dagger.BindsInstance
 import dagger.Component
-import io.ktor.application.Application
+import io.ktor.server.application.Application
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.Cinemas

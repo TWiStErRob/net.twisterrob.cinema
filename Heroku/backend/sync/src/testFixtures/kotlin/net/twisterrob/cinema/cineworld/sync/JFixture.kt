@@ -1,10 +1,10 @@
 package net.twisterrob.cinema.cineworld.sync
 
-import com.flextrade.jfixture.customisation.Customisation
 import com.flextrade.jfixture.JFixture
-import net.twisterrob.test.buildList
+import com.flextrade.jfixture.customisation.Customisation
 import net.twisterrob.cinema.database.model.Historical
 import net.twisterrob.test.build
+import net.twisterrob.test.buildList
 
 /**
  * Helper to let [JFixture] create an instance of [SyncResults].

@@ -6,14 +6,12 @@ import dagger.Component
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationCall
 import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.TestApplicationRequest
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthIntgTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.handleRequestAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
@@ -23,7 +21,6 @@ import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.mockEngine
-import org.eclipse.jetty.http.HttpHeader
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -73,7 +70,7 @@ class CinemasIntgTest {
 	}
 
 	/** @see Cinemas.Routes.ListCinemas */
-	@Test fun `list all cinemas`() = cinemasEndpointTest {
+	@Test fun `list all cinemas (authenticated)`() = cinemasEndpointTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getCinemasAuth(fixtUser.id)).thenReturn(fixtCinemas)
@@ -106,7 +103,7 @@ class CinemasIntgTest {
 	}
 
 	/** @see Cinemas.Routes.ListFavoriteCinemas */
-	@Test fun `list all favorite cinemas`() = cinemasEndpointTest {
+	@Test fun `list all favorite cinemas (authenticated)`() = cinemasEndpointTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getFavoriteCinemas(fixtUser.id)).thenReturn(fixtCinemas)
@@ -217,7 +214,7 @@ private interface CinemasIntgTestComponent : ApplicationComponent {
 }
 
 @Language("json")
-private fun serialized(cinema: Cinema): String =
+fun serialized(cinema: Cinema): String =
 	// order intentionally switched up
 	"""
 	{
@@ -233,23 +230,3 @@ private fun serialized(cinema: Cinema): String =
 		"fav": ${cinema.fav}
 	}
 	"""
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun AuthRepository.setupAuth(): User {
-	val fixtUser: User = JFixture().build()
-	whenever(this.findUser(AuthIntgTest.realisticUserId)).thenReturn(fixtUser)
-	return fixtUser
-}
-
-/**
- * Makes sure that auth interceptor works as expected.
- * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- */
-private fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
-	handleRequest {
-		addHeader(HttpHeader.COOKIE.toString(), AuthIntgTest.realisticCookie)
-		block()
-	}

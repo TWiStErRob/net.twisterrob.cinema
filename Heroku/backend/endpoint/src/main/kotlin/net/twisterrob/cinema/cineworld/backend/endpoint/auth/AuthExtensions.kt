@@ -1,7 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
-import io.ktor.application.ApplicationCall
-import io.ktor.auth.authentication
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.authentication
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
 
 // TODO what's the difference to hasUser?

@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.application.Application
-import io.ktor.application.log
-import io.ktor.routing.routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
+import io.ktor.server.routing.routing
 import javax.inject.Inject
 
 /**

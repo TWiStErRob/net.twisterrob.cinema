@@ -1,14 +1,13 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
-import io.ktor.client.features.onDownload
+import io.ktor.client.call.body
+import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.HttpStatement
 import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.fullPath
@@ -30,14 +29,14 @@ internal class FeedDownloader(
 
 	private suspend fun downloadFeed(source: String): HttpResponse =
 		client
-			.get<HttpStatement>(source) {
+			.get {
 				url(source)
 				header(HttpHeaders.Connection, "close")
 				onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
 			}
-			.execute()
 			.also {
-				val raw = it.receive<ByteArray>()
+				// TODO consider using DoubleDoubleReceive plugin.
+				val raw = it.body<ByteArray>()
 				require(baseFolder.isDirectory || baseFolder.mkdirs())
 				val fileName = it.request.url.fullPath.substringAfterLast('/')
 				val output = baseFolder.resolve(fileName)

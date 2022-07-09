@@ -2,7 +2,7 @@
 
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.config.ApplicationConfig
+import io.ktor.server.config.ApplicationConfig
 
 enum class Env {
 	PRODUCTION,

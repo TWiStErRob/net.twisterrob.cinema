@@ -11,9 +11,9 @@ dependencies {
 
 	Deps.dagger(project)
 
-	api(libs.ktor.client.core.jvm)
-	implementation(libs.ktor.client.client)
-	implementation(libs.ktor.client.jackson)
+	api(libs.ktor.client)
+	implementation(libs.ktor.client.content)
+	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.jackson.datatype.java8)
 }
 
@@ -24,8 +24,8 @@ dependencies {
 	testImplementation(libs.test.hamcrest)
 	testImplementation(projects.testHelpers)
 
-	testImplementation(libs.ktor.client.mock.jvm)
-	testImplementation(libs.ktor.client.logging.jvm)
+	testImplementation(libs.ktor.client.mock)
+	testImplementation(libs.ktor.client.logging)
 	testRuntimeOnly(libs.ktor.client.engine.okhttp)
 
 	Deps.slf4jToLog4jForTest(project)

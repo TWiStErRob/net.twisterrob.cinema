@@ -9,13 +9,14 @@ kotlin = "1.6.21"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.6.3"
+kotlinx-serialization = "1.3.3"
 detekt = "1.20.0"
 
 dagger = "2.42"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "1.6.8"
+ktor = "2.0.3"
 
 # @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 neo4j-ogm = "3.2.25"
@@ -55,31 +56,34 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-gradle = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-apt = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
-ktor-client-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
-ktor-client-logging-jvm = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor" }
-ktor-client-core-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-content = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
-ktor-client-json-jvm = { module = "io.ktor:ktor-client-json-jvm", version.ref = "ktor" }
-ktor-client-gson = { module = "io.ktor:ktor-client-gson", version.ref = "ktor" }
-ktor-client-jackson = { module = "io.ktor:ktor-client-jackson", version.ref = "ktor" }
-ktor-client-kotlinxSerialization = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
-ktor-client-mock-jvm = { module = "io.ktor:ktor-client-mock-jvm", version.ref = "ktor" }
-ktor-client-mock-js = { module = "io.ktor:ktor-client-mock-js", version.ref = "ktor" }
-ktor-client-mock-native = { module = "io.ktor:ktor-client-mock-native", version.ref = "ktor" }
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
+
+ktor-server = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
-ktor-server-locations = { module = "io.ktor:ktor-locations", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-caching = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktor" }
+ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
+ktor-server-content = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-content-html = { module = "io.ktor:ktor-server-html-builder", version.ref = "ktor" }
+ktor-server-content-freemarker = { module = "io.ktor:ktor-server-freemarker", version.ref = "ktor" }
 ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
-ktor-server-content-jackson = { module = "io.ktor:ktor-jackson", version.ref = "ktor" }
-ktor-server-content-html = { module = "io.ktor:ktor-html-builder", version.ref = "ktor" }
-ktor-server-content-freemarker = { module = "io.ktor:ktor-freemarker", version.ref = "ktor" }
+ktor-server-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
+ktor-server-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor" }
+ktor-server-status = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 
 # Warning "The following annotation processors were detected on the compile classpath:"
 #  * 'org.neo4j.kernel.impl.annotations.ServiceProcessor'
@@ -133,6 +137,7 @@ log4j-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log4
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-junit-platform" }
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
+test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
 test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }

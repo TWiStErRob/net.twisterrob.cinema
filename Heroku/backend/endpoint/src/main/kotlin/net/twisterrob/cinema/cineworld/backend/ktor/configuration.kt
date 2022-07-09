@@ -9,31 +9,29 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.application.log
-import io.ktor.auth.Authentication
-import io.ktor.auth.OAuthServerSettings
-import io.ktor.auth.oauth
 import io.ktor.client.HttpClient
-import io.ktor.features.CachingHeaders
-import io.ktor.features.CallLogging
-import io.ktor.features.Compression
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DataConversion
-import io.ktor.features.DefaultHeaders
-import io.ktor.features.StatusPages
-import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
-import io.ktor.locations.Locations
-import io.ktor.sessions.SessionTransportTransformerMessageAuthentication
-import io.ktor.sessions.Sessions
-import io.ktor.sessions.cookie
-import io.ktor.sessions.get
-import io.ktor.sessions.sessions
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.OAuthServerSettings
+import io.ktor.server.auth.oauth
+import io.ktor.server.html.respondHtml
+import io.ktor.server.plugins.cachingheaders.CachingHeaders
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.compression.Compression
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.resources.Resources
+import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.cookie
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
 import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.h1
@@ -79,13 +77,6 @@ internal fun Application.configuration(
 		// default is `options { it.caching }`
 	}
 	//install(HeaderLoggingFeature)
-	install(DataConversion) {
-		convert<LocalDate> {
-			decode { values, _ ->
-				LocalDate.from(ISO_LOCAL_DATE_FORMATTER_NO_DASHES.parse(values.single()))
-			}
-		}
-	}
 	install(ContentNegotiation) {
 		jackson {
 			enable(SerializationFeature.INDENT_OUTPUT)
@@ -101,14 +92,15 @@ internal fun Application.configuration(
 		}
 	}
 	install(StatusPages) {
-		exception<Throwable> { cause ->
+		exception<Throwable> { call, cause ->
+			call.application.log.error("Unhandled exception", cause)
 			call.respondHtml(HttpStatusCode.InternalServerError) {
 				render500InternalServerError(cause)
 			}
 			throw cause
 		}
 	}
-	install(Locations) // support @Location
+	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
 			val secretSignKey = "twister".toByteArray()
@@ -140,8 +132,7 @@ internal fun Application.configuration(
 			client = oauthHttpClient
 			providerLookup = { googleOauthProvider }
 			urlProvider = {
-				// Manually encode? https://youtrack.jetbrains.com/issue/KTOR-2938
-				absoluteUrl("/auth/google/return")//.encodeURLParameter(spaceToPlus = true)
+				absoluteUrl("/auth/google/return")
 			}
 		}
 	}

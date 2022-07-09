@@ -1,9 +1,10 @@
 package net.twisterrob.ktor.client
 
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
 import org.slf4j.Logger
+import io.ktor.client.plugins.logging.Logger as KtorLogger
 
 fun HttpClientConfig<*>.configureLogging(log: Logger) {
 	install(Logging) {
@@ -36,11 +37,11 @@ private class NetworkCall(url: String) : Exception("Callsite for $url")
 private class LevelLogger(
 	private val log: Logger,
 	private val logAtLevel: Logger.(message: String) -> Unit,
-) : io.ktor.client.features.logging.Logger {
+) : KtorLogger {
 
 	override fun log(message: String) {
 		if (message.startsWith("REQUEST: ")) {
-			val url = message.substringAfter("REQUEST: ")
+			val url = message.substringAfter("REQUEST: ").substringBefore("\n")
 			log.debug("Network call: $url", NetworkCall(url).apply {
 				stackTrace = stackTrace
 					.drop(1)

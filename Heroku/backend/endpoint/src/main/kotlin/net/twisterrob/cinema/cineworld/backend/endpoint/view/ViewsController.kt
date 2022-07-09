@@ -1,16 +1,16 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.view
 
-import io.ktor.application.Application
-import io.ktor.application.call
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.locations.delete
-import io.ktor.locations.post
-import io.ktor.locations.put
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.response.respondText
-import io.ktor.routing.Routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.resources.delete
+import io.ktor.server.resources.post
+import io.ktor.server.resources.put
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Routing
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewRepository
@@ -33,8 +33,8 @@ class ViewsController @Inject constructor(
 	override fun Routing.registerRoutes() {
 
 		post<Views.Routes.AddView> {
-			val payload = call.receive<Views.Routes.ViewPayload>()
 			if (call.hasUser) {
+				val payload = call.receive<Views.Routes.ViewPayload>()
 				val view = repository.addView(
 					user = call.userId,
 					film = payload.edi,
