@@ -73,6 +73,7 @@ ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", ve
 
 ktor-server = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
 ktor-server-caching = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktor" }
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
 ktor-server-content = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
@@ -80,8 +81,6 @@ ktor-server-content-html = { module = "io.ktor:ktor-server-html-builder", versio
 ktor-server-content-freemarker = { module = "io.ktor:ktor-server-freemarker", version.ref = "ktor" }
 ktor-server-engine-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-server-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
-# STOPSHIP https://ktor.io/docs/locations.html
-ktor-server-locations = { module = "io.ktor:ktor-server-locations", version.ref = "ktor" }
 ktor-server-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor" }
 ktor-server-status = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }

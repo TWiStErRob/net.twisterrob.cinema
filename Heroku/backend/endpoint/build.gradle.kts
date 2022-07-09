@@ -35,6 +35,7 @@ dependencies {
 	testImplementation(libs.kotlin.stdlib8)
 
 	implementation(libs.ktor.server)
+	implementation(libs.ktor.server.auth)
 	implementation(libs.ktor.server.content)
 	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.ktor.server.logging)
@@ -42,7 +43,6 @@ dependencies {
 	implementation(libs.ktor.server.compression)
 	implementation(libs.ktor.server.headers)
 	implementation(libs.ktor.server.status)
-	implementation(libs.ktor.server.locations)
 	implementation(libs.ktor.server.resources)
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.ktor.server.engine.netty)
@@ -78,12 +78,4 @@ dependencies {
 		exclude(group = "ch.qos.logback", module = "logback-classic")
 	}
 	kaptTest(libs.dagger.apt)
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-opt-in=io.ktor.server.locations.KtorExperimentalLocationsAPI"
-		)
-	}
 }

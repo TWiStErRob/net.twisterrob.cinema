@@ -20,12 +20,10 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.OAuthServerSettings
 import io.ktor.server.auth.oauth
 import io.ktor.server.html.respondHtml
-import io.ktor.server.locations.Locations
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.compression.Compression
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.dataconversion.DataConversion
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.resources.Resources
@@ -79,13 +77,6 @@ internal fun Application.configuration(
 		// default is `options { it.caching }`
 	}
 	//install(HeaderLoggingFeature)
-	install(DataConversion) {
-		convert<LocalDate> {
-			decode { values ->
-				LocalDate.from(ISO_LOCAL_DATE_FORMATTER_NO_DASHES.parse(values.single()))
-			}
-		}
-	}
 	install(ContentNegotiation) {
 		jackson {
 			enable(SerializationFeature.INDENT_OUTPUT)
@@ -109,7 +100,6 @@ internal fun Application.configuration(
 			throw cause
 		}
 	}
-	install(Locations) // support @Location
 	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
