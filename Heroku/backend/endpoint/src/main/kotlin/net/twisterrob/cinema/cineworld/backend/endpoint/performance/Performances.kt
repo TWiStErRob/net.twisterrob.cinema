@@ -4,11 +4,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import io.ktor.server.locations.Location
+import io.ktor.resources.Resource
+import kotlinx.serialization.Serializable
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.GraphPerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.PerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.QuickbookPerformanceRepository
+import net.twisterrob.cinema.cineworld.backend.ktor.LocalDateNoDashesSerializer
 import net.twisterrob.cinema.cineworld.backend.ktor.LocationRoute
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import java.time.LocalDate
@@ -18,8 +20,10 @@ object Performances {
 
 	object Routes {
 
-		@Location("/performance")
+		@Serializable
+		@Resource("/performance")
 		data class ListPerformances(
+			@Serializable(with = LocalDateNoDashesSerializer::class)
 			val date: LocalDate,
 			val cinemaIDs: List<Long>,
 			val filmEDIs: List<Long>
