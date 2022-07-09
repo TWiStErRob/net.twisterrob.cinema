@@ -126,13 +126,13 @@ jobs:
 
       - name: Publish "🔔 Test Results" check run.
         if: success() || failure()
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: 🔔 Test Results
           comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
-          files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
+          junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: Cleanup Gradle files before caching.
         run: |
