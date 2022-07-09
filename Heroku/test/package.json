@@ -33,6 +33,6 @@
 		"npm-run-all": "4.1.5",
 		"protractor-screenshoter-plugin": "0.10.3",
 		"webdriver-manager": "12.1.8",
-		"jshint": "2.13.4"
+		"jshint": "2.13.5"
 	}
 }
