@@ -1,10 +1,12 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint
 
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.withApplication
+import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import org.slf4j.Logger
@@ -42,6 +44,10 @@ fun endpointTest(
 			}
 		}
 	) {
+		application.install(ServerLogging) {
+			logger = application.log
+			level = ServerLogging.LogLevel.ALL
+		}
 		application.apply {
 			configure()
 			daggerApp()

@@ -28,6 +28,9 @@ import org.mockito.kotlin.whenever
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ * @see configureLogging
+ */
 @TagFunctional
 class ConfigureLoggingTest {
 
