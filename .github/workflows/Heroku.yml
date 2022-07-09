@@ -126,7 +126,7 @@ jobs:
 
       - name: Publish "🔔 Test Results" check run.
         if: success() || failure()
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: 🔔 Test Results
           comment_mode: off
