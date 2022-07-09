@@ -36,6 +36,7 @@ object AuthTestConstants {
 /**
  * Makes sure that auth interceptor works as expected.
  * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
+ * @see handleRequestAuth
  */
 fun AuthRepository.setupAuth(): User {
 	val fixtUser: User = JFixture().build()
@@ -46,6 +47,7 @@ fun AuthRepository.setupAuth(): User {
 /**
  * Makes sure that auth interceptor works as expected.
  * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
+ * @see setupAuth
  */
 fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
 	handleRequest {

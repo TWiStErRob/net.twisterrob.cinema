@@ -214,7 +214,7 @@ private interface CinemasIntgTestComponent : ApplicationComponent {
 }
 
 @Language("json")
-private fun serialized(cinema: Cinema): String =
+fun serialized(cinema: Cinema): String =
 	// order intentionally switched up
 	"""
 	{

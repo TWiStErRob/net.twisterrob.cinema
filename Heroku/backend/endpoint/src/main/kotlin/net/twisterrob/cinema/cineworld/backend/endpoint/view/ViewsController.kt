@@ -33,8 +33,8 @@ class ViewsController @Inject constructor(
 	override fun Routing.registerRoutes() {
 
 		post<Views.Routes.AddView> {
-			val payload = call.receive<Views.Routes.ViewPayload>()
 			if (call.hasUser) {
+				val payload = call.receive<Views.Routes.ViewPayload>()
 				val view = repository.addView(
 					user = call.userId,
 					film = payload.edi,

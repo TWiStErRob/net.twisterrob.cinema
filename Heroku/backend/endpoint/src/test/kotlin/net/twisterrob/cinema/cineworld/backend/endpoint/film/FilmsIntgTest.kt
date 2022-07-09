@@ -180,7 +180,7 @@ private interface FilmsIntgTestComponent : ApplicationComponent {
 }
 
 @Language("json")
-private fun serialized(film: Film): String =
+fun serialized(film: Film): String =
 	// order intentionally switched up
 	"""
 	{
