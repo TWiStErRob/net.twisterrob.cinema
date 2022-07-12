@@ -25,7 +25,7 @@ neo4j-ogm = "3.2.25"
 # Match version of DB at https://console.neo4j.io/#databases, exactly to minor.
 # @see neo4j-ogm should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
-neo4j = "4.2.4"
+neo4j = "4.4.9"
 
 jackson = "2.13.3"
 
