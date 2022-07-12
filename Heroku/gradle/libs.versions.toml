@@ -21,13 +21,17 @@ ktor = "2.0.3"
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
-# https://mvnrepository.com/artifact/org.neo4j/neo4j
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j
+# Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
+# Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
 neo4j = "4.4.8"
-# https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
+# Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
 neo4j-java = "4.4.9"
-# https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
+# Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "3.2.36"
-# https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 neo4j-harness = "4.4.8"
 
 jackson = "2.13.3"
