@@ -62,6 +62,7 @@ class ViewIntgTest {
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 
+		@Suppress("DestructuringDeclarationWithTooManyEntries") // https://github.com/detekt/detekt/discussions/5123
 		graph.beginTx().use { tx ->
 			val nodes = tx.allNodes.toList()
 
