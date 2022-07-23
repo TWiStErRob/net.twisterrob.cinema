@@ -19,7 +19,7 @@
 		</Property>
 		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
 		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
-		pattern_level_colors}} %style{%message}{bright white}%n%style{%throwable}{BG_red,white}
+		pattern_level_colors}} %style{%message}{bright_white}%n%style{%throwable}{BG_red,white}
 		</Property>
 	</Properties>
 
