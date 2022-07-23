@@ -19,13 +19,13 @@ dagger = "2.43"
 ktor = "2.0.3"
 
 # @see neo4j should be listed in https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
-neo4j-ogm = "3.2.25"
+neo4j-ogm = "3.2.36"
 
 # https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Match version of DB at https://console.neo4j.io/#databases, exactly to minor.
 # @see neo4j-ogm should match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
-neo4j = "4.2.4"
+neo4j = "4.2.9"
 
 jackson = "2.13.3"
 
