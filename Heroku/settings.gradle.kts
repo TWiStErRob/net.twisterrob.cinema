@@ -1,3 +1,5 @@
+rootProject.name = "Cinema-Heroku"
+
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
 include(":backend:sync")
