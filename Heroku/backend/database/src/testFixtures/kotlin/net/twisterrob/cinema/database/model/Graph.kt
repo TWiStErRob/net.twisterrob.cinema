@@ -30,6 +30,7 @@ private fun neighbors(entity: BaseNode): Collection<BaseNode> =
 	}
 
 private fun fixupProperties(entity: BaseNode) {
+	@Suppress("OptionalWhenBraces")
 	when (entity) {
 		is Cinema -> {
 			entity.users.forEach { it.cinemas.maybeAdd(entity) }

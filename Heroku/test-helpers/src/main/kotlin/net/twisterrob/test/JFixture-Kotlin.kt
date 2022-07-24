@@ -18,9 +18,9 @@ private fun ignoreKotlinConstructors() = Customisation {
 private class MostParameterConstructorQuery : ConstructorQuery {
 	@Suppress("ReturnCount") // Cannot think of a better structure for now.
 	override fun getConstructorsForClass(clazz: Class<*>): List<Constructor<*>>? {
-		if (clazz.constructors.any(Constructor<*>::hasDefaultConstructorMarkerAsArgument)) {
+		if (clazz.constructors.any(Constructor<*>::hasDefaultConstructorMarker)) {
 			val constructor = clazz.constructors
-				.filter(Constructor<*>::doesNotHaveDefaultConstructorMarkerAsArgument)
+				.filter(Constructor<*>::hasNoDefaultConstructorMarker)
 				.sortedWith(ConstructorParameterCountComparator())
 				.lastOrNull()
 				?: return emptyList() // Oops, this class has no constructors.
@@ -38,8 +38,8 @@ private class MostParameterConstructorQuery : ConstructorQuery {
 private fun Parameter.isDefaultMarker(): Boolean =
 	this.type.simpleName == "DefaultConstructorMarker"
 
-private fun Constructor<*>.doesNotHaveDefaultConstructorMarkerAsArgument(): Boolean =
+private fun Constructor<*>.hasNoDefaultConstructorMarker(): Boolean =
 	this.parameters.none(Parameter::isDefaultMarker)
 
-private fun Constructor<*>.hasDefaultConstructorMarkerAsArgument(): Boolean =
+private fun Constructor<*>.hasDefaultConstructorMarker(): Boolean =
 	this.parameters.lastOrNull()?.isDefaultMarker() ?: false

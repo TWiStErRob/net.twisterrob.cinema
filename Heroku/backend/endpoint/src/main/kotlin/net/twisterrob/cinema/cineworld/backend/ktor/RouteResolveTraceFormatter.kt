@@ -6,6 +6,8 @@ import javax.inject.Inject
 class RouteResolveTraceFormatter @Inject constructor() {
 
 	/**
+	 * Produces the user-readable trace in full.
+	 *
 	 * Example:
 	 * ```
 	 * Trace for [film]
@@ -25,9 +27,15 @@ class RouteResolveTraceFormatter @Inject constructor() {
 		trace.buildText()
 
 	/**
-	 * Example:
+	 * Produces the user-readable trace in short form.
+	 *
+	 * Example (`\` means the line continues):
 	 * ```
-	 * Trace for [film]: [hidden, enable trace logging]; Route resolve result: SUCCESS; Parameters [cinemaIDs=[1], date=[20210902]] @ /film/[cinemaIDs]/[date]/(method:GET)
+	 * Trace for [film]: \
+	 * [hidden, enable trace logging]; \
+	 * Route resolve result: SUCCESS; \
+	 * Parameters [cinemaIDs=[1], date=[20210902]] @ \
+	 * /film/[cinemaIDs]/[date]/(method:GET)
 	 * ```
 	 */
 	fun formatSimple(trace: RoutingResolveTrace): String =

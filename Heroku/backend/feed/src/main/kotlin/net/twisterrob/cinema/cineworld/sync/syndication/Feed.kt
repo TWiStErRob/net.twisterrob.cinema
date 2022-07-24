@@ -39,11 +39,11 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
 	// merge the attributes, keep only unique ones
 	attributes = (this.attributes + other.attributes).distinctBy { it.code },
 	// different country -> different cinemas
-	cinemas = (this.cinemas + other.cinemas),
+	cinemas = this.cinemas + other.cinemas,
 	// both countries play the same movies
 	films = (this.films + other.films).distinctBy { it.id },
 	// performances are separate by cinemas, see cinemas above
-	performances = (this.performances + other.performances)
+	performances = this.performances + other.performances
 )
 
 /**
@@ -177,6 +177,7 @@ data class Feed(
 		@JsonIgnore
 		val serviceList = services.split(",")
 
+		@Suppress("DataClassShouldBeImmutable")
 		@JsonManagedReference("cinema")
 		lateinit var performances: List<Performance>
 			private set
@@ -247,7 +248,7 @@ data class Feed(
 		val posterUrl: URI,
 
 		/**
-		 * Note: never seen it non-empty
+		 * Note: never seen it non-empty.
 		 * @sample `""`
 		 */
 		val reasonToSee: String?,
@@ -266,6 +267,7 @@ data class Feed(
 		@JsonIgnore
 		val attributeList = attributes.split(",")
 
+		@Suppress("DataClassShouldBeImmutable")
 		@JsonManagedReference("film")
 		lateinit var performances: List<Performance>
 			private set

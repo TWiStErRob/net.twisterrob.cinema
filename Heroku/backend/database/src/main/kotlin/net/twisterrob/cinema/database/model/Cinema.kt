@@ -10,8 +10,6 @@ import java.net.URI
 @NodeEntity(label = "Cinema")
 class Cinema : Historical() {
 
-	companion object
-
 	@Property(name = "class")
 	val className: String = "Cinema"
 

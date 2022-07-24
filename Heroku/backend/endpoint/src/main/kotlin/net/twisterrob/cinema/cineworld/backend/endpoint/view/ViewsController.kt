@@ -31,6 +31,7 @@ class ViewsController @Inject constructor(
 	/**
 	 * @see Views.Routes
 	 */
+	@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5132
 	override fun Routing.registerRoutes() {
 
 		post<Views.Routes.AddView> {

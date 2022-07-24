@@ -16,19 +16,13 @@ import org.junit.jupiter.api.Test
 @TagIntegration
 class FeedServiceNetworkIntgTest {
 
-	private fun loadFeed(fileName: String): ByteArray {
-		val resource = "/$fileName"
-		val stream = FeedServiceNetworkIntgTest::class.java.getResourceAsStream(resource)
-			?: error("Cannot find $resource near ${FeedServiceNetworkIntgTest::class.java}")
-		return stream.readBytes()
-	}
-
 	private val mockClient = HttpClient(mockEngine())
 
 	private val sut = FeedServiceNetwork(mockClient)
 
 	@Test fun `read weekly film times XML`() {
 		mockClient.stub { request ->
+			@Suppress("UseIfInsteadOfWhen") // Conventionally this is a when-expression.
 			when {
 				request.url.toString().startsWith("https://classic.cineworld.co.uk/syndication/") -> {
 					val fileName = request.url.encodedPath.split("/").last()
@@ -50,4 +44,11 @@ class FeedServiceNetworkIntgTest {
 		feed.sanityCheck()
 		feed.verifyHasAllAttributes(SCREENING_TYPES + GENRES)
 	}
+}
+
+private fun loadFeed(fileName: String): ByteArray {
+	val resource = "/$fileName"
+	val stream = FeedServiceNetworkIntgTest::class.java.getResourceAsStream(resource)
+		?: error("Cannot find $resource near ${FeedServiceNetworkIntgTest::class.java}")
+	return stream.readBytes()
 }

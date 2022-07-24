@@ -18,9 +18,9 @@ class GraphViewRepository @Inject constructor(
 		service.removeView(user = user, film = film, cinema = cinema, time = time)
 	}
 
+	@Suppress("NotImplementedDeclaration", "UNREACHABLE_CODE")
 	override fun ignoreView(user: String, film: Long, reason: String): IgnoreResponse {
-		TODO("Not implemented")
-		@Suppress("UNREACHABLE_CODE")
+		TODO("Not implemented: https://github.com/TWiStErRob/net.twisterrob.cinema/issues/181")
 		return IgnoreResponse(
 			film = IgnoreResponse.Film(edi = film),
 			reason = reason,

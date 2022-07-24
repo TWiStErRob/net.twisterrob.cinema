@@ -14,10 +14,10 @@ class ViewService @Inject constructor(
 ) {
 
 	/**
-	 * Create a relationship node for "[user] watched [film] in [cinema] at [time]"
-	 * @param cinema [Cinema.cineworldID]
-	 * @param film [Film.edi]
+	 * Create a relationship node for "[user] watched [film] in [cinema] at [time]".
 	 * @param user [User.id]
+	 * @param film [Film.edi]
+	 * @param cinema [Cinema.cineworldID]
 	 * @param time [View.date]
 	 */
 	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
@@ -47,9 +47,9 @@ class ViewService @Inject constructor(
 
 	/**
 	 * Remove the [View]s for a given [film] for a [user] at [time] in [cinema].
-	 * @param cinema [Cinema.cineworldID]
-	 * @param film [Film.edi]
 	 * @param user [User.id]
+	 * @param film [Film.edi]
+	 * @param cinema [Cinema.cineworldID]
 	 * @param time [View.date]
 	 */
 	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime) {

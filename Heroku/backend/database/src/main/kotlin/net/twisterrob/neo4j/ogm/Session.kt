@@ -48,7 +48,6 @@ inline fun <reified T> Session.deleteForIds(filters: Iterable<Filter> = emptyLis
  * @param T The type that should be returned from the query.
  * @param cypher The parameterizable cypher to execute.
  * @param parameters Any parameters to attach to the cypher.
- * @param T A domain object or scalar.
  * @return A collection of domain objects or scalars as prescribed by the parametrized type.
  * @see Session.query
  */

@@ -160,7 +160,7 @@ class UserServiceIntgTest {
 		val fixtName: String = fixture.build()
 		val fixtRealm: String = fixture.build()
 		val fixtCreated: OffsetDateTime = fixture.build<OffsetDateTime>().let {
-			it.minusNanos(it.nano % 10000000L)
+			it.minusNanos(it.nano % 10_000_000L)
 		}
 		assertTrue(
 			fixtCreated.toInstant().toEpochMilli() % 10 == 0L,
@@ -201,7 +201,7 @@ class UserServiceIntgTest {
 		val fixtName: String = fixture.build()
 		val fixtRealm: String = fixture.build()
 		val fixtCreated: OffsetDateTime = fixture.build<OffsetDateTime>().let {
-			it.minusNanos(it.nano % 1000000000L)
+			it.minusNanos(it.nano % 1_000_000_000L)
 		}
 		assertTrue(
 			fixtCreated.toInstant().toEpochMilli() % 1000 == 0L,

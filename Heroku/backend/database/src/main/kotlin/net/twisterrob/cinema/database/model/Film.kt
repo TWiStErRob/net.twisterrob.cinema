@@ -12,8 +12,6 @@ import java.time.OffsetDateTime
 @NodeEntity(label = "Film")
 class Film : Historical() {
 
-	companion object
-
 	@Property(name = "class")
 	val className: String = "Film"
 

@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.sync
 
 import net.twisterrob.cinema.database.model.Historical
 
+@Suppress("DataClassContainsFunctions")
 data class SyncResults<DB : Historical>(
 
 	/**
@@ -80,8 +81,9 @@ data class SyncResults<DB : Historical>(
 		}
 	}
 
-	private fun checkMaybeUpdated(@Suppress("UNUSED_PARAMETER") it: DB) =
-		Unit // nothing to check null/non-null both valid
+	private fun checkMaybeUpdated(@Suppress("UNUSED_PARAMETER") it: DB) {
+		// Nothing to check null/non-null both valid.
+	}
 
 	private fun checkUpdated(it: DB) =
 		check(it._updated != null) { "${identity(it)} should be updated." }

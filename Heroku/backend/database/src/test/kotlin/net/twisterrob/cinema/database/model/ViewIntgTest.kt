@@ -30,6 +30,7 @@ class ViewIntgTest {
 
 	@Test fun `new view can be loaded back and contains all data`(session: Session) {
 		val fixtView: View = fixture.build()
+		@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5131
 		val expected = fixtView.copy().apply view@{
 			graphId = 2
 			inUTC()

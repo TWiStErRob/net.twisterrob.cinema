@@ -8,7 +8,7 @@ class MainParametersParser {
 		val syncCinemas = "cinemas" in args
 		val syncFilms = "films" in args
 		val syncPerformances = "performances" in args
-		val folder = args.singleOrNull { it.startsWith("--folder=") }?.removePrefix("--folder=")
+		val folder = args.singleOrNull { it.startsWith(ARG_FOLDER) }?.removePrefix(ARG_FOLDER)
 		val params = MainParameters(
 			syncCinemas = syncCinemas || syncPerformances,
 			syncFilms = syncFilms || syncPerformances,
@@ -22,11 +22,16 @@ class MainParametersParser {
 			"""Must have "cinemas" or "films" or "performances" or any/all as an argument."""
 		}
 		val unprocessed = args.toList()
-			.filterNot { it.startsWith("--folder=") }
+			.filterNot { it.startsWith(ARG_FOLDER) }
 			.filterNot { it == "cinemas" || it == "films" || it == "performances" }
 		require(unprocessed.isEmpty()) {
 			"""Unknown parameters were passed to sync: ${unprocessed} in ${args}."""
 		}
 		return params
+	}
+
+	private companion object {
+
+		private const val ARG_FOLDER = "--folder="
 	}
 }

@@ -30,6 +30,7 @@ class CinemasController @Inject constructor(
 	/**
 	 * @see Cinemas.Routes
 	 */
+	@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5132
 	override fun Routing.registerRoutes() {
 
 		get<Cinemas.Routes.ListCinemas> {

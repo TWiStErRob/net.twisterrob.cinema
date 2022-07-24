@@ -206,7 +206,7 @@ class AuthIntgTest {
 	}
 
 	/**
-	 * TODO it should redirect to Google
+	 * TODO it should redirect to Google.
 	 * @see Auth.Routes.Google
 	 */
 	@Test
@@ -374,6 +374,7 @@ private fun HttpClient.stubGoogleOpenIdUserInfo(userId: String, email: String, n
 	}
 }
 
+@Suppress("FunctionMaxLength")
 private fun HttpClient.verifyGoogleOpenIdUserInfoRequest(accessToken: String) {
 	verify("https://openidconnect.googleapis.com/v1/userinfo") { request, _ ->
 		assertEquals("Bearer ${accessToken}", request.headers[HttpHeaders.Authorization])

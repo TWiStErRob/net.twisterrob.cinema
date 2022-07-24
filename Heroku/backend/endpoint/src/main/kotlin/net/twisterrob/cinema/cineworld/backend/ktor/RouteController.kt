@@ -16,15 +16,6 @@ abstract class RouteController(
 ) {
 
 	/**
-	 * Shortcut to get the url of a [LocationRoute] based on [Resource.path].
-	 *
-	 * @see io.ktor.server.resources.href similar to this, but flipped
-	 *                                    (`application.href(it)` vs `it.href` inside a [RouteController])
-	 */
-	protected inline fun <reified T : LocationRoute> T.href(): String =
-		application.href(this)
-
-	/**
 	 * What is the order in which to call the [registerRoutes] method, lower goes first.
 	 * Used to define some kind of consistency between runs, rather than relying on [HashSet].
 	 */
@@ -35,4 +26,13 @@ abstract class RouteController(
 	 * @see RouteControllerRegistrar
 	 */
 	abstract fun Routing.registerRoutes()
+
+	/**
+	 * Shortcut to get the url of a [LocationRoute] based on [Resource.path].
+	 *
+	 * @see io.ktor.server.resources.href similar to this, but flipped
+	 *                                    (`application.href(it)` vs `it.href` inside a [RouteController])
+	 */
+	protected inline fun <reified T : LocationRoute> T.href(): String =
+		application.href(this)
 }

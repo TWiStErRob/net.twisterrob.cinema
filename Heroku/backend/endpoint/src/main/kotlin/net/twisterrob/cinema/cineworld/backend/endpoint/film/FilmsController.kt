@@ -27,6 +27,7 @@ class FilmsController @Inject constructor(
 	/**
 	 * @see Films.Routes
 	 */
+	@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5132
 	override fun Routing.registerRoutes() {
 
 		get<Films.Routes.ListFilms> { listFilms ->

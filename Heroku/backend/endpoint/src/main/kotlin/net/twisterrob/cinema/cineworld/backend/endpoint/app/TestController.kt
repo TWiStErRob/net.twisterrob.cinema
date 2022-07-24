@@ -26,6 +26,7 @@ class TestController @Inject constructor(
 
 	override val order: Int get() = Int.MIN_VALUE
 
+	@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5132
 	override fun Routing.registerRoutes() {
 		if (application.environment.config.environment == Env.PRODUCTION) return
 

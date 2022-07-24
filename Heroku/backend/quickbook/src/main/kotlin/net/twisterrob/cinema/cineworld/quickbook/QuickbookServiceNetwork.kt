@@ -85,6 +85,7 @@ class QuickbookServiceNetwork @Inject constructor(
 /**
  * Tell Ktor [HttpClient] which type to parse the JSON as.
  * @param full whether the JSON has full information
+ * @param block to set up the request.
  */
 private suspend inline fun HttpClient.getCinemas(
 	full: Boolean,
@@ -99,6 +100,7 @@ private suspend inline fun HttpClient.getCinemas(
 /**
  * Tell Ktor [HttpClient] which type to parse the JSON as.
  * @param full whether the JSON has full information
+ * @param block to set up the request.
  */
 private suspend inline fun HttpClient.getFilms(
 	full: Boolean,
