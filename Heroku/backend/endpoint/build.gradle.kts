@@ -74,8 +74,6 @@ dependencies {
 	testImplementation(libs.jackson.datatype.java8)
 	testImplementation(libs.kotlinx.serialization.json)
 	testImplementation(libs.ktor.client.mock)
-	testImplementation(libs.ktor.server.test) {
-		exclude(group = "ch.qos.logback", module = "logback-classic")
-	}
+	testImplementation(libs.ktor.server.test)
 	kaptTest(libs.dagger.apt)
 }

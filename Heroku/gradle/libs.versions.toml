@@ -22,17 +22,16 @@ ktor = "2.0.3"
 # Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "4.4.8"
+neo4j = "4.4.9"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
 neo4j-java = "4.4.9"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "3.2.36"
-# Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
-neo4j-harness = "4.4.8"
 
 jackson = "2.13.3"
 
@@ -117,14 +116,10 @@ neo4j-ogm-driver-bolt = { module = "org.neo4j:neo4j-ogm-bolt-driver", version.re
 #  * [Cypher temporal functions](https://neo4j.com/docs/cypher-manual/current/syntax/temporal/)
 neo4j-ogm-driver-bolt-nativeTypes = { module = "org.neo4j:neo4j-ogm-bolt-native-types", version.ref = "neo4j-ogm" }
 
+neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 # When using this, mind https://github.com/neo4j/neo4j/issues/12770.
-# To work around, use:
-# ```
-# testImplementation(libs.neo4j.harness) {
-#     exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
-# }
-# ```
-neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j-harness" }
+# To work around, use (applied in root Gradle): Project.configureSLF4JBindings()
+neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j" }
 
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-dataformat-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
