@@ -34,6 +34,7 @@ dependencies {
 	}
 	testImplementation(projects.testHelpers)
 
+	testImplementation(libs.neo4j)
 	testImplementation(libs.neo4j.harness) {
 		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
 	}
