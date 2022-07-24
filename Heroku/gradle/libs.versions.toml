@@ -119,12 +119,7 @@ neo4j-ogm-driver-bolt-nativeTypes = { module = "org.neo4j:neo4j-ogm-bolt-native-
 
 neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 # When using this, mind https://github.com/neo4j/neo4j/issues/12770.
-# To work around, use:
-# ```
-# testImplementation(libs.neo4j.harness) {
-#     exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
-# }
-# ```
+# To work around, use (applied in root Gradle): Project.configureSLF4JBindings()
 neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j-harness" }
 
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

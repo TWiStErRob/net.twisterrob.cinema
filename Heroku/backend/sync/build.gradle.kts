@@ -50,9 +50,7 @@ dependencies {
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
 	testImplementation(libs.neo4j)
-	testImplementation(libs.neo4j.harness) {
-		exclude(group = libs.slf4j.nop.get().module.group, module = libs.slf4j.nop.get().module.name)
-	}
+	testImplementation(libs.neo4j.harness)
 
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)
