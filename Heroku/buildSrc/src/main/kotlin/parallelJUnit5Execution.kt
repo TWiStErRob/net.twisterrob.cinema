@@ -13,6 +13,7 @@ fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
 	val override = if (overrideRaw == "") null else Concurrency.valueOf(overrideRaw)
 	when (override ?: concurrency) {
 		Concurrency.PerSuite -> {
+			// Default is maxParallelForks = 1.
 			props(parallel = false, defaultMode = ConcurrencyMode.SameThread, classMode = ConcurrencyMode.SameThread)
 		}
 		Concurrency.PerClass -> {
