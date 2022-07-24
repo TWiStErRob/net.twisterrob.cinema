@@ -1,3 +1,5 @@
+rootProject.name = "Cinema-Heroku-buildSrc"
+
 dependencyResolutionManagement {
 	@Suppress("UnstableApiUsage")
 	versionCatalogs {
