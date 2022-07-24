@@ -25,12 +25,6 @@ class QuickbookServiceNetworkIntgExtTest {
 	}
 	private val sut = QuickbookServiceNetwork(client, "9qfgpF7B")
 
-	companion object {
-		private val londonCinemas = listOf<Long>(22, 25, 37, 45, 65, 66, 70, 79, 89, 103, 113)
-		private val today = LocalDate.now()
-		private val tomorrow = today.plusDays(1)
-	}
-
 	@Test fun `get all cinemas`() {
 		val cinemas = sut.cinemas(full = false)
 
@@ -61,5 +55,11 @@ class QuickbookServiceNetworkIntgExtTest {
 		val performances = sut.performances(date = tomorrow, cinema = cinema, film = film)
 
 		assertThat(performances, not(empty()))
+	}
+
+	companion object {
+		private val londonCinemas = listOf<Long>(22, 25, 37, 45, 65, 66, 70, 79, 89, 103, 113)
+		private val today = LocalDate.now()
+		private val tomorrow = today.plusDays(1)
 	}
 }

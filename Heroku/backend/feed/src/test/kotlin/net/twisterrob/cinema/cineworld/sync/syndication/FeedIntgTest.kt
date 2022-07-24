@@ -46,16 +46,16 @@ class FeedIntgTest {
 			cinemas.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			films.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			this["performances"] = (1..3).map {
-				val performance = Feed.Performance(
+				Feed.Performance(
 					film = films.random(),
 					cinema = cinemas.random(),
 					url = fixture.build(),
 					attributes = SCREENING_TYPES.random().code,
 					date = fixture.build()
-				)
-				performance.film.add("performances", performance)
-				performance.cinema.add("performances", performance)
-				return@map performance
+				).apply {
+					film.add("performances", this)
+					cinema.add("performances", this)
+				}
 			}
 		}
 		val serialized = feedReader().writeValueAsString(fixtFeed)

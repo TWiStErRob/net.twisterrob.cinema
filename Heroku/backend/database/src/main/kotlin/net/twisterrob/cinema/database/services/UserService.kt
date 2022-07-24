@@ -18,10 +18,10 @@ class UserService @Inject constructor(
 	/**
 	 * Create a user if doesn't exists with the specified data.
 	 * @param userId OpenID
-	 * @param name Display name of the user being created.
 	 * @param email The email of the user being created.
-	 * @param created Moment of creation.
+	 * @param name Display name of the user being created.
 	 * @param realm The website where the login happened.
+	 * @param created Moment of creation.
 	 */
 	fun addUser(userId: String, email: String, name: String, realm: String, created: OffsetDateTime): User =
 		session.queryForObject(

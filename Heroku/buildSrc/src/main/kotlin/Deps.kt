@@ -2,6 +2,7 @@ import net.twisterrob.cinema.heroku.plugins.internal.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("StringLiteralDuplication")
 object Deps {
 
 	fun junit5(project: Project) {

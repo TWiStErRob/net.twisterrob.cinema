@@ -38,6 +38,9 @@ import org.slf4j.LoggerFactory
 @Execution(ExecutionMode.SAME_THREAD)
 class ConfigureLoggingTest {
 
+	/**
+	 * @see forceSlf4jInitialization which is called before this executes.
+	 */
 	private val mockLogger: Logger = spy(LoggerFactory.getLogger(ConfigureLoggingTest::class.java)).apply {
 		doReturn(false).whenever(this).isErrorEnabled
 		doReturn(false).whenever(this).isWarnEnabled
@@ -56,19 +59,11 @@ class ConfigureLoggingTest {
 		}
 	}
 
-	companion object {
-
-		@Suppress("unused")
-		@BeforeAll @JvmStatic fun forceSlf4jInitialization() {
-			// Uninitialized [LoggerFactory.getLogger] would return different types of loggers on each call.
-			LoggerFactory.getILoggerFactory()
-		}
-	}
-
 	private fun HttpClient.stubFakeRequestResponse() {
 		stub { request ->
+			@Suppress("UseIfInsteadOfWhen") // Conventionally this is a when-expression.
 			when {
-				request.url.toString() == "http://localhost/stubbed" -> {
+				request.url.toString() == "http://localhost/stubbed" ->
 					respond(
 						content = "Fake content",
 						headers = headersOf(
@@ -76,7 +71,6 @@ class ConfigureLoggingTest {
 							HttpHeaders.ContentType to listOf(ContentType.Application.Xml.toString()),
 						)
 					)
-				}
 
 				else -> error("Unhandled ${request.url}")
 			}
@@ -204,6 +198,7 @@ class ConfigureLoggingTest {
 			.joinToString("\n")
 	}
 
+	@Suppress("FunctionMaxLength")
 	private fun verifyNoMoreLogLevelInteractions(method: Logger.(String) -> Unit) {
 		verify(mockLogger, atMost(1)).isErrorEnabled
 		verify(mockLogger, atMost(1)).isWarnEnabled
@@ -219,6 +214,15 @@ class ConfigureLoggingTest {
 			} catch (ex2: AssertionError) {
 				throw ex.initCause(ex2)
 			}
+		}
+	}
+
+	companion object {
+
+		@Suppress("unused")
+		@BeforeAll @JvmStatic fun forceSlf4jInitialization() {
+			// Uninitialized [LoggerFactory.getLogger] would return different types of loggers on each call.
+			LoggerFactory.getILoggerFactory()
 		}
 	}
 }

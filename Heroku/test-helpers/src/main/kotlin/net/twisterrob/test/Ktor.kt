@@ -50,6 +50,7 @@ fun HttpClient.stub(handler: MockRequestHandler) {
 }
 
 fun HttpClient.stub(url: String, handler: MockRequestHandler) = stub { request ->
+	@Suppress("UseIfInsteadOfWhen")
 	when (request.url.toString()) {
 		url -> handler(this, request)
 		else -> fail("Expecting $url, but request url didn't match: ${request.url}")

@@ -23,7 +23,7 @@ class FeedTest {
 					feed2.attributes.map(Feed.Attribute::code)
 						.intersect(feed1.attributes.map(Feed.Attribute::code))
 						.isEmpty()
-				return@first uniqueFilms && uniqueAttributes
+				uniqueFilms && uniqueAttributes
 			}
 
 		val result = feed1 + feed2

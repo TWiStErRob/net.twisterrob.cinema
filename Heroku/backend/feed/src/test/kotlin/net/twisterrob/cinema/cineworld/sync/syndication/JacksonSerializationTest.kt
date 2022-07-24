@@ -94,10 +94,10 @@ class JacksonSerializationTest {
 		val vals: String
 	) {
 
-		constructor(vals: List<String>) : this(vals.joinToString(","))
-
 		@JsonIgnore
 		val valList = vals.split(",")
+
+		constructor(vals: List<String>) : this(vals.joinToString(","))
 	}
 
 	@Test fun `SplitStringValues serialization is reversible`() {
@@ -128,14 +128,15 @@ class JacksonSerializationTest {
 			val id: Long
 		) {
 
-			constructor(id: Long, child: Child) : this(id) {
-				this.child = child
-			}
-
 			// missing from serialized
+			@Suppress("DataClassShouldBeImmutable")
 			@JsonBackReference("childRef")
 			@JacksonXmlProperty(isAttribute = true)
 			private lateinit var child: Child
+
+			constructor(id: Long, child: Child) : this(id) {
+				this.child = child
+			}
 		}
 
 		@JsonIdentityInfo(
@@ -148,6 +149,7 @@ class JacksonSerializationTest {
 			val id: Long
 		) {
 
+			@Suppress("DataClassShouldBeImmutable")
 			@JsonIgnore // has no effect :(
 			@JsonManagedReference("childRef")
 			lateinit var parent: Parent

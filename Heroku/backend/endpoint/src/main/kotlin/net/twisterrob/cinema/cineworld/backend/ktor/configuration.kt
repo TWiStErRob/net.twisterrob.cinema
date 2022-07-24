@@ -47,12 +47,14 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.openid
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.profile
 import java.io.File
-import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 /**
- * @param staticRootFolder `.` is the Heroku project folder when ran from IDEA.
+ * @param staticRootFolder for serving static content (`.` is the Heroku project folder when ran from IDEA).
+ * @param fakeRootFolder fallback folder for requests for testing (`.` is the Heroku project folder when ran from IDEA).
+ * @param oauthHttpClient [HttpClient] to use for OAuth.
+ * @param config configuration containing non-hardcoded constants for the server.
  * @see RouteControllerRegistrar
  */
 @Suppress("LongMethod") // TODO find a way to split this up into smaller pieces, while keeping visibility.
@@ -157,6 +159,7 @@ private fun HTML.render500InternalServerError(error: Throwable) {
  * @see OffsetDateTimeJsonSerializer
  */
 class OffsetDateTimeJsonSerializer : JsonSerializer<OffsetDateTime>() {
+
 	override fun serialize(
 		value: OffsetDateTime, gen: JsonGenerator, serializers: SerializerProvider
 	) {

@@ -54,6 +54,7 @@ fun zonedDateTimeRealistic(minOffset: Long = TEN_YEARS, maxOffset: Long = TEN_YE
 
 private fun fakeClock(fixture: JFixture, minOffset: Long, maxOffset: Long): Clock? {
 	val now = System.currentTimeMillis()
+	@Suppress("UnnecessaryParentheses")
 	val millis = fixture.buildRange((now - minOffset)..(now + maxOffset))
 	val zone = fixture.create().fromList(*ZoneId.getAvailableZoneIds().toTypedArray())
 	return Clock.fixed(Instant.ofEpochMilli(millis), ZoneId.of(zone))

@@ -8,6 +8,7 @@ import org.neo4j.ogm.session.query
 import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
 
+@Suppress("StringLiteralDuplication")
 class CinemaService @Inject constructor(
 	private val session: Session
 ) {

@@ -22,11 +22,11 @@ class PerformanceSync @Inject constructor(
 		val cinemas = cinemaService.getActiveCinemas().associateBy { it.cineworldID }
 		val films = filmService.getActiveFilms().associateBy { it.edi }
 
-		val performances = feed.performances.map {
-			val db = it.toEntity(feed)
-			db.screensFilm = films[it.film.id]!!
-			db.inCinema = cinemas[it.cinema.id]!!
-			return@map db
+		val performances = feed.performances.map { performance ->
+			performance.toEntity(feed).apply {
+				this.screensFilm = films[performance.film.id]!!
+				this.inCinema = cinemas[performance.cinema.id]!!
+			}
 		}
 
 		val deleted = performanceService.deleteAll()

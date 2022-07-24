@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-@Suppress("unused")
+@Suppress("unused", "UseDataClass")
 class ReflectionKtTest {
 
 	@Test fun `get public readonly field`() {

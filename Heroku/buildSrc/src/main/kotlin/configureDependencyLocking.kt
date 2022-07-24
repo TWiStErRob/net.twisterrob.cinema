@@ -48,19 +48,6 @@ private fun ConfigurationContainer.activateDependencyLockingFor(lockWorthy: Coll
 @DisableCachingByDefault(because = "Resolution needs to happen every time this task executes.")
 internal abstract class ResolveAndLockAllTask : DefaultTask() {
 
-	companion object {
-
-		/**
-		 * TODEL in Gradle 8.
-		 * > The * configuration has been deprecated for resolution.
-		 * > This will fail with an error in Gradle 8.0.
-		 * > Please resolve the compileClasspath or runtimeClasspath configuration instead.
-		 * > Consult the upgrading guide for further information:
-		 * > https://docs.gradle.org/7.4/userguide/upgrading_version_5.html#dependencies_should_no_longer_be_declared_using_the_compile_and_runtime_configurations
-		 */
-		private val resolutionDeprecated: Set<String> = setOf("archives", "default")
-	}
-
 	init {
 		group = LifecycleBasePlugin.BUILD_GROUP
 		description = "Lock all configurations in one build execution"
@@ -75,5 +62,18 @@ internal abstract class ResolveAndLockAllTask : DefaultTask() {
 			.filterNot { it.name in resolutionDeprecated }
 			.filter { it.isCanBeResolved }
 			.forEach { it.resolve() }
+	}
+
+	companion object {
+
+		/**
+		 * TODEL in Gradle 8.
+		 * > The * configuration has been deprecated for resolution.
+		 * > This will fail with an error in Gradle 8.0.
+		 * > Please resolve the compileClasspath or runtimeClasspath configuration instead.
+		 * > Consult the upgrading guide for further information:
+		 * > https://docs.gradle.org/7.4/userguide/upgrading_version_5.html#dependencies_should_no_longer_be_declared_using_the_compile_and_runtime_configurations
+		 */
+		private val resolutionDeprecated: Set<String> = setOf("archives", "default")
 	}
 }

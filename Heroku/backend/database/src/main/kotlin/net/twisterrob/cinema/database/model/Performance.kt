@@ -11,8 +11,6 @@ import java.time.ZonedDateTime
 @NodeEntity(label = "Performance")
 class Performance : BaseNode() {
 
-	companion object
-
 	@Property(name = "class")
 	val className: String = "Performance"
 

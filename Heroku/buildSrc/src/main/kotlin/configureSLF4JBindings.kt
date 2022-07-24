@@ -28,7 +28,7 @@ fun Project.configureSLF4JBindings() {
 			withModule<SLF4JBindingCapability>("ch.qos.logback:logback-classic") // Logback 1.x (SLF4J reference implementation)
 		}
 	}
-	configurations.all configuration@{
+	configurations.all @Suppress("LabeledExpression") configuration@{
 		resolutionStrategy.capabilitiesResolution.withCapability("org.slf4j:org.slf4j.impl.StaticLoggerBinder") {
 			because("This project uses SLF4J over Log4J 2.x.")
 			logger.info(

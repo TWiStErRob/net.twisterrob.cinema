@@ -1,28 +1,105 @@
 config:
+  # If a property in the configuration is deprecated, that'll fail Detekt execution.
   warningsAsErrors: true
 
-style:
-  ForbiddenComment:
-    values:
-      - 'FIXME'
-      - 'STOPSHIP'
+processors:
+  # Blanket disable processors as they are not used.
+  # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
+  active: false
 
-  MaxLineLength:
-    excludeCommentStatements: true
+console-reports:
+  exclude:
+    # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
+    - 'NotificationReport'
+    # Enabled, because it gives the category of the rules.
+    #- 'FindingsReport'
+    # Disabled, because it's very verbose, even more so than FindingsReport.
+    - 'FileBasedFindingsReport'
+    # Disabled, because this gives enough context to see the problems, but doesn't group rules.
+    - 'LiteFindingsReport'
 
-  UnusedPrivateClass:
-    excludes:
-      - '**/*Test.kt'
+comments:
+
+  CommentOverPrivateFunction:
+    # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
+    active: false
+
+  CommentOverPrivateProperty:
+    # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
+    active: false
+
+  UndocumentedPublicClass:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicFunction:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicProperty:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
 
 naming:
+
   ConstructorParameterNaming:
     excludes:
       - '**/endpoint/*/data/*.kt'
       - '**/quickbook/Quickbook*.kt'
+
+  FunctionMaxLength:
+    ignoreAnnotated:
+      # Test names in JUnit 4 are ok to be long as they're likely sentences.
+      - 'org.junit.Test'
+      # Test names in JUnit 5 are ok to be long as they're likely sentences.
+      - 'org.junit.jupiter.api.Test'
+
   VariableNaming:
     excludes:
       - '**/database/model/*.kt'
 
 performance:
+
   SpreadOperator:
     active: false
+
+potential-bugs:
+
+  LateinitUsage:
+    ignoreAnnotated:
+     - 'org.neo4j.ogm.annotation.Property'
+     - 'org.neo4j.ogm.annotation.Relationship'
+     - 'com.fasterxml.jackson.annotation.JsonManagedReference'
+
+  MissingPackageDeclaration:
+    # It's often desirable to declare functions and classes on the default package,
+    # so that it can be used unqualified from gradle.build.kts files.
+    excludes:
+      - '**/buildSrc/src/main/kotlin/**'
+      - '**/build.gradle.kts'
+      - '**/settings.gradle.kts'
+
+style:
+
+  ForbiddenComment:
+    values:
+      - 'FIXME'
+      - 'STOPSHIP'
+
+  NoTabs:
+    # I'm a tab guy, I don't pay for space in advance.
+    active: false
+
+  MaxLineLength:
+    # It's unavoidable to have some long lines when stacktraces or links are added as comments.
+    excludeCommentStatements: true
+
+  UnusedPrivateClass:
+    excludes:
+      - '**/*Test.kt'

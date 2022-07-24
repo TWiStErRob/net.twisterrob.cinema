@@ -125,7 +125,7 @@ class ServerLogging(
 	}
 
 	private fun OutgoingContent.asString(): String? =
-		@Suppress("KotlinConstantConditions")
+		@Suppress("KotlinConstantConditions", "OptionalWhenBraces")
 		when (this) {
 
 			is OutgoingContent.NoContent -> {
@@ -139,6 +139,7 @@ class ServerLogging(
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
 					val channel = ByteChannel(true)
+					@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5131
 					this@asString.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}

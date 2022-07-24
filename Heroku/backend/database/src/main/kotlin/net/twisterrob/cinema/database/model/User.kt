@@ -11,8 +11,6 @@ import java.time.OffsetDateTime
 @NodeEntity(label = "User")
 class User : BaseNode() {
 
-	companion object
-
 	@Property(name = "class")
 	val className: String = "User"
 

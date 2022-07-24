@@ -5,6 +5,7 @@ import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.java8TimeRealistic
 import net.twisterrob.test.javaURIRealistic
 
+@Suppress("StringLiteralDuplication")
 fun validDBData(): Customisation = Customisation { fixture ->
 	fixture.applyCustomisation {
 		// Generate proper random OffsetDateTime, otherwise all instances will be now().
