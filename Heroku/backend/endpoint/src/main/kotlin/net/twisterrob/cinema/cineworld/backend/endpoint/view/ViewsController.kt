@@ -11,6 +11,7 @@ import io.ktor.server.resources.put
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.respondUserNotFound
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewRepository
@@ -44,7 +45,7 @@ class ViewsController @Inject constructor(
 					?: return@post call.respondText("Can't find view ${payload}.", status = NotFound)
 				call.respond(view)
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 
@@ -58,7 +59,7 @@ class ViewsController @Inject constructor(
 				)
 				call.respondText("", status = OK)
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 
@@ -71,7 +72,7 @@ class ViewsController @Inject constructor(
 				)
 				call.respond(ignored)
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 	}

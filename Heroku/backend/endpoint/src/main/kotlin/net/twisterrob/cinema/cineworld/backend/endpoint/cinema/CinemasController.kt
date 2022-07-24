@@ -9,6 +9,7 @@ import io.ktor.server.resources.put
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.respondUserNotFound
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
@@ -44,7 +45,7 @@ class CinemasController @Inject constructor(
 			if (call.hasUser) {
 				call.respond(repository.getFavoriteCinemas(userID = call.userId))
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 
@@ -54,7 +55,7 @@ class CinemasController @Inject constructor(
 					?: return@put call.respondText("Can't find cinema ${cinema.cinema}.", status = NotFound)
 				call.respond(updatedCinema)
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 
@@ -64,7 +65,7 @@ class CinemasController @Inject constructor(
 					?: return@delete call.respondText("Can't find cinema ${cinema.cinema}.", status = NotFound)
 				call.respond(updatedCinema)
 			} else {
-				call.respondText("Can't find user.", status = NotFound)
+				call.respondUserNotFound()
 			}
 		}
 	}
