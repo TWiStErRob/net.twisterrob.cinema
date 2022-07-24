@@ -10,6 +10,7 @@ allprojects {
 	}
 	this@allprojects.configureDependencyLocking()
 	this@allprojects.forceKotlinVersion()
+	this@allprojects.configureSLF4JBindings()
 
 	plugins.withId("java") {
 		configure<JavaPluginExtension> {
