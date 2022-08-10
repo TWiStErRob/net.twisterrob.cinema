@@ -23,6 +23,7 @@ inline fun PipelineContext<Unit, ApplicationCall>.cached(
 	block()
 }
 
+// TODO https://youtrack.jetbrains.com/issue/KTOR-457 (https://github.com/TWiStErRob/net.twisterrob.cinema/issues/190)
 var ApplicationCall.caching: CachingOptions
 	get() = error("Not possible to get current caching setup.")
 	set(value) {
