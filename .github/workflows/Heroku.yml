@@ -159,7 +159,7 @@ jobs:
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
-        uses: 8BitJonny/gh-get-current-pr@2.1.0
+        uses: 8BitJonny/gh-get-current-pr@2.1.1
 
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
         run: true
