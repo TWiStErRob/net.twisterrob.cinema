@@ -8,6 +8,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 	}
+	this@allprojects.configureDependencyLocking()
 	this@allprojects.forceKotlinVersion()
 	this@allprojects.configureSLF4JBindings()
 
