@@ -194,12 +194,15 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/*.dependencies
       - name: Upload "Heroku Dependencies - Base" artifact (part 2/2).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
+          # Cannot error on this yet, because `master` has no dependencyLocking set up.
+          if-no-files-found: warn
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
@@ -226,12 +229,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/*.dependencies
       - name: Upload "Heroku Dependencies" artifact (part 2/2).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
