@@ -10,7 +10,7 @@ import org.gradle.api.Project
 fun Project.configureDependencyLocking() {
 	this.dependencyLocking {
 		lockAllConfigurations()
-		val fileName = this@configureDependencyLocking.slug ?: "rootProject"
+		val fileName = this@configureDependencyLocking.slug
 		/** @see org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER */
 		lockFile.set(rootProject.file("gradle/dependency-locks/${fileName}.lockfile"))
 	}

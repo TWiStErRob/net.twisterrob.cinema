@@ -193,7 +193,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
-          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+          path: |
+            ${{ github.workspace }}/Heroku/dependencies*.txt
+            ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
@@ -210,7 +212,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+          path: |
+            ${{ github.workspace }}/Heroku/dependencies*.txt
+            ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Download "Heroku Dependencies - Base" artifact.
@@ -225,7 +229,27 @@ jobs:
           name: Heroku Dependencies
           path: diff/curr
 
-      - name: Diff using dependency-tree-diff from Jake Wharton.
+      - name: Diff lockfiles using unix diff.
+        working-directory: diff
+        env:
+          BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
+          HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
+        run: |
+          diff --version
+          
+          diff -u prev/backend-database.lockfile curr/backend-database.lockfile > lockfile-backend-database.txt
+          diff -u prev/backend-endpoint.lockfile curr/backend-endpoint.lockfile > lockfile-backend-endpoint.txt
+          diff -u prev/backend-feed.lockfile curr/backend-feed.lockfile > lockfile-backend-feed.txt
+          diff -u prev/backend-network.lockfile curr/backend-network.lockfile > lockfile-backend-network.txt
+          diff -u prev/backend-quickbook.lockfile curr/backend-quickbook.lockfile > lockfile-backend-quickbook.txt
+          diff -u prev/backend-sync.lockfile curr/backend-sync.lockfile > lockfile-backend-sync.txt
+          diff -u prev/plugins.lockfile curr/plugins.lockfile > lockfile-plugins.txt
+          diff -u prev/plugins-settings.lockfile curr/plugins-settings.lockfile > lockfile-plugins-settings.txt
+          diff -u prev/root.lockfile curr/root.lockfile > lockfile-root.txt
+          diff -u prev/settings.lockfile curr/settings.lockfile > lockfile-settings.txt
+          diff -u prev/test-helpers.lockfile curr/test-helpers.lockfile > lockfile-test-helpers.txt
+
+      - name: Diff dependencies using dependency-tree-diff from Jake Wharton.
         working-directory: diff
         env:
           BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}

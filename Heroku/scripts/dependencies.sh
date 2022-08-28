@@ -2,35 +2,35 @@
 ./gradlew --stacktrace --version
 
 # Pure outputs
+echo 'allDependencies'
+./gradlew --stacktrace :allDependencies --write-locks >dependencies.txt 2>&1
+
 echo ':dependencies'
-./gradlew --stacktrace :dependencies --write-locks >dependencies-root.txt 2>&1
+./gradlew --stacktrace :dependencies >dependencies-root.txt 2>&1
 
 echo ':backend:dependencies'
-./gradlew --stacktrace :backend:dependencies --write-locks >dependencies-backend.txt 2>&1
+./gradlew --stacktrace :backend:dependencies >dependencies-backend.txt 2>&1
 
 echo ':backend:sync:dependencies'
-./gradlew --stacktrace :backend:sync:dependencies --write-locks >dependencies-backend-sync.txt 2>&1
+./gradlew --stacktrace :backend:sync:dependencies >dependencies-backend-sync.txt 2>&1
 
 echo ':backend:feed:dependencies'
-./gradlew --stacktrace :backend:feed:dependencies --write-locks >dependencies-backend-feed.txt 2>&1
+./gradlew --stacktrace :backend:feed:dependencies >dependencies-backend-feed.txt 2>&1
 
 echo ':backend:quickbook:dependencies'
-./gradlew --stacktrace :backend:quickbook:dependencies --write-locks >dependencies-backend-quickbook.txt 2>&1
+./gradlew --stacktrace :backend:quickbook:dependencies >dependencies-backend-quickbook.txt 2>&1
 
 echo ':backend:database:dependencies'
-./gradlew --stacktrace :backend:database:dependencies --write-locks >dependencies-backend-database.txt 2>&1
+./gradlew --stacktrace :backend:database:dependencies >dependencies-backend-database.txt 2>&1
 
 echo ':backend:network:dependencies'
-./gradlew --stacktrace :backend:network:dependencies --write-locks >dependencies-backend-network.txt 2>&1
+./gradlew --stacktrace :backend:network:dependencies >dependencies-backend-network.txt 2>&1
 
 echo ':backend:endpoint:dependencies'
-./gradlew --stacktrace :backend:endpoint:dependencies --write-locks >dependencies-backend-endpoint.txt 2>&1
+./gradlew --stacktrace :backend:endpoint:dependencies >dependencies-backend-endpoint.txt 2>&1
 
 echo ':test-helpers:dependencies'
-./gradlew --stacktrace :test-helpers:dependencies --write-locks >dependencies-test-helpers.txt 2>&1
-
-echo 'allDependencies'
-./gradlew --stacktrace :allDependencies >dependencies.txt 2>&1
+./gradlew --stacktrace :test-helpers:dependencies >dependencies-test-helpers.txt 2>&1
 
 # Teardown
 echo 'Stopping daemon'

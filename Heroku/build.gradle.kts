@@ -31,7 +31,7 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<BasePluginExtension> {
-			archivesName.set("twisterrob-cinema-${slug ?: "root"}")
+			archivesName.set("twisterrob-cinema-${slug}")
 		}
 	}
 
