@@ -185,7 +185,7 @@ jobs:
           git fetch
           git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
-      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.base_ref }}.
+      - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -210,7 +210,7 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
-      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.head_ref }}.
+      - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
