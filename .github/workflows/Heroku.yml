@@ -211,16 +211,9 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
-      - name: DEBUG
-        run: echo ${{ github.workspace }}
       - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
-      - name: DEBUG
-        working-directory: Heroku
-        run: ls -la
-      - name: DEBUG
-        run: ls -la
 
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
