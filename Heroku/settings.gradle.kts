@@ -23,6 +23,6 @@ plugins {
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()
-		lockFile.set(file("gradle/dependency-locks/settings.lockfile"))
+		lockFile.set(file("gradle/dependency-locks/root-settings.lockfile"))
 	}
 }
