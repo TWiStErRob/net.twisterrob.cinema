@@ -19,7 +19,7 @@ dependencies {
 
 dependencyLocking {
 	lockAllConfigurations()
-	lockFile.set(file("../gradle/dependency-locks/buildSrc.lockfile"))
+	lockFile.set(file("../gradle/dependency-locks/plugins.lockfile"))
 }
 
 gradlePlugin {
