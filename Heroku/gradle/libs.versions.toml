@@ -40,6 +40,7 @@ log4j = "2.18.0"
 
 test-junit-vintage = "4.13.2"
 test-junit-jupiter = "5.9.0"
+test-junit-pioneer = "1.7.1"
 
 test-hamcrest = "2.2"
 test-shazamcrest = "0.11"
@@ -137,6 +138,7 @@ test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.r
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
 test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "test-junit-pioneer" }
 
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
 test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }
