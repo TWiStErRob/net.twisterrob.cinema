@@ -189,14 +189,20 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Base" artifact.
+      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
+      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
+      - name: Upload "Heroku Dependencies - Base" artifact (part 1/2).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
-          path: |
-            ${{ github.workspace }}/Heroku/dependencies*.txt
-            ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+      - name: Upload "Heroku Dependencies - Base" artifact (part 2/2).
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Base
+          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
@@ -208,14 +214,20 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies" artifact.
+      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
+      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
+      - name: Upload "Heroku Dependencies" artifact (part 1/2).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
-          path: |
-            ${{ github.workspace }}/Heroku/dependencies*.txt
-            ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+      - name: Upload "Heroku Dependencies" artifact (part 2/2).
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies
+          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Download "Heroku Dependencies - Base" artifact.
