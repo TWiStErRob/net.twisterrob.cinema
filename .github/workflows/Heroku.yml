@@ -304,6 +304,7 @@ jobs:
           path: |
             ${{ github.workspace }}/diff/dependencies*.txt
             ${{ github.workspace }}/diff/dependencies*.patch
+            ${{ github.workspace }}/diff/lockfile*.txt
 
 
       - name: Create "Dependency Diff" check run (if any diffs).
