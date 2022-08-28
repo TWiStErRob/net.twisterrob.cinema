@@ -10,6 +10,6 @@ dependencyResolutionManagement {
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()
-		lockFile.set(file("../gradle/dependency-locks/plugins-settings.lockfile"))
+		lockFile.set(file("../../gradle/dependency-locks/plugins-settings.lockfile"))
 	}
 }
