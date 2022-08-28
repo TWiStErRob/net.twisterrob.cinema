@@ -281,7 +281,7 @@ jobs:
           diff-lockfile "plugins"
           diff-lockfile "plugins-settings"
           diff-lockfile "root"
-          diff-lockfile "settings"
+          diff-lockfile "root-settings"
           diff-lockfile "test-helpers"
 
       - name: Diff dependencies using dependency-tree-diff from Jake Wharton.
