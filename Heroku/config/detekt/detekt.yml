@@ -59,6 +59,12 @@ naming:
       - 'org.junit.Test'
       # Test names in JUnit 5 are ok to be long as they're likely sentences.
       - 'org.junit.jupiter.api.Test'
+      - 'org.junit.jupiter.api.TestFactory'
+      - 'org.junit.jupiter.api.TestTemplate'
+      - 'org.junit.jupiter.api.RepeatedTest'
+      - 'org.junit.jupiter.params.ParameterizedTest'
+      - 'org.junitpioneer.jupiter.RetryingTest'
+      - 'org.junitpioneer.jupiter.cartesian.CartesianTest'
 
   VariableNaming:
     excludes:
