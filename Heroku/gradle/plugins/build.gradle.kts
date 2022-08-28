@@ -17,6 +17,11 @@ dependencies {
 	implementation(files(libs::class.java.protectionDomain.codeSource.location))
 }
 
+dependencyLocking {
+	lockAllConfigurations()
+	lockFile.set(file("../gradle/dependency-locks/buildSrc.lockfile"))
+}
+
 gradlePlugin {
 	plugins {
 		create("net.twisterrob.cinema.heroku.plugins.settings") {
