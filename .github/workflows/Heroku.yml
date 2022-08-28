@@ -342,9 +342,9 @@ jobs:
         with:
           name: Heroku Dependencies - Diffs
           path: |
-            ${{ github.workspace }}/diff/dependencies*.txt
-            ${{ github.workspace }}/diff/dependencies*.patch
-            ${{ github.workspace }}/diff/lockfile*.txt
+            ${{ github.workspace }}/diff/*.dependencies.diff
+            ${{ github.workspace }}/diff/*.dependencies.patch
+            ${{ github.workspace }}/diff/*.lockfile.diff
 
 
       - name: Create "Dependency Diff" check run (if any diffs).
