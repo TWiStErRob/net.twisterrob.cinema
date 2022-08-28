@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-20.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
     timeout-minutes: 20
+    if: false
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -408,6 +409,7 @@ jobs:
 
   check-npm:
     name: 🔨 Build & Check (NPM)
+    if: false
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     # Setup takes 1+3+1 minute, and protractor runs for 7 minutes
