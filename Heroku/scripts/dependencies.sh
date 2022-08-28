@@ -1,9 +1,10 @@
+# Start with a clean slate.
+rm ./gradle/dependency-locks/*.lockfile
+
 # Warmup
 ./gradlew --stacktrace --version
 
 # Pure outputs
-echo 'allDependencies'
-./gradlew --stacktrace :allDependencies --write-locks >all.dependencies 2>&1
 
 echo ':dependencies'
 ./gradlew --stacktrace :dependencies >root.dependencies 2>&1
@@ -31,6 +32,12 @@ echo ':backend:endpoint:dependencies'
 
 echo ':test-helpers:dependencies'
 ./gradlew --stacktrace :test-helpers:dependencies >test-helpers.dependencies 2>&1
+
+# Last, so it can generate lockfiles without affecting other outputs.
+# Having a lockfile adds extra "constraints" to the dependency tree like this:
+# +--- group:module:{strictly 0.0} -> 0.0 (c)
+echo 'allDependencies'
+./gradlew --stacktrace :allDependencies --write-locks >all.dependencies 2>&1
 
 # Teardown
 echo 'Stopping daemon'
