@@ -33,6 +33,6 @@ package-lock.json
 # `gradlew ... --write-locks` output.
 /gradle/dependency-locks/*.lockfile
 # `gradlew ...:dependencies` / `scripts/dependencies.sh` output.
-/dependencies-*.txt
+/*.dependencies
 # TODEL https://github.com/gradle/gradle/issues/21101
 /settings-gradle.lockfile
