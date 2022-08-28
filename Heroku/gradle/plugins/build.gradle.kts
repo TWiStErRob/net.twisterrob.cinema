@@ -1,5 +1,6 @@
 plugins {
 	`kotlin-dsl`
+	id("java-gradle-plugin")
 	alias(libs.plugins.detekt)
 }
 
@@ -8,12 +9,21 @@ repositories {
 }
 
 dependencies {
-	implementation(libs.kotlin.gradle)
+	api(libs.kotlin.gradle)
 	implementation(libs.kotlin.serialization.gradle)
-	implementation(libs.detekt.gradle)
+	api(libs.detekt.gradle)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
 	implementation(files(libs::class.java.protectionDomain.codeSource.location))
+}
+
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.cinema.heroku.plugins.settings") {
+			id = "net.twisterrob.cinema.heroku.plugins.settings"
+			implementationClass = "net.twisterrob.cinema.heroku.plugins.SettingsPlugin"
+		}
+	}
 }
 
 detekt {
