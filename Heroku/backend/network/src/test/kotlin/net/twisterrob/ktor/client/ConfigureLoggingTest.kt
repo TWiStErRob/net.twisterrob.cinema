@@ -16,8 +16,11 @@ import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junitpioneer.jupiter.RetryingTest
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.atMost
@@ -31,10 +34,20 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
+ * There are multiple tries to decouple and fix flakiness in these tests, but so far no luck.
+ * * Moved static and non-static initialization to the right places.
+ *   Hoping that everything executes at the right time,
+ *   this greatly improved stability.
+ * * There's shared state: slf4j Logger instance.
+ *   Spying on that would steal logs between test methods.
+ *   Because of this, I tried using [ExecutionMode.SAME_THREAD] execution mode.
+ *   It greatly reduced the failure rate, but it still happens.
+ * * It fails rarely, but often enough to be annoying,
+ *   so I replaced [Test] with [RetryingTest] to give it 3 tries max.
  * @see configureLogging
  */
 @TagFunctional
-// Shared state: slf4j Logger instance. Spying on that would steal logs between test methods.
+@TestInstance(Lifecycle.PER_METHOD)
 @Execution(ExecutionMode.SAME_THREAD)
 class ConfigureLoggingTest {
 
@@ -77,7 +90,8 @@ class ConfigureLoggingTest {
 		}
 	}
 
-	@Test fun `info logging displays basic information`() {
+	@RetryingTest(maxAttempts = 3)
+	fun `info logging displays basic information`() {
 		doReturn(true).whenever(mockLogger).isInfoEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
@@ -103,7 +117,8 @@ class ConfigureLoggingTest {
 		verifyNoMoreLogLevelInteractions(Logger::info)
 	}
 
-	@Test fun `debug logging displays detailed information`() {
+	@RetryingTest(maxAttempts = 3)
+	fun `debug logging displays detailed information`() {
 		doReturn(true).whenever(mockLogger).isDebugEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
@@ -137,7 +152,8 @@ class ConfigureLoggingTest {
 		verifyNoMoreLogLevelInteractions(Logger::debug)
 	}
 
-	@Test fun `trace logging displays all information`() {
+	@RetryingTest(maxAttempts = 3)
+	fun `trace logging displays all information`() {
 		doReturn(true).whenever(mockLogger).isTraceEnabled
 		sut.stubFakeRequestResponse()
 		val expectedStack = Throwable().stackTrace[0].nextLine(2)
