@@ -254,8 +254,14 @@ jobs:
           diff --version
           diff-lockfile() {
           	echo "diff --unified=3 --new-file --text --minimal \"prev/$1.lockfile\" \"curr/$1.lockfile\" > \"$1.lockfile.diff\"";
-          	diff --unified=3 --new-file --text --minimal "prev/$1.lockfile" "curr/$1.lockfile" > "$1.lockfile.diff";
-          	local error=$?;
+          	(
+          		# Sub-shell without auto-exit on error. Idea from https://superuser.com/a/1266910/145861.
+          		set +e;
+          		diff --unified=3 --new-file --text --minimal "prev/$1.lockfile" "curr/$1.lockfile" > "$1.lockfile.diff";
+          		# There's no way to edit local variable of outer shell from sub-shell, so return via file.
+          		echo $? > "$1.lockfile.diff.error";
+          	)
+          	local error=$(cat "$1.lockfile.diff.error");
           	if [ $error -eq 0 ]; then
           		return 0; # Same, all good.
           	elif [ $error -eq 1 ]; then
