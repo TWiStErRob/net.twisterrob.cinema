@@ -14,12 +14,15 @@ fun Task.notDependsOn(predicate: (String) -> Boolean) {
 
 val Project.slug: String
 	get() =
-		if (this == rootProject) {
-			// Special case, since the other branch removes leading ":".
-			"root"
-		} else {
-			this
-				.path // Project's Gradle path -> ":a:b".
-				.substringAfter(":") // Remove first colon -> "a:b".
-				.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
+		when (this) {
+			rootProject -> {
+				// Special case, since the other case removes leading ":".
+				"root"
+			}
+			else -> {
+				this
+					.path // Project's Gradle path -> ":a:b".
+					.removePrefix(":") // Remove first colon -> "a:b".
+					.replace(":", "-") // Convert to Maven coordinate convention -> "a-b".
+			}
 		}

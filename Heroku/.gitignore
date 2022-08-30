@@ -28,11 +28,15 @@ package-lock.json
 /sync-key.private
 
 # Temporary outputs
+
 # Output of `npm run build` in frontend/, configured in webpack.config.js > `dist`.
 /deploy/static/
+
 # `gradlew ... --write-locks` output.
 /gradle/dependency-locks/*.lockfile
+
 # `gradlew ...:dependencies` / `scripts/dependencies.sh` output.
 /*.dependencies
+
 # TODEL https://github.com/gradle/gradle/issues/21101
 /settings-gradle.lockfile
