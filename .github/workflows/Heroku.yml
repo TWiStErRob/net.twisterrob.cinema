@@ -373,7 +373,7 @@ jobs:
             	const lockPath = `diff/${moduleData[module].diffName}.lockfile.diff`;
             	moduleData[module].depDiff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
             	moduleData[module].depPatch = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
-            	moduleData[module].lockDiff = fs.existsSync(lockPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
+            	moduleData[module].lockDiff = fs.existsSync(lockPath) ? fs.readFileSync(lockPath, {encoding: "utf8"}) : null;
             });
             const hasAnyChanges = Object
             	.keys(moduleData)
