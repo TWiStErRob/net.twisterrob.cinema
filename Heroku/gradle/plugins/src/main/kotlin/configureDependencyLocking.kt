@@ -14,12 +14,14 @@ import org.gradle.api.Project
 fun Project.configureDependencyLocking() {
 	this.dependencyLocking {
 		configurations.configureEach {
+			@Suppress("UseIfInsteadOfWhen")
 			when {
 				name.endsWith("DependenciesMetadata") -> {
 					// Don't activate to reduce noise.
 				}
 
 				else -> {
+					// For all other configurations, activate blindly.
 					resolutionStrategy.activateDependencyLocking()
 				}
 			}
