@@ -434,9 +434,9 @@ jobs:
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
-            						title: `Dependency diff for ${module}`,
-            						message: `Output of diff prev/${fileName} curr/${fileName} > ${fileName}.diff`,
-            						raw_details: moduleData[module].lockDiff || "Missing diff!",
+            						title: `Lockfile diff for \`${module}\``,
+            						message: `Output of \`diff prev/${fileName} curr/${fileName} > ${fileName}.diff\``,
+            						raw_details: moduleData[module].lockDiff || "Missing lockfile diff!",
             					}
             				})
             			.concat(
@@ -451,9 +451,9 @@ jobs:
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
-            						title: `Dependency diff for ${module}`,
-            						message: `Output of ./dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}`,
-            						raw_details: moduleData[module].depDiff || "Missing diff!",
+            						title: `Dependency diff for \`${module}\``,
+            						message: `Output of \`dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}\``,
+            						raw_details: moduleData[module].depPatch || "Missing dependency diff!",
             					}
             				})
             			),
