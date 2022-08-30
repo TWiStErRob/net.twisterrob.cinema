@@ -24,19 +24,21 @@ fun Project.configureSLF4JBindings() {
 			withModule<SLF4JBindingCapability>("org.slf4j:slf4j-jdk14") // JUL / Java Util Logging
 			withModule<SLF4JBindingCapability>("org.slf4j:slf4j-log4j12") // Log4J 1.x
 			withModule<SLF4JBindingCapability>("org.slf4j:slf4j-reload4j") // reload4j
-			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j-impl") // Log4J 2.x
+			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j-impl")   // SLF4J 1.x to Log4J 2.x
+			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j18-impl") // SLF4J 1.8 to Log4J 2.x
+			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j20-impl") // SLF4J 2.x to Log4J 2.x
 			withModule<SLF4JBindingCapability>("ch.qos.logback:logback-classic") // Logback 1.x (SLF4J reference implementation)
 		}
 	}
 	configurations.all @Suppress("LabeledExpression") configuration@{
 		resolutionStrategy.capabilitiesResolution.withCapability("org.slf4j:org.slf4j.impl.StaticLoggerBinder") {
-			because("This project uses SLF4J over Log4J 2.x.")
+			because("This project uses SLF4J 2.x over Log4J 2.x.")
 			logger.info(
 				"Capability conflict resolution for ${this@configuration}, candidates for ${capability} are\n" +
 						candidates.joinToString(separator = "\n") { " * $it" }
 			)
 			val slf4jLogger = candidates.singleOrNull {
-				it.id.isMatching("org.apache.logging.log4j", "log4j-slf4j-impl")
+				it.id.isMatching("org.apache.logging.log4j", "log4j-slf4j20-impl")
 			}
 			if (slf4jLogger != null) {
 				logger.info("In ${this@configuration}, the resolved candidate for ${capability} is ${slf4jLogger}.")
