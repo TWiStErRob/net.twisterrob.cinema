@@ -377,8 +377,8 @@ jobs:
             });
             const hasAnyChanges = Object
             	.keys(moduleData)
-            	// "": no diff, null: missing diff, "...": dependency changes 
-            	.some((module) => moduleData[module].depDiff !== "");
+            	// "": no diff, null: missing diff, "...": dependency changes
+            	.some((module) => moduleData[module].lockDiff !== "");
             
             if (!hasAnyChanges) {
             	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
@@ -414,8 +414,8 @@ jobs:
             			${Object
             				.keys(moduleData)
             				.map((module) => {
-            					const added = ((moduleData[module].depDiff || "").match(/^\+/gm) || []).length;
-            					const removed = ((moduleData[module].depDiff || "").match(/^-/gm) || []).length;
+            					const added = ((moduleData[module].lockDiff || "").match(/^\+/gm) || []).length;
+            					const removed = ((moduleData[module].lockDiff || "").match(/^-/gm) || []).length;
             					return `| ${module} | ${added} | ${removed} |`
             				})
             				.join("\n")
@@ -423,7 +423,7 @@ jobs:
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Object
             				.keys(moduleData)
-            				.filter((module) => moduleData[module].depDiff !== "")
+            				.filter((module) => moduleData[module].lockDiff !== "")
             				.map((module) => {
             					const fileIn = `${moduleData[module].diffName}.dependencies`;
             					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
@@ -431,10 +431,10 @@ jobs:
             						path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
             						start_line: 0,
             						end_line: 0,
-            						annotation_level: moduleData[module].depDiff === null ? "failure" : "warning",
+            						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
             						title: `Dependency diff for ${module}`,
             						message: `Output of ./dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}.diff`,
-            						raw_details: moduleData[module].depPatch || "Missing diff!",
+            						raw_details: moduleData[module].lockDiff || "Missing diff!",
             					}
             				}),
             	},
