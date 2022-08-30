@@ -33,9 +33,14 @@ echo ':backend:endpoint:dependencies'
 echo ':test-helpers:dependencies'
 ./gradlew --stacktrace :test-helpers:dependencies >test-helpers.dependencies 2>&1
 
+echo ':plugins:dependencies'
+./gradlew -p gradle/plugins --stacktrace :dependencies >plugins.dependencies 2>&1
+
 # Last, so it can generate lockfiles without affecting other outputs.
 # Having a lockfile adds extra "constraints" to the dependency tree like this:
 # +--- group:module:{strictly 0.0} -> 0.0 (c)
+# Note: while allDependencies doesn't depend on includedBuild("plugin")'s dependencies task,
+# it will still resolve the configurations and so --write-locks will have a side effect of dumping those lockfiles.
 echo 'allDependencies'
 ./gradlew --stacktrace :allDependencies --write-locks >all.dependencies 2>&1
 

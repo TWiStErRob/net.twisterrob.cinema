@@ -305,6 +305,7 @@ jobs:
           diff-dependency-tree "backend-network"
           diff-dependency-tree "backend-quickbook"
           diff-dependency-tree "backend-sync"
+          diff-dependency-tree "plugins"
           diff-dependency-tree "root"
           diff-dependency-tree "test-helpers"
 
@@ -326,6 +327,7 @@ jobs:
           patch-dependency-tree "backend-network"
           patch-dependency-tree "backend-quickbook"
           patch-dependency-tree "backend-sync"
+          patch-dependency-tree "plugins"
           patch-dependency-tree "root"
           patch-dependency-tree "test-helpers"
 
@@ -365,6 +367,7 @@ jobs:
             	":backend:network": {diffName: "backend-network", path: "backend/network"},
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":plugins": {diffName: "plugins", path: "gradle/plugins"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
             Object.keys(moduleData).forEach((module) => {
