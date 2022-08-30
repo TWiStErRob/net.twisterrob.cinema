@@ -257,7 +257,7 @@ jobs:
           	(
           		# Sub-shell without auto-exit on error. Idea from https://superuser.com/a/1266910/145861.
           		set +e;
-          		diff --unified=3 --new-file --text --minimal "prev/$1.lockfile" "curr/$1.lockfile" > "$1.lockfile.diff";
+          		diff --unified=3 --new-file --text --minimal "prev/$1.lockfile" "curr/$1.lockfile" | tail -n+3 > "$1.lockfile.diff";
           		# There's no way to edit local variable of outer shell from sub-shell, so return via file.
           		echo $? > "$1.lockfile.diff.error";
           	)
