@@ -9,7 +9,16 @@ import org.gradle.api.Project
 @Suppress("KDocUnresolvedReference")
 fun Project.configureDependencyLocking() {
 	this.dependencyLocking {
-		lockAllConfigurations()
+		configurations.configureEach {
+			when {
+				name.endsWith("DependenciesMetadata") -> {
+					// Don't enable.
+				}
+				else -> {
+					resolutionStrategy.activateDependencyLocking()
+				}
+			}
+		}
 		val fileName = this@configureDependencyLocking.slug
 		/** @see org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER */
 		lockFile.set(rootProject.file("gradle/dependency-locks/${fileName}.lockfile"))
