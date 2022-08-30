@@ -414,16 +414,35 @@ jobs:
             			${Object
             				.keys(moduleData)
             				.map((module) => {
-            					const added = ((moduleData[module].lockDiff || "").match(/^\+/gm) || []).length;
-            					const removed = ((moduleData[module].lockDiff || "").match(/^-/gm) || []).length;
-            					return `| ${module} | ${added} | ${removed} |`
+            					const addedD = ((moduleData[module].depDiff || "").match(/^\+/gm) || []).length;
+            					const addedL = ((moduleData[module].lockDiff || "").match(/^\+/gm) || []).length;
+            					const removedD = ((moduleData[module].depDiff || "").match(/^-/gm) || []).length;
+            					const removedL = ((moduleData[module].lockDiff || "").match(/^-/gm) || []).length;
+            					return `| ${module} | ${addedL} (${addedD}) | ${removedL} (${removedD}) |`
             				})
             				.join("\n")
             			}
             		`.replaceAll(/^[ \t]+/mg, ""),
-            		annotations: Object
+            		annotations:
+            			Object
             				.keys(moduleData)
             				.filter((module) => moduleData[module].lockDiff !== "")
+            				.map((module) => {
+            					const fileName = `${moduleData[module].diffName}.lockfile`;
+            					return {
+            						path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
+            						start_line: 0,
+            						end_line: 0,
+            						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
+            						title: `Dependency diff for ${module}`,
+            						message: `Output of diff prev/${fileName} curr/${fileName} > ${fileName}.diff`,
+            						raw_details: moduleData[module].lockDiff || "Missing diff!",
+            					}
+            				})
+            			.concat(
+            			Object
+            				.keys(moduleData)
+            				.filter((module) => moduleData[module].depDiff !== "")
             				.map((module) => {
             					const fileIn = `${moduleData[module].diffName}.dependencies`;
             					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
@@ -433,10 +452,11 @@ jobs:
             						end_line: 0,
             						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
             						title: `Dependency diff for ${module}`,
-            						message: `Output of ./dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}.diff`,
-            						raw_details: moduleData[module].lockDiff || "Missing diff!",
+            						message: `Output of ./dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}`,
+            						raw_details: moduleData[module].depDiff || "Missing diff!",
             					}
-            				}),
+            				})
+            			),
             	},
             });
             // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
