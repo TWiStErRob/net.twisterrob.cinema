@@ -331,12 +331,12 @@ jobs:
           patch-dependency-tree "root"
           patch-dependency-tree "test-helpers"
 
-      - name: Merge diffs into a single file (dependencies-diffs.txt).
+      - name: Merge diffs into a single file (all.dependencies.diff).
         working-directory: diff
         run: |
-          # `cat dependencies-*.txt > dependencies-diffs.txt` with a bit more control and fluff.
+          # `cat *.dependencies.diff > all.dependencies.diff` with a bit more control and fluff.
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
-          ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
+          ls --format=single-column --time=ctime --reverse *.dependencies.diff | xargs tail --lines=+1 > all.dependencies.diff
 
       - name: Upload "Heroku Dependencies - Diffs" artifact.
         if: success() || failure()
@@ -360,7 +360,7 @@ jobs:
             const fs = require("fs");
             const moduleData = {
             	":": {diffName: "root", path: ""},
-            	": (settings)": {diffName: "plugins", path: "", name: "settings.gradle.kts"},
+            	": (settings)": {diffName: "root-settings", path: "", name: "settings.gradle.kts"},
             	":backend": {diffName: "backend", path: "backend"},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
@@ -369,7 +369,7 @@ jobs:
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
-            	":plugins (settings)": {diffName: "plugins", path: "gradle/plugins", name: "settings.gradle.kts"},
+            	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", name: "settings.gradle.kts"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
             Object.keys(moduleData).forEach((module) => {
@@ -433,6 +433,7 @@ jobs:
             				})
             				.join("\n")
             			}
+            			
             			\\* added/removed in \`lockfile.diff (dependencies.diff)\`.
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations:
