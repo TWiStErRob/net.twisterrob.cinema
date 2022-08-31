@@ -360,7 +360,7 @@ jobs:
             const fs = require("fs");
             const moduleData = {
             	":": {diffName: "root", path: ""},
-            	":.settings": {diffName: "plugins", path: "", name: "settings.gradle.kts"},
+            	": (settings)": {diffName: "plugins", path: "", name: "settings.gradle.kts"},
             	":backend": {diffName: "backend", path: "backend"},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
@@ -369,7 +369,7 @@ jobs:
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
-            	":plugins.settings": {diffName: "plugins", path: "gradle/plugins", name: "settings.gradle.kts"},
+            	":plugins (settings)": {diffName: "plugins", path: "gradle/plugins", name: "settings.gradle.kts"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
             Object.keys(moduleData).forEach((module) => {
@@ -383,7 +383,7 @@ jobs:
             const hasAnyChanges = Object
             	.keys(moduleData)
             	// "": no diff, null: missing diff, "...": dependency changes
-            	.some((module) => moduleData[module].lockDiff !== "");
+            	.some((module) => moduleData[module].depDiff !== "" || moduleData[module].lockDiff !== "");
             
             if (!hasAnyChanges) {
             	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
@@ -414,7 +414,7 @@ jobs:
             			
             			## Dependencies Changes
             			_See annotations for more details._
-            			| Module | Added | Removed |
+            			| Module | Added* | Removed* |
             			| - | - | - |
             			${Object
             				.keys(moduleData)
@@ -428,6 +428,7 @@ jobs:
             				})
             				.join("\n")
             			}
+            			\\* added/removed in \`lockfile.diff (dependencies.diff)\`.
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations:
             			[]
@@ -437,7 +438,7 @@ jobs:
             				.map((module) => {
             					const fileName = `${moduleData[module].diffName}.lockfile`;
             					return {
-            						path: `Heroku/${moduleData[module].path}/${moduleData[module].path || "build.gradle.kts"}`,
+            						path: `Heroku/${moduleData[module].path}/${moduleData[module].name || "build.gradle.kts"}`,
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
@@ -454,7 +455,7 @@ jobs:
             					const fileIn = `${moduleData[module].diffName}.dependencies`;
             					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
             					return {
-            						path: `Heroku/${moduleData[module].path}/${moduleData[module].path || "build.gradle.kts"}`,
+            						path: `Heroku/${moduleData[module].path}/${moduleData[module].name || "build.gradle.kts"}`,
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].depDiff === null ? "failure" : "warning",
