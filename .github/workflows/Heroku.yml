@@ -419,11 +419,16 @@ jobs:
             			${Object
             				.keys(moduleData)
             				.map((module) => {
-            					//function count() { if null/undefine "-" }                    
-            					const addedD = ((moduleData[module].depDiff || "").match(/^\+/gm) || []).length;
-            					const addedL = ((moduleData[module].lockDiff || "").match(/^\+/gm) || []).length;
-            					const removedD = ((moduleData[module].depDiff || "").match(/^-/gm) || []).length;
-            					const removedL = ((moduleData[module].lockDiff || "").match(/^-/gm) || []).length;
+            					function count(diff, prefix) {
+            						if (!diff)
+            							return "-";
+            						else
+            							return (diff.match(new RegExp(`^\\${prefix}`, 'gm')) || []).length;
+            					}
+            					const addedL = count(moduleData[module].lockDiff, '+');
+            					const addedD = count(moduleData[module].depDiff, '+');
+            					const removedL = count(moduleData[module].lockDiff, '-');
+            					const removedD = count(moduleData[module].depDiff, '-');
             					return `| ${module} | ${addedL} (${addedD}) | ${removedL} (${removedD}) |`
             				})
             				.join("\n")
