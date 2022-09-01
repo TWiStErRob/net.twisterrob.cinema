@@ -9,7 +9,7 @@ object Deps {
 		project.dependencies {
 			add("testImplementation", project.libs.test.junit.jupiter)
 			add("testImplementation", project.libs.test.junit.jupiter.params)
-			add("testRuntimeOnly", project.libs.test.junit.platform)
+			add("testImplementation", project.libs.test.junit.pioneer)
 			add("testRuntimeOnly", project.libs.test.junit.jupiter.engine)
 		}
 		//project.tasks.named<Test>("test").configure { useJUnitPlatform() }
