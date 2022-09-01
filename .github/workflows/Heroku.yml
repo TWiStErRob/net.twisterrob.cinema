@@ -380,8 +380,6 @@ jobs:
             	moduleData[module].depPatch = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
             	moduleData[module].lockDiff = fs.existsSync(lockPath) ? fs.readFileSync(lockPath, {encoding: "utf8"}) : null;
             });
-            console.log(moduleData);
-            console.log(JSON.stringify(moduleData));
             Object.keys(moduleData).forEach((module) => {
             	moduleData[module].fullPath = function() {
             		const path = this.path === "" ? "" : "/" + this.path;
@@ -443,7 +441,7 @@ jobs:
             				.join("\n")
             			}
             			
-            			\\* added/removed in \`lockfile.diff (dependencies.diff)\`.
+            			**\\*** _added/removed in \`lockfile.diff (dependencies.diff)\`._
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Array.from(function* () {
             			for (const [moduleName, module] of Object.entries(moduleData)) {
@@ -454,7 +452,7 @@ jobs:
             						start_line: 0,
             						end_line: 0,
             						annotation_level: module.lockDiff === null ? "failure" : "warning",
-            						title: `Lockfile diff for ${module}`,
+            						title: `Lockfile diff for ${moduleName}`,
             						message: `Output of \`diff prev/${fileName} curr/${fileName} > ${fileName}.diff\``,
             						raw_details: module.lockDiff || "Missing lockfile diff!",
             					};
@@ -467,7 +465,7 @@ jobs:
             						start_line: 0,
             						end_line: 0,
             						annotation_level: module.depDiff === null ? "failure" : "warning",
-            						title: `Dependency diff for ${module}`,
+            						title: `Dependency diff for ${moduleName}`,
             						message: `Output of \`dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}\``,
             						raw_details: module.depPatch || "Missing dependency diff!",
             					};
