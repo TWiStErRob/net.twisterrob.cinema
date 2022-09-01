@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ./dependency-tree-diff-to-patch.sh diff.txt sha-before sha-after > diff.patch
+# ./dependency-tree-diff-to-patch.sh foo.dependencies.diff sha-before sha-after > foo.dependencies.patch
 echo "Index: Dependencies"
 echo "==================================================================="
 echo "./dependency-tree-diff.jar prev/$1 curr/$1"
