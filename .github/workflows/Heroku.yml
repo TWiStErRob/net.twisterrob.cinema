@@ -429,7 +429,7 @@ jobs:
             				.keys(moduleData)
             				.map((module) => {
             					function count(diff, prefix) {
-            						if (!diff)
+            						if (diff === null)
             							return "-";
             						else
             							return (diff.match(new RegExp(`^\\${prefix}`, 'gm')) || []).length;
