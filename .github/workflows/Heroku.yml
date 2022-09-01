@@ -443,41 +443,35 @@ jobs:
             			
             			\\* added/removed in \`lockfile.diff (dependencies.diff)\`.
             		`.replaceAll(/^[ \t]+/mg, ""),
-            		annotations:
-            			[]
-            			.concat(Object
-            				.keys(moduleData)
-            				.filter((module) => moduleData[module].lockDiff !== "")
-            				.map((module) => {
-            					const fileName = `${moduleData[module].diffName}.lockfile`;
-            					return {
-            						path: moduleData[module].fullPath(),
+            		annotations: Array.from(function* () {
+            			for (const [moduleName, module] of Object.entries(moduleData)) {
+            				if (module.lockDiff !== "") {
+            					const fileName = `${module.diffName}.lockfile`;
+            					yield {
+            						path: module.fullPath(),
             						start_line: 0,
             						end_line: 0,
-            						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
+            						annotation_level: module.lockDiff === null ? "failure" : "warning",
             						title: `Lockfile diff for ${module}`,
             						message: `Output of \`diff prev/${fileName} curr/${fileName} > ${fileName}.diff\``,
-            						raw_details: moduleData[module].lockDiff || "Missing lockfile diff!",
-            					}
-            				})
-            			)
-            			.concat(Object
-            				.keys(moduleData)
-            				.filter((module) => moduleData[module].depDiff !== "" && moduleData[module].type !== "settings")
-            				.map((module) => {
-            					const fileIn = `${moduleData[module].diffName}.dependencies`;
-            					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
-            					return {
-            						path: moduleData[module].fullPath(),
+            						raw_details: module.lockDiff || "Missing lockfile diff!",
+            					};
+            				}
+            				if (module.depDiff !== "" && module.type !== "settings") {
+            					const fileIn = `${module.diffName}.dependencies`;
+            					const fileOut = `${module.diffName}.dependencies.diff`;
+            					yield {
+            						path: module.fullPath(),
             						start_line: 0,
             						end_line: 0,
-            						annotation_level: moduleData[module].depDiff === null ? "failure" : "warning",
+            						annotation_level: module.depDiff === null ? "failure" : "warning",
             						title: `Dependency diff for ${module}`,
             						message: `Output of \`dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}\``,
-            						raw_details: moduleData[module].depPatch || "Missing dependency diff!",
-            					}
-            				})
-            			),
+            						raw_details: module.depPatch || "Missing dependency diff!",
+            					};
+            				}
+            			}
+            		}())
             	},
             });
             // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
