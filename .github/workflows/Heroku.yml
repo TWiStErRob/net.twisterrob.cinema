@@ -373,19 +373,21 @@ jobs:
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
             Object.keys(moduleData).forEach((module) => {
-            	moduleData[module].fullPath = function() {
-            		const path = this.path === "" ? "" : "/" + this.path;
-            		const name = this.type === "settings" ? "settings.gradle.kts" : "build.gradle.kts";
-            		return "Heroku" + path + "/" + name;
-            	};
-            });
-            Object.keys(moduleData).forEach((module) => {
             	const diffPath = `diff/${moduleData[module].diffName}.dependencies.diff`;
             	const patchPath = `diff/${moduleData[module].diffName}.dependencies.patch`;
             	const lockPath = `diff/${moduleData[module].diffName}.lockfile.diff`;
             	moduleData[module].depDiff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
             	moduleData[module].depPatch = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
             	moduleData[module].lockDiff = fs.existsSync(lockPath) ? fs.readFileSync(lockPath, {encoding: "utf8"}) : null;
+            });
+            console.log(moduleData);
+            console.log(JSON.stringify(moduleData));
+            Object.keys(moduleData).forEach((module) => {
+            	moduleData[module].fullPath = function() {
+            		const path = this.path === "" ? "" : "/" + this.path;
+            		const name = this.type === "settings" ? "settings.gradle.kts" : "build.gradle.kts";
+            		return "Heroku" + path + "/" + name;
+            	};
             });
             const hasAnyChanges = Object
             	.keys(moduleData)
