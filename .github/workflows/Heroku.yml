@@ -463,7 +463,7 @@ jobs:
             			)
             			.concat(Object
             				.keys(moduleData)
-            				.filter((module) => moduleData[module].depDiff !== "")
+            				.filter((module) => moduleData[module].depDiff !== "" && moduleData[module].type !== "settings")
             				.map((module) => {
             					const fileIn = `${moduleData[module].diffName}.dependencies`;
             					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
