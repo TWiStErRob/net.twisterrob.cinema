@@ -360,7 +360,7 @@ jobs:
             const fs = require("fs");
             const moduleData = {
             	":": {diffName: "root", path: ""},
-            	": (settings)": {diffName: "root-settings", path: "", name: "settings.gradle.kts"},
+            	": (settings)": {diffName: "root-settings", path: "", type: "settings"},
             	":backend": {diffName: "backend", path: "backend"},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
@@ -369,9 +369,16 @@ jobs:
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
-            	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", name: "settings.gradle.kts"},
+            	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", type: "settings"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
+            Object.keys(moduleData).forEach((module) => {
+            	moduleData[module].fullPath = function() {
+            		const path = this.path === "" ? "" : "/" + this.path;
+            		const name = this.type === "settings" ? "settings.gradle.kts" : "build.gradle.kts";
+            		return "Heroku" + path + "/" + name;
+            	};
+            });
             Object.keys(moduleData).forEach((module) => {
             	const diffPath = `diff/${moduleData[module].diffName}.dependencies.diff`;
             	const patchPath = `diff/${moduleData[module].diffName}.dependencies.patch`;
@@ -444,7 +451,7 @@ jobs:
             				.map((module) => {
             					const fileName = `${moduleData[module].diffName}.lockfile`;
             					return {
-            						path: `Heroku/${moduleData[module].path}/${moduleData[module].name || "build.gradle.kts"}`,
+            						path: moduleData[module].fullPath(),
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].lockDiff === null ? "failure" : "warning",
@@ -461,7 +468,7 @@ jobs:
             					const fileIn = `${moduleData[module].diffName}.dependencies`;
             					const fileOut = `${moduleData[module].diffName}.dependencies.diff`;
             					return {
-            						path: `Heroku/${moduleData[module].path}/${moduleData[module].name || "build.gradle.kts"}`,
+            						path: moduleData[module].fullPath(),
             						start_line: 0,
             						end_line: 0,
             						annotation_level: moduleData[module].depDiff === null ? "failure" : "warning",
