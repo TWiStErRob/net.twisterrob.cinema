@@ -11,23 +11,18 @@ include(":backend:endpoint")
 
 include(":test-helpers")
 
-/**
- * @see <a href="https://github.com/gradle/gradle/issues/19069">Feature request</a>
- */
-fun Settings.enableFeaturePreviewQuietly(name: String, summary: String) {
-	enableFeaturePreview(name)
-	val logger: Any = org.gradle.util.internal.IncubationLogger::class.java
-		.getDeclaredField("INCUBATING_FEATURE_HANDLER")
-		.apply { isAccessible = true }
-		.get(null)
-
-	@Suppress("UNCHECKED_CAST")
-	val features: MutableSet<String> =
-		org.gradle.internal.featurelifecycle.LoggingIncubatingFeatureHandler::class.java
-			.getDeclaredField("features")
-			.apply { isAccessible = true }
-			.get(logger) as MutableSet<String>
-
-	features.add(summary)
+pluginManagement {
+	@Suppress("UnstableApiUsage")
+	includeBuild("gradle/plugins")
 }
 
+plugins {
+	id("net.twisterrob.cinema.heroku.plugins.settings")
+}
+
+buildscript {
+	dependencyLocking {
+		lockAllConfigurations()
+		lockFile.set(file("gradle/dependency-locks/root-settings.lockfile"))
+	}
+}

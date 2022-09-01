@@ -178,22 +178,31 @@ jobs:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
       - name: Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
-        # Disable this step, once the PR with this script is merged, it'll exist on both SHAs.
-        if: false
         run: |
           git fetch
           git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
 
-      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.base_ref }}.
+      - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies - Base" artifact.
+      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
+      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
+      - name: Upload "Heroku Dependencies - Base" artifact (part 1/2 - dependencies).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
-          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+          if-no-files-found: error
+          path: ${{ github.workspace }}/Heroku/*.dependencies
+      - name: Upload "Heroku Dependencies - Base" artifact (part 2/2 - lockfiles).
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies - Base
+          # Cannot error on this yet, because `master` has no dependencyLocking set up.
+          if-no-files-found: warn
+          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
@@ -201,16 +210,26 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
-      - name: Dump Heroku Dependencies on ${{ needs.pull_request.outputs.head_ref }}.
+      - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      - name: Upload "Heroku Dependencies" artifact.
+      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
+      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
+      - name: Upload "Heroku Dependencies" artifact (part 1/2 - dependencies).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
-          path: ${{ github.workspace }}/Heroku/dependencies*.txt
+          if-no-files-found: error
+          path: ${{ github.workspace }}/Heroku/*.dependencies
+      - name: Upload "Heroku Dependencies" artifact (part 2/2 - lockfiles).
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Dependencies
+          if-no-files-found: error
+          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
       - name: Download "Heroku Dependencies - Base" artifact.
@@ -225,7 +244,47 @@ jobs:
           name: Heroku Dependencies
           path: diff/curr
 
-      - name: Diff using dependency-tree-diff from Jake Wharton.
+      - name: Diff lockfiles using unix diff.
+        working-directory: diff
+        env:
+          BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
+          HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
+        run: |
+          diff --version
+          diff-lockfile() {
+          	echo "diff --unified=3 --new-file --text --minimal \"prev/$1.lockfile\" \"curr/$1.lockfile\" > \"$1.lockfile.diff\"";
+          	(
+          		# Sub-shell without auto-exit on error. Idea from https://superuser.com/a/1266910/145861.
+          		set +e;
+          		diff --unified=3 --new-file --text --minimal "prev/$1.lockfile" "curr/$1.lockfile" | tail -n+3 > "$1.lockfile.diff";
+          		# There's no way to edit local variable of outer shell from sub-shell, so return via file.
+          		echo $? > "$1.lockfile.diff.error";
+          	)
+          	local error=$(cat "$1.lockfile.diff.error");
+          	if [ $error -eq 0 ]; then
+          		return 0; # Same, all good.
+          	elif [ $error -eq 1 ]; then
+          		return 0; # Different, not an error, just a fact.
+          	else
+          		echo "diff returned exit code $error.";
+          		return 1; # Problem, a big one, see log for details.
+          	fi
+          }
+          
+          diff-lockfile "backend"
+          diff-lockfile "backend-database"
+          diff-lockfile "backend-endpoint"
+          diff-lockfile "backend-feed"
+          diff-lockfile "backend-network"
+          diff-lockfile "backend-quickbook"
+          diff-lockfile "backend-sync"
+          diff-lockfile "plugins"
+          diff-lockfile "plugins-settings"
+          diff-lockfile "root"
+          diff-lockfile "root-settings"
+          diff-lockfile "test-helpers"
+
+      - name: Diff dependencies using dependency-tree-diff from Jake Wharton.
         working-directory: diff
         env:
           BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
@@ -235,16 +294,20 @@ jobs:
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
           #wget https://github.com/JakeWharton/dependency-tree-diff/releases/download/1.2.0/dependency-tree-diff.jar
           chmod +x ./dependency-tree-diff.jar
+          diff-dependency-tree() {
+          	./dependency-tree-diff.jar "prev/$1.dependencies" "curr/$1.dependencies" > "$1.dependencies.diff";
+          }
           
-          ./dependency-tree-diff.jar prev/dependencies-root.txt curr/dependencies-root.txt > dependencies-root.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend.txt curr/dependencies-backend.txt > dependencies-backend.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-sync.txt curr/dependencies-backend-sync.txt > dependencies-backend-sync.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-feed.txt curr/dependencies-backend-feed.txt > dependencies-backend-feed.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-quickbook.txt curr/dependencies-backend-quickbook.txt > dependencies-backend-quickbook.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-database.txt curr/dependencies-backend-database.txt > dependencies-backend-database.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-network.txt curr/dependencies-backend-network.txt > dependencies-backend-network.txt
-          ./dependency-tree-diff.jar prev/dependencies-backend-endpoint.txt curr/dependencies-backend-endpoint.txt > dependencies-backend-endpoint.txt
-          ./dependency-tree-diff.jar prev/dependencies-test-helpers.txt curr/dependencies-test-helpers.txt > dependencies-test-helpers.txt
+          diff-dependency-tree "backend"
+          diff-dependency-tree "backend-database"
+          diff-dependency-tree "backend-endpoint"
+          diff-dependency-tree "backend-feed"
+          diff-dependency-tree "backend-network"
+          diff-dependency-tree "backend-quickbook"
+          diff-dependency-tree "backend-sync"
+          diff-dependency-tree "plugins"
+          diff-dependency-tree "root"
+          diff-dependency-tree "test-helpers"
 
       - name: Generate .patch files from dependency-tree-diff.
         working-directory: diff
@@ -253,23 +316,27 @@ jobs:
           HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
         run: |
           cp ../Heroku/scripts/dependency-tree-diff-to-patch.sh .
+          patch-dependency-tree() {
+          	./dependency-tree-diff-to-patch.sh "$1.dependencies.diff" "${BASE}" "${HEAD}" > "$1.dependencies.patch";
+          }
           
-          ./dependency-tree-diff-to-patch.sh dependencies-root.txt "${BASE}" "${HEAD}" > dependencies-root.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend.txt "${BASE}" "${HEAD}" > dependencies-backend.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-sync.txt "${BASE}" "${HEAD}" > dependencies-backend-sync.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-feed.txt "${BASE}" "${HEAD}" > dependencies-backend-feed.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-quickbook.txt "${BASE}" "${HEAD}" > dependencies-backend-quickbook.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-database.txt "${BASE}" "${HEAD}" > dependencies-backend-database.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-network.txt "${BASE}" "${HEAD}" > dependencies-backend-network.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-backend-endpoint.txt "${BASE}" "${HEAD}" > dependencies-backend-endpoint.patch
-          ./dependency-tree-diff-to-patch.sh dependencies-test-helpers.txt "${BASE}" "${HEAD}" > dependencies-test-helpers.patch
+          patch-dependency-tree "backend"
+          patch-dependency-tree "backend-database"
+          patch-dependency-tree "backend-endpoint"
+          patch-dependency-tree "backend-feed"
+          patch-dependency-tree "backend-network"
+          patch-dependency-tree "backend-quickbook"
+          patch-dependency-tree "backend-sync"
+          patch-dependency-tree "plugins"
+          patch-dependency-tree "root"
+          patch-dependency-tree "test-helpers"
 
-      - name: Merge diffs into a single file (dependencies-diffs.txt).
+      - name: Merge diffs into a single file (all.dependencies.diff).
         working-directory: diff
         run: |
-          # `cat dependencies-*.txt > dependencies-diffs.txt` with a bit more control and fluff.
+          # `cat *.dependencies.diff > all.dependencies.diff` with a bit more control and fluff.
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
-          ls --format=single-column --time=ctime --reverse dependencies-*.txt | xargs tail --lines=+1 > dependencies-diffs.txt
+          ls --format=single-column --time=ctime --reverse *.dependencies.diff | xargs tail --lines=+1 > all.dependencies.diff
 
       - name: Upload "Heroku Dependencies - Diffs" artifact.
         if: success() || failure()
@@ -277,8 +344,9 @@ jobs:
         with:
           name: Heroku Dependencies - Diffs
           path: |
-            ${{ github.workspace }}/diff/dependencies*.txt
-            ${{ github.workspace }}/diff/dependencies*.patch
+            ${{ github.workspace }}/diff/*.dependencies.diff
+            ${{ github.workspace }}/diff/*.dependencies.patch
+            ${{ github.workspace }}/diff/*.lockfile.diff
 
 
       - name: Create "Dependency Diff" check run (if any diffs).
@@ -292,25 +360,37 @@ jobs:
             const fs = require("fs");
             const moduleData = {
             	":": {diffName: "root", path: ""},
+            	": (settings)": {diffName: "root-settings", path: "", type: "settings"},
             	":backend": {diffName: "backend", path: "backend"},
-            	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
-            	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
-            	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
-            	":backend:network": {diffName: "backend-network", path: "backend/network"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
+            	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
+            	":backend:network": {diffName: "backend-network", path: "backend/network"},
+            	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
+            	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":plugins": {diffName: "plugins", path: "gradle/plugins"},
+            	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", type: "settings"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
             };
             Object.keys(moduleData).forEach((module) => {
-            	const diffPath = `diff/dependencies-${moduleData[module].diffName}.txt`;
-            	const patchPath = `diff/dependencies-${moduleData[module].diffName}.patch`;
-            	moduleData[module].diff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
-            	moduleData[module].patch = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
+            	const diffPath = `diff/${moduleData[module].diffName}.dependencies.diff`;
+            	const patchPath = `diff/${moduleData[module].diffName}.dependencies.patch`;
+            	const lockPath = `diff/${moduleData[module].diffName}.lockfile.diff`;
+            	moduleData[module].depDiff = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, {encoding: "utf8"}) : null;
+            	moduleData[module].depPatch = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, {encoding: "utf8"}) : null;
+            	moduleData[module].lockDiff = fs.existsSync(lockPath) ? fs.readFileSync(lockPath, {encoding: "utf8"}) : null;
+            });
+            Object.keys(moduleData).forEach((module) => {
+            	moduleData[module].fullPath = function() {
+            		const path = this.path === "" ? "" : "/" + this.path;
+            		const name = this.type === "settings" ? "settings.gradle.kts" : "build.gradle.kts";
+            		return "Heroku" + path + "/" + name;
+            	};
             });
             const hasAnyChanges = Object
             	.keys(moduleData)
-            	// "": no diff, null: missing diff, "...": dependency changes 
-            	.some((module) => moduleData[module].diff !== "");
+            	// "": no diff, null: missing diff, "...": dependency changes
+            	.some((module) => moduleData[module].depDiff !== "" || moduleData[module].lockDiff !== "");
             
             if (!hasAnyChanges) {
             	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
@@ -341,33 +421,57 @@ jobs:
             			
             			## Dependencies Changes
             			_See annotations for more details._
-            			| Module | Added | Removed |
+            			| Module | Added* | Removed* |
             			| - | - | - |
             			${Object
             				.keys(moduleData)
             				.map((module) => {
-            					const added = ((moduleData[module].diff || "").match(/^\+/gm) || []).length;
-            					const removed = ((moduleData[module].diff || "").match(/^-/gm) || []).length;
-            					return `| ${module} | ${added} | ${removed} |`
+            					function count(diff, prefix) {
+            						if (diff === null)
+            							return "-";
+            						else
+            							return (diff.match(new RegExp(`^\\${prefix}`, 'gm')) || []).length;
+            					}
+            					const addedL = count(moduleData[module].lockDiff, '+');
+            					const addedD = count(moduleData[module].depDiff, '+');
+            					const removedL = count(moduleData[module].lockDiff, '-');
+            					const removedD = count(moduleData[module].depDiff, '-');
+            					return `| ${module} | ${addedL} (${addedD}) | ${removedL} (${removedD}) |`
             				})
             				.join("\n")
             			}
+            			
+            			**\\*** _added/removed in \`lockfile.diff (dependencies.diff)\`._
             		`.replaceAll(/^[ \t]+/mg, ""),
-            		annotations: Object
-            				.keys(moduleData)
-            				.filter((module) => moduleData[module].diff !== "")
-            				.map((module) => {
-            					const txt = `dependencies-${moduleData[module].diffName}.txt`;
-            					return {
-            						path: `Heroku/${moduleData[module].path}/build.gradle.kts`,
+            		annotations: Array.from(function* () {
+            			for (const [moduleName, module] of Object.entries(moduleData)) {
+            				if (module.lockDiff !== "") {
+            					const fileName = `${module.diffName}.lockfile`;
+            					yield {
+            						path: module.fullPath(),
             						start_line: 0,
             						end_line: 0,
-            						annotation_level: moduleData[module].diff === null ? "failure" : "warning",
-            						title: `Dependency diff for ${module}`,
-            						message: `Output of ./dependency-tree-diff.jar prev/${txt} curr/${txt} > ${txt}`,
-            						raw_details: moduleData[module].patch || "Missing diff!",
-            					}
-            				}),
+            						annotation_level: module.lockDiff === null ? "failure" : "warning",
+            						title: `Lockfile diff for ${moduleName}`,
+            						message: `Output of \`diff prev/${fileName} curr/${fileName} > ${fileName}.diff\``,
+            						raw_details: module.lockDiff || "Missing lockfile diff!",
+            					};
+            				}
+            				if (module.depDiff !== "" && module.type !== "settings") {
+            					const fileIn = `${module.diffName}.dependencies`;
+            					const fileOut = `${module.diffName}.dependencies.diff`;
+            					yield {
+            						path: module.fullPath(),
+            						start_line: 0,
+            						end_line: 0,
+            						annotation_level: module.depDiff === null ? "failure" : "warning",
+            						title: `Dependency diff for ${moduleName}`,
+            						message: `Output of \`dependency-tree-diff.jar prev/${fileIn} curr/${fileIn} > ${fileOut}\``,
+            						raw_details: module.depPatch || "Missing dependency diff!",
+            					};
+            				}
+            			}
+            		}())
             	},
             });
             // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status

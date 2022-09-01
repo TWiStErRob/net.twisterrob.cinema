@@ -87,7 +87,7 @@ potential-bugs:
     # It's often desirable to declare functions and classes on the default package,
     # so that it can be used unqualified from gradle.build.kts files.
     excludes:
-      - '**/buildSrc/src/main/kotlin/**'
+      - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
 
