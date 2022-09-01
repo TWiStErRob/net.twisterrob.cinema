@@ -188,14 +188,14 @@ jobs:
 
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: Upload "Heroku Dependencies - Base" artifact (part 1/2).
+      - name: Upload "Heroku Dependencies - Base" artifact (part 1/2 - dependencies).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
           if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/*.dependencies
-      - name: Upload "Heroku Dependencies - Base" artifact (part 2/2).
+      - name: Upload "Heroku Dependencies - Base" artifact (part 2/2 - lockfiles).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -216,14 +216,14 @@ jobs:
 
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: Upload "Heroku Dependencies" artifact (part 1/2).
+      - name: Upload "Heroku Dependencies" artifact (part 1/2 - dependencies).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies
           if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/*.dependencies
-      - name: Upload "Heroku Dependencies" artifact (part 2/2).
+      - name: Upload "Heroku Dependencies" artifact (part 2/2 - lockfiles).
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
