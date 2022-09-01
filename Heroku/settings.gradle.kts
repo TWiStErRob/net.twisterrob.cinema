@@ -19,3 +19,10 @@ pluginManagement {
 plugins {
 	id("net.twisterrob.cinema.heroku.plugins.settings")
 }
+
+buildscript {
+	dependencyLocking {
+		lockAllConfigurations()
+		lockFile.set(file("gradle/dependency-locks/root-settings.lockfile"))
+	}
+}

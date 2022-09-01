@@ -8,6 +8,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 	}
+	this@allprojects.configureDependencyLocking()
 	this@allprojects.forceKotlinVersion()
 	this@allprojects.configureSLF4JBindings()
 
@@ -30,7 +31,7 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<BasePluginExtension> {
-			archivesName.set("twisterrob-cinema-${slug ?: "root"}")
+			archivesName.set("twisterrob-cinema-${slug}")
 		}
 	}
 
