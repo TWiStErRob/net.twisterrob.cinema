@@ -7,6 +7,7 @@ val javaVersion = JavaVersion.VERSION_1_8
 allprojects {
 	repositories {
 		mavenCentral()
+		maven("Apache SNAPSHOT") { setUrl("https://repository.apache.org/snapshots") }
 	}
 	this@allprojects.configureDependencyLocking()
 	this@allprojects.forceKotlinVersion()
