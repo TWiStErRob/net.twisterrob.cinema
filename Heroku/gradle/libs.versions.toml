@@ -33,7 +33,7 @@ neo4j-java = "4.4.9"
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "3.2.37"
 
-jackson = "2.13.3"
+jackson = "2.13.4"
 
 slf4j = "1.7.36"
 log4j = "2.18.0"
