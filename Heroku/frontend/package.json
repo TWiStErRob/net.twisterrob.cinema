@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"lodash": "4.17.21",
-		"bootstrap": "3.4.1",
+		"bootstrap": "5.2.1",
 		"angular": "1.8.3",
 		"angular-resource": "1.8.3",
 		"angular-animate": "1.8.3",
