@@ -390,7 +390,10 @@ jobs:
             const hasAnyChanges = Object
             	.keys(moduleData)
             	// "": no diff, null: missing diff, "...": dependency changes
-            	.some((module) => moduleData[module].depDiff !== "" || moduleData[module].lockDiff !== "");
+            	.some((moduleName) => {
+            		const module = moduleData[moduleName];
+            		return module.type !== "settings" && (module.depDiff !== "" || module.lockDiff !== "");
+            	});
             
             if (!hasAnyChanges) {
             	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
