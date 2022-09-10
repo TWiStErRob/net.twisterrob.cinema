@@ -35,29 +35,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.html
-import kotlinx.html.img
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.net.URI
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
-import javax.imageio.IIOImage
-import javax.imageio.ImageIO
-import javax.imageio.ImageWriteParam
-import javax.imageio.ImageWriter
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 fun ObjectMapper.cineworldConfig() {
 	configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -86,7 +70,6 @@ data class CinemasResponse(
 			val displayName: String,
 			val link: URI,
 			val address: String,
-			val imageUrl: URI,
 			val latitude: Double,
 			val longitude: Double,
 		)
@@ -115,6 +98,7 @@ fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
 val now = LocalDate.now()
 val cinemas = loadFile()
 //println(cinemas.map { it.displayName })
+
 val kml = Kml().apply {
 	feature = Document().apply {
 		name = "Cineworld Cinemas"
@@ -140,7 +124,6 @@ val kml = Kml().apply {
 								+"Website: "
 								a(href = cinema.link.toString(), target = "_blank") { +cinema.link.toString() }
 							}
-							img(src = "images/cinema-${cinema.id}.jpg", alt = cinema.displayName)
 							p {
 								+"Address: "
 								+cinema.address
@@ -162,77 +145,4 @@ val kmlFile = File("cinemas.kml").apply {
 	writeText(readText().replace("ns2:", "").replace("xmlns:ns2", "xmlns"))
 }
 //print(kmlFile.readText())
-val kmzFile = File("cinemas.kmz").apply {
-	delete()
-	ZipOutputStream(FileOutputStream(this)).use { zip ->
-		fun file(name: String, content: ByteArray) {
-			zip.putNextEntry(ZipEntry(name))
-			zip.write(content)
-			zip.closeEntry()
-		}
-		file("doc.kml", kmlFile.readBytes())
-		cinemas.forEach { cinema ->
-			println("Saving image... ${cinema.id}")
-			val originalImage = runBlocking<ByteArray> { client.get(cinema.imageUrl.toString()).body() }
-			file("images/cinema-${cinema.id}.jpg", compress(originalImage))
-		}
-	}
-}
-println(kmzFile.absolutePath)
-
-/**
- * Convert each source PNG image to a JPG image, because Google My Maps has a 5MB limit on KMZ.
- * Based on [StackOverflow](https://stackoverflow.com/a/57571061/253468]).
- */
-fun compress(originalImage: ByteArray): ByteArray {
-	val memoryImage = removeAlphaChannel(ImageIO.read(ByteArrayInputStream(originalImage)))
-
-	ImageIO.getImageWritersByFormatName("jpg").next().use { writer ->
-		val jpgWriteParam = writer.defaultWriteParam.apply {
-			compressionMode = ImageWriteParam.MODE_EXPLICIT
-			compressionQuality = 0.5f
-		}
-
-		val bytes = ByteArrayOutputStream()
-		writer.output = ImageIO.createImageOutputStream(bytes)
-		writer.write(null, IIOImage(memoryImage, null, null), jpgWriteParam)
-		return bytes.toByteArray()
-	}
-}
-
-fun removeAlphaChannel(img: BufferedImage): BufferedImage {
-	if (!img.colorModel.hasAlpha()) {
-		return img
-	}
-	return BufferedImage(img.width, img.height, BufferedImage.TYPE_INT_RGB).apply {
-		createGraphics().use {
-			it.color = Color.WHITE
-			it.fillRect(0, 0, img.width, img.height)
-			it.drawImage(img, 0, 0, null)
-		}
-	}
-}
-
-@OptIn(ExperimentalContracts::class)
-inline fun <R> ImageWriter.use(block: (ImageWriter) -> R): R {
-	contract {
-		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-	}
-	try {
-		return block(this)
-	} finally {
-		dispose()
-	}
-}
-
-@OptIn(ExperimentalContracts::class)
-inline fun <R> Graphics.use(block: (Graphics) -> R): R {
-	contract {
-		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-	}
-	try {
-		return block(this)
-	} finally {
-		dispose()
-	}
-}
+println(kmlFile.absolutePath)
