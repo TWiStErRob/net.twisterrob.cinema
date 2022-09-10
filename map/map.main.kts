@@ -30,6 +30,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.http.URLBuilder
 import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.runBlocking
 import kotlinx.html.a
@@ -42,19 +43,6 @@ import java.net.URI
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
-fun ObjectMapper.cineworldConfig() {
-	configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-}
-
-val client = HttpClient {
-	install(ContentNegotiation) {
-		jackson {
-			cineworldConfig()
-		}
-	}
-	expectSuccess = true
-}
 
 data class CinemasResponse(
 	val body: CinemasBody,
@@ -76,12 +64,25 @@ data class CinemasResponse(
 	}
 }
 
+fun ObjectMapper.cineworldConfig() {
+	configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+}
+
 fun loadFile(): List<CinemasResponse.CinemasBody.Cinema> {
 	val client = jacksonObjectMapper().apply { cineworldConfig() }.reader()
 	return client.readValue(File("cinemas.json"), CinemasResponse::class.java).body.cinemas
 }
 
 fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
+	val client = HttpClient {
+		install(ContentNegotiation) {
+			jackson {
+				cineworldConfig()
+			}
+		}
+		expectSuccess = true
+	}
+
 	fun cinemas(url: String): List<CinemasResponse.CinemasBody.Cinema> {
 		println("Loading... ${url}")
 		return runBlocking { client.get(url).body<CinemasResponse>().body.cinemas }
@@ -96,7 +97,7 @@ fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
 }
 
 val now = LocalDate.now()
-val cinemas = loadFile()
+val cinemas = loadNetwork(now)
 //println(cinemas.map { it.displayName })
 
 val kml = Kml().apply {
@@ -126,7 +127,10 @@ val kml = Kml().apply {
 							}
 							p {
 								+"Address: "
-								+cinema.address
+								val mapSearch = URLBuilder("https://maps.google.com/maps").apply {
+									parameters.append("q", cinema.address)
+								}.buildString()
+								a(href = mapSearch, target = "_blank") { +cinema.address }
 							}
 						}
 					}.toString()
