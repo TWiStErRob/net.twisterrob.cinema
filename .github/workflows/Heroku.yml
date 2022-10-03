@@ -18,15 +18,14 @@ jobs:
   # If a test fails, this will fail. TODO move to reporting.
   check-gradle:
     name: 🔨 Build & Check (Gradle)
-    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
     timeout-minutes: 20
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
-      # Default on ubuntu-20.04 image:
-      # > OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
+      # Default on ubuntu-20.04 image: Eclipse Temurin 11.0.16+1
+      # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
       #JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
@@ -498,8 +497,7 @@ jobs:
 
   check-npm:
     name: 🔨 Build & Check (NPM)
-    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # Setup takes 1+3+1 minute, and protractor runs for 7 minutes
     timeout-minutes: 15
     env:
