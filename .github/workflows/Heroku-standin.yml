@@ -1,0 +1,29 @@
+name: Heroku
+on:
+  push:
+    paths-ignore:
+      - 'Heroku/'
+concurrency:
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-standin-master-{0}', github.sha) || format('ci-heroku-standin-{0}', github.ref) }}
+  cancel-in-progress: true
+jobs:
+  check-gradle:
+    name: 🔨 Build & Check (Gradle)
+    runs-on: ubuntu-20.04
+    timeout-minutes: 1
+    steps:
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
+
+  check-npm:
+    name: 🔨 Build & Check (NPM)
+    runs-on: ubuntu-20.04
+    timeout-minutes: 1
+    steps:
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
+
+  deps:
+    name: Calculate Dependency Diff
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
