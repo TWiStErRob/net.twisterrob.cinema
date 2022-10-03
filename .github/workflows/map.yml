@@ -2,7 +2,7 @@ name: map
 on:
   pull_request:
     paths:
-      - 'map/'
+      - 'map/**'
       - '.github/workflows/map.yml'
 concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-map-master-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
@@ -19,8 +19,7 @@ jobs:
 
       - name: Run map.main.kts.
         working-directory: map
-        run: |
-          kotlinc -script map.main.kts
+        run: kotlinc -script map.main.kts
 
       - name: Upload "cinemas.kml" artifact.
         if: success() || failure()
