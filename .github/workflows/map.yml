@@ -1,6 +1,6 @@
 name: map
 on:
-  push:
+  pull_request:
     paths:
       - 'map/'
       - '.github/workflows/map.yml'

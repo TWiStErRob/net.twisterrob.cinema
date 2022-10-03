@@ -1,7 +1,7 @@
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
 name: map
 on:
-  push:
+  pull_request:
     paths-ignore:
       - 'map/'
       - '.github/workflows/map.yml'
@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
-      - run: 'echo "No build required. Executed this echo to get a status report for protected branch."'
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
 
   detekt:
     name: "🔍 Static Checks"
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
-      - run: 'echo "No build required. Executed this echo to get a status report for protected branch."'
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
