@@ -48,14 +48,22 @@ jobs:
               https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
           unzip detekt-cli-*.zip
           ./detekt-cli-*/bin/detekt-cli --version
-          ./detekt-cli-*/bin/detekt-cli --all-rules --max-issues 0 --base-path ${{ github.workspace }} --report sarif:detekt.sarif
+          ./detekt-cli-*/bin/detekt-cli \
+              --all-rules \
+              --max-issues 0 \
+              --base-path ${{ github.workspace }} \
+              --report sarif:detekt.sarif \
+              --report txt:detekt.txt \
+              --report html:detekt.html \
+              --report xml:detekt.xml \
+              --report md:detekt.md \
 
       - name: Upload "map Detekt Results" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: map Detekt Results
-          path: ${{ github.workspace }}/map/detekt.sarif
+          path: ${{ github.workspace }}/map/detekt.*
 
       - name: Publish "Code scanning results / detekt".
         uses: github/codeql-action/upload-sarif@v2
