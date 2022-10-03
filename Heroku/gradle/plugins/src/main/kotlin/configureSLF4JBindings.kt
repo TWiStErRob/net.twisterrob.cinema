@@ -26,7 +26,7 @@ fun Project.configureSLF4JBindings() {
 			withModule<SLF4JBindingCapability>("org.slf4j:slf4j-reload4j") // reload4j
 			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j-impl")   // SLF4J 1.x to Log4J 2.x
 			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j18-impl") // SLF4J 1.8 to Log4J 2.x
-			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j20-impl") // SLF4J 2.x to Log4J 2.x
+			withModule<SLF4JBindingCapability>("org.apache.logging.log4j:log4j-slf4j2-impl") // SLF4J 2.x to Log4J 2.x
 			withModule<SLF4JBindingCapability>("ch.qos.logback:logback-classic") // Logback 1.x (SLF4J reference implementation)
 		}
 	}
@@ -38,7 +38,7 @@ fun Project.configureSLF4JBindings() {
 						candidates.joinToString(separator = "\n") { " * $it" }
 			)
 			val slf4jLogger = candidates.singleOrNull {
-				it.id.isMatching("org.apache.logging.log4j", "log4j-slf4j20-impl")
+				it.id.isMatching("org.apache.logging.log4j", "log4j-slf4j2-impl")
 			}
 			if (slf4jLogger != null) {
 				logger.info("In ${this@configuration}, the resolved candidate for ${capability} is ${slf4jLogger}.")
