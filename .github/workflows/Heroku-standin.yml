@@ -3,6 +3,7 @@ on:
   push:
     paths-ignore:
       - 'Heroku/'
+      - '.github/workflows/Heroku.yml'
     branches-ignore:
       - 'master'
 concurrency:
