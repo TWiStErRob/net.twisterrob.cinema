@@ -1,0 +1,33 @@
+name: map
+on:
+  push
+concurrency:
+  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
+  # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  # More info: https://stackoverflow.com/a/68422069/253468:
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  cancel-in-progress: true
+jobs:
+  # Expected result: success() or failure().
+  # If a static check fails, it'll be reported separately.
+  # If a test fails, this will fail. TODO move to reporting.
+  run:
+    name: 🔨 Build & Test
+    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Run map.main.kts.
+        working-directory: map
+        run: |
+          kotlinc -script map.main.kts
+
+      - name: Upload "cinemas.kml" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cinemas.kml
+          path: ${{ github.workspace }}/map/cinemas.kml
