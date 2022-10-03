@@ -5,15 +5,9 @@ on:
       - 'map/'
       - '.github/workflows/map.yml'
 concurrency:
-  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
-  # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
-  # More info: https://stackoverflow.com/a/68422069/253468:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-map-master-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
-  # Expected result: success() or failure().
-  # If a static check fails, it'll be reported separately.
-  # If a test fails, this will fail. TODO move to reporting.
   run:
     name: 🔨 Build & Test
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
