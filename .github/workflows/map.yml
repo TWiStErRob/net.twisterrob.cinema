@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   run:
-    name: 🔨 Build & Test
+    name: 🔨 Build & Execute (Map)
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
     runs-on: ubuntu-22.04
     timeout-minutes: 5
@@ -30,7 +30,7 @@ jobs:
           path: ${{ github.workspace }}/map/cinemas.kml
 
   detekt:
-    name: "🔍 Static Checks"
+    name: 🔍 Static Checks (Map)
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:

@@ -10,14 +10,14 @@ concurrency:
   cancel-in-progress: true
 jobs:
   run:
-    name: 🔨 Build & Test
+    name: 🔨 Build & Execute (Map)
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
       - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
 
   detekt:
-    name: "🔍 Static Checks"
+    name: 🔍 Static Checks (Map)
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
