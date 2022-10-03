@@ -1,0 +1,68 @@
+name: map
+on:
+  pull_request:
+    paths:
+      - 'map/**'
+      - '.github/workflows/map.yml'
+concurrency:
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-map-master-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
+  cancel-in-progress: true
+jobs:
+  run:
+    name: 🔨 Build & Execute (Map)
+    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Run map.main.kts.
+        working-directory: map
+        run: kotlinc -script map.main.kts
+
+      - name: Upload "cinemas.kml" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cinemas.kml
+          path: ${{ github.workspace }}/map/cinemas.kml
+
+  detekt:
+    name: 🔍 Static Checks (Map)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Run detekt.
+        working-directory: map
+        run: |
+          DETEKT_VERSION=1.22.0-RC1
+          curl --silent --show-error --location --remote-name \
+              https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
+          unzip detekt-cli-*.zip
+          ./detekt-cli-*/bin/detekt-cli --version
+          ./detekt-cli-*/bin/detekt-cli \
+              --all-rules \
+              --max-issues 0 \
+              --base-path ${{ github.workspace }} \
+              --report sarif:detekt.sarif \
+              --report txt:detekt.txt \
+              --report html:detekt.html \
+              --report xml:detekt.xml \
+              --report md:detekt.md \
+
+      - name: Upload "map Detekt Results" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: map Detekt Results
+          path: ${{ github.workspace }}/map/detekt.*
+
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/map/detekt.sarif

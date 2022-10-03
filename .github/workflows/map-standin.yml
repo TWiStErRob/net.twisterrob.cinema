@@ -1,0 +1,24 @@
+# https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+name: map
+on:
+  pull_request:
+    paths-ignore:
+      - 'map/**'
+      - '.github/workflows/map.yml'
+concurrency:
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-map-standin-master-{0}', github.sha) || format('ci-map-standin-{0}', github.ref) }}
+  cancel-in-progress: true
+jobs:
+  run:
+    name: 🔨 Build & Execute (Map)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 1
+    steps:
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
+
+  detekt:
+    name: 🔍 Static Checks (Map)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 1
+    steps:
+      - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'

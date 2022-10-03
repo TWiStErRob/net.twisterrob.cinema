@@ -1,12 +1,25 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>TWiStErRob/renovate-config"
-  ],
-  "ignorePaths": [
-    "android/",
-    "AppEngine/",
-    "Database/",
-    "Models/"
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"local>TWiStErRob/renovate-config"
+	],
+	"ignorePaths": [
+		"android/",
+		"AppEngine/",
+		"Database/",
+		"Models/"
+	],
+	"regexManagers": [
+		{
+			"description": "Update Detekt CLI in map.",
+			"fileMatch": ["^\\.github/workflows/map\\.yml$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://repo1.maven.org/maven2",
+			"depNameTemplate": "io.gitlab.arturbosch.detekt:detekt-cli",
+			"matchStrings": [
+				"DETEKT_VERSION=(?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
+		}
+	]
 }
