@@ -6,7 +6,7 @@
       "results": [],
       "tool": {
         "driver": {
-          "name": "Fake empty tool."
+          "name": "detekt"
         }
       }
     }

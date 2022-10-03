@@ -3,6 +3,8 @@ on:
   push:
     paths-ignore:
       - 'Heroku/'
+    branches-ignore:
+      - 'master'
 concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-standin-master-{0}', github.sha) || format('ci-heroku-standin-{0}', github.ref) }}
   cancel-in-progress: true
@@ -20,7 +22,7 @@ jobs:
       - name: Publish "Code scanning results / detekt".
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: ${{ github.workspace }}/.github/workflows/empty-reports/sarif.sarif
+          sarif_file: ${{ github.workspace }}/.github/workflows/empty-reports/detekt.sarif
 
       - name: Publish "🔔 Test Results" check run.
         uses: EnricoMi/publish-unit-test-result-action@v2
