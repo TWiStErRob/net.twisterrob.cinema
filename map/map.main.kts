@@ -89,8 +89,12 @@ fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
 	}
 
 	val nextYear = now.plusYears(1).toString()
+
+	@Suppress("MaxLineLength")
 	val uk =
 		cinemas("https://www.cineworld.co.uk/uk/data-api-service/v1/quickbook/10108/cinemas/with-event/until/${nextYear}?attr=&lang=en_GB")
+
+	@Suppress("MaxLineLength")
 	val ie =
 		cinemas("https://www.cineworld.ie/ie/data-api-service/v1/quickbook/10109/cinemas/with-event/until/${nextYear}?attr=&lang=en_IE")
 	return uk + ie
