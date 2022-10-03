@@ -6,7 +6,7 @@ on:
       - 'map/'
       - '.github/workflows/map.yml'
 concurrency:
-  group: ${{ github.ref == 'refs/heads/master' && format('ci-map-master-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-map-standin-master-{0}', github.sha) || format('ci-map-standin-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
   run:
