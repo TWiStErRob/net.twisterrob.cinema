@@ -2,7 +2,7 @@ name: Heroku
 on:
   push:
     paths-ignore:
-      - 'Heroku/'
+      - 'Heroku/**'
       - '.github/workflows/Heroku.yml'
     branches-ignore:
       - 'master'
