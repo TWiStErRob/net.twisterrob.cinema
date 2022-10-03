@@ -31,3 +31,34 @@ jobs:
         with:
           name: cinemas.kml
           path: ${{ github.workspace }}/map/cinemas.kml
+
+  detekt:
+    name: "🔍 Static Checks"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Run detekt.
+        working-directory: map
+        run: |
+          DETEKT_VERSION=1.22.0-RC1 curl --silent --show-error --location --output detekt-cli.zip \
+              https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
+          unzip detekt-cli.zip
+          ./detekt-cli-*/bin/detekt-cli --version
+          ./detekt-cli-*/bin/detekt-cli --all-rules --base-path ${{ github.workspace }} --report sarif:detekt.sarif
+
+      - name: Upload "map Detekt Results" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: map Detekt Results
+          path: ${{ github.workspace }}/map/detekt.sarif
+
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          category: map
+          sarif_file: ${{ github.workspace }}/map/detekt.sarif
