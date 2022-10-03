@@ -1,5 +1,5 @@
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
-name: map (stand-in)
+name: map
 on:
   pull_request:
     paths-ignore:
