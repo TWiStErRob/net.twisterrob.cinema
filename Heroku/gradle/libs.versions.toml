@@ -12,11 +12,11 @@ kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.4.0"
 detekt = "1.21.0"
 
-dagger = "2.43.2"
+dagger = "2.44"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "2.1.0"
+ktor = "2.1.2"
 
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
@@ -25,7 +25,7 @@ ktor = "2.1.0"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "4.4.10"
+neo4j = "4.4.11"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
 neo4j-java = "4.4.9"
@@ -33,13 +33,13 @@ neo4j-java = "4.4.9"
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "3.2.37"
 
-jackson = "2.13.3"
+jackson = "2.13.4"
 
 slf4j = "2.0.0"
-log4j = "2.18.1-SNAPSHOT"
+log4j = "2.19.0"
 
 test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.9.0"
+test-junit-jupiter = "5.9.1"
 test-junit-pioneer = "1.7.1"
 
 test-hamcrest = "2.2"
@@ -48,7 +48,7 @@ test-jsonAssert = "1.5.1"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "4.7.0"
+test-mockito = "4.8.0"
 test-mockito-kotlin = "4.0.0"
 
 [libraries]
