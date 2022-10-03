@@ -26,6 +26,7 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.atMost
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
@@ -52,9 +53,23 @@ import org.slf4j.LoggerFactory
 class ConfigureLoggingTest {
 
 	/**
+	 * Using a real logger so the output of the test setup is visible during execution.
+	 */
+	private val realLogger: Logger = LoggerFactory.getLogger(ConfigureLoggingTest::class.java)
+
+	/**
+	 * This instance is a [spy], but created in an extremely long-winded way,
+	 * because the mocked type needs to be the [Logger] interface.
+	 * If the instance type of `spy(getLogger...)` is used, then it may not work depending on implementation details,
+	 * such as [org.slf4j.helpers.NOPLogger] declaring the stubbed methods as `final`.
+	 * To throw oil to fire, Mockito doesn't support creating spies on interfaces,
+	 * because "Mocked type must be the same as the type of your spied instance.".
+	 *
 	 * @see forceSlf4jInitialization which is called before this executes.
 	 */
-	private val mockLogger: Logger = spy(LoggerFactory.getLogger(ConfigureLoggingTest::class.java)).apply {
+	private val mockLogger: Logger = mock<Logger>(
+		defaultAnswer = { it.method.invoke(realLogger, *it.rawArguments) }
+	).apply {
 		doReturn(false).whenever(this).isErrorEnabled
 		doReturn(false).whenever(this).isWarnEnabled
 		doReturn(false).whenever(this).isInfoEnabled
