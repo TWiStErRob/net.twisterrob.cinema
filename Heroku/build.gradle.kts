@@ -2,8 +2,6 @@ plugins {
 	id("io.gitlab.arturbosch.detekt")
 }
 
-val javaVersion = JavaVersion.VERSION_1_8
-
 allprojects {
 	repositories {
 		mavenCentral()
@@ -14,15 +12,15 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<JavaPluginExtension> {
-			sourceCompatibility = javaVersion
-			targetCompatibility = javaVersion
+			sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+			targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 		}
 	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
-				jvmTarget = javaVersion.toString()
+				jvmTarget = libs.versions.java.get()
 				allWarningsAsErrors = true
 				verbose = true
 			}
@@ -144,7 +142,7 @@ allprojects {
 
 			tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 				// Target version of the generated JVM bytecode. It is used for type resolution.
-				jvmTarget = javaVersion.toString()
+				jvmTarget = libs.versions.java.get()
 				reports {
 					html.required.set(true) // human
 					xml.required.set(true) // checkstyle
