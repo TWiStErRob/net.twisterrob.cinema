@@ -1,7 +1,3 @@
-plugins {
-	id("io.gitlab.arturbosch.detekt")
-}
-
 allprojects {
 	repositories {
 		mavenCentral()
@@ -128,17 +124,6 @@ allprojects {
 			}
 		}
 	}
-}
-
-// When running "gradlew detekt", it'll double-execute, be more specific:
-//  * gradlew :detekt
-//  * gradlew detekt -x :detekt
-tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
-	description = "Runs over whole code base without the starting overhead for each module."
-	// Reconfigure the detekt task rather than registering a separate detektAll task.
-	// This inherits the default configuration from the detekt extension, because it's created by the plugin.
-	// The root project has no source code, so we can include everything to check.
-	setSource(files(rootProject.projectDir))
 }
 
 project.tasks.register<Task>("allDependencies") {
