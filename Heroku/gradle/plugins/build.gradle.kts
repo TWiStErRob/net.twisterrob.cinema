@@ -35,8 +35,8 @@ detekt {
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
-	config = rootProject.files("../config/detekt/detekt.yml")
-	baseline = rootProject.file("../config/detekt/detekt-baseline-${project.name}.xml")
+	config = rootProject.files("../../config/detekt/detekt.yml")
+	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 
 	parallel = true
 
