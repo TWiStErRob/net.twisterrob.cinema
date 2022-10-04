@@ -1,5 +1,5 @@
 plugins {
-	id("io.gitlab.arturbosch.detekt")
+	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 allprojects {
@@ -127,9 +127,6 @@ allprojects {
 				dependsOn(copyLoggingTestResources)
 			}
 		}
-	}
-	plugins.withId("io.gitlab.arturbosch.detekt") {
-		apply<net.twisterrob.cinema.heroku.plugins.DetektPlugin>()
 	}
 }
 

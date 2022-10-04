@@ -1,7 +1,7 @@
 plugins {
 	id("java")
 	id("org.jetbrains.kotlin.jvm")
-	id("io.gitlab.arturbosch.detekt")
+	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 dependencies {
