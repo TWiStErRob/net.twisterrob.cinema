@@ -129,29 +129,7 @@ allprojects {
 		}
 	}
 	plugins.withId("io.gitlab.arturbosch.detekt") {
-		detekt.apply {
-			ignoreFailures = true
-			// TODEL https://github.com/detekt/detekt/issues/4926
-			buildUponDefaultConfig = false
-			allRules = true
-			config = rootProject.files("config/detekt/detekt.yml")
-			baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
-			basePath = rootProject.projectDir.parentFile.absolutePath
-
-			parallel = true
-
-			tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-				// Target version of the generated JVM bytecode. It is used for type resolution.
-				jvmTarget = libs.versions.java.get()
-				reports {
-					html.required.set(true) // human
-					xml.required.set(true) // checkstyle
-					txt.required.set(true) // console
-					// https://sarifweb.azurewebsites.net
-					sarif.required.set(true) // GitHub Code Scanning
-				}
-			}
-		}
+		apply<net.twisterrob.cinema.heroku.plugins.DetektPlugin>()
 	}
 }
 
