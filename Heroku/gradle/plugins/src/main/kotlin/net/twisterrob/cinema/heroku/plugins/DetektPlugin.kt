@@ -5,7 +5,6 @@ import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import net.twisterrob.cinema.heroku.plugins.internal.detekt
 import net.twisterrob.cinema.heroku.plugins.internal.libs
 import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
-import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.named
@@ -59,6 +58,10 @@ private fun Project.configureSarifMerging() {
 			val detektReportingTask = this@withType
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
 			detektReportMergeTask.input.from(detektReportingTask.sarifReportFile)
+		}
+		gradle.includedBuilds.forEach {
+			detektReportMergeTask.dependsOn(it.task(":detektReportMergeSarif"))
+			detektReportMergeTask.input.from(it.projectDir.resolve("reports/detekt/merge.sarif"))
 		}
 	}
 }

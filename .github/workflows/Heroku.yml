@@ -71,6 +71,7 @@ jobs:
           detektMain
           detektTest
           detektTestFixtures
+          :plugins:detektAll
           :detektReportMergeSarif
 
       - name: Upload "Heroku Detekt Results".
