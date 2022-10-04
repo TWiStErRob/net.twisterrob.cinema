@@ -73,8 +73,8 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 	}
 }
 
-// Expose :detektAll for included build to easily run all Detekt tasks.
-tasks.register("detektAll") {
+// Expose :detektEach for included build to easily run all Detekt tasks.
+tasks.register("detektEach") {
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
 	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
 }
