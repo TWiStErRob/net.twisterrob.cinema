@@ -1,5 +1,5 @@
 plugins {
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
+	id("io.gitlab.arturbosch.detekt")
 }
 
 allprojects {
