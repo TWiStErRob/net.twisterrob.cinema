@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Detekt Results
-          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
+          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
 
       - name: Publish "Code scanning results / detekt".
         uses: github/codeql-action/upload-sarif@v2
