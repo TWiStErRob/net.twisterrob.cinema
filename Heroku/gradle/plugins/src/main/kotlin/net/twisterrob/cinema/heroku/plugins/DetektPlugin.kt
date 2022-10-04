@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import net.twisterrob.cinema.heroku.plugins.internal.detekt
 import net.twisterrob.cinema.heroku.plugins.internal.libs
 import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
+import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.named
@@ -49,7 +50,7 @@ private fun Project.configureSarifMerging() {
 	tasks.withType<Detekt>().configureEach {
 		reports {
 			// https://sarifweb.azurewebsites.net
-			sarif.required.set(true) // Github Code Scanning
+			sarif.required.set(true) // GitHub Code Scanning
 		}
 	}
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
