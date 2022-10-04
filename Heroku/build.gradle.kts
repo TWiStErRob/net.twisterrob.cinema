@@ -131,8 +131,6 @@ allprojects {
 		}
 	}
 	plugins.withId("io.gitlab.arturbosch.detekt") {
-		val detekt = this@allprojects.extensions
-			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
 		detekt.apply {
 			ignoreFailures = true
 			// TODEL https://github.com/detekt/detekt/issues/4926
