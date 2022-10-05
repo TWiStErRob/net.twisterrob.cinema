@@ -14,6 +14,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
@@ -132,6 +133,9 @@ internal fun Application.configuration(
 				false // mandatory for now, TODO use above condition? see ApplicationCall.isAuthenticated
 			}
 			client = oauthHttpClient
+			this@configuration.environment.monitor.subscribe(ApplicationStopped) {
+				oauthHttpClient.close()
+			}
 			providerLookup = { googleOauthProvider }
 			urlProvider = {
 				absoluteUrl("/auth/google/return")
