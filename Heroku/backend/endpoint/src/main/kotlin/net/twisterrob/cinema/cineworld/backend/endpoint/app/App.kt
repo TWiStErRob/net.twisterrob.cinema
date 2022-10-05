@@ -41,9 +41,10 @@ object App {
 	object BackendModule {
 
 		@Provides
-		fun httpClient() = HttpClient().config {
-			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
-			expectSuccess = true
-		}
+		fun httpClient(): HttpClient =
+			HttpClient().config {
+				configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
+				expectSuccess = true
+			}
 	}
 }

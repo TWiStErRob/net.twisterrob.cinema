@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.app
 
 import dagger.BindsInstance
 import dagger.Component
+import io.ktor.client.HttpClient
 import io.ktor.server.application.Application
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
@@ -37,6 +38,8 @@ import javax.inject.Singleton
 interface ApplicationComponent {
 
 	val controllers: RouteControllerRegistrar
+
+	val httpClient: HttpClient
 
 	@Component.Builder
 	interface Builder : Neo4JModule.Dependencies<Builder>, QuickbookModule.Dependencies<Builder> {
