@@ -3,6 +3,7 @@ package net.twisterrob.cinema.cineworld.sync
 import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import org.neo4j.ogm.session.SessionFactory
+import java.io.Closeable
 import java.net.URI
 import javax.inject.Inject
 
@@ -13,25 +14,25 @@ class Main @Inject constructor(
 	private val performanceSync: PerformanceSync,
 	private val neo4j: SessionFactory,
 	private val network: HttpClient,
-) {
+) : Closeable {
 
 	fun sync(params: MainParameters) {
 		println("Syncing: $params")
-		try {
-			val feed by lazy { feedService.getWeeklyFilmTimes() }
-			if (params.syncCinemas) {
-				cinemaSync.sync(feed)
-			}
-			if (params.syncFilms) {
-				filmSync.sync(feed)
-			}
-			if (params.syncPerformances) {
-				performanceSync.sync(feed)
-			}
-		} finally {
-			neo4j.close()
-			network.close()
+		val feed by lazy { feedService.getWeeklyFilmTimes() }
+		if (params.syncCinemas) {
+			cinemaSync.sync(feed)
 		}
+		if (params.syncFilms) {
+			filmSync.sync(feed)
+		}
+		if (params.syncPerformances) {
+			performanceSync.sync(feed)
+		}
+	}
+
+	override fun close() {
+		neo4j.close()
+		network.close()
 	}
 
 	companion object {
@@ -45,7 +46,7 @@ class Main @Inject constructor(
 				.graphDBUri(getNeo4jUrl())
 				.params(params)
 				.build()
-			dagger.main.sync(params)
+			dagger.main.use { it.sync(params) }
 		}
 
 		private fun getNeo4jUrl(): URI {
