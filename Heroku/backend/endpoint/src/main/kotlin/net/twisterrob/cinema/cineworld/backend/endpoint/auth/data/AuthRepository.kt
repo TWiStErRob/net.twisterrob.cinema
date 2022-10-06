@@ -6,11 +6,17 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
 	private val service: UserService,
-	private val mapper:UserMapper,
+	private val mapper: UserMapper,
 ) {
 
 	fun addUser(userId: String, email: String, name: String, realm: String, created: OffsetDateTime) {
-		service.addUser(userId, email, name, realm, created)
+		service.addUser(
+			userId = userId,
+			email = email,
+			name = name,
+			realm = realm,
+			created = created,
+		)
 	}
 
 	fun findUser(userId: String): User {

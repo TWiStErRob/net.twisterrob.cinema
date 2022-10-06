@@ -25,13 +25,12 @@ class FilmService @Inject constructor(
 	 * Return all Films which are active.
 	 */
 	fun getActiveFilms(): Iterable<Film> =
-		session.query<Film>(
+		session.query(
 			"""
 			MATCH (f:Film)
 			WHERE f._deleted IS NULL
 			RETURN f AS film
-			""",
-			mapOf()
+			"""
 		)
 
 	/**

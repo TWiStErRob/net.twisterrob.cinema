@@ -18,4 +18,7 @@ private fun String.toURI(): URI =
 		// In DB: https://www.cineworld.co.uk/films/the-italian-job-[1969]-film-classics
 		.replace("[", "%5B")
 		.replace("]", "%5D")
-		.let { URI.create(it) }
+		.asURI()
+
+private fun String.asURI(): URI =
+	URI.create(this)

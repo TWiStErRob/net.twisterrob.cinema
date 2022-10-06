@@ -8,7 +8,9 @@ import net.twisterrob.cinema.cineworld.backend.app.DaggerApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import java.net.URI
 
-fun Application.daggerApplication() = daggerApplication(DaggerApplicationComponent::builder)
+fun Application.daggerApplication() {
+	daggerApplication(DaggerApplicationComponent::builder)
+}
 
 internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application.daggerApplication(
 	createComponentBuilder: () -> DaggerComponentBuilder,

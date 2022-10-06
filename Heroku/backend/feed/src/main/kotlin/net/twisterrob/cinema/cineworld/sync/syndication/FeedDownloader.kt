@@ -34,11 +34,11 @@ internal class FeedDownloader(
 				header(HttpHeaders.Connection, "close")
 				onDownloadDebounceTrace("Downloading ${source}", @Suppress("MagicNumber") 500)
 			}
-			.also {
+			.also { response ->
 				// TODO consider using DoubleDoubleReceive plugin.
-				val raw = it.body<ByteArray>()
+				val raw = response.body<ByteArray>()
 				require(baseFolder.isDirectory || baseFolder.mkdirs())
-				val fileName = it.request.url.fullPath.substringAfterLast('/')
+				val fileName = response.request.url.fullPath.substringAfterLast('/')
 				val output = baseFolder.resolve(fileName)
 				output.writeBytes(raw)
 				LOG.info("Dumped response (${raw.size} bytes) to ${output.absolutePath}.")

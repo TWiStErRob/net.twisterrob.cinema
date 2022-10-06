@@ -35,8 +35,8 @@ class View : BaseNode() {
 	@Relationship(type = "ATTENDED", direction = Relationship.INCOMING)
 	lateinit var userRef: User
 
-	override fun toString() =
-		"View[$graphId](${userRef.name} watched ${watchedFilm.title} at ${atCinema.name}"
+	override fun toString(): String =
+		"View[${graphId ?: "null"}](${userRef.name} watched ${watchedFilm.title} at ${atCinema.name}"
 
 	fun copy(): View {
 		val copy = View()

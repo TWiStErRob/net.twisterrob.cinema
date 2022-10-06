@@ -37,8 +37,8 @@ class User : BaseNode() {
 	@Relationship(type = "ATTENDED")
 	var views: MutableCollection<View> = mutableSetOf()
 
-	override fun toString() =
-		"User[$graphId]($id, $name)"
+	override fun toString(): String =
+		"User[${graphId ?: "null"}]($id, $name)"
 
 	fun copy(): User {
 		val copy = User()

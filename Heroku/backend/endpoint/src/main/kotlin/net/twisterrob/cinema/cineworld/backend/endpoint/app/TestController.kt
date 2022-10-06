@@ -39,16 +39,14 @@ class TestController @Inject constructor(
 			""".trimIndent()
 		)
 		intercept(ApplicationCallPipeline.Call) {
-			val fullPathAndQuery = this.call.request.uri.substringAfter("/").encodeURLPath()
-				.ifBlank { "index.html" }
+			val fullPathAndQuery = this.call.request.uri.ending
 			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
 			if (fakeFullPathAndQueryFile.exists()) {
 				respondFake(fakeFullPathAndQueryFile)
 				return@intercept
 			}
 
-			val fullPath = this.call.request.path().substringAfter("/").encodeURLPath()
-				.ifBlank { "index.html" }
+			val fullPath = this.call.request.path().ending
 			val fakeFullPathFile = root.resolve(fullPath)
 			if (fakeFullPathFile.exists()) {
 				respondFake(fakeFullPathFile)
@@ -66,3 +64,6 @@ class TestController @Inject constructor(
 		finish()
 	}
 }
+
+private val String.ending: String
+	get() = substringAfter("/").encodeURLPath().ifBlank { "index.html" }

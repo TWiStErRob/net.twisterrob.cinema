@@ -125,7 +125,7 @@ class ServerLogging(
 	}
 
 	private fun OutgoingContent.asString(): String? =
-		@Suppress("KotlinConstantConditions", "OptionalWhenBraces")
+		@Suppress("OptionalWhenBraces")
 		when (this) {
 
 			is OutgoingContent.NoContent -> {
@@ -145,7 +145,9 @@ class ServerLogging(
 				}
 			}
 
-			else -> {
+			is OutgoingContent.ByteArrayContent,
+			is OutgoingContent.ProtocolUpgrade,
+			is OutgoingContent.ReadChannelContent -> {
 				logger.error("Unknown response body content: ${this::class}")
 				null
 			}

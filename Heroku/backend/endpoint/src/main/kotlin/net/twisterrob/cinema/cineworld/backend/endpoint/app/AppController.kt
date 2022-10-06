@@ -50,6 +50,7 @@ class AppController @Inject constructor(
 			// workaround for https://github.com/ktorio/ktor/issues/514#issuecomment-414982574
 			// > `default()` function is not applied to subdirectories
 			static("planner") {
+				@Suppress("UnsafeCallOnNullableType") // staticRootFolder is set above, so assumption holds for now.
 				staticRootFolder = parent!!.staticRootFolder!!.resolve("planner")
 				files(".")
 				default("index.html")

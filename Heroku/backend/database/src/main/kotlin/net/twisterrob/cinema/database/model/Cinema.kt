@@ -38,8 +38,8 @@ class Cinema : Historical() {
 	@Relationship(type = "AT", direction = Relationship.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
-	override fun toString() =
-		"Cinema[$graphId](${cineworldID}, ${name})"
+	override fun toString(): String =
+		"Cinema[${graphId ?: "null"}](${cineworldID}, ${name})"
 
 	fun copy(): Cinema {
 		val copy = Cinema()

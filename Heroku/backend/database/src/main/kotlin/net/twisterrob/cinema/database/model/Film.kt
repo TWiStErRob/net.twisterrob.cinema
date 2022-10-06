@@ -95,8 +95,8 @@ class Film : Historical() {
 	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
-	override fun toString() =
-		"Film[$graphId](${cineworldID}, ${title})"
+	override fun toString(): String =
+		"Film[${graphId ?: "null"}](${cineworldID ?: "no ID"}, ${title})"
 
 	fun copy(): Film {
 		val copy = Film()

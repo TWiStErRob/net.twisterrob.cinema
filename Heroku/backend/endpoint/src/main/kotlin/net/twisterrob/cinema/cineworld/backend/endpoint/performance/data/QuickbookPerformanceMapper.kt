@@ -25,7 +25,12 @@ class QuickbookPerformanceMapper @Inject constructor() {
 			)
 		}
 		val utcMidnight = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC))
-		return Performances(utcMidnight, cinema, film, performances)
+		return Performances(
+			date = utcMidnight,
+			cinema = cinema,
+			film = film,
+			performances = performances,
+		)
 	}
 
 	@TestOnly internal fun getOffsetTime(date: LocalDate, time: LocalTime): OffsetDateTime {
