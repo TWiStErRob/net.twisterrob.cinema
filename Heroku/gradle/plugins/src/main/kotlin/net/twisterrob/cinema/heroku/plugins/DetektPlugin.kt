@@ -2,6 +2,7 @@ package net.twisterrob.cinema.heroku.plugins
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import isCI
 import net.twisterrob.cinema.heroku.plugins.internal.detekt
 import net.twisterrob.cinema.heroku.plugins.internal.libs
 import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
@@ -15,7 +16,7 @@ class DetektPlugin : Plugin<Project> {
 	override fun apply(project: Project) {
 		project.plugins.apply("io.gitlab.arturbosch.detekt")
 		project.detekt {
-			ignoreFailures = true
+			ignoreFailures = isCI
 			// TODEL https://github.com/detekt/detekt/issues/4926
 			buildUponDefaultConfig = false
 			allRules = true
