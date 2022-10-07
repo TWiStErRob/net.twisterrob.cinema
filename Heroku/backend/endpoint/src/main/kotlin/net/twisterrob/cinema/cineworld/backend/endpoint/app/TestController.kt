@@ -13,6 +13,7 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.coroutines.launch
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
@@ -57,11 +58,13 @@ class TestController @Inject constructor(
 		}
 	}
 
-	private suspend fun PipelineContext<Unit, ApplicationCall>.respondFake(path: File) {
-		call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
-		call.response.header(HttpHeaders.XForwardedServer, "fakes")
-		call.respondFile(path)
-		finish()
+	private fun PipelineContext<Unit, ApplicationCall>.respondFake(path: File) {
+		launch {
+			call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
+			call.response.header(HttpHeaders.XForwardedServer, "fakes")
+			call.respondFile(path)
+			finish()
+		}
 	}
 }
 

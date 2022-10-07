@@ -11,6 +11,8 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.jackson
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
@@ -38,33 +40,36 @@ class QuickbookServiceNetwork @Inject constructor(
 
 	fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
 		client
-			.getCinemas(full) {
+			.getCinemasAsync(full) {
 				url("https://www.cineworld.co.uk/api/quickbook/cinemas")
 				parameter("key", key)
 				parameter("full", full)
 			}
+			.await()
 			.throwErrorOrReturn { it.cinemas }
 	}
 
 	fun films(full: Boolean): List<QuickbookFilm> = runBlocking {
 		client
-			.getFilms(full) {
+			.getFilmsAsync(full) {
 				url("https://www.cineworld.co.uk/api/quickbook/films")
 				parameter("key", key)
 				parameter("full", full)
 			}
+			.await()
 			.throwErrorOrReturn { it.films }
 	}
 
 	override fun films(date: LocalDate, cinemas: List<Long>, full: Boolean): List<QuickbookFilm> = runBlocking {
 		client
-			.getFilms(full) {
+			.getFilmsAsync(full) {
 				url("https://www.cineworld.co.uk/api/quickbook/films")
 				parameter("key", key)
 				parameter("date", date.formatDateParam())
 				parameter("full", full)
 				cinemas.forEach { parameter("cinema", it) }
 			}
+			.await()
 			.throwErrorOrReturn { it.films }
 	}
 
@@ -87,14 +92,18 @@ class QuickbookServiceNetwork @Inject constructor(
  * @param full whether the JSON has full information
  * @param block to set up the request.
  */
-private suspend inline fun HttpClient.getCinemas(
+private inline fun HttpClient.getCinemasAsync(
 	full: Boolean,
-	block: HttpRequestBuilder.() -> Unit = {}
-): CinemasResponse<out QuickbookCinema> =
+	crossinline block: HttpRequestBuilder.() -> Unit = {}
+): Deferred<CinemasResponse<out QuickbookCinema>> =
 	if (full) {
-		get(block = block).body<CinemasResponse<QuickbookCinemaFull>>()
+		async {
+			get(block = block).body<CinemasResponse<QuickbookCinemaFull>>()
+		}
 	} else {
-		get(block = block).body<CinemasResponse<QuickbookCinemaSimple>>()
+		async {
+			get(block = block).body<CinemasResponse<QuickbookCinemaSimple>>()
+		}
 	}
 
 /**
@@ -102,14 +111,18 @@ private suspend inline fun HttpClient.getCinemas(
  * @param full whether the JSON has full information
  * @param block to set up the request.
  */
-private suspend inline fun HttpClient.getFilms(
+private inline fun HttpClient.getFilmsAsync(
 	full: Boolean,
-	block: HttpRequestBuilder.() -> Unit = {}
-): FilmsResponse<out QuickbookFilm> =
+	crossinline block: HttpRequestBuilder.() -> Unit = {}
+): Deferred<FilmsResponse<out QuickbookFilm>> =
 	if (full) {
-		get(block = block).body<FilmsResponse<QuickbookFilmFull>>()
+		async {
+			get(block = block).body<FilmsResponse<QuickbookFilmFull>>()
+		}
 	} else {
-		get(block = block).body<FilmsResponse<QuickbookFilmSimple>>()
+		async {
+			get(block = block).body<FilmsResponse<QuickbookFilmSimple>>()
+		}
 	}
 
 /**
