@@ -46,10 +46,10 @@ class Film : Historical() {
 	lateinit var director: String
 
 	@Property(name = "imax")
-	var imax: Boolean = false
+	var isIMAX: Boolean = false
 
 	@Property(name = "3D")
-	var `3D`: Boolean = false
+	var is3D: Boolean = false
 
 	@Property(name = "runtime")
 	var runtime: Long = 0
@@ -111,8 +111,8 @@ class Film : Historical() {
 		copy.cert = cert
 		copy.actors = actors
 		copy.director = director
-		copy.imax = imax
-		copy.`3D` = `3D`
+		copy.isIMAX = isIMAX
+		copy.is3D = is3D
 		copy.runtime = runtime
 		copy.weighted = weighted
 		copy.slug = slug
