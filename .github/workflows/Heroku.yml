@@ -68,20 +68,26 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          :detekt
+          :plugins:detekt
+          detekt
+          detektTestFixtures
+          :detektReportMergeSarif
+#          :plugins:detektEach
+#          detektMain
+#          detektTest
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Detekt Results
-          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/detekt.*
+          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
 
       - name: Publish "Code scanning results / detekt".
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/detekt.sarif
+          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
 
       - name: Build Heroku.
         working-directory: Heroku

@@ -1,9 +1,3 @@
-plugins {
-	id("io.gitlab.arturbosch.detekt")
-}
-
-val javaVersion = JavaVersion.VERSION_1_8
-
 allprojects {
 	repositories {
 		mavenCentral()
@@ -14,15 +8,15 @@ allprojects {
 
 	plugins.withId("java") {
 		configure<JavaPluginExtension> {
-			sourceCompatibility = javaVersion
-			targetCompatibility = javaVersion
+			sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+			targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 		}
 	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions {
-				jvmTarget = javaVersion.toString()
+				jvmTarget = libs.versions.java.get()
 				allWarningsAsErrors = true
 				verbose = true
 			}
@@ -130,44 +124,10 @@ allprojects {
 			}
 		}
 	}
-	plugins.withId("io.gitlab.arturbosch.detekt") {
-		val detekt = this@allprojects.extensions
-			.getByName<io.gitlab.arturbosch.detekt.extensions.DetektExtension>("detekt")
-		detekt.apply {
-			ignoreFailures = true
-			// TODEL https://github.com/detekt/detekt/issues/4926
-			buildUponDefaultConfig = false
-			allRules = true
-			config = rootProject.files("config/detekt/detekt.yml")
-			baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
-			basePath = rootProject.projectDir.parentFile.absolutePath
-
-			parallel = true
-
-			tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-				// Target version of the generated JVM bytecode. It is used for type resolution.
-				jvmTarget = javaVersion.toString()
-				reports {
-					html.required.set(true) // human
-					xml.required.set(true) // checkstyle
-					txt.required.set(true) // console
-					// https://sarifweb.azurewebsites.net
-					sarif.required.set(true) // GitHub Code Scanning
-				}
-			}
-		}
-	}
 }
 
-// When running "gradlew detekt", it'll double-execute, be more specific:
-//  * gradlew :detekt
-//  * gradlew detekt -x :detekt
-tasks.named<io.gitlab.arturbosch.detekt.Detekt>("detekt") {
-	description = "Runs over whole code base without the starting overhead for each module."
-	// Reconfigure the detekt task rather than registering a separate detektAll task.
-	// This inherits the default configuration from the detekt extension, because it's created by the plugin.
-	// The root project has no source code, so we can include everything to check.
-	setSource(files(rootProject.projectDir))
+rootProject.tasks.register<Delete>("clean") {
+	delete(rootProject.buildDir)
 }
 
 project.tasks.register<Task>("allDependencies") {

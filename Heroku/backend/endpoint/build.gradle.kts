@@ -4,7 +4,7 @@ plugins {
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
 	id("org.jetbrains.kotlin.plugin.serialization")
-	id("io.gitlab.arturbosch.detekt")
+	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 application {

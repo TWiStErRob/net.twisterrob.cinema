@@ -28,15 +28,20 @@ gradlePlugin {
 			id = "net.twisterrob.cinema.heroku.plugins.settings"
 			implementationClass = "net.twisterrob.cinema.heroku.plugins.SettingsPlugin"
 		}
+		create("net.twisterrob.cinema.heroku.plugins.detekt") {
+			id = "net.twisterrob.cinema.heroku.plugins.detekt"
+			implementationClass = "net.twisterrob.cinema.heroku.plugins.DetektPlugin"
+		}
 	}
 }
 
 detekt {
+	ignoreFailures = true
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
-	config = rootProject.files("../config/detekt/detekt.yml")
-	baseline = rootProject.file("../config/detekt/detekt-baseline-${project.name}.xml")
+	config = rootProject.files("../../config/detekt/detekt.yml")
+	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 
 	parallel = true
 
@@ -49,4 +54,27 @@ detekt {
 			sarif.required.set(true) // GitHub Code Scanning
 		}
 	}
+}
+
+val detektReportMergeTask = rootProject.tasks.register<io.gitlab.arturbosch.detekt.report.ReportMergeTask>("detektReportMergeSarif") {
+	output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
+}
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	reports {
+		// https://sarifweb.azurewebsites.net
+		sarif.required.set(true) // GitHub Code Scanning
+	}
+}
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
+	val detektReportingTask = this@withType
+	detektReportMergeTask.configure {
+		mustRunAfter(detektReportingTask)
+		input.from(detektReportingTask.sarifReportFile)
+	}
+}
+
+// Expose :detektEach for included build to easily run all Detekt tasks.
+tasks.register("detektEach") {
+	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
+	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
 }

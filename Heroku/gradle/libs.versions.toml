@@ -1,5 +1,6 @@
 [versions]
 
+java = "1.8"
 # @see jackson
 # @see ktor
 # @see kotlinx-coroutines
