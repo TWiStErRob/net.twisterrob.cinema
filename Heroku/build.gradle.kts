@@ -126,6 +126,10 @@ allprojects {
 	}
 }
 
+rootProject.tasks.register<Delete>("clean") {
+	delete(rootProject.buildDir)
+}
+
 project.tasks.register<Task>("allDependencies") {
 	val projects = project.allprojects.sortedBy { it.name }
 	doFirst {
