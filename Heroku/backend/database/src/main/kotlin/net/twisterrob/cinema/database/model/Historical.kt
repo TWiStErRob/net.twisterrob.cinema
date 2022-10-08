@@ -10,7 +10,10 @@ import java.time.OffsetDateTime
  * When it was [_created], [_updated] and [_deleted].
  * This gives ability to diagnose issues, and recover for synchronization mishaps.
  */
-@Suppress("PropertyName")
+@Suppress(
+	"PropertyName",
+	"UnnecessaryAbstractClass", // Prevent usage as OGM model directly, has to be inherited.
+)
 abstract class Historical : BaseNode() {
 
 	/**

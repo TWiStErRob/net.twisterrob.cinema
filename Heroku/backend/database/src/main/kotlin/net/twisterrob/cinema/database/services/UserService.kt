@@ -16,7 +16,7 @@ class UserService @Inject constructor(
 		session.load(id, depth = 0)
 
 	/**
-	 * Create a user if doesn't exists with the specified data.
+	 * Create a user if it doesn't exist, with the specified data.
 	 * @param userId OpenID
 	 * @param email The email of the user being created.
 	 * @param name Display name of the user being created.
@@ -46,7 +46,7 @@ class UserService @Inject constructor(
 				"email" to email,
 				"name" to name,
 				// calling the converter is workaround for https://github.com/neo4j/neo4j-ogm/issues/766
-				"created" to TimestampConverter().toGraphProperty(created)!!
+				"created" to (TimestampConverter().toGraphProperty(created) ?: error("$created produced null"))
 			)
-		)!!
+		) ?: error("Cannot find user ${userId} right after creating it.")
 }

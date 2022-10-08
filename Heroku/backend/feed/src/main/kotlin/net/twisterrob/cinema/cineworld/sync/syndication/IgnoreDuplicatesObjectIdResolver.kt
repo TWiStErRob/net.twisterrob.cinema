@@ -8,7 +8,7 @@ private val LOG = LoggerFactory.getLogger(IgnoreDuplicatesObjectIdResolver::clas
 
 internal class IgnoreDuplicatesObjectIdResolver : ObjectIdResolver {
 
-	private var items: MutableMap<ObjectIdGenerator.IdKey, Any> = mutableMapOf()
+	private val items: MutableMap<ObjectIdGenerator.IdKey, Any> = mutableMapOf()
 
 	override fun bindItem(id: ObjectIdGenerator.IdKey, ob: Any) {
 		val existing: Any? = resolveId(id)

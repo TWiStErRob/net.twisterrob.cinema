@@ -114,8 +114,8 @@ fun assertSameData(expected: Film, actual: Node) = assertAll {
 		"cert" to expected.cert,
 		"actors" to expected.actors,
 		"director" to expected.director,
-		"imax" to expected.imax,
-		"3D" to expected.`3D`,
+		"imax" to expected.isIMAX,
+		"3D" to expected.is3D,
 
 		"runtime" to expected.runtime,
 		"weighted" to expected.weighted,

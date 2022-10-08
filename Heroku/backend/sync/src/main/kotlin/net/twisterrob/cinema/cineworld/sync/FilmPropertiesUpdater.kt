@@ -14,8 +14,8 @@ fun Film.copyPropertiesFrom(feedFilm: Feed.Film, feed: Feed) {
 	this.actors = feedFilm.cast
 	this.film_url = feedFilm.url
 	this.slug = feedFilm.url.path.substringAfterLast("/")
-	this.`3D` = "3D" in feedFilm.attributeList
-	this.imax = "IMAX" in feedFilm.attributeList
+	this.is3D = "3D" in feedFilm.attributeList
+	this.isIMAX = "IMAX" in feedFilm.attributeList
 	this.format = findFormat(feedFilm.attributeList)
 	this.poster_url = feedFilm.posterUrl
 	this.runtime = feedFilm.runningTime.toLong()

@@ -1,13 +1,16 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopped
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.dagger
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.DaggerApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import java.net.URI
 
-fun Application.daggerApplication() = daggerApplication(DaggerApplicationComponent::builder)
+fun Application.daggerApplication() {
+	daggerApplication(DaggerApplicationComponent::builder)
+}
 
 internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application.daggerApplication(
 	createComponentBuilder: () -> DaggerComponentBuilder,
@@ -23,6 +26,9 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	val dagger = builder.build()
 	componentReady(dagger)
 	this.attributes.dagger = dagger
+	environment.monitor.subscribe(ApplicationStopped) { application ->
+		application.attributes.dagger.httpClient.close()
+	}
 
 	dagger.controllers.register()
 }

@@ -24,13 +24,12 @@ class CinemaService @Inject constructor(
 	 * Get all the Cinemas which are active.
 	 */
 	fun getActiveCinemas(): Iterable<Cinema> =
-		session.query<Cinema>(
+		session.query(
 			"""
 			MATCH (c:Cinema)
 			WHERE NOT exists (c._deleted)
 			RETURN c AS cinema
-			""",
-			mapOf()
+			"""
 		)
 
 	/**

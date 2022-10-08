@@ -10,6 +10,7 @@ import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.not
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -24,6 +25,10 @@ class QuickbookServiceNetworkIntgExtTest {
 		}
 	}
 	private val sut = QuickbookServiceNetwork(client, "9qfgpF7B")
+
+	@AfterEach fun tearDown() {
+		client.close()
+	}
 
 	@Test fun `get all cinemas`() {
 		val cinemas = sut.cinemas(full = false)

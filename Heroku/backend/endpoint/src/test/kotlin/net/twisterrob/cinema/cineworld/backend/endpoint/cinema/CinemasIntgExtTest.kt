@@ -6,6 +6,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
+import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.cinema.database.Neo4J
@@ -42,6 +43,7 @@ class CinemasIntgExtTest {
 
 @Component(
 	modules = [
+		App.BackendModule::class,
 		Cinemas.FrontendModule::class,
 		Cinemas.BackendModule::class,
 		Neo4JModule::class

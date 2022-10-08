@@ -79,5 +79,5 @@ private fun Map<KParameter, Any?>.toCallString(): String =
 private fun KParameter.toParamString(): String {
 	val vararg = if (isVararg) "vararg " else ""
 	val optional = if (isOptional) " = ?" else ""
-	return "$vararg$name: $type$optional"
+	return "$vararg${name ?: "<unnamed>"}: $type$optional"
 }

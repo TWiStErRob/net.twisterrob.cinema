@@ -98,7 +98,7 @@ class AuthController @Inject constructor(
 		authenticate(optional = true) {
 			get<Auth.Routes.Logout> {
 				if (call.hasUser) {
-					val currentUser = call.attributes.currentUser!!
+					val currentUser = call.attributes.requireUser
 					call.application.log.trace("Logging out {}.", currentUser)
 					call.sessions.clear<AuthSession>()
 					call.respondRedirect(App.Routes.Home.href())
@@ -112,7 +112,7 @@ class AuthController @Inject constructor(
 		authenticate(optional = true) {
 			get<Auth.Routes.Google> {
 				if (call.hasUser) {
-					val currentUser = call.attributes.currentUser!!
+					val currentUser = call.attributes.requireUser
 					call.application.log.trace("Already logged in as {}.", currentUser)
 					call.respondRedirect(App.Routes.Home.href())
 				} else {
@@ -133,7 +133,7 @@ class AuthController @Inject constructor(
 					.body()
 				authRepository.addUser(
 					userId = data.sub,
-					email = data.email!!,
+					email = data.email ?: error("${data.sub} doesn't have email"),
 					name = data.name ?: "Anonymous",
 					realm = call.absoluteUrl(),
 					created = OffsetDateTime.now()

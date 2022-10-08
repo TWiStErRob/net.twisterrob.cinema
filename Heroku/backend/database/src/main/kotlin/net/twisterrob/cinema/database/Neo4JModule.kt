@@ -97,7 +97,7 @@ object Neo4JModule {
 	@Neo4J
 	@Provides
 	fun sessionFactory(config: Configuration): SessionFactory {
-		val modelClasses = OGM_ENTITIES.map { it.qualifiedName!! }
+		val modelClasses = OGM_ENTITIES.map { it.qualifiedName ?: error("${it} has no name") }
 		return SessionFactory(config, *modelClasses.toTypedArray()).apply {
 			// Disabled for now, let's try to use default Neo4J OGM first
 			//setEntityInstantiator(KotlinReflectionEntityInstantiator())

@@ -14,9 +14,17 @@ class QuickbookPerformanceRepository @Inject constructor(
 	override fun list(date: LocalDate, films: List<Long>, cinemas: List<Long>): List<Performances> =
 		(cinemas x films).map { (cinema, film) ->
 			// TODO make these network calls in parallel (3)
-			val performances =
-				quickbookService.performances(date = date, cinema = cinema, film = film)
-			performanceMapper.map(date, cinema, film, performances)
+			val performances = quickbookService.performances(
+				date = date,
+				cinema = cinema,
+				film = film,
+			)
+			performanceMapper.map(
+				date = date,
+				cinema = cinema,
+				film = film,
+				qbPerformances = performances,
+			)
 		}
 }
 

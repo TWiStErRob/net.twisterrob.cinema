@@ -5,8 +5,10 @@ import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.test.build
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
@@ -112,5 +114,30 @@ class MainTest {
 		verify(mockCinemaSync).sync(fixtFeed)
 		verify(mockPerformanceSync).sync(fixtFeed)
 		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
+	}
+
+	@Test fun `sync fails`() {
+		val fakeException = RuntimeException("test")
+		whenever(mockFeedService.getWeeklyFilmTimes()).thenThrow(fakeException)
+
+		val ex = assertThrows<Throwable> {
+			sut.sync(MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = true))
+		}
+		assertSame(fakeException, ex)
+
+		verify(mockFeedService).getWeeklyFilmTimes()
+		verifyNoMoreInteractions(mockFeedService, mockCinemaSync, mockFeedService)
+	}
+
+	@Test fun `close closes network`() {
+		sut.close()
+
+		verify(mockNetwork).close()
+	}
+
+	@Test fun `close closes graph`() {
+		sut.close()
+
+		verify(mockNeo4j).close()
 	}
 }
