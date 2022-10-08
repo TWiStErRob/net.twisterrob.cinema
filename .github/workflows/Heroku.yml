@@ -68,11 +68,13 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          detektMain
-          detektTest
+          :plugins:detekt
+          detekt
           detektTestFixtures
-          :plugins:detektEach
           :detektReportMergeSarif
+#          :plugins:detektEach
+#          detektMain
+#          detektTest
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
