@@ -13,7 +13,8 @@ internal inline fun <reified T : Task> TaskContainer.maybeRegister(
 ): TaskProvider<T> =
 	try {
 		named<T>(taskName)
-	} catch (ex: UnknownTaskException) {
+	} catch (@Suppress("SwallowedException") ex: UnknownTaskException) {
+		// Exception is used to detect existence of the task.
 		@Suppress("RemoveExplicitTypeArguments")
 		register<T>(taskName, configuration)
 	}
