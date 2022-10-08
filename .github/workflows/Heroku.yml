@@ -71,10 +71,10 @@ jobs:
           :plugins:detekt
           detekt
           detektMain
+          detektTest
           detektTestFixtures
           :detektReportMergeSarif
 #          :plugins:detektEach
-#          detektTest
 
       - name: Upload "Heroku Detekt Results".
         if: success() || failure()
