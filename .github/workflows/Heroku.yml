@@ -70,10 +70,10 @@ jobs:
           --stacktrace
           :plugins:detekt
           detekt
+          detektMain
           detektTestFixtures
           :detektReportMergeSarif
 #          :plugins:detektEach
-#          detektMain
 #          detektTest
 
       - name: Upload "Heroku Detekt Results".
