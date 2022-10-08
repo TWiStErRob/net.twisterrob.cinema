@@ -62,7 +62,7 @@ private fun Project.configureSarifMerging() {
 		}
 		gradle.includedBuilds.forEach {
 			detektReportMergeTask.dependsOn(it.task(":detektReportMergeSarif"))
-			detektReportMergeTask.input.from(it.projectDir.resolve("reports/detekt/merge.sarif"))
+			detektReportMergeTask.input.from(it.projectDir.resolve("build/reports/detekt/merge.sarif"))
 		}
 	}
 }
