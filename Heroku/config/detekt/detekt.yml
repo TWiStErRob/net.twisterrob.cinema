@@ -7,6 +7,7 @@ processors:
   # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
   active: false
 
+
 console-reports:
   exclude:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
@@ -17,6 +18,7 @@ console-reports:
     - 'FileBasedFindingsReport'
     # Disabled, because this gives enough context to see the problems, but doesn't group rules.
     - 'LiteFindingsReport'
+
 
 comments:
 
@@ -70,18 +72,20 @@ naming:
     excludes:
       - '**/database/model/*.kt'
 
+
 performance:
 
   SpreadOperator:
     active: false
 
+
 potential-bugs:
 
   LateinitUsage:
     ignoreAnnotated:
-     - 'org.neo4j.ogm.annotation.Property'
-     - 'org.neo4j.ogm.annotation.Relationship'
-     - 'com.fasterxml.jackson.annotation.JsonManagedReference'
+      - 'org.neo4j.ogm.annotation.Property'
+      - 'org.neo4j.ogm.annotation.Relationship'
+      - 'com.fasterxml.jackson.annotation.JsonManagedReference'
 
   MissingPackageDeclaration:
     # It's often desirable to declare functions and classes on the default package,
@@ -90,6 +94,7 @@ potential-bugs:
       - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
+
 
 style:
 
