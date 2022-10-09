@@ -48,6 +48,14 @@ comments:
     # Enforce for production and test code. This negates the excludes in default config.
     excludes: [ ]
 
+
+complexity:
+
+  NamedArguments:
+    # Exclude in test code, mocking doesn't need to have explicit named arguments, since a minor mistake will fail the tests.
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+
+
 naming:
 
   ConstructorParameterNaming:
@@ -119,3 +127,6 @@ style:
   UnusedPrivateClass:
     excludes:
       - '**/*Test.kt'
+
+  VarCouldBeVal:
+    ignoreLateinitVar: true

@@ -55,8 +55,11 @@ class ViewServiceIntgTest {
 			sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		assertNotNull(result); result!!
-		@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5131
 		// Wire up a View that is like the expected one and connect relationships.
+		@Suppress(
+			"LabeledExpression", // https://github.com/detekt/detekt/issues/5131
+			"NestedScopeFunctions", // Ensure created objects are correct before escaping scope.
+		)
 		View().apply view@{
 			graphId = result.graphId
 			date = fixtTime.toInstant()

@@ -342,7 +342,7 @@ private fun jackson(
 		configure()
 	}
 
-private inline fun <reified T> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
+private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
 	assertAll {
 		o {
 			val actualXml: String = try {

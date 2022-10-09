@@ -19,7 +19,7 @@ class FeedServiceNetworkIntgExtTest {
 			feed.sanityCheck()
 		} catch (e: Throwable) {
 			if (e is com.fasterxml.jackson.databind.exc.ValueInstantiationException) {
-				val message = e.message ?: ""
+				val message = e.message.orEmpty()
 				val filmClass = Regex.escape(Feed.Film::class.java.name)
 				val filmId = Regex.escape(Long::class.javaObjectType.name)
 				val idGenName = Regex.escape(PropertyBasedObjectIdGenerator::class.java.name)
