@@ -69,7 +69,6 @@ jobs:
           --no-build-cache
           --stacktrace
           :plugins:detektEach
-          detekt
           detektMain
           detektTest
           detektTestFixtures
