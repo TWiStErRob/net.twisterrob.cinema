@@ -93,20 +93,22 @@ fun Cinema.inUTC() {
 	_deleted = _deleted?.withOffsetSameInstant(ZoneOffset.UTC)
 }
 
-fun assertSameData(expected: Cinema, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("Cinema"))
-	that("id", actual.id, equalTo(expected.graphId))
-	val expectedProperties = mapOf(
-		"_created" to TimestampConverter().toGraphProperty(expected._created),
-		"_updated" to TimestampConverter().toGraphProperty(expected._updated),
-		"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
-		"class" to expected.className,
-		"cineworldID" to expected.cineworldID,
-		"name" to expected.name,
-		"postcode" to expected.postcode,
-		"address" to expected.address,
-		"telephone" to expected.telephone,
-		"cinema_url" to expected.cinema_url
-	)
-	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+fun assertSameData(expected: Cinema, actual: Node) {
+	assertAll {
+		that("labels", actual, hasLabels("Cinema"))
+		that("id", actual.id, equalTo(expected.graphId))
+		val expectedProperties = mapOf(
+			"_created" to TimestampConverter().toGraphProperty(expected._created),
+			"_updated" to TimestampConverter().toGraphProperty(expected._updated),
+			"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
+			"class" to expected.className,
+			"cineworldID" to expected.cineworldID,
+			"name" to expected.name,
+			"postcode" to expected.postcode,
+			"address" to expected.address,
+			"telephone" to expected.telephone,
+			"cinema_url" to expected.cinema_url
+		)
+		that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+	}
 }

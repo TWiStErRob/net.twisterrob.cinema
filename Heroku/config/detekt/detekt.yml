@@ -81,6 +81,11 @@ performance:
 
 potential-bugs:
 
+  ImplicitUnitReturnType:
+    ignoreAnnotated:
+      # Convention in unit tests might be to do runBlockingTest {} or endpointTest {}.
+      - 'org.junit.jupiter.api.Test'
+
   LateinitUsage:
     ignoreAnnotated:
       - 'org.neo4j.ogm.annotation.Property'

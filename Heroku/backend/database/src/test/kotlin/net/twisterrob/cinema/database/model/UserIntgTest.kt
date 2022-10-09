@@ -71,16 +71,18 @@ fun User.inUTC() {
 	_created = _created.withOffsetSameInstant(ZoneOffset.UTC)
 }
 
-fun assertSameData(expected: User, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("User"))
-	that("id", actual.id, equalTo(expected.graphId))
-	val expectedProperties = mapOf<String, Any?>(
-		"_created" to TimestampConverter().toGraphProperty(expected._created),
-		"class" to expected.className,
-		"id" to expected.id,
-		"name" to expected.name,
-		"realm" to expected.realm,
-		"email" to expected.email
-	)
-	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+fun assertSameData(expected: User, actual: Node) {
+	assertAll {
+		that("labels", actual, hasLabels("User"))
+		that("id", actual.id, equalTo(expected.graphId))
+		val expectedProperties = mapOf<String, Any?>(
+			"_created" to TimestampConverter().toGraphProperty(expected._created),
+			"class" to expected.className,
+			"id" to expected.id,
+			"name" to expected.name,
+			"realm" to expected.realm,
+			"email" to expected.email
+		)
+		that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+	}
 }
