@@ -46,6 +46,7 @@ class FeedIntgTest {
 			cinemas.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			films.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			this["performances"] = (1..3).map {
+				@Suppress("NestedScopeFunctions") // Ensure created Performance object is correct before escaping scope.
 				Feed.Performance(
 					film = films.random(),
 					cinema = cinemas.random(),
@@ -59,7 +60,7 @@ class FeedIntgTest {
 			}
 		}
 		val serialized = feedReader().writeValueAsString(fixtFeed)
-		println(serialized)
+		//println(serialized)
 		val feed = feedReader().readValue<Feed>(serialized)
 		assertEquals(fixtFeed, feed)
 	}

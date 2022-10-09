@@ -186,7 +186,7 @@ fun serialized(film: Film): String =
 	{
 		"class": "${film.`class`}",
 		"title": "${film.title}",
-		"cineworldID": ${film.cineworldID},
+		"cineworldID": ${film.cineworldID ?: "null"},
 		"_created": "${serialized(film._created)}",
 		"_updated": "${serialized(film._updated)}",
 		"director": "${film.director}",
@@ -201,7 +201,7 @@ fun serialized(film: Film): String =
 		"film_url": "${film.film_url}",
 		"edi": ${film.edi},
 		"classification": "${film.classification}",
-		"trailer": "${film.trailer}",
+		"trailer": "${film.trailer ?: "null"}",
 		"actors": "${film.actors}",
 		"originalTitle": "${film.originalTitle}",
 		"categories": ${film.categories},

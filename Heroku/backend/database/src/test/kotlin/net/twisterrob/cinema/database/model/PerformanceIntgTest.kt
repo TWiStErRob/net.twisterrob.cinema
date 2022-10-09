@@ -78,13 +78,15 @@ fun Performance.inUTC() {
 	screensFilm.inUTC()
 }
 
-fun assertSameData(expected: Performance, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("Performance"))
-	that("id", actual.id, equalTo(expected.graphId))
-	val expectedProperties = mapOf(
-		"class" to expected.className,
-		"time" to expected.time,
-		"booking_url" to expected.booking_url,
-	)
-	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+fun assertSameData(expected: Performance, actual: Node) {
+	assertAll {
+		that("labels", actual, hasLabels("Performance"))
+		that("id", actual.id, equalTo(expected.graphId))
+		val expectedProperties = mapOf(
+			"class" to expected.className,
+			"time" to expected.time,
+			"booking_url" to expected.booking_url,
+		)
+		that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+	}
 }

@@ -15,15 +15,15 @@ class FeedTest {
 		val feed1: Feed = fixture.build()
 		val feed2: Feed = generateSequence { fixture.build<Feed>() }
 			.first { feed2 ->
-				val uniqueFilms =
+				val hasUniqueFilms =
 					feed2.films.map(Feed.Film::id)
 						.intersect(feed1.films.map(Feed.Film::id))
 						.isEmpty()
-				val uniqueAttributes =
+				val hasUniqueAttributes =
 					feed2.attributes.map(Feed.Attribute::code)
 						.intersect(feed1.attributes.map(Feed.Attribute::code))
 						.isEmpty()
-				uniqueFilms && uniqueAttributes
+				hasUniqueFilms && hasUniqueAttributes
 			}
 
 		val result = feed1 + feed2

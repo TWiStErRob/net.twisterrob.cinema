@@ -65,9 +65,9 @@ object FeedData {
 }
 
 fun Feed.verifyHasAllAttributes(attributes: Set<Feed.Attribute>) {
-	attributes.forEach {
-		assertTrue(this.attributes.contains(it)) {
-			"$it not found in ${this.attributes}"
+	attributes.forEach { attribute ->
+		assertTrue(this.attributes.contains(attribute)) {
+			"$attribute not found in ${this.attributes}"
 		}
 	}
 }
@@ -77,8 +77,8 @@ fun Feed.sanityCheck() {
 }
 
 fun Feed.verifyAllAttributesAreValid() {
-	this.attributes.forEach {
-		assertNotNull(it.code)
-		assertNotNull(it.title)
+	this.attributes.forEach { attribute ->
+		assertNotNull(attribute.code)
+		assertNotNull(attribute.title)
 	}
 }

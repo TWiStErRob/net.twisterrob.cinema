@@ -94,44 +94,46 @@ fun Film.inUTC() {
 	release = release.withOffsetSameInstant(ZoneOffset.UTC)
 }
 
-fun assertSameData(expected: Film, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("Film"))
-	that("id", actual.id, equalTo(expected.graphId))
-	val expectedProperties = mapOf<String, Any?>(
-		"_created" to TimestampConverter().toGraphProperty(expected._created),
-		"_updated" to TimestampConverter().toGraphProperty(expected._updated),
-		"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
-		"class" to expected.className,
-		"edi" to expected.edi,
-		"cineworldID" to expected.cineworldID,
-		"cineworldInternalID" to expected.cineworldInternalID,
+fun assertSameData(expected: Film, actual: Node) {
+	assertAll {
+		that("labels", actual, hasLabels("Film"))
+		that("id", actual.id, equalTo(expected.graphId))
+		val expectedProperties = mapOf<String, Any?>(
+			"_created" to TimestampConverter().toGraphProperty(expected._created),
+			"_updated" to TimestampConverter().toGraphProperty(expected._updated),
+			"_deleted" to TimestampConverter().toGraphProperty(expected._deleted),
+			"class" to expected.className,
+			"edi" to expected.edi,
+			"cineworldID" to expected.cineworldID,
+			"cineworldInternalID" to expected.cineworldInternalID,
 
-		"title" to expected.title,
-		"originalTitle" to expected.originalTitle,
+			"title" to expected.title,
+			"originalTitle" to expected.originalTitle,
 
-		"advisory" to expected.advisory,
-		"classification" to expected.classification,
-		"cert" to expected.cert,
-		"actors" to expected.actors,
-		"director" to expected.director,
-		"imax" to expected.isIMAX,
-		"3D" to expected.is3D,
+			"advisory" to expected.advisory,
+			"classification" to expected.classification,
+			"cert" to expected.cert,
+			"actors" to expected.actors,
+			"director" to expected.director,
+			"imax" to expected.isIMAX,
+			"3D" to expected.is3D,
 
-		"runtime" to expected.runtime,
-		"weighted" to expected.weighted,
+			"runtime" to expected.runtime,
+			"weighted" to expected.weighted,
 
-		"slug" to expected.slug,
-		"group" to expected.group,
-		"format" to expected.format,
-		"still_url" to expected.still_url,
-		"film_url" to expected.film_url,
-		"poster_url" to expected.poster_url,
-		"poster" to expected.poster,
-		"trailer" to expected.trailer,
+			"slug" to expected.slug,
+			"group" to expected.group,
+			"format" to expected.format,
+			"still_url" to expected.still_url,
+			"film_url" to expected.film_url,
+			"poster_url" to expected.poster_url,
+			"poster" to expected.poster,
+			"trailer" to expected.trailer,
 
-		"release" to TimestampConverter().toGraphProperty(expected.release),
+			"release" to TimestampConverter().toGraphProperty(expected.release),
 
-		"categories" to expected.categories.toTypedArray()
-	)
-	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+			"categories" to expected.categories.toTypedArray()
+		)
+		that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+	}
 }

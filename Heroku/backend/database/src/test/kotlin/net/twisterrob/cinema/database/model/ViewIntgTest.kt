@@ -30,7 +30,11 @@ class ViewIntgTest {
 
 	@Test fun `new view can be loaded back and contains all data`(session: Session) {
 		val fixtView: View = fixture.build()
-		@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5131
+
+		@Suppress(
+			"LabeledExpression", // https://github.com/detekt/detekt/issues/5131
+			"NestedScopeFunctions", // Ensure created objects are correct before escaping scope.
+		)
 		val expected = fixtView.copy().apply view@{
 			graphId = 2
 			inUTC()
@@ -100,12 +104,14 @@ fun View.inUTC() {
 	userRef.inUTC()
 }
 
-fun assertSameData(expected: View, actual: Node) = assertAll {
-	that("labels", actual, hasLabels("View"))
-	that("id", actual.id, equalTo(expected.graphId))
-	val expectedProperties = mapOf<String, Any?>(
-		"date" to expected.date.toEpochMilli(),
-		"class" to expected.className
-	)
-	that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+fun assertSameData(expected: View, actual: Node) {
+	assertAll {
+		that("labels", actual, hasLabels("View"))
+		that("id", actual.id, equalTo(expected.graphId))
+		val expectedProperties = mapOf<String, Any?>(
+			"date" to expected.date.toEpochMilli(),
+			"class" to expected.className
+		)
+		that("allProperties", actual.allProperties, sameBeanAs(expectedProperties))
+	}
 }

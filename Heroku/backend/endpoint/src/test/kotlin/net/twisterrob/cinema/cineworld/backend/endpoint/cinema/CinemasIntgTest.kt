@@ -98,7 +98,6 @@ class CinemasIntgTest {
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/favs" }
 
 		verifyNoInteractions(mockRepository)
-
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 
@@ -222,7 +221,7 @@ fun serialized(cinema: Cinema): String =
 		"name": "${cinema.name}",
 		"cineworldID": ${cinema.cineworldID},
 		"postcode": "${cinema.postcode}",
-		"telephone": "${cinema.telephone}",
+		"telephone": "${cinema.telephone ?: "null"}",
 		"cinema_url": "${cinema.cinema_url}",
 		"_created": "${serialized(cinema._created)}",
 		"_updated": "${serialized(cinema._updated)}",

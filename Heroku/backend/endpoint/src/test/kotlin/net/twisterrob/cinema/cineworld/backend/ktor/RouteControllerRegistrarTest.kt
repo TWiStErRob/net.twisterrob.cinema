@@ -44,7 +44,7 @@ class RouteControllerRegistrarTest {
 
 		sut.register()
 
-		verify(mockController).run { with(any<Routing>()) { registerRoutes() } }
+		verify(mockController).registerRoutes()
 	}
 
 	@Test fun `two controllers register by order`() {
@@ -58,8 +58,8 @@ class RouteControllerRegistrarTest {
 		sut.register()
 
 		inOrder(mockController1, mockController2) {
-			verify(mockController1).run { with(any<Routing>()) { registerRoutes() } }
-			verify(mockController2).run { with(any<Routing>()) { registerRoutes() } }
+			verify(mockController1).registerRoutes()
+			verify(mockController2).registerRoutes()
 		}
 	}
 
@@ -79,8 +79,12 @@ class RouteControllerRegistrarTest {
 		sut.register()
 
 		inOrder(mockController1, mockController2) {
-			verify(mockController1).run { with(any<Routing>()) { registerRoutes() } }
-			verify(mockController2).run { with(any<Routing>()) { registerRoutes() } }
+			verify(mockController1).registerRoutes()
+			verify(mockController2).registerRoutes()
 		}
 	}
+}
+
+private fun RouteController.registerRoutes() {
+	with(any<Routing>()) { registerRoutes() }
 }

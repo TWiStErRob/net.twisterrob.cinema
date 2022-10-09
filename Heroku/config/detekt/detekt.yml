@@ -7,6 +7,7 @@ processors:
   # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
   active: false
 
+
 console-reports:
   exclude:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
@@ -17,6 +18,7 @@ console-reports:
     - 'FileBasedFindingsReport'
     # Disabled, because this gives enough context to see the problems, but doesn't group rules.
     - 'LiteFindingsReport'
+
 
 comments:
 
@@ -46,6 +48,14 @@ comments:
     # Enforce for production and test code. This negates the excludes in default config.
     excludes: [ ]
 
+
+complexity:
+
+  NamedArguments:
+    # Exclude in test code, mocking doesn't need to have explicit named arguments, since a minor mistake will fail the tests.
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+
+
 naming:
 
   ConstructorParameterNaming:
@@ -70,18 +80,25 @@ naming:
     excludes:
       - '**/database/model/*.kt'
 
+
 performance:
 
   SpreadOperator:
     active: false
 
+
 potential-bugs:
+
+  ImplicitUnitReturnType:
+    ignoreAnnotated:
+      # Convention in unit tests might be to do runBlockingTest {} or endpointTest {}.
+      - 'org.junit.jupiter.api.Test'
 
   LateinitUsage:
     ignoreAnnotated:
-     - 'org.neo4j.ogm.annotation.Property'
-     - 'org.neo4j.ogm.annotation.Relationship'
-     - 'com.fasterxml.jackson.annotation.JsonManagedReference'
+      - 'org.neo4j.ogm.annotation.Property'
+      - 'org.neo4j.ogm.annotation.Relationship'
+      - 'com.fasterxml.jackson.annotation.JsonManagedReference'
 
   MissingPackageDeclaration:
     # It's often desirable to declare functions and classes on the default package,
@@ -90,6 +107,7 @@ potential-bugs:
       - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
+
 
 style:
 
@@ -109,3 +127,6 @@ style:
   UnusedPrivateClass:
     excludes:
       - '**/*Test.kt'
+
+  VarCouldBeVal:
+    ignoreLateinitVar: true
