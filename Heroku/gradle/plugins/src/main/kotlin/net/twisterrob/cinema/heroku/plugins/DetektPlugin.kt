@@ -48,6 +48,7 @@ private fun Project.configureSarifMerging() {
 		output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
 	}
 	tasks.withType<Detekt>().configureEach {
+		@Suppress("NestedScopeFunctions") // REPORT the same block above is nested way more and not flagged.
 		reports {
 			// https://sarifweb.azurewebsites.net
 			sarif.required.set(true) // GitHub Code Scanning
