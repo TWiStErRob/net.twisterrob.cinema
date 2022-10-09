@@ -35,6 +35,15 @@ gradlePlugin {
 	}
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+	kotlinOptions {
+		freeCompilerArgs = freeCompilerArgs + listOf(
+			"-opt-in=kotlin.RequiresOptIn",
+			"-opt-in=kotlin.contracts.ExperimentalContracts",
+		)
+	}
+}
+
 detekt {
 	ignoreFailures = true
 	// TODEL https://github.com/detekt/detekt/issues/4926

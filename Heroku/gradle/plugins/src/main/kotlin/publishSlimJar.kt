@@ -11,21 +11,23 @@ import org.gradle.kotlin.dsl.register
  */
 fun Project.publishSlimJar() {
 	val application = this.extensions.getByName<JavaApplication>("application")
-	val dependencies = this.configurations.named("runtimeClasspath")
+	val runtimeClasspath = this.configurations.named("runtimeClasspath")
 	this.tasks {
 		"jar"(Jar::class) {
 			manifest {
-				val dependencyFiles = dependencies.map { it.files }
+				val dependencyFiles = runtimeClasspath.map { configuration -> configuration.files }
 				attributes(
 					mapOf(
 						"Main-Class" to application.mainClass,
-						"Class-Path" to dependencyFiles.map { it.joinToString(separator = " ") { dep -> dep.name } }
+						"Class-Path" to dependencyFiles.map { files ->
+							files.joinToString(separator = " ") { dep -> dep.name }
+						}
 					)
 				)
 			}
 		}
 		register<Copy>("copyJarDependencies") {
-			from(dependencies.get())
+			from(runtimeClasspath)
 			into(tasks.named("jar").map { it.outputs.files.singleFile.parentFile })
 		}
 	}

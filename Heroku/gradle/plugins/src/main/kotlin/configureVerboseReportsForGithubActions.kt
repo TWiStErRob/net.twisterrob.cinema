@@ -23,15 +23,15 @@ fun Test.configureVerboseReportsForGithubActions() {
 	data class TestInfo(
 		val descriptor: TestDescriptor,
 		val stdOut: StringBuilder = StringBuilder(),
-		val stdErr: StringBuilder = StringBuilder()
+		val stdErr: StringBuilder = StringBuilder(),
 	)
 
 	val lookup = mutableMapOf<TestDescriptor, TestInfo>()
 	beforeSuite(KotlinClosure1<TestDescriptor, Any>({
-		lookup.put(this, TestInfo(this))
+		lookup[this] = TestInfo(this)
 	}))
 	beforeTest(KotlinClosure1<TestDescriptor, Any>({
-		lookup.put(this, TestInfo(this))
+		lookup[this] = TestInfo(this)
 	}))
 	onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
 		val info = lookup.getValue(descriptor)
@@ -47,13 +47,13 @@ fun Test.configureVerboseReportsForGithubActions() {
 		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
 			val id = descriptor.toString().hashCode().absoluteValue
 			if (condition) {
-				println("::group::${testType}_${outputType}_${id}")
+				logger.quiet("::group::${testType}_${outputType}_${id}")
 				output()
-				println("::endgroup:: ")
+				logger.quiet("::endgroup:: ")
 			}
 		}
 
-		val info = lookup.remove(descriptor)!!
+		val info = lookup.remove(descriptor) ?: error("Descriptor ${descriptor} was not in ${lookup}")
 		val hasStdOut = info.stdOut.isNotEmpty()
 		val hasStdErr = info.stdErr.isNotEmpty()
 		val hasError = result.exception != null
@@ -79,19 +79,20 @@ fun Test.configureVerboseReportsForGithubActions() {
 			return
 		}
 
-		println("${fullName} ${result.resultType}")
+		logger.quiet("${fullName} ${result.resultType}")
 
 		fold("ex", hasError) {
-			println("EXCEPTION ${fullName}")
+			logger.quiet("EXCEPTION ${fullName}")
+			@Suppress("UnsafeCallOnNullableType") // guarded by hasError, but not provable by contract {}.
 			result.exception!!.printStackTrace()
 		}
 		fold("out", hasStdOut) {
-			println("STANDARD_OUT ${fullName}")
-			println(info.stdOut)
+			logger.quiet("STANDARD_OUT ${fullName}")
+			logger.quiet(info.stdOut.toString())
 		}
 		fold("err", hasStdErr) {
-			println("STANDARD_ERR ${fullName}")
-			println(info.stdErr)
+			logger.quiet("STANDARD_ERR ${fullName}")
+			logger.quiet(info.stdErr.toString())
 		}
 	}
 	afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->

@@ -60,9 +60,9 @@ private fun Project.configureSarifMerging() {
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
 			detektReportMergeTask.input.from(detektReportingTask.sarifReportFile)
 		}
-		gradle.includedBuilds.forEach {
-			detektReportMergeTask.dependsOn(it.task(":detektReportMergeSarif"))
-			detektReportMergeTask.input.from(it.projectDir.resolve("build/reports/detekt/merge.sarif"))
+		gradle.includedBuilds.forEach { includedBuild ->
+			detektReportMergeTask.dependsOn(includedBuild.task(":detektReportMergeSarif"))
+			detektReportMergeTask.input.from(includedBuild.projectDir.resolve("build/reports/detekt/merge.sarif"))
 		}
 	}
 }

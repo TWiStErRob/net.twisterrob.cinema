@@ -30,6 +30,7 @@ fun Project.configureSLF4JBindings() {
 			withModule<SLF4JBindingCapability>("ch.qos.logback:logback-classic") // Logback 1.x (SLF4J reference implementation)
 		}
 	}
+	@Suppress("NestedScopeFunctions") // It's a DSL, it's supposed to be nested.
 	configurations.all @Suppress("LabeledExpression") configuration@{
 		resolutionStrategy.capabilitiesResolution.withCapability("org.slf4j:org.slf4j.impl.StaticLoggerBinder") {
 			because("This project uses SLF4J 2.x over Log4J 2.x.")
@@ -37,8 +38,8 @@ fun Project.configureSLF4JBindings() {
 				"Capability conflict resolution for ${this@configuration}, candidates for ${capability} are\n" +
 						candidates.joinToString(separator = "\n") { " * $it" }
 			)
-			val slf4jLogger = candidates.singleOrNull {
-				it.id.isMatching("org.apache.logging.log4j", "log4j-slf4j2-impl")
+			val slf4jLogger = candidates.singleOrNull { candidate ->
+				candidate.id.isMatching("org.apache.logging.log4j", "log4j-slf4j2-impl")
 			}
 			if (slf4jLogger != null) {
 				logger.info("In ${this@configuration}, the resolved candidate for ${capability} is ${slf4jLogger}.")
@@ -54,6 +55,7 @@ private fun ComponentIdentifier.isMatching(group: String, module: String): Boole
 class SLF4JBindingCapability : ComponentMetadataRule {
 
 	override fun execute(context: ComponentMetadataContext) {
+		@Suppress("NestedScopeFunctions") // It's a DSL, it's supposed to be nested.
 		context.details.run {
 			allVariants {
 				withCapabilities {

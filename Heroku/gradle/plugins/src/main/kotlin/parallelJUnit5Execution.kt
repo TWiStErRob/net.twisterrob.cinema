@@ -9,8 +9,9 @@ enum class Concurrency {
 }
 
 fun Test.parallelJUnit5Execution(concurrency: Concurrency) {
-	val overrideRaw = project.property("net.twisterrob.build.testConcurrencyOverride").toString()
-	val override = if (overrideRaw == "") null else Concurrency.valueOf(overrideRaw)
+	val overrideRaw = project.property("net.twisterrob.build.testConcurrencyOverride")
+		?: error("Invalid value for net.twisterrob.build.testConcurrencyOverride: null")
+	val override = if (overrideRaw == "") null else Concurrency.valueOf(overrideRaw.toString())
 	when (override ?: concurrency) {
 		Concurrency.PerSuite -> {
 			// Default is maxParallelForks = 1.
