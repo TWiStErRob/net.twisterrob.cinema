@@ -56,10 +56,8 @@ class ViewServiceIntgTest {
 
 		assertNotNull(result); result!!
 		// Wire up a View that is like the expected one and connect relationships.
-		@Suppress(
-			"LabeledExpression", // https://github.com/detekt/detekt/issues/5131
-			"NestedScopeFunctions", // Ensure created objects are correct before escaping scope.
-		)
+		// Ensure created objects are correct before escaping scope.
+		@Suppress("LabeledExpression", "NestedScopeFunctions")
 		View().apply view@{
 			graphId = result.graphId
 			date = fixtTime.toInstant()
