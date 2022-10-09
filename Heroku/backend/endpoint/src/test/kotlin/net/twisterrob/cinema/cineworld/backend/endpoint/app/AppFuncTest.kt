@@ -21,60 +21,65 @@ class AppFuncTest {
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
-		handleRequest { method = HttpMethod.Get; uri = "/" }.apply {
-			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals("fake index", response.content)
-		}
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/" }
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals("fake index", call.response.content)
 	}
 
 	@Test fun `index is directly accessible`(@TempDir tempDir: File) = endpointTest(
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
-		handleRequest { method = HttpMethod.Get; uri = "/index.html" }.apply {
-			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals("fake index", response.content)
-		}
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/index.html" }
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals("fake index", call.response.content)
 	}
 
 	@Test fun `other files are directly accessible`(@TempDir tempDir: File) = endpointTest(
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {
 		tempDir.resolve("other.file").writeText("fake content")
-		handleRequest { method = HttpMethod.Get; uri = "/other.file" }.apply {
-			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals("fake content", response.content)
-		}
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/other.file" }
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals("fake content", call.response.content)
 	}
 
 	@Test fun `other files in subfolders are directly accessible`(@TempDir tempDir: File) = endpointTest(
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {
 		tempDir.resolve("sub/folder/other.file").ensureParent().writeText("fake content")
-		handleRequest { method = HttpMethod.Get; uri = "/sub/folder/other.file" }.apply {
-			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals("fake content", response.content)
-		}
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/sub/folder/other.file" }
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals("fake content", call.response.content)
 	}
 
 	@Test fun `planner serves index html`(@TempDir tempDir: File) = endpointTest(
 		configure = { configuration(staticRootFolder = tempDir) }
 	) {
 		tempDir.resolve("planner/index.html").ensureParent().writeText("fake index")
-		handleRequest { method = HttpMethod.Get; uri = "/planner" }.apply {
-			assertEquals(HttpStatusCode.OK, response.status())
-			assertEquals("fake index", response.content)
-		}
+
+		val call = handleRequest { method = HttpMethod.Get; uri = "/planner" }
+
+		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals("fake index", call.response.content)
 	}
 
 	@Test fun `favicon is served from Cineworld`() = endpointTest {
-		handleRequest { method = HttpMethod.Get; uri = "/favicon.ico" }.apply {
-			assertEquals(HttpStatusCode.Found, response.status())
-			assertEquals(
-				"https://www.google.com/s2/favicons?domain=www.cineworld.co.uk",
-				response.headers[HttpHeaders.Location]
-			)
-		}
+		val call = handleRequest { method = HttpMethod.Get; uri = "/favicon.ico" }
+
+		assertEquals(HttpStatusCode.Found, call.response.status())
+		assertEquals(
+			"https://www.google.com/s2/favicons?domain=www.cineworld.co.uk",
+			call.response.headers[HttpHeaders.Location]
+		)
 	}
 }
 

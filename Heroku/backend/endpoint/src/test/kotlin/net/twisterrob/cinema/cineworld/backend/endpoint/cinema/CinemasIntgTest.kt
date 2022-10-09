@@ -98,7 +98,6 @@ class CinemasIntgTest {
 		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/favs" }
 
 		verifyNoInteractions(mockRepository)
-
 		assertEquals(HttpStatusCode.NotFound, call.response.status())
 	}
 
