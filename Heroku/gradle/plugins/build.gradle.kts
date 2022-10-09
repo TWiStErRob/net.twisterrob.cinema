@@ -35,8 +35,17 @@ gradlePlugin {
 	}
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+	kotlinOptions {
+		freeCompilerArgs = freeCompilerArgs + listOf(
+			"-opt-in=kotlin.RequiresOptIn",
+			"-opt-in=kotlin.contracts.ExperimentalContracts",
+		)
+	}
+}
+
 detekt {
-	ignoreFailures = true
+	ignoreFailures = isCI
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
@@ -78,3 +87,6 @@ tasks.register("detektEach") {
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
 	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
 }
+
+val isCI: Boolean
+	get() = System.getenv("GITHUB_ACTIONS") == "true"

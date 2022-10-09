@@ -126,21 +126,20 @@ class ServerLogging(
 
 	private fun OutgoingContent.asString(): String? =
 		@Suppress("OptionalWhenBraces")
-		when (this) {
+		when (val content = this) {
 
 			is OutgoingContent.NoContent -> {
 				""
 			}
 
 			is TextContent -> {
-				this.text
+				content.text
 			}
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
 					val channel = ByteChannel(true)
-					@Suppress("LabeledExpression") // https://github.com/detekt/detekt/issues/5131
-					this@asString.writeTo(channel)
+					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
 			}
@@ -148,7 +147,7 @@ class ServerLogging(
 			is OutgoingContent.ByteArrayContent,
 			is OutgoingContent.ProtocolUpgrade,
 			is OutgoingContent.ReadChannelContent -> {
-				logger.error("Unknown response body content: ${this::class}")
+				logger.error("Unknown response body content: ${content::class}")
 				null
 			}
 		}

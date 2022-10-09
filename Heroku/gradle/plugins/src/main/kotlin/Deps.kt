@@ -2,7 +2,7 @@ import net.twisterrob.cinema.heroku.plugins.internal.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
-@Suppress("StringLiteralDuplication")
+@Suppress("StringLiteralDuplication", "MaxChainedCallsOnSameLine")
 object Deps {
 
 	fun junit5(project: Project) {

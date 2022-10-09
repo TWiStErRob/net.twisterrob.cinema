@@ -29,6 +29,11 @@ class DetektPlugin : Plugin<Project> {
 			project.tasks.withType<Detekt>().configureEach {
 				// Target version of the generated JVM bytecode. It is used for type resolution.
 				jvmTarget = project.libs.versions.java.get()
+				// Detekt false positive: potential-bugs - Deprecation - [reports is deprecated.]
+				// https://github.com/detekt/detekt/issues/5328#issuecomment-1272534271
+				// Reason: kotlin-dsl transforms configureEach(Action) to have a receiver, but Detekt doesn't see this,
+				// so it resolves to DetektExtension.reports (from project.detekt) instead of Detekt.reports(Action).
+				@Suppress("Deprecation", "KotlinRedundantDiagnosticSuppress")
 				reports {
 					html.required.set(true) // human
 					xml.required.set(true) // checkstyle
@@ -48,6 +53,7 @@ private fun Project.configureSarifMerging() {
 		output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
 	}
 	tasks.withType<Detekt>().configureEach {
+		@Suppress("NestedScopeFunctions") // False positive due to kotlin-dsl https://github.com/detekt/detekt/issues/5328#issuecomment-1272534271.
 		reports {
 			// https://sarifweb.azurewebsites.net
 			sarif.required.set(true) // GitHub Code Scanning
@@ -60,9 +66,9 @@ private fun Project.configureSarifMerging() {
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
 			detektReportMergeTask.input.from(detektReportingTask.sarifReportFile)
 		}
-		gradle.includedBuilds.forEach {
-			detektReportMergeTask.dependsOn(it.task(":detektReportMergeSarif"))
-			detektReportMergeTask.input.from(it.projectDir.resolve("build/reports/detekt/merge.sarif"))
+		gradle.includedBuilds.forEach { includedBuild ->
+			detektReportMergeTask.dependsOn(includedBuild.task(":detektReportMergeSarif"))
+			detektReportMergeTask.input.from(includedBuild.projectDir.resolve("build/reports/detekt/merge.sarif"))
 		}
 	}
 }
