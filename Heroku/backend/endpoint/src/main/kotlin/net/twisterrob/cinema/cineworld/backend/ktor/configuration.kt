@@ -1,5 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonSerializer
@@ -9,10 +11,13 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.HttpClient
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopped
@@ -82,27 +87,21 @@ internal fun Application.configuration(
 	}
 	//install(HeaderLoggingFeature)
 	install(ContentNegotiation) {
-		jackson {
-			@Suppress("DEPRECATION")
-			run {
-				enable(MapperFeature.USE_ANNOTATIONS)
-				disable(MapperFeature.AUTO_DETECT_FIELDS)
-				disable(MapperFeature.AUTO_DETECT_IS_GETTERS)
-				disable(MapperFeature.AUTO_DETECT_GETTERS)
-				disable(MapperFeature.AUTO_DETECT_SETTERS)
-				disable(MapperFeature.AUTO_DETECT_CREATORS)
-			}
+		val mapper = jsonMapper {
+			visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
 			enable(SerializationFeature.INDENT_OUTPUT)
-			registerModule(JavaTimeModule())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)
 			disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+		}.apply {
+			registerModule(JavaTimeModule())
 			registerModule(object : SimpleModule("cineworld-backend") {
 				init {
 					addSerializer(OffsetDateTime::class.java, OffsetDateTimeJsonSerializer())
 				}
 			})
 		}
+		register(ContentType.Application.Json, JacksonConverter(mapper))
 	}
 	install(StatusPages) {
 		exception<Throwable> { call, cause ->
