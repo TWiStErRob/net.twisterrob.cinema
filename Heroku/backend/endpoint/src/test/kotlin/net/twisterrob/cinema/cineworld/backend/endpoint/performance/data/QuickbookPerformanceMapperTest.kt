@@ -55,11 +55,11 @@ class QuickbookPerformanceMapperTest {
 			assertAll {
 				that("time", performance.time, equalTo(fixtTime))
 				that("available", performance.available, equalTo(fixtPerformance.available))
-				that("booking_url", performance.bookingUrl, equalTo(fixtPerformance.booking_url))
+				that("booking_url", performance.bookingUrl, equalTo(fixtPerformance.bookingUrl))
 				that("type", performance.type, equalTo(fixtPerformance.type))
-				that("ad", performance.isAudioDescribed, equalTo(fixtPerformance.ad))
-				that("ss", performance.isSuperScreen, equalTo(fixtPerformance.ss))
-				that("subtitled", performance.isSubtitled, equalTo(fixtPerformance.subtitled))
+				that("ad", performance.isAudioDescribed, equalTo(fixtPerformance.isAudioDescribed))
+				that("ss", performance.isSuperScreen, equalTo(fixtPerformance.isSuperScreen))
+				that("subtitled", performance.isSubtitled, equalTo(fixtPerformance.isSubtitled))
 			}
 		}
 	}

@@ -1,7 +1,11 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jsonMapper
+import com.fasterxml.jackson.module.kotlin.kotlinModule
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -10,7 +14,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson.JacksonConverter
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -30,11 +34,15 @@ class QuickbookServiceNetwork @Inject constructor(
 
 	private val client = client.config {
 		install(ContentNegotiation) {
-			jackson(contentType = ContentType.Application.Json) {
+			val mapper = jsonMapper {
+				visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
+			}.apply {
+				registerModule(kotlinModule())
 				// Deserialize whatever is thrown at us, maybe stricten this to specific types?
 				registerModule(JavaTimeModule())
 				disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
 			}
+			register(ContentType.Application.Json, JacksonConverter(mapper))
 		}
 	}
 
