@@ -23,20 +23,20 @@ class ViewService @Inject constructor(
 	fun addView(user: String, film: Long, cinema: Long, time: OffsetDateTime): View? =
 		session.queryForObject(
 			"""
-			MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
-			MATCH (f:Film { edi: ${"$"}filmEDI })
-			MATCH (u:User { id: ${"$"}userID })
-			MERGE (u)-[t:ATTENDED]->(v:View {
-				film: ${"$"}filmEDI,
-				cinema: ${"$"}cinemaID,
-				user: ${"$"}userID,
-				date: ${"$"}dateEpochUTC
-			})
-			MERGE (v)-[a:AT]->(c)
-			MERGE (v)-[w:WATCHED]->(f)
-			// need to return nodes and relationships, otherwise OGM doesn't connect them
-			RETURN v AS view, t AS attended, u AS user, a AS at, c AS cinema, w AS watched, f AS film
-			""",
+				MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
+				MATCH (f:Film { edi: ${"$"}filmEDI })
+				MATCH (u:User { id: ${"$"}userID })
+				MERGE (u)-[t:ATTENDED]->(v:View {
+					film: ${"$"}filmEDI,
+					cinema: ${"$"}cinemaID,
+					user: ${"$"}userID,
+					date: ${"$"}dateEpochUTC
+				})
+				MERGE (v)-[a:AT]->(c)
+				MERGE (v)-[w:WATCHED]->(f)
+				// need to return nodes and relationships, otherwise OGM doesn't connect them
+				RETURN v AS view, t AS attended, u AS user, a AS at, c AS cinema, w AS watched, f AS film
+			""".trimIndent(),
 			mapOf(
 				"userID" to user,
 				"cinemaID" to cinema,
@@ -55,13 +55,13 @@ class ViewService @Inject constructor(
 	fun removeView(user: String, film: Long, cinema: Long, time: OffsetDateTime) {
 		session.query(
 			"""
-			MATCH (v:View {date: ${"$"}dateEpochUTC })
-			MATCH (v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID })
-			MATCH (v)-[w:WATCHED]->(f:Film { edi: ${"$"}filmEDI })
-			MATCH (v)-[at:AT]->(c:Cinema { cineworldID: ${"$"}cinemaID })
-			MATCH (v)-[r]-()
-			DELETE v, r
-			""",
+				MATCH (v:View {date: ${"$"}dateEpochUTC })
+				MATCH (v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID })
+				MATCH (v)-[w:WATCHED]->(f:Film { edi: ${"$"}filmEDI })
+				MATCH (v)-[at:AT]->(c:Cinema { cineworldID: ${"$"}cinemaID })
+				MATCH (v)-[r]-()
+				DELETE v, r
+			""".trimIndent(),
 			mapOf(
 				"userID" to user,
 				"cinemaID" to cinema,

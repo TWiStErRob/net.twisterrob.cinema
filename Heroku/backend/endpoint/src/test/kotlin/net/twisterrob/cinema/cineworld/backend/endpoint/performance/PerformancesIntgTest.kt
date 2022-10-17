@@ -65,11 +65,11 @@ class PerformancesIntgTest {
 		Assertions.assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtPerformances[0])},
-				${serialized(fixtPerformances[1])}
-			]
-			""",
+				[
+					${serialized(fixtPerformances[0])},
+					${serialized(fixtPerformances[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -120,27 +120,27 @@ private interface PerformancesIntgTestComponent : ApplicationComponent {
 private fun serialized(performances: PerformancesModel): String =
 	// order intentionally switched up
 	"""
-	{
-		"film": ${performances.film},
-		"date": "${serialized(performances.date)}",
-		"performances": [
-			${performances.performances.joinToString(",\n") { serialized(it) }}
-		],
-		"cinema": ${performances.cinema}
-	}
-	"""
+		{
+			"film": ${performances.film},
+			"date": "${serialized(performances.date)}",
+			"performances": [
+				${performances.performances.joinToString(",\n") { serialized(it) }}
+			],
+			"cinema": ${performances.cinema}
+		}
+	""".trimIndent()
 
 @Language("json")
 private fun serialized(performance: Performance): String =
 	// order intentionally switched up
 	"""
-	{
-		"time": "${serialized(performance.time)}",
-		"available": ${performance.available},
-		"booking_url": "${performance.booking_url}",
-		"type": "${performance.type}",
-		"ad": ${performance.ad},
-		"ss": ${performance.ss},
-		"subtitled": ${performance.subtitled}
-	}
-	"""
+		{
+			"time": "${serialized(performance.time)}",
+			"available": ${performance.available},
+			"booking_url": "${performance.booking_url}",
+			"type": "${performance.type}",
+			"ad": ${performance.ad},
+			"ss": ${performance.ss},
+			"subtitled": ${performance.subtitled}
+		}
+	""".trimIndent()

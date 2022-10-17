@@ -27,10 +27,10 @@ class FilmService @Inject constructor(
 	fun getActiveFilms(): Iterable<Film> =
 		session.query(
 			"""
-			MATCH (f:Film)
-			WHERE f._deleted IS NULL
-			RETURN f AS film
-			"""
+				MATCH (f:Film)
+				WHERE f._deleted IS NULL
+				RETURN f AS film
+			""".trimIndent()
 		)
 
 	/**
@@ -40,9 +40,9 @@ class FilmService @Inject constructor(
 	fun getFilm(edi: Long): Film? =
 		session.queryForObject(
 			"""
-			MATCH (f:Film { edi: ${"$"}filmEDI })
-			RETURN f AS film
-			""",
+				MATCH (f:Film { edi: ${"$"}filmEDI })
+				RETURN f AS film
+			""".trimIndent(),
 			mapOf(
 				"filmEDI" to edi
 			)
@@ -55,12 +55,12 @@ class FilmService @Inject constructor(
 	fun getFilms(filmEDIs: List<Long>): Iterable<Film> =
 		session.query<Film>(
 			"""
-			MATCH (f:Film)
-			WHERE
-				f._deleted IS NULL
-				AND f.edi IN ${"$"}filmEDIs
-			RETURN f AS film
-			""",
+				MATCH (f:Film)
+				WHERE
+					f._deleted IS NULL
+					AND f.edi IN ${"$"}filmEDIs
+				RETURN f AS film
+			""".trimIndent(),
 			mapOf(
 				"filmEDIs" to filmEDIs
 			)
@@ -74,14 +74,17 @@ class FilmService @Inject constructor(
 	fun getFilms(date: LocalDate, cinemaIDs: List<Long>): Iterable<Film> =
 		session.query<Film>(
 			"""
-			MATCH (f:Film) WHERE f._deleted IS NULL
-			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
-			MATCH (p:Performance) WHERE date.truncate('day', p.time) = ${"$"}date
-			MATCH
-				(p)-[in:IN]->(c),
-				(p)-[s:SCREENS]->(f)
-			RETURN DISTINCT f AS film
-			""",
+				MATCH (f:Film)
+					WHERE f._deleted IS NULL
+				MATCH (c:Cinema)
+					WHERE c.cineworldID IN ${"$"}cinemaIDs
+				MATCH (p:Performance)
+					WHERE date.truncate('day', p.time) = ${"$"}date
+				MATCH
+					(p)-[in:IN]->(c),
+					(p)-[s:SCREENS]->(f)
+				RETURN DISTINCT f AS film
+			""".trimIndent(),
 			mapOf(
 				"date" to date,
 				"cinemaIDs" to cinemaIDs,
@@ -96,20 +99,20 @@ class FilmService @Inject constructor(
 	fun getFilmsAuth(filmEDIs: List<Long>, userID: String): Iterable<Film> =
 		session.query<Film>(
 			"""
-			MATCH (f:Film)
-			WHERE
-				f._deleted IS NULL
-				AND f.edi IN ${"$"}filmEDIs
-			OPTIONAL MATCH
-				(f)<-[w:WATCHED]-(v:View),
-				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
-				(v)-[at:AT]->(c:Cinema)
-			RETURN
-				f AS film,
-				w AS watched, v AS view,
-				a AS attended, u AS user,
-				at AS at, c AS cinema
-			""",
+				MATCH (f:Film)
+				WHERE
+					f._deleted IS NULL
+					AND f.edi IN ${"$"}filmEDIs
+				OPTIONAL MATCH
+					(f)<-[w:WATCHED]-(v:View),
+					(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
+					(v)-[at:AT]->(c:Cinema)
+				RETURN
+					f AS film,
+					w AS watched, v AS view,
+					a AS attended, u AS user,
+					at AS at, c AS cinema
+			""".trimIndent(),
 			mapOf(
 				"userID" to userID,
 				"filmEDIs" to filmEDIs
@@ -125,23 +128,26 @@ class FilmService @Inject constructor(
 	fun getFilmsAuth(date: LocalDate, cinemaIDs: List<Long>, userID: String): Iterable<Film> =
 		session.query<Film>(
 			"""
-			MATCH (f:Film) WHERE f._deleted IS NULL
-			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemaIDs
-			MATCH (p:Performance) WHERE date.truncate('day', p.time) = ${"$"}date
-			MATCH
-				(p)-[in:IN]->(c),
-				(p)-[s:SCREENS]->(f)
-			OPTIONAL MATCH
-				(f)<-[w:WATCHED]-(v:View),
-				(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
-				(v)-[at:AT]->(c:Cinema)
-			RETURN
-				f AS film,
-				s AS screen, p AS performance,
-				w AS watched, v AS view,
-				a AS attended, u AS user,
-				in AS inCinema, at AS atCinema, c AS cinema
-			""",
+				MATCH (f:Film)
+					WHERE f._deleted IS NULL
+				MATCH (c:Cinema)
+					WHERE c.cineworldID IN ${"$"}cinemaIDs
+				MATCH (p:Performance)
+					WHERE date.truncate('day', p.time) = ${"$"}date
+				MATCH
+					(p)-[in:IN]->(c),
+					(p)-[s:SCREENS]->(f)
+				OPTIONAL MATCH
+					(f)<-[w:WATCHED]-(v:View),
+					(v)<-[a:ATTENDED]-(u:User { id: ${"$"}userID }),
+					(v)-[at:AT]->(c:Cinema)
+				RETURN
+					f AS film,
+					s AS screen, p AS performance,
+					w AS watched, v AS view,
+					a AS attended, u AS user,
+					in AS inCinema, at AS atCinema, c AS cinema
+			""".trimIndent(),
 			mapOf(
 				"date" to date,
 				"cinemaIDs" to cinemaIDs,
