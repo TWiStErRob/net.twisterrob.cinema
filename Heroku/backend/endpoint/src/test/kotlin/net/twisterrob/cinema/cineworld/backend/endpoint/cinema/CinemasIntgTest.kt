@@ -59,11 +59,11 @@ class CinemasIntgTest {
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtCinemas[0])},
-				${serialized(fixtCinemas[1])}
-			]
-			""",
+				[
+					${serialized(fixtCinemas[0])},
+					${serialized(fixtCinemas[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -83,11 +83,11 @@ class CinemasIntgTest {
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtCinemas[0])},
-				${serialized(fixtCinemas[1])}
-			]
-			""",
+				[
+					${serialized(fixtCinemas[0])},
+					${serialized(fixtCinemas[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -115,11 +115,11 @@ class CinemasIntgTest {
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtCinemas[0])},
-				${serialized(fixtCinemas[1])}
-			]
-			""",
+				[
+					${serialized(fixtCinemas[0])},
+					${serialized(fixtCinemas[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -216,16 +216,16 @@ private interface CinemasIntgTestComponent : ApplicationComponent {
 fun serialized(cinema: Cinema): String =
 	// order intentionally switched up
 	"""
-	{
-		"class": "${cinema.`class`}",
-		"name": "${cinema.name}",
-		"cineworldID": ${cinema.cineworldID},
-		"postcode": "${cinema.postcode}",
-		"telephone": "${cinema.telephone ?: "null"}",
-		"cinema_url": "${cinema.cinema_url}",
-		"_created": "${serialized(cinema._created)}",
-		"_updated": "${serialized(cinema._updated)}",
-		"address": "${cinema.address}",
-		"fav": ${cinema.fav}
-	}
-	"""
+		{
+			"class": "${cinema.`class`}",
+			"name": "${cinema.name}",
+			"cineworldID": ${cinema.cineworldID},
+			"postcode": "${cinema.postcode}",
+			"telephone": "${cinema.telephone ?: "null"}",
+			"cinema_url": "${cinema.cinema_url}",
+			"_created": "${serialized(cinema._created)}",
+			"_updated": "${serialized(cinema._updated)}",
+			"address": "${cinema.address}",
+			"fav": ${cinema.fav}
+		}
+	""".trimIndent()

@@ -29,16 +29,20 @@ class PerformanceService @Inject constructor(
 	fun getPerformances(date: LocalDate, cinemaIDs: List<Long>, filmEDIs: List<Long>): Iterable<Performance> =
 		session.query<Performance>(
 			"""
-			MATCH (p:Performance) WHERE date.truncate('day', p.time) = ${"$"}date
-			MATCH (f:Film) WHERE f.edi IN ${"$"}films
-			MATCH (c:Cinema) WHERE c.cineworldID IN ${"$"}cinemas
-			MATCH
-				(p)-[in:IN]->(c),
-				(p)-[s:SCREENS]->(f)
-			RETURN p AS performance,
-				in AS in, c AS cinema,
-				s AS screens, f AS film 
-			""",
+				MATCH (p:Performance)
+					WHERE date.truncate('day', p.time) = ${"$"}date
+				MATCH (f:Film)
+					WHERE f.edi IN ${"$"}films
+				MATCH (c:Cinema)
+					WHERE c.cineworldID IN ${"$"}cinemas
+				MATCH
+					(p)-[in:IN]->(c),
+					(p)-[s:SCREENS]->(f)
+				RETURN
+					p AS performance,
+					in AS in, c AS cinema,
+					s AS screens, f AS film 
+			""".trimIndent(),
 			mapOf(
 				"date" to date,
 				"cinemas" to cinemaIDs,

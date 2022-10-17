@@ -12,6 +12,7 @@ import java.time.OffsetDateTime
  */
 @Suppress(
 	"PropertyName",
+	"ObjectPropertyNaming",
 	"UnnecessaryAbstractClass", // Prevent usage as OGM model directly, has to be inherited.
 )
 abstract class Historical : BaseNode() {

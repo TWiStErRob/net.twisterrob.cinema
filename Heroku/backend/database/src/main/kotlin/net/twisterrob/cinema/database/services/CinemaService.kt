@@ -26,10 +26,10 @@ class CinemaService @Inject constructor(
 	fun getActiveCinemas(): Iterable<Cinema> =
 		session.query(
 			"""
-			MATCH (c:Cinema)
-			WHERE NOT exists (c._deleted)
-			RETURN c AS cinema
-			"""
+				MATCH (c:Cinema)
+				WHERE NOT exists (c._deleted)
+				RETURN c AS cinema
+			""".trimIndent()
 		)
 
 	/**
@@ -39,10 +39,9 @@ class CinemaService @Inject constructor(
 	fun getFavoriteCinemas(userId: String): Iterable<Cinema> =
 		session.query<Cinema>(
 			"""
-			MATCH
-				(u:User { id: ${"$"}userID })-[:GOESTO]->(c:Cinema)
-			RETURN c AS cinema
-			""",
+				MATCH (u:User { id: ${"$"}userID })-[:GOESTO]->(c:Cinema)
+				RETURN c AS cinema
+			""".trimIndent(),
 			mapOf(
 				"userID" to userId
 			)
@@ -60,7 +59,7 @@ class CinemaService @Inject constructor(
 					WHERE NOT exists (c._deleted)
 					OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id: ${"$"}userID })
 					RETURN c AS cinema, f IS NOT NULL AS fav
-				""",
+				""".trimIndent(),
 				mapOf(
 					"userID" to userId
 				)
@@ -80,11 +79,11 @@ class CinemaService @Inject constructor(
 	fun addFavorite(userId: String, cinema: Long): Cinema? =
 		session.queryForObject(
 			"""
-			MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
-			MATCH (u:User { id: ${"$"}userID })
-			MERGE (u)-[g:GOESTO]->(c)
-			RETURN u AS user, c AS cinema, g as favorite
-			""",
+				MATCH (c:Cinema { cineworldID: ${"$"}cinemaID })
+				MATCH (u:User { id: ${"$"}userID })
+				MERGE (u)-[g:GOESTO]->(c)
+				RETURN u AS user, c AS cinema, g as favorite
+			""".trimIndent(),
 			mapOf(
 				"userID" to userId,
 				"cinemaID" to cinema
@@ -100,11 +99,10 @@ class CinemaService @Inject constructor(
 	fun removeFavorite(userId: String, cinema: Long): Cinema? =
 		session.queryForObject(
 			"""
-				MATCH
-					(u:User { id: ${"$"}userID })-[g:GOESTO]->(c:Cinema { cineworldID: ${"$"}cinemaID })
+				MATCH (u:User { id: ${"$"}userID })-[g:GOESTO]->(c:Cinema { cineworldID: ${"$"}cinemaID })
 				DELETE g
 				RETURN u AS user, c AS cinema
-				""",
+			""".trimIndent(),
 			mapOf(
 				"userID" to userId,
 				"cinemaID" to cinema

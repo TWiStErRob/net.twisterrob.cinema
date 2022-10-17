@@ -58,6 +58,10 @@ complexity:
 
 naming:
 
+  BooleanPropertyNaming:
+    # Temporarily disable until serialization is reworked.
+    active: false
+
   ConstructorParameterNaming:
     excludes:
       - '**/endpoint/*/data/*.kt'
@@ -75,6 +79,10 @@ naming:
       - 'org.junit.jupiter.params.ParameterizedTest'
       - 'org.junitpioneer.jupiter.RetryingTest'
       - 'org.junitpioneer.jupiter.cartesian.CartesianTest'
+
+  LambdaParameterNaming:
+    # TODEL too many false positives https://github.com/detekt/detekt/issues/5433
+    active: false
 
   VariableNaming:
     excludes:
@@ -123,6 +131,10 @@ style:
   MaxLineLength:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
     excludeCommentStatements: true
+
+  MultilineRawStringIndentation:
+    # TODEL false positives with tabs: https://github.com/detekt/detekt/issues/5429
+    active: false
 
   UnusedPrivateClass:
     excludes:
