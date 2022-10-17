@@ -76,6 +76,10 @@ naming:
       - 'org.junitpioneer.jupiter.RetryingTest'
       - 'org.junitpioneer.jupiter.cartesian.CartesianTest'
 
+  LambdaParameterNaming:
+    # TODEL too many false positives https://github.com/detekt/detekt/issues/5433
+    active: false
+
   VariableNaming:
     excludes:
       - '**/database/model/*.kt'

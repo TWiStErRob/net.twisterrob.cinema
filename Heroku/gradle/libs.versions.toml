@@ -11,6 +11,7 @@ kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.4.1"
+# TODO review TODELs with detekt mentioned in them.
 detekt = "1.22.0-RC2"
 
 dagger = "2.44"
