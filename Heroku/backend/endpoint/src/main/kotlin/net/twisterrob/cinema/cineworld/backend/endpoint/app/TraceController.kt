@@ -15,11 +15,11 @@ class TraceController @Inject constructor(
 	override val order: Int get() = Int.MIN_VALUE
 
 	override fun Routing.registerRoutes() {
-		trace {
+		trace { trace ->
 			if (application.log.isTraceEnabled) {
-				application.log.trace(traceFormatter.formatFull(it))
+				application.log.trace(traceFormatter.formatFull(trace))
 			} else {
-				application.log.info(traceFormatter.formatSimple(it))
+				application.log.info(traceFormatter.formatSimple(trace))
 			}
 		}
 	}
