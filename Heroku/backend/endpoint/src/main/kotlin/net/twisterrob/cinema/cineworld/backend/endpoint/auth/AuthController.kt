@@ -22,12 +22,12 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.CurrentUser
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.AppController
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
