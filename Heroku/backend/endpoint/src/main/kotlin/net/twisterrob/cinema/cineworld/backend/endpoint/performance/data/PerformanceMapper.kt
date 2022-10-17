@@ -28,11 +28,11 @@ class PerformanceMapper @Inject constructor() {
 				Performances.Performance(
 					time = it.time.toOffsetDateTime(),
 					available = true,
-					booking_url = it.booking_url,
+					bookingUrl = it.booking_url,
 					type = "reg",
-					ad = false,
-					ss = false,
-					subtitled = false
+					isAudioDescribed = false,
+					isSuperScreen = false,
+					isSubtitled = false
 				)
 			}
 		)

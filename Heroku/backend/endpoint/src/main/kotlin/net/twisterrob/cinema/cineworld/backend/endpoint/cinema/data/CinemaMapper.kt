@@ -14,12 +14,12 @@ class CinemaMapper @Inject constructor(
 			postcode = db.postcode,
 			address = db.address,
 			telephone = db.telephone,
-			cinema_url = db.cinema_url.toString(),
-			_created = db._created,
-			_updated = db._updated,
-			fav = false
+			cinemaUrl = db.cinema_url.toString(),
+			created = db._created,
+			updated = db._updated,
+			isFavorited = false
 		)
 
 	fun map(favoritedDB: Map.Entry<DBCinema, Boolean>): FrontendCinema =
-		map(favoritedDB.key).copy(fav = favoritedDB.value)
+		map(favoritedDB.key).copy(isFavorited = favoritedDB.value)
 }

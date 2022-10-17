@@ -3,6 +3,7 @@ package net.twisterrob.cinema.cineworld.backend.ktor
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonSerializer
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -82,6 +83,15 @@ internal fun Application.configuration(
 	//install(HeaderLoggingFeature)
 	install(ContentNegotiation) {
 		jackson {
+			@Suppress("DEPRECATION")
+			run {
+				enable(MapperFeature.USE_ANNOTATIONS)
+				disable(MapperFeature.AUTO_DETECT_FIELDS)
+				disable(MapperFeature.AUTO_DETECT_IS_GETTERS)
+				disable(MapperFeature.AUTO_DETECT_GETTERS)
+				disable(MapperFeature.AUTO_DETECT_SETTERS)
+				disable(MapperFeature.AUTO_DETECT_CREATORS)
+			}
 			enable(SerializationFeature.INDENT_OUTPUT)
 			registerModule(JavaTimeModule())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

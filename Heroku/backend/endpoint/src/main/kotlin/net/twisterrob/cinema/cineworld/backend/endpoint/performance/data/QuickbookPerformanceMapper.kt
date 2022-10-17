@@ -17,11 +17,11 @@ class QuickbookPerformanceMapper @Inject constructor() {
 			Performances.Performance(
 				time = getOffsetTime(date, it.time),
 				available = it.available,
-				booking_url = it.booking_url,
+				bookingUrl = it.booking_url,
 				type = it.type,
-				ad = it.ad,
-				ss = it.ss,
-				subtitled = it.subtitled
+				isAudioDescribed = it.ad,
+				isSuperScreen = it.ss,
+				isSubtitled = it.subtitled
 			)
 		}
 		val utcMidnight = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC))

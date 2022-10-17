@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.app
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.routing.Routing
@@ -29,7 +30,13 @@ object ApplicationAttributes {
 
 	var Attributes.fakeRootFolder: File by requiredKey(FakeRootFolderAttribute)
 
-	data class CurrentUser(val id: String, val email: String)
+	data class CurrentUser(
+		@get:JsonProperty("id")
+		val id: String,
+
+		@get:JsonProperty("email")
+		val email: String,
+	)
 
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
 

@@ -137,10 +137,10 @@ private fun serialized(performance: Performance): String =
 		{
 			"time": "${serialized(performance.time)}",
 			"available": ${performance.available},
-			"booking_url": "${performance.booking_url}",
+			"booking_url": "${performance.bookingUrl}",
 			"type": "${performance.type}",
-			"ad": ${performance.ad},
-			"ss": ${performance.ss},
-			"subtitled": ${performance.subtitled}
+			"ad": ${performance.isAudioDescribed},
+			"ss": ${performance.isSuperScreen},
+			"subtitled": ${performance.isSubtitled}
 		}
 	""".trimIndent()

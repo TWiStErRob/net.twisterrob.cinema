@@ -243,7 +243,7 @@ fun serialized(user: User): String =
 	// order intentionally switched up
 	"""
 		{
-			"_created": "${serialized(user._created)}",
+			"_created": "${serialized(user.created)}",
 			"id": "${user.id}",
 			"email": "${user.email}",
 			"name": "${user.name}",
