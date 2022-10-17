@@ -58,6 +58,10 @@ complexity:
 
 naming:
 
+  BooleanPropertyNaming:
+    # Temporarily disable until serialization is reworked.
+    active: false
+
   ConstructorParameterNaming:
     excludes:
       - '**/endpoint/*/data/*.kt'

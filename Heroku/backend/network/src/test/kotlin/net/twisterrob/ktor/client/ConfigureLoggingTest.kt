@@ -152,7 +152,7 @@ class ConfigureLoggingTest {
 				METHOD: HttpMethod(value=GET)
 				BODY Content-Type: null
 				BODY START
-	
+				
 				BODY END
 				RESPONSE: 200 OK
 				METHOD: HttpMethod(value=GET)
