@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 internal data class CinemasResponse<T : QuickbookCinema>(
 	@JsonProperty("cinemas")
 	val cinemas: List<T>,
-	
+
 	@JsonProperty("errors")
 	override val errors: List<String>?,
-):QuickbookErrors
+) : QuickbookErrors

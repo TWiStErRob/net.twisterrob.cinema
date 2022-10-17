@@ -23,7 +23,7 @@ data class Performances(
 		val time: OffsetDateTime,
 
 		@get:JsonProperty("available")
-		val available: Boolean,
+		val isAvailable: Boolean,
 
 		@get:JsonProperty("booking_url")
 		val bookingUrl: URI,

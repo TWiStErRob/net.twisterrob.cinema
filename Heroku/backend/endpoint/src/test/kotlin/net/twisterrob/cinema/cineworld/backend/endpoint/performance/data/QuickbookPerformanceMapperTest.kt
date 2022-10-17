@@ -54,7 +54,7 @@ class QuickbookPerformanceMapperTest {
 		result.performances.single().let { performance ->
 			assertAll {
 				that("time", performance.time, equalTo(fixtTime))
-				that("available", performance.available, equalTo(fixtPerformance.available))
+				that("available", performance.isAvailable, equalTo(fixtPerformance.isAvailable))
 				that("booking_url", performance.bookingUrl, equalTo(fixtPerformance.bookingUrl))
 				that("type", performance.type, equalTo(fixtPerformance.type))
 				that("ad", performance.isAudioDescribed, equalTo(fixtPerformance.isAudioDescribed))

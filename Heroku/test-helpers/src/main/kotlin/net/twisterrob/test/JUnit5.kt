@@ -1,4 +1,5 @@
 @file:Suppress("MatchingDeclarationName")
+
 package net.twisterrob.test
 
 import org.hamcrest.Matcher

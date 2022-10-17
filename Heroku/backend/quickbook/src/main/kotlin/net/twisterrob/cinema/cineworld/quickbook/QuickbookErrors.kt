@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
 internal interface QuickbookErrors {
+
 	val errors: List<String>?
 }
 

@@ -27,7 +27,7 @@ class PerformanceMapper @Inject constructor() {
 			performances = performances.map {
 				Performances.Performance(
 					time = it.time.toOffsetDateTime(),
-					available = true,
+					isAvailable = true,
 					bookingUrl = it.booking_url,
 					type = "reg",
 					isAudioDescribed = false,

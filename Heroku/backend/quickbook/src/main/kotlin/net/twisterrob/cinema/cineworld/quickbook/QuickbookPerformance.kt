@@ -9,7 +9,7 @@ data class QuickbookPerformance(
 	val time: LocalTime,
 
 	@JsonProperty("available")
-	val available: Boolean,
+	val isAvailable: Boolean,
 
 	@JsonProperty("booking_url")
 	val bookingUrl: URI,

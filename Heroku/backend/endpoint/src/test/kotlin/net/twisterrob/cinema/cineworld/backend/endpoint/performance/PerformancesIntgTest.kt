@@ -136,7 +136,7 @@ private fun serialized(performance: Performance): String =
 	"""
 		{
 			"time": "${serialized(performance.time)}",
-			"available": ${performance.available},
+			"available": ${performance.isAvailable},
 			"booking_url": "${performance.bookingUrl}",
 			"type": "${performance.type}",
 			"ad": ${performance.isAudioDescribed},

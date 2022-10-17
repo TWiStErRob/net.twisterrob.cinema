@@ -8,4 +8,4 @@ internal data class FilmsResponse<T : QuickbookFilm>(
 
 	@JsonProperty("errors")
 	override val errors: List<String>?,
-):QuickbookErrors
+) : QuickbookErrors

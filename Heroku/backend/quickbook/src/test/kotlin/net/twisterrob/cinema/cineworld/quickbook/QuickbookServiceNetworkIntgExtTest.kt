@@ -63,6 +63,7 @@ class QuickbookServiceNetworkIntgExtTest {
 	}
 
 	companion object {
+
 		private val londonCinemas = listOf<Long>(22, 25, 37, 45, 65, 66, 70, 79, 89, 103, 113)
 		private val today = LocalDate.now()
 		private val tomorrow = today.plusDays(1)

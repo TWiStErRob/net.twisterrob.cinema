@@ -16,7 +16,7 @@ class QuickbookPerformanceMapper @Inject constructor() {
 		val performances: List<Performances.Performance> = qbPerformances.map {
 			Performances.Performance(
 				time = getOffsetTime(date, it.time),
-				available = it.available,
+				isAvailable = it.isAvailable,
 				bookingUrl = it.bookingUrl,
 				type = it.type,
 				isAudioDescribed = it.isAudioDescribed,

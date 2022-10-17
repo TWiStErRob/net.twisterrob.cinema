@@ -11,11 +11,13 @@ import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.Url
 import io.ktor.http.headersOf
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.reflect.KProperty1
@@ -125,10 +127,7 @@ private fun HttpClient.stubQuickbook() {
 	stub { request ->
 		@Suppress("UseIfInsteadOfWhen") // Conventionally this is a when-expression.
 		when {
-			request.isQuickbook -> {
-				respondQuickbook(request)
-			}
-
+			request.isQuickbook -> respondQuickbook(request.url)
 			else -> error("Unhandled ${request.url}")
 		}
 	}
@@ -137,12 +136,12 @@ private fun HttpClient.stubQuickbook() {
 private val HttpRequestData.isQuickbook: Boolean
 	get() = url.toString().startsWith("https://www.cineworld.co.uk/api/quickbook/")
 
-private fun MockRequestHandleScope.respondQuickbook(request: HttpRequestData): HttpResponseData {
-	val name = request.url.encodedPath.split("/").last()
+private fun MockRequestHandleScope.respondQuickbook(request: Url): HttpResponseData {
+	val name = request.encodedPath.split("/").last()
 	val responseHeaders = headersOf(
 		HttpHeaders.ContentType to listOf(ContentType.Application.Json.toString()),
 	)
-	val fileName = "${name}${if (request.url.parameters["full"] == "true") "_full" else ""}.json"
+	val fileName = "${name}${if (request.parameters["full"] == "true") "_full" else ""}.json"
 	return respond(loadFeed(fileName), headers = responseHeaders)
 }
 
