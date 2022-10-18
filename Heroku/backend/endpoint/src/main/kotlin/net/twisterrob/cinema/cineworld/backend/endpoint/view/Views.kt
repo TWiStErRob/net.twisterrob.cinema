@@ -1,5 +1,7 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.view
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
@@ -34,10 +36,15 @@ object Views {
 		data class IgnoreView(val edi: Long, val reason: String) : LocationRoute
 
 		// TODO remove this in favor of Location POST properties, but frontend needs to unwrap the object in payload
-		data class ViewPayload(
+		data class ViewPayload @JsonCreator constructor(
+			@JsonProperty("edi")
 			val edi: Long,
+
+			@JsonProperty("cinema")
 			val cinema: Long,
-			val date: Long
+
+			@JsonProperty("date")
+			val date: Long,
 		) {
 
 			val time: OffsetDateTime
