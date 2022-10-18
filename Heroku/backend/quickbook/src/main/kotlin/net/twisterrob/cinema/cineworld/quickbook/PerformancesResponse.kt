@@ -1,8 +1,9 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-internal class PerformancesResponse(
+internal class PerformancesResponse @JsonCreator constructor(
 	@JsonProperty("performances")
 	val performances: List<QuickbookPerformance>,
 
