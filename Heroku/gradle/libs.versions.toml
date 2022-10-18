@@ -36,6 +36,7 @@ neo4j-java = "4.4.9"
 neo4j-ogm = "3.2.37"
 
 jackson = "2.13.4"
+jackson-databind = "2.13.4.2"
 
 slf4j = "2.0.3"
 log4j = "2.19.0"
@@ -121,7 +122,7 @@ neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 # To work around, use (applied in root Gradle): Project.configureSLF4JBindings()
 neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j" }
 
-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
 jackson-dataformat-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype-java8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
