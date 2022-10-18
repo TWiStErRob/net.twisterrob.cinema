@@ -68,11 +68,11 @@ class FilmsIntgTest {
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtFilms[0])},
-				${serialized(fixtFilms[1])}
-			]
-			""",
+				[
+					${serialized(fixtFilms[0])},
+					${serialized(fixtFilms[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -98,11 +98,11 @@ class FilmsIntgTest {
 		assertEquals(HttpStatusCode.OK, call.response.status())
 		JSONAssert.assertEquals(
 			"""
-			[
-				${serialized(fixtFilms[0])},
-				${serialized(fixtFilms[1])}
-			]
-			""",
+				[
+					${serialized(fixtFilms[0])},
+					${serialized(fixtFilms[1])}
+				]
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -183,31 +183,31 @@ private interface FilmsIntgTestComponent : ApplicationComponent {
 fun serialized(film: Film): String =
 	// order intentionally switched up
 	"""
-	{
-		"class": "${film.`class`}",
-		"title": "${film.title}",
-		"cineworldID": ${film.cineworldID ?: "null"},
-		"_created": "${serialized(film._created)}",
-		"_updated": "${serialized(film._updated)}",
-		"director": "${film.director}",
-		"release": "${serialized(film.release)}",
-		"format": "${film.format}",
-		"runtime": ${film.runtime},
-		"poster_url": "${film.poster_url}",
-		"cineworldInternalID": ${film.cineworldInternalID},
-		"cert": "${film.cert}",
-		"imax": ${film.imax},
-		"3D": ${film.`3D`},
-		"film_url": "${film.film_url}",
-		"edi": ${film.edi},
-		"classification": "${film.classification}",
-		"trailer": "${film.trailer ?: "null"}",
-		"actors": "${film.actors}",
-		"originalTitle": "${film.originalTitle}",
-		"categories": ${film.categories},
-		"weighted": ${film.weighted},
-		"slug": "${film.slug}",
-		"group": ${film.group},
-		"view": null
-	}
-	"""
+		{
+			"class": "${film.className}",
+			"title": "${film.title}",
+			"cineworldID": ${film.cineworldID ?: "null"},
+			"_created": "${serialized(film.created)}",
+			"_updated": "${serialized(film.updated)}",
+			"director": "${film.director}",
+			"release": "${serialized(film.release)}",
+			"format": "${film.format}",
+			"runtime": ${film.runtime},
+			"poster_url": "${film.posterUrl}",
+			"cineworldInternalID": ${film.cineworldInternalID},
+			"cert": "${film.cert}",
+			"imax": ${film.isIMAX},
+			"3D": ${film.is3D},
+			"film_url": "${film.filmUrl}",
+			"edi": ${film.edi},
+			"classification": "${film.classification}",
+			"trailer": "${film.trailer ?: "null"}",
+			"actors": "${film.actors}",
+			"originalTitle": "${film.originalTitle}",
+			"categories": ${film.categories},
+			"weighted": ${film.weighted},
+			"slug": "${film.slug}",
+			"group": ${film.group},
+			"view": null
+		}
+	""".trimIndent()

@@ -202,7 +202,7 @@ class AuthIntgTest {
 				  "id" : "${user.id}",
 				  "email" : "${user.email}"
 				}
-			""",
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -328,7 +328,7 @@ private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String
 				    "expires_in": 3600,
 				    "refresh_token": "${refreshToken}"
 				}
-			""",
+			""".trimIndent(),
 			headers = headersOf(
 				HttpHeaders.ContentType to listOf(ContentType.Application.Json.toString())
 			)
@@ -365,7 +365,7 @@ private fun HttpClient.stubGoogleOpenIdUserInfo(userId: String, email: String, n
 				    "email_verified": true,
 				    "name": "${name}"
 				}
-			""",
+			""".trimIndent(),
 			headers = headersOf(
 				HttpHeaders.ContentType to listOf(ContentType.Application.Json.toString())
 			)

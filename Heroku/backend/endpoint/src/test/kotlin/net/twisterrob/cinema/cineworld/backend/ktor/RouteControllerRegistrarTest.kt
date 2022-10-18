@@ -66,6 +66,7 @@ class RouteControllerRegistrarTest {
 	@Test fun `two controllers register by name`(application: Application) {
 		@Suppress("UnnecessaryAbstractClass") // TODEL False positive https://github.com/detekt/detekt/issues/4753
 		abstract class RouteController1 : RouteController(application)
+
 		@Suppress("UnnecessaryAbstractClass") // TODEL False positive https://github.com/detekt/detekt/issues/4753
 		abstract class RouteController2 : RouteController(application)
 

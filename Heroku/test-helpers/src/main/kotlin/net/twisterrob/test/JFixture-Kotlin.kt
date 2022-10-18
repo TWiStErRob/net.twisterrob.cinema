@@ -16,6 +16,7 @@ private fun ignoreKotlinConstructors() = Customisation {
 }
 
 private class MostParameterConstructorQuery : ConstructorQuery {
+
 	@Suppress("ReturnCount") // Cannot think of a better structure for now.
 	override fun getConstructorsForClass(clazz: Class<*>): List<Constructor<*>>? {
 		if (clazz.constructors.any(Constructor<*>::hasDefaultConstructorMarker)) {

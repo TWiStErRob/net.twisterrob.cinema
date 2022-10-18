@@ -121,11 +121,11 @@ class ConfigureLoggingTest {
 		verifyCallSite(expectedStack)
 		assertEquals(
 			"""
-			REQUEST: http://localhost/stubbed
-			METHOD: HttpMethod(value=GET)
-			RESPONSE: 200 OK
-			METHOD: HttpMethod(value=GET)
-			FROM: http://localhost/stubbed
+				REQUEST: http://localhost/stubbed
+				METHOD: HttpMethod(value=GET)
+				RESPONSE: 200 OK
+				METHOD: HttpMethod(value=GET)
+				FROM: http://localhost/stubbed
 			""".trimIndent(),
 			verifyAllLogsFor(Logger::info)
 		)
@@ -148,19 +148,19 @@ class ConfigureLoggingTest {
 		verifyCallSite(expectedStack)
 		assertEquals(
 			"""
-			REQUEST: http://localhost/stubbed
-			METHOD: HttpMethod(value=GET)
-			BODY Content-Type: null
-			BODY START
-
-			BODY END
-			RESPONSE: 200 OK
-			METHOD: HttpMethod(value=GET)
-			FROM: http://localhost/stubbed
-			BODY Content-Type: application/xml
-			BODY START
-			Fake content
-			BODY END
+				REQUEST: http://localhost/stubbed
+				METHOD: HttpMethod(value=GET)
+				BODY Content-Type: null
+				BODY START
+				
+				BODY END
+				RESPONSE: 200 OK
+				METHOD: HttpMethod(value=GET)
+				FROM: http://localhost/stubbed
+				BODY Content-Type: application/xml
+				BODY START
+				Fake content
+				BODY END
 			""".trimIndent(),
 			verifyAllLogsFor(Logger::debug)
 		)
@@ -183,28 +183,28 @@ class ConfigureLoggingTest {
 		verifyCallSite(expectedStack)
 		assertEquals(
 			"""
-			REQUEST: http://localhost/stubbed
-			METHOD: HttpMethod(value=GET)
-			COMMON HEADERS
-			-> Accept: */*
-			-> Accept-Charset: UTF-8
-			-> X-Custom-Request-Header: x-custom-request-value
-			CONTENT HEADERS
-			-> Content-Length: 0
-			BODY Content-Type: null
-			BODY START
-			
-			BODY END
-			RESPONSE: 200 OK
-			METHOD: HttpMethod(value=GET)
-			FROM: http://localhost/stubbed
-			COMMON HEADERS
-			-> Content-Type: application/xml
-			-> X-Custom-Response-Header: x-Custom-Request-Value
-			BODY Content-Type: application/xml
-			BODY START
-			Fake content
-			BODY END
+				REQUEST: http://localhost/stubbed
+				METHOD: HttpMethod(value=GET)
+				COMMON HEADERS
+				-> Accept: */*
+				-> Accept-Charset: UTF-8
+				-> X-Custom-Request-Header: x-custom-request-value
+				CONTENT HEADERS
+				-> Content-Length: 0
+				BODY Content-Type: null
+				BODY START
+				
+				BODY END
+				RESPONSE: 200 OK
+				METHOD: HttpMethod(value=GET)
+				FROM: http://localhost/stubbed
+				COMMON HEADERS
+				-> Content-Type: application/xml
+				-> X-Custom-Response-Header: x-Custom-Request-Value
+				BODY Content-Type: application/xml
+				BODY START
+				Fake content
+				BODY END
 			""".trimIndent(),
 			verifyAllLogsFor(Logger::trace)
 		)

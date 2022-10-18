@@ -108,7 +108,7 @@ class ViewsIntgTest {
 		JSONAssert.assertEquals(
 			"""
 				${serialized(fixtView)}
-			""",
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -178,7 +178,7 @@ class ViewsIntgTest {
 		JSONAssert.assertEquals(
 			"""
 				${serialized(fixtIgnore)}
-			""",
+			""".trimIndent(),
 			call.response.content,
 			JSONCompareMode.STRICT
 		)
@@ -230,34 +230,34 @@ private interface ViewsIntgTestComponent : ApplicationComponent {
 fun serialized(view: View): String =
 	// order intentionally switched up
 	"""
-	{
-		"cinema": ${serialized(view.cinema)},
-		"date": ${view.date},
-		"film": ${serialized(view.film)},
-		"user": ${serialized(view.user)}
-	}
-	"""
+		{
+			"cinema": ${serialized(view.cinema)},
+			"date": ${view.date},
+			"film": ${serialized(view.film)},
+			"user": ${serialized(view.user)}
+		}
+	""".trimIndent()
 
 @Language("json")
 fun serialized(user: User): String =
 	// order intentionally switched up
 	"""
-	{
-		"_created": "${serialized(user._created)}",
-		"id": "${user.id}",
-		"email": "${user.email}",
-		"name": "${user.name}",
-		"realm": "${user.realm}"
-	}
-	"""
+		{
+			"_created": "${serialized(user.created)}",
+			"id": "${user.id}",
+			"email": "${user.email}",
+			"name": "${user.name}",
+			"realm": "${user.realm}"
+		}
+	""".trimIndent()
 
 @Language("json")
 fun serialized(ignore: IgnoreResponse): String =
 	// order intentionally switched up
 	"""
-	{
-		"reason": "${ignore.reason}",
-		"film": { "edi": ${ignore.film.edi} },
-		"date": "${serialized(ignore.date)}"
-	}
-	"""
+		{
+			"reason": "${ignore.reason}",
+			"film": { "edi": ${ignore.film.edi} },
+			"date": "${serialized(ignore.date)}"
+		}
+	""".trimIndent()

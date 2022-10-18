@@ -1,0 +1,108 @@
+{
+	"legend": [
+		{
+			"code": "reg",
+			"description": "Regular"
+		},
+		{
+			"code": "dbox",
+			"description": "DBox"
+		},
+		{
+			"code": "vip",
+			"description": "VIP"
+		}
+	],
+	"performances": [
+		{
+			"time": "12:15",
+			"available": true,
+			"type": "reg",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016198&key=9qfgpF7B"
+		},
+		{
+			"time": "12:15",
+			"available": true,
+			"type": "dbox",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016199&key=9qfgpF7B"
+		},
+		{
+			"time": "15:15",
+			"available": true,
+			"type": "reg",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016211&key=9qfgpF7B"
+		},
+		{
+			"time": "15:15",
+			"available": true,
+			"type": "dbox",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016212&key=9qfgpF7B"
+		},
+		{
+			"time": "18:15",
+			"available": true,
+			"type": "dbox",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016226&key=9qfgpF7B"
+		},
+		{
+			"time": "18:15",
+			"available": true,
+			"type": "reg",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016225&key=9qfgpF7B"
+		},
+		{
+			"time": "20:15",
+			"available": true,
+			"type": "reg",
+			"ad": false,
+			"subtitled": false,
+			"ss": true,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016230&key=9qfgpF7B"
+		},
+		{
+			"time": "20:15",
+			"available": true,
+			"type": "vip",
+			"ad": false,
+			"subtitled": false,
+			"ss": true,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016231&key=9qfgpF7B"
+		},
+		{
+			"time": "21:15",
+			"available": true,
+			"type": "reg",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016237&key=9qfgpF7B"
+		},
+		{
+			"time": "21:15",
+			"available": true,
+			"type": "dbox",
+			"ad": false,
+			"subtitled": false,
+			"ss": false,
+			"booking_url": "http://www.cineworld.co.uk/booking?performance=1016238&key=9qfgpF7B"
+		}
+	]
+}

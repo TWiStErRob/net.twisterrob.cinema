@@ -10,8 +10,9 @@ kotlin = "1.7.20"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.6.4"
-kotlinx-serialization = "1.4.0"
-detekt = "1.21.0"
+kotlinx-serialization = "1.4.1"
+# TODO review TODELs with detekt mentioned in them.
+detekt = "1.22.0-RC2"
 
 dagger = "2.44"
 
@@ -26,7 +27,7 @@ ktor = "2.1.2"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "4.4.11"
+neo4j = "4.4.12"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
 neo4j-java = "5.0.0"
@@ -35,6 +36,7 @@ neo4j-java = "5.0.0"
 neo4j-ogm = "3.2.37"
 
 jackson = "2.13.4"
+jackson-databind = "2.13.4.2"
 
 slf4j = "2.0.3"
 log4j = "2.19.0"
@@ -49,7 +51,7 @@ test-jsonAssert = "1.5.1"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "4.8.0"
+test-mockito = "4.8.1"
 test-mockito-kotlin = "4.0.0"
 
 [libraries]
@@ -120,7 +122,7 @@ neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 # To work around, use (applied in root Gradle): Project.configureSLF4JBindings()
 neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j" }
 
-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
 jackson-dataformat-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype-java8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }

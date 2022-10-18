@@ -27,6 +27,7 @@ class User : BaseNode() {
 	@Property(name = "realm")
 	lateinit var realm: String
 
+	@Suppress("ObjectPropertyNaming")
 	@Convert(TimestampConverter::class)
 	@Property(name = "_created")
 	lateinit var _created: OffsetDateTime

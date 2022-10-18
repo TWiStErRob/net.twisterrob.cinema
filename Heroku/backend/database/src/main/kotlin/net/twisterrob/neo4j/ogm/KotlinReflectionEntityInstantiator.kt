@@ -19,6 +19,7 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 			ctor.parameters.all { param -> param.isOptional || propertyValues.containsKey(param.name) }
 		}
 
+		@Suppress("TrimMultilineRawString") // https://github.com/detekt/detekt/issues/5428
 		val ctor = usableCtors.singleOrNull() ?: throw MappingException(
 			"Unable to find unique constructor to instantiate $clazz using ${propertyValues.keys}\n${
 				allCtors.joinToString("\n") { ctor -> ctor.toMismatchString(ctor in usableCtors, propertyValues) }

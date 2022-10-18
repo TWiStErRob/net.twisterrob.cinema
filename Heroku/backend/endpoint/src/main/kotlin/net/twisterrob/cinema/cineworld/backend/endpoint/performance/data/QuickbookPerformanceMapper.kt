@@ -16,12 +16,12 @@ class QuickbookPerformanceMapper @Inject constructor() {
 		val performances: List<Performances.Performance> = qbPerformances.map {
 			Performances.Performance(
 				time = getOffsetTime(date, it.time),
-				available = it.available,
-				booking_url = it.booking_url,
+				isAvailable = it.isAvailable,
+				bookingUrl = it.bookingUrl,
 				type = it.type,
-				ad = it.ad,
-				ss = it.ss,
-				subtitled = it.subtitled
+				isAudioDescribed = it.isAudioDescribed,
+				isSuperScreen = it.isSuperScreen,
+				isSubtitled = it.isSubtitled
 			)
 		}
 		val utcMidnight = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC))

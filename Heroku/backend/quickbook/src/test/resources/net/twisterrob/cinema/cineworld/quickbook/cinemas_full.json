@@ -1,0 +1,636 @@
+{
+	"cinemas": [
+		{
+			"id": 1,
+			"name": "Aberdeen - Queens Links",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/1/information",
+			"address": "Queens Links Leisure Park, Links Road, Aberdeen",
+			"postcode": "AB24 5EN",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 78,
+			"name": "Aberdeen - Union Square",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/78/information",
+			"address": "26 First Level Mall, Union Square, Guild Square, Aberdeen",
+			"postcode": "AB11 5RG",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 87,
+			"name": "Aldershot",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/87/information",
+			"address": "Westgate, Aldershot",
+			"postcode": "GU11 1WG",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 12,
+			"name": "Ashford",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/12/information",
+			"address": "Eureka Entertainment Centre, Ashford, Kent",
+			"postcode": "TN25 4BN",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 23,
+			"name": "Ashton-under-Lyne",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/23/information",
+			"address": "Ashton Leisure Park, Fold Way, Off Lord Sheldon Way",
+			"postcode": "OL7 0PG",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 34,
+			"name": "Bedford",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/34/information",
+			"address": "Aspects Leisure Centre, Newnham Avenue, Bedford",
+			"postcode": "MK41 9LW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 56,
+			"name": "Birmingham",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/56/information",
+			"address": "181 Broad Street, Birmingham",
+			"postcode": "B15 1DA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 67,
+			"name": "Boldon Tyne and Wear",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/67/information",
+			"address": "Abingdon Way, Boldon Leisure Park, Boldon Colliery",
+			"postcode": "NE35 9PB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 72,
+			"name": "Bolton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/72/information",
+			"address": "The Valley, 15 Eagley Brook Way, Bolton",
+			"postcode": "BL1 8TS",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 73,
+			"name": "Bradford",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/73/information",
+			"address": "Bradford Leisure Exchange, Vicar Lane, Bradford",
+			"postcode": "BD1 5LD",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 2,
+			"name": "Braintree",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/2/information",
+			"address": "Freeport Leisure, Charter Way, Braintree, Essex",
+			"postcode": "CM77 8YH",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 3,
+			"name": "Brighton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/3/information",
+			"address": "Brighton Marina, Brighton, East Sussex",
+			"postcode": "BN2 5UF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 4,
+			"name": "Bristol",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/4/information",
+			"address": "Hengrove Leisure Park, Hengrove Way, Bristol",
+			"postcode": "BS14 0HR",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 5,
+			"name": "Burton upon Trent",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/5/information",
+			"address": "Middle Way Park, Guild St, Burton upon Trent",
+			"postcode": "DE14 1NQ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 6,
+			"name": "Bury St. Edmunds",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/6/information",
+			"address": "Parkway, Bury St. Edmunds",
+			"postcode": "IP33 3BA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 7,
+			"name": "Cambridge",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/7/information",
+			"address": "Cambridge Leisure Park, Clifton Way, Cambridge",
+			"postcode": "CB1 7DY",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 8,
+			"name": "Cardiff",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/8/information",
+			"address": "Mary Ann Street, Cardiff",
+			"postcode": "CF10 2EN",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 9,
+			"name": "Castleford",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/9/information",
+			"address": "Xscape, Colorado Way, Castleford, West Yorkshire",
+			"postcode": "WF10 4TA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 11,
+			"name": "Cheltenham",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/11/information",
+			"address": "The Brewery, Oxford Passage, St Margaret's Road, Cheltenham",
+			"postcode": "GL50 4EF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 13,
+			"name": "Chester",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/13/information",
+			"address": "Chaser Court, Greyhound Retail Park, Sealand Road",
+			"postcode": "CH1 4QQ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 14,
+			"name": "Chesterfield",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/14/information",
+			"address": "Alma Leisure Park, Derby Road, Chesterfield, Derby",
+			"postcode": "S40 2ED",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 15,
+			"name": "Chichester",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/15/information",
+			"address": "Chichester Gate, Chichester, West Sussex",
+			"postcode": "PO19 8EL",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 16,
+			"name": "Crawley",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/16/information",
+			"address": "Unit 1-Crawley Leisure Park, London Road, Crawley",
+			"postcode": "RH10 8LR",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 17,
+			"name": "Didcot",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/17/information",
+			"address": "27 Station Road, Didcot, Oxfordshire",
+			"postcode": "OX11 7ND",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 18,
+			"name": "Didsbury",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/18/information",
+			"address": "Parrs Wood Entertainment Centre, Wilmslow Road, East Didsbury, Manchester",
+			"postcode": "M20 5PG",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 19,
+			"name": "Dundee",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/19/information",
+			"address": "Camperdown Leisure Park, Kingsway West, Dundee",
+			"postcode": "DD2 4TF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 20,
+			"name": "Eastbourne",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/20/information",
+			"address": "Sovereign Harbour Retail Park, Pevensey Bay Road",
+			"postcode": "BN23 6JH",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 21,
+			"name": "Edinburgh",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/21/information",
+			"address": "Fountain Park,130/3 Dundee Street, Edinburgh",
+			"postcode": "EH11 1AF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 24,
+			"name": "Falkirk",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/24/information",
+			"address": "Central Retail Park, Old Bison Works, Falkirk",
+			"postcode": "FK1 1LW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 27,
+			"name": "Glasgow - Parkhead",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/27/information",
+			"address": "Forge Shopping Centre, 1221 Gallowgate, Glasgow",
+			"postcode": "G31 4EB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 28,
+			"name": "Glasgow - Renfrew Street",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/28/information",
+			"address": "7 Renfrew Street, Glasgow",
+			"postcode": "G2 3AB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 29,
+			"name": "Gloucester",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/29/information",
+			"address": "The Peel Centre, St Ann Way, Bristol Road, Gloucester",
+			"postcode": "GL1 5SF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 31,
+			"name": "Harlow",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/31/information",
+			"address": "Queensgate Centre, Edinburgh Way, Harlow, Essex",
+			"postcode": "CM20 2DA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 76,
+			"name": "Haverhill",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/76/information",
+			"address": "Leisure & Retail Complex, Ehringshausen Way",
+			"postcode": "CB9 0ER",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 33,
+			"name": "High Wycombe",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/33/information",
+			"address": "Denmark Street, Eden, High Wycombe",
+			"postcode": "HP11 2DB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 35,
+			"name": "Hull",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/35/information",
+			"address": "Gibraltar Road, Kingswood Retail Park, Hull",
+			"postcode": "HU7 3DB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 36,
+			"name": "Huntingdon",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/36/information",
+			"address": "Tower Field Leisure Park, Abbots Ripton Road, Hunt",
+			"postcode": "PE29 7EG",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 38,
+			"name": "Ipswich",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/38/information",
+			"address": "Cardinal Park, 11 Grafton Way, Ipswich, Suffolk",
+			"postcode": "IP1 1AX",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 39,
+			"name": "Isle Of Wight",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/39/information",
+			"address": "Coppins Bridge, Newport, Isle of Wight",
+			"postcode": "PO30 2TA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 40,
+			"name": "Jersey",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/40/information",
+			"address": "The Waterfront Centre, La Rue de L'Etau, St Helier",
+			"postcode": "JE2 4HE",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 83,
+			"name": "Leigh",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/83/information",
+			"address": "The Loom, Spinning Jenny Way, Leigh",
+			"postcode": "WN7 4PE",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 41,
+			"name": "Liverpool",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/41/information",
+			"address": "Montrose Way, Edge Lane Retail Park, Liverpool",
+			"postcode": "L13 1EW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 42,
+			"name": "Llandudno",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/42/information",
+			"address": "Junction Leisure Park, Off Junction Way, Llandudno Junction",
+			"postcode": "LL31 9XX",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 45,
+			"name": "London - Bexleyheath",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/45/information",
+			"address": "28-70 Broadway, Bexleyheath, Kent",
+			"postcode": "DA6 7LL",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 10,
+			"name": "London - Chelsea",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/10/information",
+			"address": "279 Kings Road,Chelsea, London",
+			"postcode": "SW3 5EW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 22,
+			"name": "London - Enfield",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/22/information",
+			"address": "Southbury Leisure Park, 208 Southbury Road, Enfield",
+			"postcode": "EN1 1YQ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 25,
+			"name": "London - Feltham",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/25/information",
+			"address": "Leisure West, Air Park Way, Feltham, Middx",
+			"postcode": "TW13 7LX",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 26,
+			"name": "London - Fulham Road",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/26/information",
+			"address": "142 Fulham Road, London",
+			"postcode": "SW10 9QR",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 30,
+			"name": "London - Hammersmith",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/30/information",
+			"address": "207 King Street, Hammersmith, London",
+			"postcode": "W6 9JT",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 32,
+			"name": "London - Haymarket",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/32/information",
+			"address": "63-65 Haymarket, London",
+			"postcode": "SW1Y 4RL",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 37,
+			"name": "London - Ilford",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/37/information",
+			"address": "I-Scene, Clements Road, Ilford, Essex",
+			"postcode": "IG1 1BP",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 53,
+			"name": "London - Shaftesbury Avenue",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/53/information",
+			"address": "13 Coventry Street, Piccadilly, London",
+			"postcode": "W1D 7DH",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 60,
+			"name": "London - Staples Corner",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/60/information",
+			"address": "Staples Corner Retail Park, Geron Way, London",
+			"postcode": "NW2 6LW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 79,
+			"name": "London - The O2, Greenwich ",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/79/information",
+			"address": "The O2, Peninsula Square, London",
+			"postcode": "SE10 0DX",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 65,
+			"name": "London - Wandsworth",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/65/information",
+			"address": "Southside Shopping Centre, Wandsworth High Street,",
+			"postcode": "SW18 4TF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 66,
+			"name": "London - West India Quay",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/66/information",
+			"address": "Hertsmere Road, West India Quay, London",
+			"postcode": "E14 4AL",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 70,
+			"name": "London - Wood Green",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/70/information",
+			"address": "Wood Green Shopping City, Off Noel Park Road, Wood Green",
+			"postcode": "N22 6LU",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 43,
+			"name": "Luton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/43/information",
+			"address": "The Galaxy, Bridge Street, Luton,",
+			"postcode": "LU1 2NB",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 44,
+			"name": "Middlesbrough",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/44/information",
+			"address": "Middlesbrough Leisure Park, Marton Road, Middlesb",
+			"postcode": "TS1 2DY",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 46,
+			"name": "Milton Keynes",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/46/information",
+			"address": "Xscape, 602 Marlborough Gate, Central Milton Keynes",
+			"postcode": "MK9 3XS",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 47,
+			"name": "Newport Wales",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/47/information",
+			"address": "Newport Retail Park, Seven Styles Avenue, Spytty",
+			"postcode": "NP19 4QQ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 48,
+			"name": "Northampton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/48/information",
+			"address": "Sixfields Leisure, Weedon Road, Upton, Northampton",
+			"postcode": "NN5 5QJ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 49,
+			"name": "Nottingham",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/49/information",
+			"address": "The Corner House, 29 Forman Street, Nottingham",
+			"postcode": "NG1 4AA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 50,
+			"name": "Rochester",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/50/information",
+			"address": "Medway Valley Leisure Park, Chariot Way, Strood,",
+			"postcode": "ME2 2SS",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 51,
+			"name": "Rugby",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/51/information",
+			"address": "Junction One Retail & Leisure Park, Leicester Rd, Rugby, Warwickshire",
+			"postcode": "CV21 1RW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 52,
+			"name": "Runcorn",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/52/information",
+			"address": "Trident Park, Halton Lea, Runcorn",
+			"postcode": "WA7 2FQ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 54,
+			"name": "Sheffield",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/54/information",
+			"address": "Valley Centertainment, Broughton Lane, Sheffield,",
+			"postcode": "S9 2EP",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 55,
+			"name": "Shrewsbury",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/55/information",
+			"address": "Old Potts Way, Shrewsbury",
+			"postcode": "SY3 7ET",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 57,
+			"name": "Solihull",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/57/information",
+			"address": "47 Mill Lane Arcade (Upper), Touchwood, Solihull,",
+			"postcode": "B91 3GS",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 58,
+			"name": "Southampton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/58/information",
+			"address": "Ocean Village, 4 Ocean Way, Southampton, Hampshire",
+			"postcode": "SO14 3TJ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 59,
+			"name": "St Helens",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/59/information",
+			"address": "Chalon Way West, St Helens",
+			"postcode": "WA10 1BF",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 61,
+			"name": "Stevenage",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/61/information",
+			"address": "Unit 4, Stevenage Leisure Park, Kings Way, Stevenage",
+			"postcode": "SG1 2UA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 62,
+			"name": "Stockport",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/62/information",
+			"address": "4 Grand Central Square, Wellington Road South, St",
+			"postcode": "SK1 3TA",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 63,
+			"name": "Swindon",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/63/information",
+			"address": "Shaw Ridge Leisure Park, Whitehill Way, Swindon",
+			"postcode": "SN5 7DN",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 64,
+			"name": "Wakefield",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/64/information",
+			"address": "Westgate Retail and Leisure Park, Colinsway, Off C",
+			"postcode": "WF2 9SH",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 68,
+			"name": "Weymouth",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/68/information",
+			"address": "New Bond St, Weymouth",
+			"postcode": "DT4 8LY",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 77,
+			"name": "Witney",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/77/information",
+			"address": "Marriotts Walk, Witney, Oxon",
+			"postcode": "OX28 6GW",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 69,
+			"name": "Wolverhampton",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/69/information",
+			"address": "Bentley Bridge Leisure Park, Wednesfield Way",
+			"postcode": "WV11 1TZ",
+			"telephone": "0871 200 2000"
+		},
+		{
+			"id": 71,
+			"name": "Yeovil",
+			"cinema_url": "http://www.cineworld.co.uk/cinemas/71/information",
+			"address": "Unit 1 Yeo Leisure Park, Old Station Way, Yeovil,",
+			"postcode": "BA20 1NP",
+			"telephone": "0871 200 2000"
+		}
+	]
+}

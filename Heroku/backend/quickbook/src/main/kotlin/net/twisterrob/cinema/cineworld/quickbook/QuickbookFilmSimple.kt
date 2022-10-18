@@ -1,6 +1,11 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class QuickbookFilmSimple(
+	@JsonProperty("edi")
 	override val edi: Long,
-	override val title: String
+
+	@JsonProperty("title")
+	override val title: String,
 ) : QuickbookFilm

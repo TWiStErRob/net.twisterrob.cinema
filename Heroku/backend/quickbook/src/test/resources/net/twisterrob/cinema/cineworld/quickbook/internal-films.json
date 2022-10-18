@@ -1,0 +1,426 @@
+{
+	"base_url": "http://www.cineworld.co.uk",
+	"films": [
+		{
+			"edi": 39625,
+			"title": "2D - Monsters University",
+			"id": 6343,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/6251_poster.jpg",
+			"length": 110,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Monsters University - New Trailer - Disney Pixar Official HD_1_qtp.mp4",
+			"actors": "Billy Crystal, John Goodman, Steve Buscemi, Helen Mirren, Alfred Molina, Nathan Fillion",
+			"weighted": 59
+		},
+		{
+			"edi": 39728,
+			"title": "3D - Monsters University",
+			"id": 6342,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/6251_poster.jpg",
+			"length": 110,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Monsters University - New Trailer - Disney Pixar Official HD_1_qtp.mp4",
+			"actors": "Billy Crystal, John Goodman, Steve Buscemi, Helen Mirren, Alfred Molina, Nathan Fillion",
+			"weighted": 59
+		},
+		{
+			"edi": 43599,
+			"title": "2D - Despicable Me 2",
+			"id": 6322,
+			"cert": "U",
+			"poster": "/assets/media/films/6235_poster.jpg",
+			"length": 98,
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Despicable Me 2 _qtp.mp4",
+			"actors": "Steve Carell, Al Pacino, Kristen Wiig, Ken Jeong, Steve Coogan, Russell Brand, Miranda Cosgrove",
+			"weighted": 58
+		},
+		{
+			"edi": 56173,
+			"title": "3D - Despicable Me 2",
+			"id": 6323,
+			"cert": "U",
+			"poster": "/assets/media/films/6235_poster.jpg",
+			"length": 98,
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Despicable Me 2 _qtp.mp4",
+			"actors": "Steve Carell, Al Pacino, Kristen Wiig, Ken Jeong, Steve Coogan, Russell Brand, Miranda Cosgrove",
+			"weighted": 58
+		},
+		{
+			"edi": 63737,
+			"title": "2D - Pacific Rim",
+			"id": 6376,
+			"cert": "12A",
+			"poster": "/assets/media/films/6277_poster.jpg",
+			"length": 131,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/PACIFIC-RIM_qtp.mp4",
+			"actors": "Charlie Hunnam, Ron Perlman, Idris Elba, Charlie Day, Rinko Kikuchi",
+			"weighted": 57
+		},
+		{
+			"edi": 107709,
+			"title": "3D - Pacific Rim",
+			"id": 6377,
+			"cert": "12A",
+			"poster": "/assets/media/films/6277_poster.jpg",
+			"length": 131,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/PACIFIC-RIM_qtp.mp4",
+			"actors": "Charlie Hunnam, Ron Perlman, Idris Elba, Charlie Day, Rinko Kikuchi",
+			"weighted": 57
+		},
+		{
+			"edi": 143415,
+			"title": "IMAX 3D - Pacific Rim",
+			"id": 6378,
+			"cert": "12A",
+			"poster": "/assets/media/films/6277_poster.jpg",
+			"length": 131,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/PACIFIC-RIM_qtp.mp4",
+			"actors": "Charlie Hunnam, Ron Perlman, Idris Elba, Charlie Day, Rinko Kikuchi",
+			"weighted": 57
+		},
+		{
+			"edi": 56800,
+			"title": "Now You See Me",
+			"id": 6364,
+			"cert": "12A",
+			"advisory": "Contains moderate sex references, violence, threat and strong language.",
+			"poster": "/assets/media/films/6265_poster.jpg",
+			"length": 115,
+			"release": "20130703",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Now You See Me _qtp.mp4",
+			"actors": "Morgan Freeman, Isla Fisher, Mark Ruffalo, Woody Harrelson, Jesse Eisenberg, Dave Franco, Michael Caine",
+			"weighted": 56
+		},
+		{
+			"edi": 43683,
+			"title": "2D - World War Z",
+			"id": 6295,
+			"cert": "15",
+			"advisory": "",
+			"poster": "/assets/media/films/6210_poster.jpg",
+			"release": "20130621",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/WORLD WAR Z - Official Teaser Trailer - United Kingdom_qtp.mp4",
+			"actors": "Brad Pitt, Mireille Enos, James Badge Dale, Matthew Fox",
+			"weighted": 55
+		},
+		{
+			"edi": 134471,
+			"title": "3D - World War Z",
+			"id": 6296,
+			"cert": "15",
+			"advisory": "",
+			"poster": "/assets/media/films/6210_poster.jpg",
+			"release": "20130621",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/WORLD WAR Z - Official Teaser Trailer - United Kingdom_qtp.mp4",
+			"actors": "Brad Pitt, Mireille Enos, James Badge Dale, Matthew Fox",
+			"weighted": 55
+		},
+		{
+			"edi": 42665,
+			"title": "2D - Sammy's Great Escape",
+			"id": 5933,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/5910_poster.jpg",
+			"length": 93,
+			"release": "20130215",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/ Sammys Great Escape Trailer _qtp.mp4",
+			"actors": "Pat Carroll, Carlos McCullers II, Isabelle Fuhrman",
+			"categories": [
+				"junior"
+			],
+			"weighted": 46
+		},
+		{
+			"edi": 136985,
+			"title": "The Bling Ring",
+			"id": 6368,
+			"cert": "15",
+			"poster": "/assets/media/films/6269_poster.jpg",
+			"length": 90,
+			"release": "20130705",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/The Bling Ring - UK Main Trailer_qtp.mp4",
+			"actors": "Emma Watson, Taissa Farmiga, Israel Broussard, Leslie Mann, Claire Julien, Katie Chang",
+			"weighted": 31
+		},
+		{
+			"edi": 63740,
+			"title": "2D - Man Of Steel",
+			"id": 6123,
+			"cert": "12A",
+			"advisory": "",
+			"poster": "/assets/media/films/6061_poster.jpg",
+			"length": 143,
+			"release": "20130614",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/cineworld_qtp.mp4",
+			"actors": "Henry Cavill, Amy Adams, Russell Crowe, Kevin Costner, Diane Lane, Michael Shannon",
+			"weighted": 30
+		},
+		{
+			"edi": 107857,
+			"title": "3D - Man Of Steel",
+			"id": 6268,
+			"cert": "12A",
+			"advisory": "",
+			"poster": "/assets/media/films/6061_poster.jpg",
+			"length": 143,
+			"release": "20130614",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/cineworld_qtp.mp4",
+			"actors": "Henry Cavill, Amy Adams, Russell Crowe, Kevin Costner, Diane Lane, Michael Shannon",
+			"weighted": 30
+		},
+		{
+			"edi": 110953,
+			"title": "The Internship",
+			"id": 6362,
+			"cert": "12A",
+			"advisory": "Contains moderate sex references and one use of strong language.",
+			"poster": "/assets/media/films/6263_poster.jpg",
+			"length": 119,
+			"release": "20130703",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/The Internship trailer_qtp.mp4",
+			"actors": "Vince Vaughn, Owen Wilson, Rose Byrne, Max Minghella, John Goodman",
+			"weighted": 29
+		},
+		{
+			"edi": 63829,
+			"title": "This Is The End",
+			"id": 6326,
+			"cert": "15",
+			"poster": "/assets/media/films/6237_poster.jpg",
+			"length": 107,
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/THISISTHEEND_qtp.mp4",
+			"actors": "James Franco, Paul Rudd, Seth Rogen, Emma Watson, Jonah Hill, Jason Segel, Jay Baruchel, Michael Cera, Christopher Mintz-Plasse, Danny McBride",
+			"weighted": 28
+		},
+		{
+			"edi": 145175,
+			"title": "Behind The Candelabra",
+			"id": 6302,
+			"cert": "15",
+			"poster": "/assets/media/films/6215_poster.jpg",
+			"length": 118,
+			"release": "20130607",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Behind the Candelabra - In UK Cinemas 7th June_qtp.mp4",
+			"actors": "Michael Douglas, Matt Damon, Dan Aykroyd, Debbie Reynolds",
+			"weighted": 26
+		},
+		{
+			"edi": 44062,
+			"title": "2D - Epic",
+			"id": 6213,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/6138_poster.jpg",
+			"length": 102,
+			"release": "20130524",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Epic_qtp.mp4",
+			"actors": "Amanda Seyfried, Josh Hutcherson, Colin Farrell, Christoph Waltz, Jason Sudeikis",
+			"weighted": 25
+		},
+		{
+			"edi": 148937,
+			"title": "Bhaag Milkha Bhaag",
+			"id": 6526,
+			"cert": "TBC",
+			"advisory": "",
+			"poster": "/assets/media/films/6415_poster.jpg",
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/360p stereo - Bhaag Milkha Bhaag official trailer  Farhan Akhtar  Sonam Kapoor.mp4",
+			"actors": "Farhan Akhtar, Sonam Kapoor",
+			"categories": [
+				"bollywood"
+			],
+			"weighted": 19
+		},
+		{
+			"edi": 151570,
+			"title": "Fer Mamla Gadbad Gadbad",
+			"id": 6528,
+			"cert": "12A",
+			"advisory": "",
+			"poster": "/assets/media/films/6417_poster.jpg",
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/360p stereo 3D - Fer Mamla Gadbad Gadbad  FMGG Official Movie Trailer  Roshan Prince  Japji Khaira  PTC.mp4",
+			"actors": "Roshan Prince, BhanuShree Mehra, Japji Khaira",
+			"categories": [
+				"bollywood"
+			],
+			"weighted": 17
+		},
+		{
+			"edi": 146372,
+			"title": "Lootera",
+			"id": 6371,
+			"cert": "TBC",
+			"advisory": "",
+			"poster": "/assets/media/films/6272_poster.jpg",
+			"release": "20130705",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Lootera_qtp.mp4",
+			"actors": "Ranveer Singh, Sonakshi Sinha",
+			"categories": [
+				"bollywood"
+			],
+			"weighted": 14
+		},
+		{
+			"edi": 149976,
+			"title": "Singam 2 (with English Subtitles)",
+			"id": 6505,
+			"cert": "12A",
+			"advisory": "",
+			"poster": "/assets/media/films/6396_poster.jpg",
+			"length": 160,
+			"release": "20130705",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Singam 2 Promo Ayngaran HD.mp4",
+			"weighted": 10
+		},
+		{
+			"edi": 128647,
+			"title": "2D - All Stars",
+			"id": 5908,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/5890_poster.jpg",
+			"length": 106,
+			"release": "20130503",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/All Stars - Official Teaser Trailer_qtp.mp4",
+			"actors": "Akai - Osei Mansfield, Theo Stevenson, Ashley Walters, Ashley Jensen",
+			"categories": [
+				"junior"
+			],
+			"weighted": 0
+		},
+		{
+			"edi": 57319,
+			"title": "2D - The Great Gatsby",
+			"id": 6191,
+			"cert": "12A",
+			"advisory": "Contains moderate sex, violence and bloody images.",
+			"poster": "/assets/media/films/6122_poster.jpg",
+			"length": 143,
+			"release": "20130516",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/The Great Gatsby _qtp.mp4",
+			"actors": "Leonardo DiCaprio, Tobey Maguire, Carey Mulligan, Joel Edgerton, Amitabh Bachchan",
+			"weighted": 0
+		},
+		{
+			"edi": 139438,
+			"title": "3D - All Stars",
+			"id": 6338,
+			"cert": "U",
+			"advisory": "",
+			"poster": "/assets/media/films/5890_poster.jpg",
+			"length": 106,
+			"release": "20130503",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/All Stars - Official Teaser Trailer_qtp.mp4",
+			"actors": "Akai - Osei Mansfield, Theo Stevenson, Ashley Walters, Ashley Jensen",
+			"categories": [
+				"junior"
+			],
+			"weighted": 0
+		},
+		{
+			"edi": 139855,
+			"title": "Before Midnight",
+			"id": 6299,
+			"cert": "15",
+			"advisory": "",
+			"poster": "/assets/media/films/6212_poster.jpg",
+			"length": 109,
+			"release": "20130621",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Before Midnight_qtp.mp4",
+			"actors": "Ethan Hawke, Julie Delpy",
+			"weighted": 0
+		},
+		{
+			"edi": 129729,
+			"title": "Citadel",
+			"id": 6535,
+			"cert": "TBC",
+			"poster": "/assets/media/films/6424_poster.jpg",
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/360p stereo - CITADEL Trailer - In UK Cinemas July 12th.mp4",
+			"actors": "James Cosmo, Aneurin Barnard, Amy Shiels, Wunmi Mosaku",
+			"weighted": 0
+		},
+		{
+			"edi": 139031,
+			"title": "Ghanchakkar",
+			"id": 6411,
+			"cert": "TBC",
+			"advisory": "",
+			"poster": "/assets/media/films/6307_poster.jpg",
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Ghanchakkar_THEATRICAL_Subtitle_qtp.mp4",
+			"actors": "Emraan Hashmi, Vidya Balan, Rajesh Sharma",
+			"categories": [
+				"bollywood"
+			],
+			"weighted": 0
+		},
+		{
+			"edi": 145034,
+			"title": "Jatt & Juliet 2",
+			"id": 6333,
+			"cert": "PG",
+			"poster": "/assets/media/films/6244_poster.jpg",
+			"length": 138,
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Jatt  Juliet 2 _qtp.mp4",
+			"actors": "Diljit Dosanjh, Neeru Bajwa, Rana Jung Bahadur, Jaswinder Bhalla, Amrit Bhilla, Devinder Dillon, Julia Fox, Brad Harder, Jacob Insley, Hitesh Jogia",
+			"categories": [
+				"bollywood"
+			],
+			"weighted": 0
+		},
+		{
+			"edi": 143934,
+			"title": "The East",
+			"id": 6372,
+			"cert": "15",
+			"advisory": "",
+			"poster": "/assets/media/films/6273_poster.jpg",
+			"length": 116,
+			"release": "20130628",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/THE EAST _ Official Trailer_qtp.mp4",
+			"actors": "Brit Marling, Alexander Skarsgard, Ellen Page, Patricia Clarkson, Toby Kebbell",
+			"weighted": 0
+		},
+		{
+			"edi": 63735,
+			"title": "The Hangover: Part III",
+			"id": 6121,
+			"cert": "15",
+			"advisory": "",
+			"poster": "/assets/media/films/6059_poster.jpg",
+			"length": 100,
+			"release": "20130523",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/The Hangover Part 3 _qtp.mp4",
+			"actors": "Bradley Cooper, Ed Helms, Zach Galifianakis, Justin Bartha",
+			"weighted": 0
+		},
+		{
+			"edi": 146666,
+			"title": "Trap For Cinderella",
+			"id": 6382,
+			"cert": "15",
+			"poster": "/assets/media/films/6279_poster.jpg",
+			"length": 100,
+			"release": "20130712",
+			"trailer": "http://webcache1.bbccustomerpublishing.com/cineworld/trailers/Trap For Cinderella Official Trailer HD_qtp.mp4",
+			"actors": "Tuppence Middleton, Alexandra Roach, Kerry Fox, Aneurin Barnard, Alex Jennings",
+			"weighted": 0
+		}
+	]
+}

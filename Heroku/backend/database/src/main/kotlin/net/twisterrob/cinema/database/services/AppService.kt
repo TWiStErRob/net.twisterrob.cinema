@@ -14,10 +14,10 @@ class AppService @Inject constructor(
 	fun endOfBatch() {
 		val result = session.queryForObject<Unit>(
 			"""
-			START root=node(*)
-			WHERE 1=2
-			RETURN root
-			"""
+				START root=node(*)
+				WHERE 1=2
+				RETURN root
+			""".trimIndent()
 		)
 		check(result == null)
 	}

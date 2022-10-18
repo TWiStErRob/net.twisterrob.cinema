@@ -6,6 +6,7 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.RoutingApplicationCall
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
 import java.io.File
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -28,8 +29,6 @@ object ApplicationAttributes {
 	private val FakeRootFolderAttribute = AttributeKey<File>("fakeRootFolder")
 
 	var Attributes.fakeRootFolder: File by requiredKey(FakeRootFolderAttribute)
-
-	data class CurrentUser(val id: String, val email: String)
 
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
 

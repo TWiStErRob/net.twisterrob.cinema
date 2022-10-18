@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth.data
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
 
 /**
@@ -10,6 +11,7 @@ import java.net.URI
  * @since defines the scope which is required during authorization to get this field
  */
 data class UserInfoOpenID(
+
 	/**
 	 * An identifier for the user, unique among all Google accounts and never reused.
 	 * A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
@@ -17,6 +19,7 @@ data class UserInfoOpenID(
 	 * Maximum length of 255 case-sensitive ASCII characters.
 	 * @since always there
 	 */
+	@JsonProperty("sub")
 	val sub: String,
 
 	/**
@@ -26,13 +29,15 @@ data class UserInfoOpenID(
 	 * @exception NullPointerException if email scope was missing during auth
 	 * @since email
 	 */
+	@JsonProperty("email")
 	val email: String?,
 
 	/**
 	 * True if the user's e-mail address has been verified; otherwise false.
 	 * @since email
 	 */
-	val email_verified: Boolean?,
+	@JsonProperty("email_verified")
+	val isEmailVerified: Boolean?,
 
 	/**
 	 * The URL of the user's profile picture. Might be provided when:
@@ -42,7 +47,8 @@ data class UserInfoOpenID(
 	 * _Note that this claim is never guaranteed to be present._
 	 * @since email, profile
 	 */
-	val picture: URI?,
+	@JsonProperty("picture")
+	val pictureUrl: URI?,
 
 	/**
 	 * The user's full name, in a displayable form. Might be provided when:
@@ -52,6 +58,7 @@ data class UserInfoOpenID(
 	 * _Note that this claim is never guaranteed to be present._
 	 * @since profile
 	 */
+	@JsonProperty("name")
 	val name: String?,
 
 	/**
@@ -59,25 +66,28 @@ data class UserInfoOpenID(
 	 * _Might be provided when a [name] claim is present._
 	 * @since profile
 	 */
-	val given_name: String?,
+	@JsonProperty("given_name")
+	val givenName: String?,
 
 	/**
 	 * The user's surname(s) or last name(s).
 	 * _Might be provided when a [name] claim is present._
 	 * @since profile
 	 */
-	val family_name: String?,
+	@JsonProperty("family_name")
+	val familyName: String?,
 
 	/**
 	 * The user's locale, represented by a [BCP 47](https://tools.ietf.org/html/bcp47) language tag.
 	 * _Might be provided when a [name] claim is present._
 	 * @since profile
 	 */
+	@JsonProperty("locale")
 	val locale: String?
 ) {
 
-
 	companion object {
+
 		/**
 		 * @see userinfo_endpoint https://accounts.google.com/.well-known/openid-configuration
 		 * TODO was https://www.googleapis.com/userinfo/v2/me in Ktor docs
@@ -88,19 +98,19 @@ data class UserInfoOpenID(
 	object Scopes {
 
 		/**
-		 * Scope for [name] ([given_name], [family_name]), [picture], [locale].
+		 * Scope for [name] ([givenName], [familyName]), [pictureUrl], [locale].
 		 */
 		const val profile = "profile"
 
 		/**
-		 * Scope for [email] and [email_verified] claims.
-		 * Also sends [picture] for some reason.
+		 * Scope for [email] and [isEmailVerified] claims.
+		 * Also sends [pictureUrl] for some reason.
 		 */
 		const val email = "email"
 
 		/**
 		 * Scope for [sub] claim.
-		 * Also sends [picture] for some reason.
+		 * Also sends [pictureUrl] for some reason.
 		 */
 		const val openid = "openid"
 	}
