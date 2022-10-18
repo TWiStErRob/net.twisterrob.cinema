@@ -30,11 +30,11 @@ class CinemaMapperTest {
 		assertThat(cinema.postcode, equalTo(fixtDBCinema.postcode))
 		assertThat(cinema.address, equalTo(fixtDBCinema.address))
 		assertThat(cinema.telephone, equalTo(fixtDBCinema.telephone))
-		assertThat(cinema.cinema_url, equalTo(fixtDBCinema.cinema_url.toString()))
-		assertThat(cinema._created, equalTo(fixtDBCinema._created))
-		assertThat(cinema._updated, equalTo(fixtDBCinema._updated))
-		assertThat(cinema.`class`, equalTo(fixtDBCinema.className))
-		assertThat(cinema.fav, equalTo(false))
+		assertThat(cinema.cinemaUrl, equalTo(fixtDBCinema.cinema_url.toString()))
+		assertThat(cinema.created, equalTo(fixtDBCinema._created))
+		assertThat(cinema.updated, equalTo(fixtDBCinema._updated))
+		assertThat(cinema.className, equalTo(fixtDBCinema.className))
+		assertThat(cinema.isFavorited, equalTo(false))
 	}
 
 	@Test fun `map a cinema with favorite`() {
@@ -47,11 +47,11 @@ class CinemaMapperTest {
 		assertThat(cinema.postcode, equalTo(fixtDBCinema.postcode))
 		assertThat(cinema.address, equalTo(fixtDBCinema.address))
 		assertThat(cinema.telephone, equalTo(fixtDBCinema.telephone))
-		assertThat(cinema.cinema_url, equalTo(fixtDBCinema.cinema_url.toString()))
-		assertThat(cinema._created, equalTo(fixtDBCinema._created))
-		assertThat(cinema._updated, equalTo(fixtDBCinema._updated))
-		assertThat(cinema.`class`, equalTo(fixtDBCinema.className))
-		assertThat(cinema.fav, equalTo(true))
+		assertThat(cinema.cinemaUrl, equalTo(fixtDBCinema.cinema_url.toString()))
+		assertThat(cinema.created, equalTo(fixtDBCinema._created))
+		assertThat(cinema.updated, equalTo(fixtDBCinema._updated))
+		assertThat(cinema.className, equalTo(fixtDBCinema.className))
+		assertThat(cinema.isFavorited, equalTo(true))
 	}
 
 	@Test fun `map a cinema with not favorite`() {
@@ -64,10 +64,10 @@ class CinemaMapperTest {
 		assertThat(cinema.postcode, equalTo(fixtDBCinema.postcode))
 		assertThat(cinema.address, equalTo(fixtDBCinema.address))
 		assertThat(cinema.telephone, equalTo(fixtDBCinema.telephone))
-		assertThat(cinema.cinema_url, equalTo(fixtDBCinema.cinema_url.toString()))
-		assertThat(cinema._created, equalTo(fixtDBCinema._created))
-		assertThat(cinema._updated, equalTo(fixtDBCinema._updated))
-		assertThat(cinema.`class`, equalTo(fixtDBCinema.className))
-		assertThat(cinema.fav, equalTo(false))
+		assertThat(cinema.cinemaUrl, equalTo(fixtDBCinema.cinema_url.toString()))
+		assertThat(cinema.created, equalTo(fixtDBCinema._created))
+		assertThat(cinema.updated, equalTo(fixtDBCinema._updated))
+		assertThat(cinema.className, equalTo(fixtDBCinema.className))
+		assertThat(cinema.isFavorited, equalTo(false))
 	}
 }

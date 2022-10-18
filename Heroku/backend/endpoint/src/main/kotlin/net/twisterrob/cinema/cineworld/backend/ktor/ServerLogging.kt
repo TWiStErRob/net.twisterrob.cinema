@@ -31,9 +31,9 @@ class ServerLogging(
 
 	@Suppress("unused")
 	enum class LogLevel(
-		internal val info: Boolean,
-		internal val headers: Boolean,
-		internal val body: Boolean
+		internal val showInfo: Boolean,
+		internal val showHeaders: Boolean,
+		internal val showBody: Boolean
 	) {
 
 		ALL(true, true, true),
@@ -52,16 +52,16 @@ class ServerLogging(
 
 	private suspend fun logRequest(call: ApplicationCall) {
 		logger.info(buildString {
-			if (level.info) {
+			if (level.showInfo) {
 				val requestURI = call.request.path()
 				appendLine("REQUEST")
 				appendLine(call.request.origin.run { "${method.value} $scheme://$host:$port$requestURI $version" })
 			}
-			if (level.headers) {
+			if (level.showHeaders) {
 				appendLine("REQUEST HEADERS")
 				appendHeaders(call.request.headers)
 			}
-			if (level.body) {
+			if (level.showBody) {
 				appendLine()
 				appendLine("REQUEST BODY START")
 				appendLine(call.requestBody() ?: "<request body omitted>")
@@ -72,15 +72,15 @@ class ServerLogging(
 
 	private fun logResponse(call: ApplicationCall, subject: Any) {
 		logger.info(buildString {
-			if (level.info) {
+			if (level.showInfo) {
 				appendLine("RESPONSE")
 				appendLine("${call.request.httpVersion} ${call.response.status()}")
 			}
-			if (level.headers) {
+			if (level.showHeaders) {
 				appendLine("RESPONSE HEADERS")
 				appendHeaders(call.response.headers.allValues())
 			}
-			if (level.body) {
+			if (level.showBody) {
 				appendLine()
 				appendLine("RESPONSE BODY START")
 				appendLine((subject as OutgoingContent).asString() ?: "<response body omitted>")

@@ -1,14 +1,28 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
 import java.time.LocalTime
 
 data class QuickbookPerformance(
+	@JsonProperty("time")
 	val time: LocalTime,
-	val available: Boolean,
-	val booking_url: URI,
+
+	@JsonProperty("available")
+	val isAvailable: Boolean,
+
+	@JsonProperty("booking_url")
+	val bookingUrl: URI,
+
+	@JsonProperty("type")
 	val type: String,
-	val ad: Boolean,
-	val ss: Boolean,
-	val subtitled: Boolean
+
+	@JsonProperty("ad")
+	val isAudioDescribed: Boolean,
+
+	@JsonProperty("ss")
+	val isSuperScreen: Boolean,
+
+	@JsonProperty("subtitled")
+	val isSubtitled: Boolean,
 )

@@ -18,6 +18,10 @@ fun Test.allowUnsafe() {
 	// (org.apache.commons/commons-lang3/3.11/commons-lang3-3.11.jar)
 	// to field java.io.FileDescriptor.fd
 	addOpens("java.base/java.io")
+	// WARNING: Illegal reflective access using Lookup on org.neo4j.internal.unsafe.UnsafeUtil
+	// (org.neo4j/neo4j-unsafe/4.4.12/neo4j-unsafe-4.4.12.jar)
+	// to class java.nio.Buffer
+	addOpens("java.base/java.nio")
 	// WARNING: Illegal reflective access by com.shazam.shazamcrest.CyclicReferenceDetector
 	// (com.shazam/shazamcrest/0.11/shazamcrest-0.11.jar)
 	// to field java.time.OffsetDateTime.serialVersionUID

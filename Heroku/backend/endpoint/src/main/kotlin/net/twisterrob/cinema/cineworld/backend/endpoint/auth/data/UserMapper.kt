@@ -13,6 +13,6 @@ class UserMapper @Inject constructor(
 			name = user.name,
 			email = user.email,
 			realm = user.realm,
-			_created = user._created
+			created = user._created
 		)
 }

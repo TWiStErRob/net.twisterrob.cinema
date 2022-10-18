@@ -59,8 +59,7 @@ complexity:
 naming:
 
   BooleanPropertyNaming:
-    # Temporarily disable until serialization is reworked.
-    active: false
+    allowedPattern: ^(is|has|are|show|use)
 
   ConstructorParameterNaming:
     excludes:

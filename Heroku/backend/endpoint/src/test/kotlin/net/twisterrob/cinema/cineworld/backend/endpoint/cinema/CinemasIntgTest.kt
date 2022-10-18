@@ -217,15 +217,15 @@ fun serialized(cinema: Cinema): String =
 	// order intentionally switched up
 	"""
 		{
-			"class": "${cinema.`class`}",
+			"class": "${cinema.className}",
 			"name": "${cinema.name}",
 			"cineworldID": ${cinema.cineworldID},
 			"postcode": "${cinema.postcode}",
 			"telephone": "${cinema.telephone ?: "null"}",
-			"cinema_url": "${cinema.cinema_url}",
-			"_created": "${serialized(cinema._created)}",
-			"_updated": "${serialized(cinema._updated)}",
+			"cinema_url": "${cinema.cinemaUrl}",
+			"_created": "${serialized(cinema.created)}",
+			"_updated": "${serialized(cinema.updated)}",
 			"address": "${cinema.address}",
-			"fav": ${cinema.fav}
+			"fav": ${cinema.isFavorited}
 		}
 	""".trimIndent()

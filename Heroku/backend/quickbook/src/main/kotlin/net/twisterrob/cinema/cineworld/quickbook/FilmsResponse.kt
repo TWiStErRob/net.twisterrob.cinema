@@ -1,6 +1,12 @@
 package net.twisterrob.cinema.cineworld.quickbook
 
-internal data class FilmsResponse<T : QuickbookFilm>(
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+internal data class FilmsResponse<T : QuickbookFilm> @JsonCreator constructor(
+	@JsonProperty("films")
 	val films: List<T>,
-	override val errors: List<String>?
-):QuickbookErrors
+
+	@JsonProperty("errors")
+	override val errors: List<String>?,
+) : QuickbookErrors
