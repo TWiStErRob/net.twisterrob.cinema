@@ -1,5 +1,11 @@
 name: map
 on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'map/**'
+      - '.github/workflows/map.yml'
   pull_request:
     paths:
       - 'map/**'
