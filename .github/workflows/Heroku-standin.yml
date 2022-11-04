@@ -1,4 +1,4 @@
-name: Heroku
+name: Heroku standin
 on:
   - push:
       paths-ignore:
