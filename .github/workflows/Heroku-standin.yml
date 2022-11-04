@@ -1,12 +1,11 @@
 name: Heroku standin
 on:
-  - push:
-      paths-ignore:
-        - 'Heroku/**'
-        - '.github/workflows/Heroku.yml'
-  - push:
-      branches-ignore:
-        - 'master'
+  push:
+    paths-ignore:
+      - 'Heroku/**'
+      - '.github/workflows/Heroku.yml'
+    branches-ignore:
+      - 'master'
 concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-standin-master-{0}', github.sha) || format('ci-heroku-standin-{0}', github.ref) }}
   cancel-in-progress: true
