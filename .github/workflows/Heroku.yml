@@ -32,6 +32,9 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
       - name: Download Gradle running the build.
         working-directory: Heroku
         run: |
@@ -508,6 +511,9 @@ jobs:
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
 
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
