@@ -1,5 +1,5 @@
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
-name: map
+name: map standin
 on:
   pull_request:
     paths-ignore:
@@ -22,3 +22,12 @@ jobs:
     timeout-minutes: 1
     steps:
       - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
+
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          category: '.github/workflows/map.yml:detekt'
+          sarif_file: ${{ github.workspace }}/.github/workflows/empty-reports/detekt.sarif
