@@ -39,6 +39,6 @@
 		"url-loader": "4.1.1",
 		"file-loader": "6.2.0",
 		"jshint": "2.13.5",
-		"node-sass": "7.0.3"
+		"node-sass": "8.0.0"
 	}
 }
