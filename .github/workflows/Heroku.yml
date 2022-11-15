@@ -424,7 +424,8 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: "action_required",
+              // Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
+            	conclusion: "neutral",
             	output: {
             		title: "Dependency Change Report",
             		summary: `
