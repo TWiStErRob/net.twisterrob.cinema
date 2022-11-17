@@ -495,7 +495,8 @@ jobs:
             	sha: context.sha,
             	context: "Heroku / Dependency Review",
             	description: "Review dependency changes!",
-            	state: "pending",
+              // Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
+            	state: "success",
             	target_url: check.data.html_url,
             });
 
