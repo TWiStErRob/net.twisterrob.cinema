@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.KotlinClosure2
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
-@Suppress("ComplexMethod", "FunctionMaxLength")
+@Suppress("ComplexMethod", "FunctionMaxLength", "CognitiveComplexMethod")
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
 		// disable all events, output handled by custom callbacks below

@@ -64,7 +64,7 @@ class AuthController @Inject constructor(
 	/**
 	 * @see Auth.Routes
 	 */
-	@Suppress("LongMethod") // It's a collection of small methods without shared scope.
+	@Suppress("LongMethod", "CognitiveComplexMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
 		intercept(ApplicationCallPipeline.Plugins) {
 			val session: AuthSession? = call.sessions.get()
