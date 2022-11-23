@@ -7,6 +7,8 @@ build/
 /*/src/test/resources/log4j2.xml
 /backend/*/src/main/resources/log4j2.xml
 /backend/*/src/test/resources/log4j2.xml
+/deploy/*/src/main/resources/log4j2.xml
+/deploy/*/src/test/resources/log4j2.xml
 
 # Node JS, NPM, WebPack
 node_modules/
