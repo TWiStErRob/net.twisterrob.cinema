@@ -16,8 +16,8 @@
 		}
 	],
 	"env": {
-		"HEROKU_ENV": {
-			"description": "Simple environment variable to detect running on Heroku. See https://stackoverflow.com/a/19734302/253468.",
+		"CLOUD_ENV": {
+			"description": "Simple environment variable to detect running in the Cloud. See https://stackoverflow.com/a/19734302/253468.",
 			"value": "1"
 		},
 		"NEO4J_URL": {

@@ -13,7 +13,7 @@ eval "$(ssh-agent -s)"
 # > This private key will be ignored.
 # Note running this script on WSL might require additional setup:  https://stackoverflow.com/a/50856772/253468
 # `[automount]\noptions="metadata"` in /etc/wsl.conf, and then `wsl --shutdown` from cmd.
-if [ "$HEROKU_ENV" == "1" ]; then
+if [ "$CLOUD_ENV" == "1" ]; then
   echo "$SYNC_KEY" > sync-key.private
 fi
 chmod --verbose 600 sync-key.private
@@ -43,6 +43,6 @@ git add .
 git config user.email "heroku-scheduler+sync@twisterrob.net"
 git config user.name "Heroku Scheduler"
 git commit -m "Heroku Scheduler: Sync"
-if [ "$HEROKU_ENV" == "1" ]; then
+if [ "$CLOUD_ENV" == "1" ]; then
   git push
 fi
