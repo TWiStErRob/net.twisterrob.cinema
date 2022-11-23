@@ -13,32 +13,44 @@ jobs:
     timeout-minutes: 20
     env:
       REF_TO_RELEASE: ${{ github.ref }}
+    permissions:
+      contents: read  # This is required for actions/checkout.
+      # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
+      id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
       - name: Checkout ${{ env.REF_TO_RELEASE }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ env.REF_TO_RELEASE }}
 
-      - name: Validate Gradle Wrapper JARs.
-        uses: gradle/wrapper-validation-action@v1
+      - name: Authenticate to Google Cloud.
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.GAE_WIP }}
+          service_account: ${{ secrets.GAE_SA }}
 
-      - name: Build Frontend
-        working-directory: Heroku
-        env:
-          NODE_ENV: production
-          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
-          NPM_CONFIG_PRODUCTION: false
-        run: |
-          npm install
-          cd frontend
-          npm run build:prod
+#      - name: Validate Gradle Wrapper JARs.
+#        uses: gradle/wrapper-validation-action@v1
+#
+#      - name: Build Frontend
+#        working-directory: Heroku
+#        env:
+#          NODE_ENV: production
+#          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
+#          NPM_CONFIG_PRODUCTION: false
+#        run: |
+#          npm install
+#          cd frontend
+#          npm run build:prod
 
-      - name: Build Backend
-        working-directory: Heroku
-        run: |
-          ./gradlew :backend:endpoint:jar
+#      - name: Build Backend
+#        working-directory: Heroku
+#        run: |
+#          ./gradlew :backend:endpoint:jar
 
       - name: Publish
         working-directory: Heroku
+        env:
+          GCLOUD_HOME: /usr/lib/google-cloud-sdk
         run: |
           ./gradlew :deploy:appengine:appengineDeploy

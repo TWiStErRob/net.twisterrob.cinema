@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-	implementation(projects.backend.endpoint)
+	//implementation(projects.backend.endpoint)
 }
 
 val copyJarDependencies = tasks.register<Copy>("copyJarDependencies") {
@@ -26,12 +26,12 @@ appengine {
 	stage {
 		setExtraFilesDirectories(
 			listOf(
-				copyJarDependencies,
+//				copyJarDependencies,
 				"src/main/appengine",
 			)
 		)
 		// TODEL https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/435
-		tasks.named("appengineStage").configure { dependsOn(copyJarDependencies) }
+//		tasks.named("appengineStage").configure { dependsOn(copyJarDependencies) }
 	}
 	deploy {
 		projectId = "twisterrob-cinema"
