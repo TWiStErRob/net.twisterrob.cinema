@@ -1,1 +1,8 @@
+# https://cloud.google.com/appengine/docs/standard/reference/app-yaml?tab=java
+
+env: standard
 runtime: java17
+automatic_scaling:
+  max_instances: 1
+
+entrypoint: java -Xmx64M -jar twisterrob-cinema-backend-endpoint.jar

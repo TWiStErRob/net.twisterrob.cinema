@@ -30,6 +30,10 @@
 
 ## Deployment
 
+Deployment is done via `:deploy:appengine` Gradle module.
+ * `gradlew :deploy:appengine:appengineStage` will build everything into `deploy/appengine/build/staged-app` folder.
+ * `gradlew :deploy:appengine:appengineDeploy` will upload the staged files to Google App Engine.
+
 [Automatic deploys](https://devcenter.heroku.com/articles/github-integration#automatic-deploys) are [enabled](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-automatic-deploys) in Heroku from GitHub.
 Push code to deploy to `origin/heroku` branch, or execute "Release to Heroku from master" workflow from GitHub Actions.
 For custom manual deployment visit [Manual Deploy on Heroku](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-manual-deploy).
