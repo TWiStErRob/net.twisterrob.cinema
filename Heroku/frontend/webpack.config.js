@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://gith
 const path = require('path');
 
 module.exports = (env, argv) => {
-	const dist = path.resolve(__dirname, '..', 'deploy');
+	const dist = path.resolve(__dirname, '..', 'deploy', 'frontend');
 	console.log(`Running in mode: ${argv.mode}; deploying to ${dist}.`);
 	const devMode = argv.mode === 'development';
 	return {

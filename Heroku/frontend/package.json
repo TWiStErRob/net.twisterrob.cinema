@@ -10,7 +10,7 @@
 		"build:prod": "webpack --config webpack.config.js --mode=production --progress",
 		"build:dev": "webpack --config webpack.config.js --mode=development --progress",
 		"start": "webpack --config webpack.config.js --mode=development --watch",
-		"dev-server": "webpack-dev-server --config webpack.config.js --mode=development --progress --colors --port 2992 --inline --content-base ../deploy/static",
+		"dev-server": "webpack-dev-server --config webpack.config.js --mode=development --progress --colors --port 2992 --inline --content-base ../deploy/frontend/static",
 		"test": "npm run test:jshint",
 		"test:jshint": "jshint --verbose --show-non-errors src/planner/scripts"
 	},

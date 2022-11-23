@@ -13,13 +13,13 @@
 
 ### Running
 
-`frontend` continuously builds into `deploy` via `npm start`
-`backend` serves from `deploy` via `npm start`
+`frontend` continuously builds into `deploy/frontend` via `npm start`
+`backend` serves from `deploy/frontend` via `npm start`
 `test` contains UI tests, [README.md](test/README.md) for more.
 
 ### Entry points
 
- * [:backend:endpoint Main.kt](backend/endpoint/src/main/kotlin/net/twisterrob/cinema/cineworld/backend/Main.kt): web server; backend for planner, serving deploy folder as content
+ * [:backend:endpoint Main.kt](backend/endpoint/src/main/kotlin/net/twisterrob/cinema/cineworld/backend/Main.kt): web server; `backend` for planner, serving `deploy/frontend` folder as content
  * `frontend/src/planner/pages/index.html`: root of planner page
  * `frontend/src/planner/scripts/index.js`: root of planner webapp logic
  * [:backend:sync Main.kt](backend/sync/src/main/kotlin/net/twisterrob/cinema/cineworld/sync/Main.kt): scheduled updater for database

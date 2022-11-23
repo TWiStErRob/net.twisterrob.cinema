@@ -30,7 +30,7 @@ package-lock.json
 # Temporary outputs
 
 # Output of `npm run build` in frontend/, configured in webpack.config.js > `dist`.
-/deploy/static/
+/deploy/frontend/static/
 
 # `gradlew ... --write-locks` output.
 /gradle/dependency-locks/*.lockfile
