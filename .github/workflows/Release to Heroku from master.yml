@@ -41,4 +41,4 @@ jobs:
       - name: Publish
         working-directory: Heroku
         run: |
-          ./gradlew :backend:appengine:appengineDeploy
+          ./gradlew :deploy:appengine:appengineDeploy
