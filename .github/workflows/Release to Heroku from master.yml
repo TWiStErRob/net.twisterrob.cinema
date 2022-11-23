@@ -1,31 +1,44 @@
-name: Release to Heroku from master
+name: Release to Google App Engine
 on:
   workflow_dispatch:
     inputs:
       reason:
         description: 'Reason for release'
         required: false
-        default: 'Publish latest changes from master'
+        default: 'Publish latest changes'
 jobs:
   release:
-    name: Release to heroku branch (${{ github.event.inputs.reason }})
-    # Doesn't matter which one, simple git commands only.
+    name: Release to Google App Engine (${{ github.event.inputs.reason }})
     runs-on: ubuntu-latest
-    # Simple fast-forward merge, shouldn't take long.
-    timeout-minutes: 1
+    timeout-minutes: 20
     env:
-      HEROKU_BRANCH: 'heroku'
-      RELEASE_BRANCH: 'master'
+      REF_TO_RELEASE: ${{ github.ref }}
     steps:
-      - name: Checkout ${{ env.HEROKU_BRANCH }} branch in ${{ github.repository }} repository.
+      - name: Checkout ${{ env.REF_TO_RELEASE }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.HEROKU_BRANCH }}
+          ref: ${{ env.REF_TO_RELEASE }}
 
-      - name: Merge ${{ env.RELEASE_BRANCH }} into ${{ env.HEROKU_BRANCH }}.
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Build Frontend
+        working-directory: Heroku
+        env:
+          NODE_ENV: production
+          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
+          NPM_CONFIG_PRODUCTION: false
         run: |
-          git fetch origin ${{ env.RELEASE_BRANCH }}
-          git merge --ff-only origin/${{ env.RELEASE_BRANCH }}
+          npm install
+          cd frontend
+          npm run build:prod
 
-      - name: Publish ${{ env.HEROKU_BRANCH }} to GitHub.
-        run: git push origin ${{ env.HEROKU_BRANCH }}:${{ env.HEROKU_BRANCH }}
+      - name: Build Backend
+        working-directory: Heroku
+        run: |
+          ./gradlew :backend:endpoint:jar
+
+      - name: Publish
+        working-directory: Heroku
+        run: |
+          ./gradlew :backend:appengine:appengineDeploy
