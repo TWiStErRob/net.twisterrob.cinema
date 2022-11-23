@@ -1,7 +1,7 @@
 {
 	"name": "twisterrob-cinema",
 	"description": "Cineworld Unlimited planner",
-	"website": "http://cinema.twisterrob.net",
+	"website": "https://cinema.twisterrob.net",
 	"repository": "https://github.com/TWiStErRob/net.twisterrob.cinema/tree/master/Heroku",
 	"stack": "heroku-20",
 	"buildpacks": [
