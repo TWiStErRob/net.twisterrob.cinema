@@ -36,7 +36,10 @@ jobs:
             const ref = process.env.REF_TO_RELEASE
             const ver = ref == 'refs/heads/master'
               ? 'master'
-              : ref.replace('refs/heads/', 'pr-')
+              // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
+              // May only contain lowercase letters, digits, and hyphens.
+              // Must begin and end with a letter or digit. Must not exceed 63 characters.
+              : ref.replace('refs/heads/', 'pr-').replace(/[^a-z0-9-]/g, '-')
             core.exportVariable('RELEASE_VERSION', ver)
         # output: env.RELEASE_VERSION
 
