@@ -1,5 +1,6 @@
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 plugins {
 	id("java-library")
@@ -55,9 +56,15 @@ appengine {
 	}
 	deploy {
 		projectId = "twisterrob-cinema"
-		version = OffsetDateTime.now(ZoneOffset.UTC).toString()
-		val replaceLive = rootProject.property("net.twisterrob.build.appengineReplaceLive").toString().toBoolean()
-		promote = replaceLive
-		stopPreviousVersion = replaceLive
+		val baseName = OffsetDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+		version = baseName + (if (deployName != null) "-${deployName}" else "")
+		promote = deployReplaceLive
+		stopPreviousVersion = deployReplaceLive
 	}
 }
+
+private val Project.deployReplaceLive: Boolean
+	get() = property("net.twisterrob.build.deployReplaceLive").toString().toBoolean()
+
+private val Project.deployName: String?
+	get() = property("net.twisterrob.build.deployName").toString().takeIf { it.isNotBlank() }

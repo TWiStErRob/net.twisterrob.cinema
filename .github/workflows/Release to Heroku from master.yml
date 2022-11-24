@@ -1,11 +1,22 @@
 name: Release to Google App Engine
 on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       reason:
         description: 'Reason for release'
         required: false
         default: 'Publish latest changes'
+      production:
+        description: 'Deploy to production?'
+        required: true
+        default: false
+        type: boolean
 jobs:
   release:
     name: Release to Google App Engine (${{ github.event.inputs.reason }})
@@ -13,11 +24,22 @@ jobs:
     timeout-minutes: 20
     env:
       REF_TO_RELEASE: ${{ github.ref }}
+      RELEASE_TO_PRODUCTION: ${{ github.event.inputs.production || env.REF_TO_RELEASE == 'refs/heads/master' }}
     permissions:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const ref = process.env.REF_TO_RELEASE
+            const ver = ref == 'refs/heads/master'
+              ? 'master'
+              : ref.replace('refs/heads/', 'pr-')
+            core.exportVariable('RELEASE_VERSION', ver)
+        # output: env.RELEASE_VERSION
+
       - name: Checkout ${{ env.REF_TO_RELEASE }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
@@ -57,4 +79,5 @@ jobs:
         run: >
           ./gradlew
           :deploy:appengine:appengineDeploy
-          -Pnet.twisterrob.build.appengineReplaceLive=true
+          -Pnet.twisterrob.build.deployReplaceLive=${{ env.RELEASE_TO_PRODUCTION }}
+          -Pnet.twisterrob.build.deployName=${{ env.RELEASE_VERSION }}
