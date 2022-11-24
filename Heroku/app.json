@@ -4,10 +4,6 @@
 			"description": "Simple environment variable to detect running in the Cloud. See https://stackoverflow.com/a/19734302/253468.",
 			"value": "1"
 		},
-		"NEO4J_URL": {
-			"description": "Used by endpoint and sync. URL of the Neo4J graph database server, including authentication details. e.g. neo4j+s://user:pass@host:1234",
-			"generator": "secret"
-		},
 		"SYNC_KEY": {
 			"description": "Used by sync (when running via heroku-scheduler-sync.sh). Private part of the Deploy Key used for GitHub",
 			"generator": "secret"

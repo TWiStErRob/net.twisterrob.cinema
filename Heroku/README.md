@@ -41,9 +41,6 @@ For custom manual deployment visit [Manual Deploy on Heroku](https://dashboard.h
 Manage the app at [Heroku settings](https://dashboard.heroku.com/apps/twisterrob-cinema/settings).
 See [Heroku App Manifest](app.json) ([docs](https://devcenter.heroku.com/articles/app-json-schema)) for more info on what environment is running the app.
 
-### GitHub Actions authentication
-https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions
-
 ## Debug Production
 
 1. Redirect localhost:

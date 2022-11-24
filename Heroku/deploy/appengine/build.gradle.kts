@@ -8,6 +8,17 @@ dependencies {
 	implementation(projects.backend.endpoint)
 }
 
+val copyAppengineResources = tasks.register<ProcessResources>("copyAppengineResources") {
+	from(file("src/main/appengine"))
+	filesMatching(listOf("**/app.yaml")) {
+		val replacements = mapOf(
+			"NEO4J_URL" to System.getenv("NEO4J_URL"),
+		)
+		filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
+	}
+	into(layout.buildDirectory.dir("stage-prep/appengine"))
+}
+
 val copyJarDependencies = tasks.register<Copy>("copyJarDependencies") {
 	from(configurations.runtimeClasspath)
 	into(layout.buildDirectory.dir("stage-prep/dependencies"))
@@ -29,16 +40,15 @@ appengine {
 	// TODEL https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/393
 	tasks.jar.get()
 	stage {
-		setExtraFilesDirectories(
-			listOf(
-				"src/main/appengine",
-				copyJarDependencies,
-				copyFrontendResources,
-			)
+		setAppEngineDirectory(file(copyAppengineResources.get().destinationDir))
+		val extraTasks = listOf(
+			copyAppengineResources,
+			copyJarDependencies,
+			copyFrontendResources,
 		)
+		setExtraFilesDirectories(extraTasks) // Careful, this will eagerly resolve the output dirs.
 		// TODEL https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/435
-		tasks.named("appengineStage").configure { dependsOn(copyJarDependencies) }
-		tasks.named("appengineStage").configure { dependsOn(copyFrontendResources) }
+		tasks.named("appengineStage").configure { dependsOn(extraTasks) }
 	}
 	deploy {
 		projectId = "twisterrob-cinema"

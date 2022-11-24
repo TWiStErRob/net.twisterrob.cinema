@@ -53,5 +53,6 @@ jobs:
         working-directory: Heroku
         env:
           GCLOUD_HOME: /usr/lib/google-cloud-sdk
+          NEO4J_URL: ${{ secrets.NEO4J_URL }}
         run: |
           ./gradlew :deploy:appengine:appengineDeploy
