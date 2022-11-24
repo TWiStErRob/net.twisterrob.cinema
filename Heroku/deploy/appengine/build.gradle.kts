@@ -1,3 +1,6 @@
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+
 plugins {
 	id("java-library")
 	// https://github.com/GoogleCloudPlatform/app-gradle-plugin/blob/master/USER_GUIDE.md#app-engine-appyaml-based-projects
@@ -52,6 +55,9 @@ appengine {
 	}
 	deploy {
 		projectId = "twisterrob-cinema"
-		version = "2"
+		version = OffsetDateTime.now(ZoneOffset.UTC).toString()
+		val replaceLive = rootProject.property("net.twisterrob.build.appengineReplaceLive").toString().toBoolean()
+		promote = replaceLive
+		stopPreviousVersion = replaceLive
 	}
 }
