@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 20
     env:
       REF_TO_RELEASE: ${{ github.ref }}
-      RELEASE_TO_PRODUCTION: ${{ github.event.inputs.production || env.REF_TO_RELEASE == 'refs/heads/master' }}
+      RELEASE_TO_PRODUCTION: ${{ github.event.inputs.production || github.ref == 'refs/heads/master' }}
     permissions:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
