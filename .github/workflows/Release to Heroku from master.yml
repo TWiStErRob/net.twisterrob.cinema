@@ -25,7 +25,6 @@ jobs:
 
       - name: Authenticate to Google Cloud.
         uses: google-github-actions/auth@v1
-        working-directory: Heroku
         with:
           workload_identity_provider: ${{ secrets.GAE_WIP }}
           service_account: ${{ secrets.GAE_SA }}
