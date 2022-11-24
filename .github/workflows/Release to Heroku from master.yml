@@ -48,16 +48,22 @@ jobs:
         with:
           ref: ${{ env.REF_TO_RELEASE }}
 
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
       - name: Authenticate to Google Cloud.
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{ secrets.GAE_WIP }}
           service_account: ${{ secrets.GAE_SA }}
+      - name: Print tooling versions.
+        run: |
+          node -v
+          npm -v
+          java -version
+          gcloud --version
 
-      - name: Validate Gradle Wrapper JARs.
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Build Frontend
+      - name: Build Frontend.
         working-directory: Heroku
         env:
           NODE_ENV: production
@@ -68,16 +74,18 @@ jobs:
           cd frontend
           npm run build:prod
 
-      - name: Build Backend
+      - name: Build Backend.
         working-directory: Heroku
         run: >
           ./gradlew
           :backend:endpoint:jar
 
-      - name: Publish
+      - name: Publish ${{ env.RELEASE_VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }}.
         working-directory: Heroku
         env:
+          # Use pre-existing SDK, don't download a new one.
           GCLOUD_HOME: /usr/lib/google-cloud-sdk
+          # Will be propagated to app.yml
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
         run: >
           ./gradlew

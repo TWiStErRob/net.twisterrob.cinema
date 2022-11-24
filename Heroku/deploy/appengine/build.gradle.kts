@@ -63,8 +63,8 @@ appengine {
 	}
 }
 
-private val Project.deployReplaceLive: Boolean
+val Project.deployReplaceLive: Boolean
 	get() = property("net.twisterrob.build.deployReplaceLive").toString().toBoolean()
 
-private val Project.deployName: String?
+val Project.deployName: String?
 	get() = property("net.twisterrob.build.deployName").toString().takeIf { it.isNotBlank() }
