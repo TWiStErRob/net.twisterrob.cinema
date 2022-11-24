@@ -25,28 +25,29 @@ jobs:
 
       - name: Authenticate to Google Cloud.
         uses: google-github-actions/auth@v1
+        working-directory: Heroku
         with:
           workload_identity_provider: ${{ secrets.GAE_WIP }}
           service_account: ${{ secrets.GAE_SA }}
 
-#      - name: Validate Gradle Wrapper JARs.
-#        uses: gradle/wrapper-validation-action@v1
-#
-#      - name: Build Frontend
-#        working-directory: Heroku
-#        env:
-#          NODE_ENV: production
-#          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
-#          NPM_CONFIG_PRODUCTION: false
-#        run: |
-#          npm install
-#          cd frontend
-#          npm run build:prod
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
 
-#      - name: Build Backend
-#        working-directory: Heroku
-#        run: |
-#          ./gradlew :backend:endpoint:jar
+      - name: Build Frontend
+        working-directory: Heroku
+        env:
+          NODE_ENV: production
+          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
+          NPM_CONFIG_PRODUCTION: false
+        run: |
+          npm install
+          cd frontend
+          npm run build:prod
+
+      - name: Build Backend
+        working-directory: Heroku
+        run: |
+          ./gradlew :backend:endpoint:jar
 
       - name: Publish
         working-directory: Heroku
