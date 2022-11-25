@@ -68,4 +68,4 @@ val Project.deployReplaceLive: Boolean
 	get() = property("net.twisterrob.build.deployReplaceLive").toString().toBoolean()
 
 val Project.deployName: String?
-	get() = property("net.twisterrob.build.deployName").toString().takeIf { it.isNotBlank() }
+	get() = property("net.twisterrob.build.deployName").toString().takeIf { it != "release" }

@@ -38,7 +38,7 @@ jobs:
           script: |
             return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
-              ? ''
+              ? 'release'
               : context.ref
                 // refs/heads/master from workflow_dispatch and push events.
                 .replace('refs/heads/', 'br-')
