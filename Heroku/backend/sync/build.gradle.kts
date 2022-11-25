@@ -11,7 +11,7 @@ application {
 	mainClass.set("net.twisterrob.cinema.cineworld.sync.Main")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
-			if (property("net.twisterrob.run.verboseSync").toString().toBoolean())
+			if (project.property("net.twisterrob.run.verboseSync").toString().toBoolean())
 				"-Dlog4j.configurationFile=log4j2.xml"
 			else
 				"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
