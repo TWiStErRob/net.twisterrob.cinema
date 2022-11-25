@@ -2,6 +2,17 @@
 set -e
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
+# Inputs
+
+# Fully built project, see cloud-sync.sh.
+
+# Simple environment variable to detect running in the Cloud. See https://stackoverflow.com/a/19734302/253468.",
+# CLOUD_ENV=1|0
+
+# Private part of the Deploy Key used for GitHub
+# SYNC_KEY=-----BEGIN OPENSSH PRIVATE KEY-----...
+
+
 # Set up GitHub authentication.
 eval "$(ssh-agent -s)"
 # Need to make sure no-one else can access this file, otherwise the following error comes from `ssh-add`:
@@ -35,7 +46,7 @@ rm --verbose --force build/sync/weekly_film_times_ie.xml
 rm --verbose --force build/sync/weekly_film_times.log
 
 # Execute sync.
-("${SCRIPT_DIR}/heroku-scheduler-sync.sh" || true) | tee build/sync/weekly_film_times.log
+("${SCRIPT_DIR}/cloud-sync.sh" || true) | tee build/sync/weekly_film_times.log
 
 # Save and publish execution output.
 cd build/sync
