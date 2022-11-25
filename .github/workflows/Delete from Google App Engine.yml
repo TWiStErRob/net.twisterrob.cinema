@@ -32,6 +32,8 @@ jobs:
         with:
           script: |
             return process.env.BRANCH_TO_DELETE
+              // on:delete's ref is just the name, so polyfill with prefix to be consistent for next steps.
+              .replace(/^(?!refs\/)/, 'refs/heads/')
               // refs/heads/master
               .replace('refs/heads/', 'br-')
               // refs/pull/123/merge
