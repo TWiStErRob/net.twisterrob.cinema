@@ -10,7 +10,7 @@ jobs:
     # Doesn't matter which one, simple git commands only.
     runs-on: ubuntu-latest
     # Simple fast-forward merge, shouldn't take long.
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
       HISTORY_DIR: Heroku/backend/sync/build/sync
@@ -25,7 +25,7 @@ jobs:
           path: ${{ env.HISTORY_DIR }}
           ssh-key: ${{ secrets.HISTORY_REPO_DEPLOY_KEY }}
 
-      - name: Clean up workspace
+      - name: Clean up workspace in ${{ env.HISTORY_DIR }}.
         working-directory: ${{ env.HISTORY_DIR }}
         run: |
           rm --verbose --force weekly_film_times.xml
@@ -40,12 +40,14 @@ jobs:
           ./gradlew
           :backend:sync:run
           --args "cinemas films performances"
-          | tee ${{ env.HISTORY_DIR }}/weekly_film_times.log
+          2>&1 | tee ${{ env.HISTORY_DIR }}/weekly_film_times.log
 
       - name: Save changes to history.
         working-directory: ${{ env.HISTORY_DIR }}
+        if: success() || failure()
         run: |
           git add .
+          git status
           git config user.email "github-scheduler+sync@twisterrob.net"
           git config user.name "GitHub Scheduler"
           git commit -m "GitHub Scheduler: Sync"
