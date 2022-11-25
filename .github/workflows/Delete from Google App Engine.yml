@@ -32,7 +32,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            process.env.BRANCH_TO_DELETE
+            return process.env.BRANCH_TO_DELETE
               // refs/heads/master
               .replace('refs/heads/', 'h')
               // refs/pull/123/merge
