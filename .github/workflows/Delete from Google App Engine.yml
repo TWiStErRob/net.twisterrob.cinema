@@ -33,9 +33,9 @@ jobs:
           script: |
             return process.env.BRANCH_TO_DELETE
               // refs/heads/master
-              .replace('refs/heads/', 'h')
+              .replace('refs/heads/', 'br-')
               // refs/pull/123/merge
-              .replace('refs/pull/', 'pr')
+              .replace('refs/pull/', 'pr-')
               // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
               // May only contain lowercase letters, digits, and hyphens.
               // Must begin and end with a letter or digit. Must not exceed 63 characters.
