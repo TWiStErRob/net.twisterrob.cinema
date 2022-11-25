@@ -41,9 +41,11 @@ On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` 
 
 Push code to deploy to `origin/release` branch, or execute "Release from master" workflow from GitHub Actions.
 
-All deployments are visible at https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema
+All deployments are visible at [Google Cloud Console - Versions](https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema).
 
 Manage the app at [Google Cloud Dashboard](https://console.cloud.google.com/appengine?project=twisterrob-cinema).
+
+In domain: `cinema CNAME ghs.googlehosted.com.`
 
 ## Debug Production
 

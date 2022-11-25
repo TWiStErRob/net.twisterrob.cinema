@@ -32,21 +32,16 @@ jobs:
           rm --verbose --force weekly_film_times_ie.xml
           rm --verbose --force weekly_film_times.log
       
-      - name: Debug
-        run: ls -la ${{ env.HISTORY_DIR }}
-
       - name: Build and Run Sync.
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
         working-directory: Heroku
+        # HISTORY_DIR is absolute, `tee` needs a relative path.
         run: >
           ./gradlew
           :backend:sync:run
           --args "cinemas films performances"
-          2>&1 | tee ${{ env.HISTORY_DIR }}/weekly_film_times.log
-
-      - name: Debug
-        run: ls -la ${{ env.HISTORY_DIR }}
+          2>&1 | tee backend/sync/build/sync/weekly_film_times.log
 
       - name: Save changes to history.
         working-directory: ${{ env.HISTORY_DIR }}
@@ -58,10 +53,3 @@ jobs:
           git config user.name "GitHub Scheduler"
           git commit -m "GitHub Scheduler: Sync"
           git push
-
-      - name: Upload "DEBUG".
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: DEBUG
-          path: ${{ github.workspace }}

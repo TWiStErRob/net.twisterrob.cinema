@@ -1,4 +1,4 @@
-name: Release from branch
+name: Release from master
 on:
   workflow_dispatch:
     inputs:
