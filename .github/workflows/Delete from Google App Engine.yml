@@ -11,9 +11,6 @@ jobs:
     name: Delete from Google App Engine
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      BRANCH_TO_DELETE: >
-        ${{ fromJSON('{"pull_request": github.ref, "workflow_dispatch": github.ref, "delete": github.event.ref}')[github.event_name] }}
     # Only trigger when deleting branches, or any other event type.
     if: github.event_name != 'delete' || github.event.ref_type == 'branch'
     permissions:
@@ -30,6 +27,8 @@ jobs:
       - name: Determine Google App Engine version name.
         id: name
         uses: actions/github-script@v6
+        env:
+          BRANCH_TO_DELETE: ${{ github.event.ref }}
         with:
           script: |
             return process.env.BRANCH_TO_DELETE
