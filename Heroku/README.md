@@ -34,12 +34,16 @@ Deployment is done via `:deploy:appengine` Gradle module.
  * `gradlew :deploy:appengine:appengineStage` will build everything into `deploy/appengine/build/staged-app` folder.
  * `gradlew :deploy:appengine:appengineDeploy` will upload the staged files to Google App Engine.
 
-[Automatic deploys](https://devcenter.heroku.com/articles/github-integration#automatic-deploys) are [enabled](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-automatic-deploys) in Heroku from GitHub.
-Push code to deploy to `origin/heroku` branch, or execute "Release to Heroku from master" workflow from GitHub Actions.
-For custom manual deployment visit [Manual Deploy on Heroku](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-manual-deploy).
+On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` workflow:
+ * Every branch is deployable with [manual dispatch](https://github.com/TWiStErRob/net.twisterrob.cinema/actions/workflows/Deploy%20to%20Google%20App%20Engine.yml).
+ * Every PR is automatically deployed to a unique URL.
+ * Every push to `release` branch is automatically deployed to production.
 
-Manage the app at [Heroku settings](https://dashboard.heroku.com/apps/twisterrob-cinema/settings).
-See [Heroku App Manifest](app.json) ([docs](https://devcenter.heroku.com/articles/app-json-schema)) for more info on what environment is running the app.
+Push code to deploy to `origin/release` branch, or execute "Release from master" workflow from GitHub Actions.
+
+All deployments are visible at https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema
+
+Manage the app at [Google Cloud Dashboard](https://console.cloud.google.com/appengine?project=twisterrob-cinema).
 
 ## Debug Production
 

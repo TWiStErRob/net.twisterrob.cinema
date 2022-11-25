@@ -1,4 +1,4 @@
-name: Release to Google App Engine
+name: Deploy to Google App Engine
 on:
   pull_request:
   push:
