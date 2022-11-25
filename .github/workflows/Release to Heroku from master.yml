@@ -23,6 +23,7 @@ jobs:
         with:
           repository: ${{ env.HISTORY_REPO }}
           path: ${{ env.HISTORY_DIR }}
+          ssh-key: ${{ secrets.HISTORY_REPO_DEPLOY_KEY }}
 
       - name: Clean up workspace
         working-directory: ${{ env.HISTORY_DIR }}
