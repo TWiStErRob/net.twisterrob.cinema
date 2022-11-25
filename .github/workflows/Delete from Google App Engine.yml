@@ -6,7 +6,7 @@ on:
     # branches
   workflow_dispatch:
     # no inputs
-jobs:
+jobs: # x
   release:
     name: Delete from Google App Engine
     runs-on: ubuntu-latest
