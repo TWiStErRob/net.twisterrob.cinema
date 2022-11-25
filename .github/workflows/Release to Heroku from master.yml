@@ -19,9 +19,8 @@ jobs:
   release:
     name: Release to Google App Engine (${{ inputs.reason || '<automatic>' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
-      REF_TO_RELEASE: ${{ github.ref }}
       # Convert input toJSON, because in GitHub Actions: false == null == ''.
       # Convert ternary true part toJSON, to make sure || is not trying to interpret it (toJSON(false) -> 'false' will be truthy).
       RELEASE_TO_PRODUCTION: ${{ toJSON(inputs.production) == 'null' && toJSON(github.ref == 'refs/heads/release') || inputs.production }}
@@ -33,55 +32,25 @@ jobs:
       - name: Determine Google App Engine version name.
         id: name
         uses: actions/github-script@v6
+        env:
+          INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
         with:
           script: |
-            return ${{ env.RELEASE_TO_PRODUCTION }}
+            return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
               ? ''
-              : process.env.REF_TO_RELEASE
-                // refs/heads/master
-                .replace('refs/heads/', 'h')
-                // refs/pull/123/merge
-                .replace('refs/pull/', 'pr')
+              : context.ref
+                // refs/heads/master from workflow_dispatch and push events.
+                .replace('refs/heads/', 'br-')
+                // refs/pull/123/merge from pull_request event.
+                .replace('refs/pull/', 'pr-')
                 // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
                 // May only contain lowercase letters, digits, and hyphens.
                 // Must begin and end with a letter or digit. Must not exceed 63 characters.
                 .replace(/[^a-z0-9-]/g, '-')
 
-      - name: Parameters
-        env:
-          inputs: ${{ toJSON(inputs) }}
-        run: |
-          echo 'github.ref: "${{ github.ref }}"'
-          echo 'REF_TO_RELEASE: "${{ env.REF_TO_RELEASE }}"'
-          echo 'fallback: ${{ 'false' || 'foo' }}'
-          echo 'bang false: ${{ !!'false' }}'
-          echo 'bang true: ${{ !!'true' }}'
-          echo 'bang empty: ${{ !!'' }}'
-          echo 'bang null: ${{ !!null }}'
-          echo 'inputs.production val: "${{ inputs.production }}"'
-          echo 'inputs.production null: "${{ inputs.production == null }}"'
-          echo 'inputs.production empty: "${{ inputs.production == '' }}"'
-          echo 'inputs.production true: "${{ inputs.production == true }}"'
-          echo 'inputs.production false: "${{ inputs.production == false }}"'
-          echo 'inputs.production "true": "${{ inputs.production == 'true' }}"'
-          echo 'inputs.production "false": "${{ inputs.production == 'false' }}"'
-          echo 'toJSON(inputs.production) val: "${{ toJSON(inputs.production) }}"'
-          echo 'toJSON(inputs.production) null: "${{ toJSON(inputs.production) == null }}"'
-          echo 'toJSON(inputs.production) empty: "${{ toJSON(inputs.production) == '' }}"'
-          echo 'toJSON(inputs.production) true: "${{ toJSON(inputs.production) == true }}"'
-          echo 'toJSON(inputs.production) false: "${{ toJSON(inputs.production) == false }}"'
-          echo 'toJSON(inputs.production) "true": "${{ toJSON(inputs.production) == 'true' }}"'
-          echo 'toJSON(inputs.production) "false": "${{ toJSON(inputs.production) == 'false' }}"'
-          echo 'RELEASE_TO_PRODUCTION: "${{ env.RELEASE_TO_PRODUCTION }}"'
-          echo 'RELEASE_VERSION: "${{ steps.name.outputs.result  }}"'
-          echo 'expr: ${{ inputs.production == '' && github.ref == 'refs/heads/fix259_hosting' || !!inputs.production }}'
-          echo "inputs: $inputs"
-
-      - name: Checkout ${{ env.REF_TO_RELEASE }} branch in ${{ github.repository }} repository.
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
-        with:
-          ref: ${{ env.REF_TO_RELEASE }}
 
       - name: Validate Gradle Wrapper JARs.
         uses: gradle/wrapper-validation-action@v1
