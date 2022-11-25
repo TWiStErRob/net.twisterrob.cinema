@@ -30,19 +30,24 @@ jobs:
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
-      - uses: actions/github-script@v6
+      - name: Determine Google App Engine version name.
+        id: name
+        uses: actions/github-script@v6
         with:
           script: |
-            const ref = process.env.REF_TO_RELEASE
-            const name = ${{ env.RELEASE_TO_PRODUCTION }}
+            return ${{ env.RELEASE_TO_PRODUCTION }}
               // Use blank to indicate that this is a release to production and should use automatic naming.
               ? ''
-              // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
-              // May only contain lowercase letters, digits, and hyphens.
-              // Must begin and end with a letter or digit. Must not exceed 63 characters.
-              : ref.replace('refs/heads/', 'pr-').replace(/[^a-z0-9-]/g, '-')
-            core.exportVariable('RELEASE_VERSION', name)
-        # output: env.RELEASE_VERSION
+              : process.env.REF_TO_RELEASE
+                // refs/heads/master
+                .replace('refs/heads/', 'h')
+                // refs/pull/123/merge
+                .replace('refs/pull/', 'pr')
+                // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
+                // May only contain lowercase letters, digits, and hyphens.
+                // Must begin and end with a letter or digit. Must not exceed 63 characters.
+                .replace(/[^a-z0-9-]/g, '-')
+
       - name: Parameters
         env:
           inputs: ${{ toJSON(inputs) }}
@@ -69,7 +74,7 @@ jobs:
           echo 'toJSON(inputs.production) "true": "${{ toJSON(inputs.production) == 'true' }}"'
           echo 'toJSON(inputs.production) "false": "${{ toJSON(inputs.production) == 'false' }}"'
           echo 'RELEASE_TO_PRODUCTION: "${{ env.RELEASE_TO_PRODUCTION }}"'
-          echo 'RELEASE_VERSION: "${{ env.RELEASE_VERSION }}"'
+          echo 'RELEASE_VERSION: "${{ steps.name.outputs.result  }}"'
           echo 'expr: ${{ inputs.production == '' && github.ref == 'refs/heads/fix259_hosting' || !!inputs.production }}'
           echo "inputs: $inputs"
 
@@ -110,7 +115,7 @@ jobs:
           ./gradlew
           :backend:endpoint:jar
 
-      - name: Publish ${{ env.RELEASE_VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }}.
+      - name: Publish ${{ steps.name.outputs.result }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }}).
         working-directory: Heroku
         env:
           # Use pre-existing SDK, don't download a new one.
@@ -121,4 +126,4 @@ jobs:
           ./gradlew
           :deploy:appengine:appengineDeploy
           -Pnet.twisterrob.build.deployReplaceLive=${{ env.RELEASE_TO_PRODUCTION }}
-          -Pnet.twisterrob.build.deployName=${{ env.RELEASE_VERSION }}
+          -Pnet.twisterrob.build.deployName=${{ steps.name.outputs.result }}
