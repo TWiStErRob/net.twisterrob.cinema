@@ -11,7 +11,10 @@ application {
 	mainClass.set("net.twisterrob.cinema.cineworld.sync.Main")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
-			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
+			if (property("net.twisterrob.run.verboseSync").toString().toBoolean())
+				"-Dlog4j.configurationFile=log4j2.xml"
+			else
+				"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
 		)
 		// Can be overridden with `gradlew :backend:sync:run --args <sync-type...>`.
 		args(

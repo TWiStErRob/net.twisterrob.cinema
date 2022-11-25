@@ -69,10 +69,6 @@ jobs:
 
       - name: Build Frontend.
         working-directory: Heroku
-        env:
-          NODE_ENV: production
-          # Install `devDependencies`, so `npm build` runs `webpack` correctly.
-          NPM_CONFIG_PRODUCTION: false
         run: |
           npm install
           cd frontend
@@ -94,5 +90,5 @@ jobs:
         run: >
           ./gradlew
           :deploy:appengine:appengineDeploy
-          -Pnet.twisterrob.build.deployReplaceLive=${{ env.RELEASE_TO_PRODUCTION }}
-          -Pnet.twisterrob.build.deployName=${{ steps.name.outputs.result }}
+          -Pnet.twisterrob.deploy.replaceLive=${{ env.RELEASE_TO_PRODUCTION }}
+          -Pnet.twisterrob.deploy.versionName=${{ steps.name.outputs.result }}

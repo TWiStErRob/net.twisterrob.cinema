@@ -65,7 +65,7 @@ appengine {
 }
 
 val Project.deployReplaceLive: Boolean
-	get() = property("net.twisterrob.build.deployReplaceLive").toString().toBoolean()
+	get() = property("net.twisterrob.deploy.replaceLive").toString().toBoolean()
 
 val Project.deployName: String?
-	get() = property("net.twisterrob.build.deployName").toString().takeIf { it != "release" }
+	get() = property("net.twisterrob.deploy.versionName").toString().takeIf { it != "release" }

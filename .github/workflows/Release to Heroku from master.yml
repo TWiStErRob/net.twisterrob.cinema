@@ -5,7 +5,7 @@ on:
 #    - cron: '0 3 * * *'
 
 jobs:
-  sync: # based on scripts/heroku-scheduler-sync-with-history.sh
+  sync: # based on scripts/cloud-sync-with-history.sh
     name: Sync from source with history
     # Doesn't matter which one, simple git commands only.
     runs-on: ubuntu-latest
@@ -41,6 +41,7 @@ jobs:
           ./gradlew
           :backend:sync:run
           --args "cinemas films performances"
+          -Pnet.twisterrob.run.verboseSync=true
           2>&1 | tee backend/sync/build/sync/weekly_film_times.log
 
       - name: Save changes to history.
