@@ -19,10 +19,13 @@ jobs:
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
       - name: Debug
+        env:
+          EVENT: ${{ toJSON(github.event) }}
         run: |
           echo "ref: ${{ github.ref }}"
           echo "event_name: ${{ github.event_name }}"
           echo "event_ref: ${{ github.event.ref }}"
+          echo "event: $EVENT"
 
       - name: Determine Google App Engine version name.
         id: name
