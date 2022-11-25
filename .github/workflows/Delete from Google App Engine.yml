@@ -28,13 +28,15 @@ jobs:
         id: name
         uses: actions/github-script@v6
         env:
-          BRANCH_TO_DELETE: ${{ github.event.ref }}
+          BRANCH_TO_DELETE: ${{ github.event.ref || github.ref }}
         with:
           script: |
             return process.env.BRANCH_TO_DELETE
-              // refs/heads/master
+              // on:delete's ref is just the name, so polyfill with prefix to be consistent for next steps.
+              .replace(/^(?!refs\/)/, 'refs/heads/')
+              // refs/heads/master from workflow_dispatch and delete events.
               .replace('refs/heads/', 'br-')
-              // refs/pull/123/merge
+              // refs/pull/123/merge from pull_request.closed event.
               .replace('refs/pull/', 'pr-')
               // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
               // May only contain lowercase letters, digits, and hyphens.
