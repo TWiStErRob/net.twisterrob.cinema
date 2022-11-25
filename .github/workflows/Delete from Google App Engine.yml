@@ -36,7 +36,8 @@ jobs:
             const branch = {
               // on:pull_request:closed's ref is the base branch, so reconstruct the merge branch name.
               pull_request: `refs/pull/${context.payload.number}/merge`,
-              // on:delete's ref is just the name, so polyfill with prefix to be consistent for next steps.
+              // on:delete's context.ref is always `refs/heads/master`
+              // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
               // See https://stackoverflow.com/a/62293570/253468
               delete: `refs/heads/${context.payload.ref}`,
               // on:workflow_dispatch's ref is the full ref selected in the UI, so use it as-is.
