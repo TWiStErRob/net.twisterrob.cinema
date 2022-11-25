@@ -1,0 +1,37 @@
+name: Release from branch
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for release'
+        required: false
+        default: 'Publish latest changes from master'
+jobs:
+  release:
+    name: Release to release branch (${{ github.event.inputs.reason }})
+    # Doesn't matter which one, simple git commands only.
+    runs-on: ubuntu-latest
+    # Simple fast-forward merge, shouldn't take long.
+    timeout-minutes: 1
+    env:
+      RELEASE_BRANCH: 'release'
+      TRIGGER_BRANCH: 'master'
+    steps:
+      - name: Checkout ${{ env.RELEASE_BRANCH }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+
+      - name: Merge ${{ env.TRIGGER_BRANCH }} into ${{ env.RELEASE_BRANCH }}.
+        run: |
+          git fetch origin ${{ env.TRIGGER_BRANCH }}
+          git merge --ff-only origin/${{ env.TRIGGER_BRANCH }}
+
+      - name: Publish ${{ env.RELEASE_BRANCH }} to GitHub.
+        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+
+      # https://stackoverflow.com/a/71955944/253468
+      - name: Trigger Deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run "Deploy to Google App Engine.yml" -f production=true -f reason="${{ github.event.inputs.reason }}" -r refs/heads/fix259_hosting

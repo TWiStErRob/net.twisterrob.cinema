@@ -1,37 +1,50 @@
-name: Release from branch
+name: Sync from source
 on:
   workflow_dispatch:
-    inputs:
-      reason:
-        description: 'Reason for release'
-        required: false
-        default: 'Publish latest changes from master'
+#  schedule:
+#    - cron: '0 3 * * *'
+
 jobs:
-  release:
+  sync: # based on scripts/heroku-scheduler-sync-with-history.sh
     name: Release to release branch (${{ github.event.inputs.reason }})
     # Doesn't matter which one, simple git commands only.
     runs-on: ubuntu-latest
     # Simple fast-forward merge, shouldn't take long.
-    timeout-minutes: 1
+    timeout-minutes: 10
     env:
-      RELEASE_BRANCH: 'release'
-      TRIGGER_BRANCH: 'master'
+      HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
+      HISTORY_DIR: backend/sync/build/sync
     steps:
-      - name: Checkout ${{ env.RELEASE_BRANCH }} branch in ${{ github.repository }} repository.
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Checkout default branch in ${{ env.HISTORY_REPO }} repository.
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.RELEASE_BRANCH }}
+          repository: ${{ env.HISTORY_REPO }}
+          path: ${{ env.HISTORY_DIR }}
 
-      - name: Merge ${{ env.TRIGGER_BRANCH }} into ${{ env.RELEASE_BRANCH }}.
+      - name: Clean up workspace
+        working-directory: ${{ env.HISTORY_DIR }}
         run: |
-          git fetch origin ${{ env.TRIGGER_BRANCH }}
-          git merge --ff-only origin/${{ env.TRIGGER_BRANCH }}
+          rm --verbose --force weekly_film_times.xml
+          rm --verbose --force weekly_film_times_ie.xml
+          rm --verbose --force weekly_film_times.log
 
-      - name: Publish ${{ env.RELEASE_BRANCH }} to GitHub.
-        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
-
-      # https://stackoverflow.com/a/71955944/253468
-      - name: Trigger Deployment
+      - name: Build and Run Sync.
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run "Deploy to Google App Engine.yml" -f production=true -f reason="${{ github.event.inputs.reason }}" -r refs/heads/fix259_hosting
+          NEO4J_URL: ${{ secrets.NEO4J_URL }}
+        run: >
+          ./gradlew
+          :backend:sync:run
+          --args "cinemas films performances"
+          | tee ${{ env.HISTORY_DIR }}/weekly_film_times.log
+
+      - name: Save changes to history.
+        working-directory: ${{ env.HISTORY_DIR }}
+        run: |
+          git add .
+          git config user.email "github-scheduler+sync@twisterrob.net"
+          git config user.name "GitHub Scheduler"
+          git commit -m "GitHub Scheduler: Sync"
+          git push
