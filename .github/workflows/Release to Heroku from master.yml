@@ -34,4 +34,4 @@ jobs:
       - name: Trigger Deployment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run "Deploy to Google App Engine.yml" -f production=true -f reason="${{ github.event.inputs.reason }}"
+        run: gh workflow run "Deploy to Google App Engine.yml" -f production=true -f reason="${{ github.event.inputs.reason }}" -r refs/heads/fix259_hosting
