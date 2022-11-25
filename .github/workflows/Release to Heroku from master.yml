@@ -32,4 +32,6 @@ jobs:
 
       # https://stackoverflow.com/a/71955944/253468
       - name: Trigger Deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run "Deploy to Google App Engine.yml" -f production=true -f reason="${{ github.event.inputs.reason }}"
