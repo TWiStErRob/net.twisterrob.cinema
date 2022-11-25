@@ -31,6 +31,9 @@ jobs:
           rm --verbose --force weekly_film_times.xml
           rm --verbose --force weekly_film_times_ie.xml
           rm --verbose --force weekly_film_times.log
+      
+      - name: Debug
+        run: ls -la ${{ env.HISTORY_DIR }}
 
       - name: Build and Run Sync.
         env:
@@ -42,6 +45,9 @@ jobs:
           --args "cinemas films performances"
           2>&1 | tee ${{ env.HISTORY_DIR }}/weekly_film_times.log
 
+      - name: Debug
+        run: ls -la ${{ env.HISTORY_DIR }}
+
       - name: Save changes to history.
         working-directory: ${{ env.HISTORY_DIR }}
         if: success() || failure()
@@ -52,3 +58,10 @@ jobs:
           git config user.name "GitHub Scheduler"
           git commit -m "GitHub Scheduler: Sync"
           git push
+
+      - name: Upload "DEBUG".
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: DEBUG
+          path: ${{ github.workspace }}
