@@ -36,7 +36,7 @@ jobs:
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
         working-directory: Heroku
-        # HISTORY_DIR is absolute, `tee` needs a relative path.
+        # HISTORY_DIR is relative to work tree, `tee` needs a relative path to Heroku. actions/checkout created the folder.
         run: >
           ./gradlew
           :backend:sync:run

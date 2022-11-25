@@ -47,6 +47,13 @@ Manage the app at [Google Cloud Dashboard](https://console.cloud.google.com/appe
 
 In domain: `cinema CNAME ghs.googlehosted.com.`
 
+For PR/manual deployments there's a best-effort `Delete from Google App Engine` workflow:
+ * Runs when a pull request is closed to counteract automatic deploys.
+ * Runs when a pull request is merged to counteract automatic deploys.
+ * Runs when a branch is deleted to counteract manual deploys.  
+   Yes, this means that PR merges will execute 2 deletions, but their names are different.
+ * Can be run manually to counteract manual deploys. 
+
 ## Debug Production
 
 1. Redirect localhost:
