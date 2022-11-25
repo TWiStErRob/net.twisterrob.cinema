@@ -161,3 +161,5 @@ log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# From `com.google.cloud.tools:appengine-maven-plugin`
+appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version = "2.4.4" }

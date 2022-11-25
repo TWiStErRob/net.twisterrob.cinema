@@ -1,0 +1,94 @@
+name: Deploy to Google App Engine
+on:
+  pull_request:
+  push:
+    branches:
+      - release
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for release'
+        required: false
+        default: 'Publish latest changes'
+      production:
+        description: 'Deploy to production?'
+        required: true
+        default: false
+        type: boolean
+jobs:
+  release:
+    name: Release to Google App Engine (${{ inputs.reason || '<automatic>' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Convert input toJSON, because in GitHub Actions: false == null == ''.
+      # Convert ternary true part toJSON, to make sure || is not trying to interpret it (toJSON(false) -> 'false' will be truthy).
+      RELEASE_TO_PRODUCTION: ${{ toJSON(inputs.production) == 'null' && toJSON(github.ref == 'refs/heads/release') || inputs.production }}
+    permissions:
+      contents: read  # This is required for actions/checkout.
+      # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
+      id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+    steps:
+      - name: Determine Google App Engine version name.
+        id: name
+        uses: actions/github-script@v6
+        env:
+          INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
+        with:
+          script: |
+            return process.env.INPUT_PROD === 'true'
+              // Use blank to indicate that this is a release to production and should use automatic naming.
+              ? 'release'
+              : context.ref
+                // refs/heads/master from workflow_dispatch and push events.
+                .replace('refs/heads/', 'br-')
+                // refs/pull/123/merge from pull_request event.
+                .replace('refs/pull/', 'pr-')
+                // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
+                // May only contain lowercase letters, digits, and hyphens.
+                // Must begin and end with a letter or digit. Must not exceed 63 characters.
+                .replace(/[^a-z0-9-]/g, '-')
+
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Authenticate to Google Cloud.
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.GAE_WIP }}
+          service_account: ${{ secrets.GAE_SA }}
+      - name: Print tooling versions.
+        run: |
+          node -v
+          npm -v
+          java -version
+          gcloud --version
+
+      - name: Build Frontend.
+        working-directory: Heroku
+        run: |
+          npm install
+          cd frontend
+          npm run build:prod
+
+      - name: Build Backend.
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          :backend:endpoint:jar
+
+      - name: Publish ${{ steps.name.outputs.result }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }}).
+        working-directory: Heroku
+        env:
+          # Use pre-existing SDK, don't download a new one.
+          GCLOUD_HOME: /usr/lib/google-cloud-sdk
+          # Will be propagated to app.yml
+          NEO4J_URL: ${{ secrets.NEO4J_URL }}
+        run: >
+          ./gradlew
+          :deploy:appengine:appengineDeploy
+          -Pnet.twisterrob.deploy.replaceLive=${{ env.RELEASE_TO_PRODUCTION }}
+          -Pnet.twisterrob.deploy.versionName=${{ steps.name.outputs.result }}

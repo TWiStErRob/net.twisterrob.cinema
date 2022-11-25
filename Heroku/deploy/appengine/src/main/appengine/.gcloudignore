@@ -1,0 +1,4 @@
+# This file needs to be interpreted in the context of the staging directory before deploy.
+
+# This file contains no information, so shouldn't be used.
+/twisterrob-cinema-deploy-appengine.jar

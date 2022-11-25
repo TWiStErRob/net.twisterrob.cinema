@@ -2,7 +2,7 @@ name: Heroku
 on:
   push:
     branches-ignore:
-      - 'heroku'
+      - 'release'
     paths:
       - 'Heroku/**'
       - '.github/workflows/Heroku.yml'
@@ -575,7 +575,7 @@ jobs:
       - name: Start Backend.
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../../test/fake-data" >backend.log 2>&1 &
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/frontend/static ../../test/fake-data" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 

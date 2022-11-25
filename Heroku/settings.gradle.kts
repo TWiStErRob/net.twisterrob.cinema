@@ -8,12 +8,25 @@ include(":backend:quickbook")
 include(":backend:database")
 include(":backend:network")
 include(":backend:endpoint")
+include(":deploy:appengine")
 
 include(":test-helpers")
 
 pluginManagement {
 	@Suppress("UnstableApiUsage")
 	includeBuild("gradle/plugins")
+	resolutionStrategy {
+		eachPlugin {
+			when (requested.id.id) {
+				"com.google.cloud.tools.appengine",
+				"com.google.cloud.tools.appengine-appyaml",
+				"com.google.cloud.tools.appengine-appenginewebxml",
+				-> {
+					useModule("com.google.cloud.tools:appengine-gradle-plugin:${requested.version}")
+				}
+			}
+		}
+	}
 }
 
 plugins {
