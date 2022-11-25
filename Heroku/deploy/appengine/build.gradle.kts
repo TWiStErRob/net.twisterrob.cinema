@@ -56,8 +56,9 @@ appengine {
 	}
 	deploy {
 		projectId = "twisterrob-cinema"
-		val baseName = OffsetDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
-		version = baseName + (if (deployName != null) "-${deployName}" else "")
+		version = deployName.takeIf { !deployReplaceLive } ?: OffsetDateTime
+			.now(ZoneOffset.UTC)
+			.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
 		promote = deployReplaceLive
 		stopPreviousVersion = deployReplaceLive
 	}
