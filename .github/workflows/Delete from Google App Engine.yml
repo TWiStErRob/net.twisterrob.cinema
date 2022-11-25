@@ -3,17 +3,14 @@ on:
   pull_request:
     types: closed
   delete:
-    # branches
+  # branches
   workflow_dispatch:
-    # no inputs
+  # no inputs
 jobs:
   release:
     name: Delete from Google App Engine
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      BRANCH_TO_DELETE: >
-        ${{ fromJSON('{"pull_request": github.ref, "workflow_dispatch": github.ref, "delete": github.event.ref}')[github.event_name] }}
     # Only trigger when deleting branches, or any other event type.
     if: github.event_name != 'delete' || github.event.ref_type == 'branch'
     permissions:
@@ -21,22 +18,28 @@ jobs:
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
-      - name: Debug
-        run: |
-          echo "ref: ${{ github.ref }}"
-          echo "event_name: ${{ github.event_name }}"
-          echo "event_ref: ${{ github.event.ref }}"
-
       - name: Determine Google App Engine version name.
         id: name
         uses: actions/github-script@v6
         with:
           script: |
-            return process.env.BRANCH_TO_DELETE
-              // refs/heads/master
-              .replace('refs/heads/', 'h')
-              // refs/pull/123/merge
-              .replace('refs/pull/', 'pr')
+            const branch = {
+              // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
+              // on:pull_request:closed[!pull_request.merged]'s ref is the merge branch.
+              // So reconstruct the merge branch name in both cases.
+              pull_request: `refs/pull/${context.payload.number}/merge`,
+              // on:delete's context.ref is always `refs/heads/master`
+              // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
+              // See https://stackoverflow.com/a/62293570/253468
+              delete: `refs/heads/${context.payload.ref}`,
+              // on:workflow_dispatch's ref is the full ref selected in the UI, so use it as-is.
+              workflow_dispatch: context.ref,
+            }[context.eventName]
+            return branch
+              // refs/heads/master from workflow_dispatch and delete events.
+              .replace('refs/heads/', 'br-')
+              // refs/pull/123/merge from pull_request.closed event.
+              .replace('refs/pull/', 'pr-')
               // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
               // May only contain lowercase letters, digits, and hyphens.
               // Must begin and end with a letter or digit. Must not exceed 63 characters.
