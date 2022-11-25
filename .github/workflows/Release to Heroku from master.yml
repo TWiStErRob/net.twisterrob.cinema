@@ -6,14 +6,14 @@ on:
 
 jobs:
   sync: # based on scripts/heroku-scheduler-sync-with-history.sh
-    name: Release to release branch (${{ github.event.inputs.reason }})
+    name: Sync from source with history
     # Doesn't matter which one, simple git commands only.
     runs-on: ubuntu-latest
     # Simple fast-forward merge, shouldn't take long.
     timeout-minutes: 10
     env:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
-      HISTORY_DIR: backend/sync/build/sync
+      HISTORY_DIR: Heroku/backend/sync/build/sync
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
@@ -35,6 +35,7 @@ jobs:
       - name: Build and Run Sync.
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
+        working-directory: Heroku
         run: >
           ./gradlew
           :backend:sync:run
