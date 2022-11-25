@@ -55,7 +55,7 @@ jobs: # x
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
-
+# adf
       - name: Authenticate to Google Cloud.
         uses: google-github-actions/auth@v1
         with:
