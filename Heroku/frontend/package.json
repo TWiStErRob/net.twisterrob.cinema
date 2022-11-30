@@ -10,7 +10,7 @@
 		"build:prod": "webpack --config webpack.config.js --mode=production --progress",
 		"build:dev": "webpack --config webpack.config.js --mode=development --progress",
 		"start": "webpack --config webpack.config.js --mode=development --watch",
-		"dev-server": "webpack-dev-server --config webpack.config.js --mode=development --progress --colors --port 2992 --inline --content-base ../deploy/static",
+		"dev-server": "webpack-dev-server --config webpack.config.js --mode=development --progress --colors --port 2992 --inline --content-base ../deploy/frontend/static",
 		"test": "npm run test:jshint",
 		"test:jshint": "jshint --verbose --show-non-errors src/planner/scripts"
 	},
@@ -22,23 +22,23 @@
 		"angular-animate": "1.8.3",
 		"angular-ui-bootstrap": "2.5.6",
 		"moment": "2.29.4",
-		"moment-timezone": "0.5.38",
+		"moment-timezone": "0.5.39",
 		"moment-range": "4.0.2"
 	},
 	"devDependencies": {
-		"webpack": "5.74.0",
-		"webpack-cli": "4.10.0",
+		"webpack": "5.75.0",
+		"webpack-cli": "5.0.0",
 		"webpack-dev-server": "4.11.1",
 		"html-webpack-plugin": "5.5.0",
 		"copy-webpack-plugin": "11.0.0",
-		"mini-css-extract-plugin": "2.6.1",
+		"mini-css-extract-plugin": "2.7.1",
 		"raw-loader": "4.0.2",
-		"css-loader": "6.7.1",
-		"sass-loader": "13.1.0",
+		"css-loader": "6.7.2",
+		"sass-loader": "13.2.0",
 		"style-loader": "3.3.1",
 		"url-loader": "4.1.1",
 		"file-loader": "6.2.0",
-		"jshint": "2.13.5",
-		"node-sass": "7.0.3"
+		"jshint": "2.13.6",
+		"node-sass": "8.0.0"
 	}
 }

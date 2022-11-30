@@ -17,7 +17,7 @@ application {
 		// Can be overridden with `gradlew :backend:endpoint:run --args <static-folder> <fake-folder>`.
 		args(
 			// The folder that :frontend builds into.
-			"../../deploy/static",
+			"../../deploy/frontend/static",
 			// The folder that is looked at for debug builds for fake data for reproducible testing.
 			"../src/test/fake"
 		)

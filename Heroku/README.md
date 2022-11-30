@@ -13,13 +13,13 @@
 
 ### Running
 
-`frontend` continuously builds into `deploy` via `npm start`
-`backend` serves from `deploy` via `npm start`
+`frontend` continuously builds into `deploy/frontend` via `npm start`
+`backend` serves from `deploy/frontend` via `npm start`
 `test` contains UI tests, [README.md](test/README.md) for more.
 
 ### Entry points
 
- * [:backend:endpoint Main.kt](backend/endpoint/src/main/kotlin/net/twisterrob/cinema/cineworld/backend/Main.kt): web server; backend for planner, serving deploy folder as content
+ * [:backend:endpoint Main.kt](backend/endpoint/src/main/kotlin/net/twisterrob/cinema/cineworld/backend/Main.kt): web server; `backend` for planner, serving `deploy/frontend` folder as content
  * `frontend/src/planner/pages/index.html`: root of planner page
  * `frontend/src/planner/scripts/index.js`: root of planner webapp logic
  * [:backend:sync Main.kt](backend/sync/src/main/kotlin/net/twisterrob/cinema/cineworld/sync/Main.kt): scheduled updater for database
@@ -30,12 +30,29 @@
 
 ## Deployment
 
-[Automatic deploys](https://devcenter.heroku.com/articles/github-integration#automatic-deploys) are [enabled](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-automatic-deploys) in Heroku from GitHub.
-Push code to deploy to `origin/heroku` branch, or execute "Release to Heroku from master" workflow from GitHub Actions.
-For custom manual deployment visit [Manual Deploy on Heroku](https://dashboard.heroku.com/apps/twisterrob-cinema/deploy/github#deploy-github-manual-deploy).
+Deployment is done via `:deploy:appengine` Gradle module.
+ * `gradlew :deploy:appengine:appengineStage` will build everything into `deploy/appengine/build/staged-app` folder.
+ * `gradlew :deploy:appengine:appengineDeploy` will upload the staged files to Google App Engine.
 
-Manage the app at [Heroku settings](https://dashboard.heroku.com/apps/twisterrob-cinema/settings).
-See [Heroku App Manifest](app.json) ([docs](https://devcenter.heroku.com/articles/app-json-schema)) for more info on what environment is running the app.
+On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` workflow:
+ * Every branch is deployable with [manual dispatch](https://github.com/TWiStErRob/net.twisterrob.cinema/actions/workflows/Deploy%20to%20Google%20App%20Engine.yml).
+ * Every PR is automatically deployed to a unique URL.
+ * Every push to `release` branch is automatically deployed to production.
+
+Push code to deploy to `origin/release` branch, or execute "Release from master" workflow from GitHub Actions.
+
+All deployments are visible at [Google Cloud Console - Versions](https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema).
+
+Manage the app at [Google Cloud Dashboard](https://console.cloud.google.com/appengine?project=twisterrob-cinema).
+
+In domain: `cinema CNAME ghs.googlehosted.com.`
+
+For PR/manual deployments there's a best-effort `Delete from Google App Engine` workflow:
+ * Runs when a pull request is closed to counteract automatic deploys.
+ * Runs when a pull request is merged to counteract automatic deploys.
+ * Runs when a branch is deleted to counteract manual deploys.  
+   Yes, this means that PR merges will execute 2 deletions, but their names are different.
+ * Can be run manually to counteract manual deploys. 
 
 ## Debug Production
 

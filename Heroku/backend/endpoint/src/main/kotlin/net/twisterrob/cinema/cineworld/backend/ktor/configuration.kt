@@ -64,7 +64,7 @@ import java.time.ZoneOffset
  */
 @Suppress("LongMethod") // TODO find a way to split this up into smaller pieces, while keeping visibility.
 internal fun Application.configuration(
-	staticRootFolder: File = File("./deploy/static"),
+	staticRootFolder: File = File("./deploy/frontend/static"),
 	fakeRootFolder: File = File("./backend/src/test/fake"),
 	oauthHttpClient: HttpClient = HttpClient(),
 	config: Map<String, Any?> = jacksonObjectMapper()

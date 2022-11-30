@@ -1,5 +1,11 @@
 name: map
 on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'map/**'
+      - '.github/workflows/map.yml'
   pull_request:
     paths:
       - 'map/**'
@@ -39,7 +45,7 @@ jobs:
       - name: Run detekt.
         working-directory: map
         run: |
-          DETEKT_VERSION=1.22.0-RC2
+          DETEKT_VERSION=1.22.0
           curl --silent --show-error --location --remote-name \
               https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
           unzip detekt-cli-*.zip

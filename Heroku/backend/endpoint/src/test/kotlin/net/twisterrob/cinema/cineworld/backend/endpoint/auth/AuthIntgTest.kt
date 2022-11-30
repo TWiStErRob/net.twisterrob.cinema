@@ -85,7 +85,7 @@ class AuthIntgTest {
 			stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
 			verify(mockRepository)
 				.addUser(eq(fakeUserId), eq(fakeEmail), eq(fakeName), eq("http://${fakeHost}/"), any())
-			assertThat(cookie, startsWith("auth=userId%3D%2523s${fakeUserId.replace("_", "%5F")}%2F"))
+			assertThat(cookie, startsWith("userId=%2523s${fakeUserId}/")) // %2523 is # double-encoded.
 			verifyNoMoreInteractions(mockRepository)
 			stubClient.verifyNoMoreInteractions()
 		}
@@ -313,8 +313,9 @@ private fun TestApplicationEngine.receiveAuthorizationFromGoogle(
 
 	call.assertRedirect("/")
 	val setCookie = call.response.headers[HttpHeaders.SetCookie]!!
-	val cookieDetails = Regex("(?<value>[^;]+);.*").find(setCookie)
-	return cookieDetails!!.groups["value"]!!.value
+	val cookieDetails = Regex("auth=(?<value>[^;]+)(;.+)?").find(setCookie)
+		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${setCookie}'.")
+	return cookieDetails.groups["value"]!!.value
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {

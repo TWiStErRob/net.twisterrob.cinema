@@ -42,7 +42,7 @@ class UriEncodingFixingUriDeserializer : JsonDeserializer<URI>() {
 
 	override fun deserialize(p: JsonParser, ctxt: DeserializationContext): URI {
 		@Suppress("UNCHECKED_CAST") // Jackson methods are not generic.
-		val de = JdkDeserializers.find(URI::class.java, URI::class.java.name)
+		val de = JdkDeserializers.find(ctxt, URI::class.java, URI::class.java.name)
 				as JsonDeserializer<URI>
 		@Suppress("LiftReturnOrAssignment")
 		try {

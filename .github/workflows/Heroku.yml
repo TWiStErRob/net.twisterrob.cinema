@@ -2,7 +2,7 @@ name: Heroku
 on:
   push:
     branches-ignore:
-      - 'heroku'
+      - 'release'
     paths:
       - 'Heroku/**'
       - '.github/workflows/Heroku.yml'
@@ -30,6 +30,9 @@ jobs:
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
 
       - name: Download Gradle running the build.
         working-directory: Heroku
@@ -165,7 +168,7 @@ jobs:
     steps:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current_pr
-        uses: 8BitJonny/gh-get-current-pr@2.1.2
+        uses: 8BitJonny/gh-get-current-pr@v2.1.3
 
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
         run: true
@@ -420,7 +423,8 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-            	conclusion: "action_required",
+              // Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
+            	conclusion: "neutral",
             	output: {
             		title: "Dependency Change Report",
             		summary: `
@@ -490,7 +494,8 @@ jobs:
             	sha: context.sha,
             	context: "Heroku / Dependency Review",
             	description: "Review dependency changes!",
-            	state: "pending",
+              // Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
+            	state: "success",
             	target_url: check.data.html_url,
             });
 
@@ -507,9 +512,12 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
-      - uses: szenius/set-timezone@v1.0
+      - uses: szenius/set-timezone@v1.1
         with:
           timezoneLinux: "Europe/London"
 
@@ -565,7 +573,7 @@ jobs:
       - name: Start Backend.
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/static ../../test/fake-data" >backend.log 2>&1 &
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/frontend/static ../../test/fake-data" >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 

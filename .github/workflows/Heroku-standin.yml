@@ -1,11 +1,9 @@
-name: Heroku
+name: Heroku standin
 on:
-  push:
+  pull_request:
     paths-ignore:
       - 'Heroku/**'
       - '.github/workflows/Heroku.yml'
-    branches-ignore:
-      - 'master'
 concurrency:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-standin-master-{0}', github.sha) || format('ci-heroku-standin-{0}', github.ref) }}
   cancel-in-progress: true
@@ -23,6 +21,7 @@ jobs:
       - name: Publish "Code scanning results / detekt".
         uses: github/codeql-action/upload-sarif@v2
         with:
+          category: '.github/workflows/Heroku.yml:check-gradle'
           sarif_file: ${{ github.workspace }}/.github/workflows/empty-reports/detekt.sarif
 
       - name: Publish "🔔 Test Results" check run.
