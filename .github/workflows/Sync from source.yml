@@ -7,14 +7,19 @@ on:
 jobs:
   sync: # based on scripts/cloud-sync-with-history.sh
     name: Sync from source with history
-    # Doesn't matter which one, simple git commands only.
-    runs-on: ubuntu-latest
-    # Simple fast-forward merge, shouldn't take long.
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     env:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
       HISTORY_DIR: Heroku/backend/sync/build/sync
     steps:
+
+      - name: Set up JDK 17.
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
