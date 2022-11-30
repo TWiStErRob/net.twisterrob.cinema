@@ -92,7 +92,7 @@ class Film : Historical() {
 	@Property(name = "categories")
 	var categories: List<String> = mutableListOf()
 
-	@Relationship(type = "WATCHED", direction = Relationship.INCOMING)
+	@Relationship(type = "WATCHED", direction = Relationship.Direction.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
 	override fun toString(): String =
