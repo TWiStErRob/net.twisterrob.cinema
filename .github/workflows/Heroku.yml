@@ -12,6 +12,10 @@ concurrency:
   # More info: https://stackoverflow.com/a/68422069/253468:
   group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-master-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
   #cancel-in-progress: true
+#env:
+#  # Choose Java 17 explicitly.
+#  # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#java
+#  JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }} # Don't set it here, because this doesn't run on a runner.
 jobs:
   # Expected result: success() or failure().
   # If a static check fails, it'll be reported separately.
@@ -25,9 +29,7 @@ jobs:
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
-      # Default on ubuntu-20.04 image:
-      # > OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
-      #JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
+      JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
@@ -181,6 +183,8 @@ jobs:
     if: needs.pull_request.outputs.found == 'true'
     runs-on: ubuntu-22.04
     timeout-minutes: 10
+    env:
+      JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
     steps:
       - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
@@ -510,6 +514,7 @@ jobs:
     env:
       NEO4J_URL: ${{ secrets.NEO4J_URL }}
       PORT: 8080
+      JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
     steps:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
