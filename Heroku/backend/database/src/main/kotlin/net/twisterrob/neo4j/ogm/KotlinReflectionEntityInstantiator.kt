@@ -28,6 +28,9 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 		val args = ctor.createArgsFrom(propertyValues)
 		return ctor.callByDescriptive(args)
 	}
+
+	override fun <T : Any> createInstanceWithConstructorArgs(clazz: Class<T>, propertyValues: Map<String, Any>): T =
+		createInstance(clazz, propertyValues)
 }
 
 private fun <T : Any> KFunction<T>.toMismatchString(usable: Boolean, propertyValues: Map<String, Any>): String =
