@@ -19,7 +19,6 @@ dependencies {
 	api(libs.neo4j.ogm)
 	implementation(libs.neo4j.ogm.driver)
 	runtimeOnly(libs.neo4j.ogm.driver.bolt)
-	runtimeOnly(libs.neo4j.ogm.driver.bolt.nativeTypes)
 }
 
 // Test
