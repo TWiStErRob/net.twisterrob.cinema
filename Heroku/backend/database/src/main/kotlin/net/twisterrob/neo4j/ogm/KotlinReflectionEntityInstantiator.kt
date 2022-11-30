@@ -29,6 +29,7 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 		return ctor.callByDescriptive(args)
 	}
 
+	@Suppress("FunctionMaxNameLength") // https://github.com/detekt/detekt/issues/5590
 	override fun <T : Any> createInstanceWithConstructorArgs(clazz: Class<T>, propertyValues: Map<String, Any>): T =
 		createInstance(clazz, propertyValues)
 }
