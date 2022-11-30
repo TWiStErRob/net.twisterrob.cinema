@@ -10,7 +10,7 @@ concurrency:
 jobs:
   check-gradle:
     name: 🔨 Build & Check (Gradle)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
       - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
@@ -39,14 +39,14 @@ jobs:
 
   check-npm:
     name: 🔨 Build & Check (NPM)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
       - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
 
   deps:
     name: Calculate Dependency Diff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
       - run: 'echo "No build required. Executed this echo to get a status report for branch protection."'
