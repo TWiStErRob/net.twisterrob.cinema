@@ -31,6 +31,7 @@ jobs:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
     steps:
+
       - name: Set up JDK 17.
         uses: actions/setup-java@v3
         with:
@@ -190,6 +191,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
+
       - name: Set up JDK 17.
         uses: actions/setup-java@v3
         with:
@@ -525,6 +527,7 @@ jobs:
       NEO4J_URL: ${{ secrets.NEO4J_URL }}
       PORT: 8080
     steps:
+
       - name: Set up JDK 17.
         uses: actions/setup-java@v3
         with:

@@ -29,6 +29,13 @@ jobs:
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
     steps:
+
+      - name: Set up JDK 17.
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
       - name: Determine Google App Engine version name.
         id: name
         uses: actions/github-script@v6
