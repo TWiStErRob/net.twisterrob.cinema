@@ -9,8 +9,7 @@ on:
 jobs:
   release:
     name: Release to release branch (${{ github.event.inputs.reason }})
-    # Doesn't matter which one, simple git commands only.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     # Simple fast-forward merge, shouldn't take long.
     timeout-minutes: 1
     env:

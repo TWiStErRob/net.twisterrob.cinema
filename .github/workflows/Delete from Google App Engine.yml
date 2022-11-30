@@ -9,7 +9,7 @@ on:
 jobs:
   release:
     name: Delete from Google App Engine
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     # Only trigger when deleting branches, or any other event type.
     if: github.event_name != 'delete' || github.event.ref_type == 'branch'

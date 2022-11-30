@@ -18,7 +18,7 @@ on:
 jobs:
   release:
     name: Release to Google App Engine (${{ inputs.reason || '<automatic>' }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     env:
       # Convert input toJSON, because in GitHub Actions: false == null == ''.
