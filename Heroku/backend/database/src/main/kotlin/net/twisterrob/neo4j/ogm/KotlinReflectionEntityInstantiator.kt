@@ -6,9 +6,11 @@ import java.util.Collections
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 
+@Deprecated("Not used right now, but might be useful in the future.")
 class KotlinReflectionEntityInstantiator : EntityInstantiator {
 
-	override fun <T : Any> createInstance(clazz: Class<T>, propertyValues: Map<String, Any>): T {
+	@Suppress("FunctionMaxNameLength") // TODEL https://github.com/detekt/detekt/issues/5590
+	override fun <T : Any> createInstanceWithConstructorArgs(clazz: Class<T>, propertyValues: Map<String, Any>): T {
 		val allCtors = clazz.kotlin.constructors
 
 		// try to use default ctor:
@@ -29,9 +31,8 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 		return ctor.callByDescriptive(args)
 	}
 
-	@Suppress("FunctionMaxNameLength") // https://github.com/detekt/detekt/issues/5590
-	override fun <T : Any> createInstanceWithConstructorArgs(clazz: Class<T>, propertyValues: Map<String, Any>): T =
-		createInstance(clazz, propertyValues)
+	override fun <T : Any> createInstance(clazz: Class<T>, propertyValues: Map<String, Any>): T =
+		createInstance(clazz, emptyMap())
 }
 
 private fun <T : Any> KFunction<T>.toMismatchString(usable: Boolean, propertyValues: Map<String, Any>): String =
