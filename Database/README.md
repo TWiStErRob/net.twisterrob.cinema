@@ -45,9 +45,11 @@ Folders:
 1. Do a Backup (see above)
 1. Extract backup to local database folder
 1. Launch `neo4j console` from `tools/data/neo4j/bin`
-   Make sure that `JAVA_HOME` is Java 8 for (neo4j 3.x)
-   Make sure that `NEO4J_HOME` points to the same distribution from where `neo4j.bat` is executed
+   * Make sure that `JAVA_HOME` is Java 8 for (neo4j 3.x)
+   * Make sure that `NEO4J_HOME` points to the same distribution from where `neo4j.bat` is executed
 1. > Remote interface available at http://localhost:7474/browser/
+1. Authentication is the same as the exported database  
+   (or neo4j:neo4j for default empty database)
 1. Do a Cleanup (see above)
 1. <kbd>CTRL+C</kbd> to stop `neo4j`
 1. ZIP contents of local database folder
