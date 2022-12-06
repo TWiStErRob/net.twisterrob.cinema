@@ -35,18 +35,19 @@ fun feedReader(): XmlMapper {
 		// I want to know when new things are added to syndication.
 		enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 		enable(SerializationFeature.INDENT_OUTPUT)
+		disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 	}
 }
 
 operator fun Feed.plus(other: Feed): Feed = Feed(
 	// merge the attributes, keep only unique ones
-	attributes = (this.attributes + other.attributes).distinctBy { it.code },
+	_attributes = (this.attributes + other.attributes).distinctBy { it.code },
 	// different country -> different cinemas
-	cinemas = this.cinemas + other.cinemas,
+	_cinemas = this.cinemas + other.cinemas,
 	// both countries play the same movies
-	films = (this.films + other.films).distinctBy { it.id },
+	_films = (this.films + other.films).distinctBy { it.id },
 	// performances are separate by cinemas, see cinemas above
-	performances = this.performances + other.performances
+	_performances = this.performances + other.performances
 )
 
 /**
@@ -77,26 +78,11 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
  * To work around this, the IDs are made nullable, but should never be null.
  */
 @JsonRootName("feed")
-data class Feed(
-	@JacksonXmlElementWrapper(localName = "attributes")
-//	@JacksonXmlProperty(localName = "attribute")
-	@JsonProperty(index = 1)
-	val attributes: List<Attribute>,
-
-	@JacksonXmlElementWrapper(localName = "cinemas")
-//	@JacksonXmlProperty(localName = "cinema")
-	@JsonProperty(index = 2)
-	val cinemas: List<Cinema>,
-
-	@JacksonXmlElementWrapper(localName = "films")
-//	@JacksonXmlProperty(localName = "film")
-	@JsonProperty(index = 3)
-	val films: List<Film>,
-
-	@JacksonXmlElementWrapper(localName = "performances")
-//	@JacksonXmlProperty(localName = "screening")
-	@JsonProperty(index = 4)
-	val performances: List<Performance>,
+data class Feed @Suppress("ConstructorParameterNaming") constructor(
+	private var _attributes: List<Attribute> = emptyList(),
+	private var _cinemas: List<Cinema> = emptyList(),
+	private var _films: List<Film> = emptyList(),
+	private var _performances: List<Performance> = emptyList(),
 ) {
 
 	constructor(
@@ -110,6 +96,34 @@ data class Feed(
 			}
 		}
 	}
+
+	@get:JacksonXmlElementWrapper(localName = "attributes")
+	@get:JacksonXmlProperty(localName = "attribute")
+	@get:JsonProperty(index = 1)
+	var attributes: List<Attribute>
+		get() = _attributes
+		set(value) { _attributes = value }
+
+	@get:JacksonXmlElementWrapper(localName = "cinemas")
+	@get:JacksonXmlProperty(localName = "cinema")
+	@get:JsonProperty(index = 2)
+	var cinemas: List<Cinema>
+		get() =  _cinemas
+	set(value) { _cinemas = value }
+
+	@get:JacksonXmlElementWrapper(localName = "films")
+	@get:JacksonXmlProperty(localName = "film")
+	@get:JsonProperty(index = 3)
+	var films: List<Film>
+		get() = _films
+		set(value) { _films = value }
+
+	@get:JacksonXmlElementWrapper(localName = "performances")
+	@get:JacksonXmlProperty(localName = "screening")
+	@get:JsonProperty(index = 4)
+	var performances: List<Performance>
+		get() = _performances
+	set(value) { _performances = value }
 
 	data class Attribute(
 		/**

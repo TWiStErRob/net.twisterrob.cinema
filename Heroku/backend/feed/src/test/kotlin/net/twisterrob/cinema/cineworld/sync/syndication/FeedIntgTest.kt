@@ -10,8 +10,9 @@ import net.twisterrob.test.get
 import net.twisterrob.test.set
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 @TagIntegration
 class FeedIntgTest {
@@ -39,20 +40,19 @@ class FeedIntgTest {
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
 	}
 
-	@Disabled("Too much to ask")
 	@Test fun `serialization is reversible`() {
 		val fixture = JFixture()
 		val fixtFeed = fixture.build<Feed>().apply {
 			cinemas.forEach { it["performances"] = emptyList<Feed.Performance>() }
 			films.forEach { it["performances"] = emptyList<Feed.Performance>() }
-			this["performances"] = (1..3).map {
+			this["_performances"] = (0..2).map {
 				@Suppress("NestedScopeFunctions") // Ensure created Performance object is correct before escaping scope.
 				Feed.Performance(
 					film = films.random(),
 					cinema = cinemas.random(),
 					url = fixture.build(),
 					attributes = SCREENING_TYPES.random().code,
-					date = fixture.build()
+					date = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.SECONDS),
 				).apply {
 					film.add("performances", this)
 					cinema.add("performances", this)
@@ -60,7 +60,6 @@ class FeedIntgTest {
 			}
 		}
 		val serialized = feedReader().writeValueAsString(fixtFeed)
-		//println(serialized)
 		val feed = feedReader().readValue<Feed>(serialized)
 		assertEquals(fixtFeed, feed)
 	}

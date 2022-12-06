@@ -200,6 +200,7 @@ class JacksonSerializationTest {
 		)
 	}
 
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
 	@Disabled("JacksonXmlProperty localName is used for serialization correctly, but breaks deserialization")
 	@Test fun `RootElementWithChildren serialization is reversible`() {
 		val sut = jackson()
@@ -213,6 +214,83 @@ class JacksonSerializationTest {
 				RootElementWithChildren.Element2("Text 2-2")
 			)
 		)
+		@Language("xml")
+		val xml = """
+			<parent>
+			  <element1s>
+			    <element1>
+			      <content>Text 1-1</content>
+			    </element1>
+			    <element1>
+			      <content>Text 1-2</content>
+			    </element1>
+			  </element1s>
+			  <element2s>
+			    <element2>
+			      <content>Text 2-1</content>
+			    </element2>
+			    <element2>
+			      <content>Text 2-2</content>
+			    </element2>
+			  </element2s>
+			</parent>
+		""".trimIndent()
+
+		testSerialization(sut, data, xml)
+	}
+
+	// https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-525304875
+	// https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-692011574
+	@JacksonXmlRootElement(localName = "parent")
+	data class RootElementWithChildrenWorkaround(
+		@Suppress("ConstructorParameterNaming")
+		private var _element1s: List<Element1> = emptyList(),
+
+		@Suppress("ConstructorParameterNaming")
+		private var _element2s: List<Element2> = emptyList(),
+	) {
+
+		@get:JacksonXmlElementWrapper(localName = "element1s")
+		@get:JacksonXmlProperty(localName = "element1")
+		@get:JsonProperty(index = 1)
+		var element1s: List<Element1>
+			get() = _element1s
+			private set(value) {
+				_element1s = value
+			}
+
+		@get:JacksonXmlElementWrapper(localName = "element2s")
+		@get:JacksonXmlProperty(localName = "element2")
+		@get:JsonProperty(index = 2)
+		var element2s: List<Element2> 
+			get() = _element2s
+			private set(value) {
+				_element2s = value
+			}
+
+		data class Element1(
+			val content: String
+		)
+
+		data class Element2(
+			val content: String
+		)
+	}
+
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
+	@Test fun `RootElementWithChildrenWorkaround serialization is reversible`() {
+		val sut = jackson()
+		val data = RootElementWithChildrenWorkaround(
+			mutableListOf(
+				RootElementWithChildrenWorkaround.Element1("Text 1-1"),
+				RootElementWithChildrenWorkaround.Element1("Text 1-2")
+			),
+			mutableListOf(
+				RootElementWithChildrenWorkaround.Element2("Text 2-1"),
+				RootElementWithChildrenWorkaround.Element2("Text 2-2")
+			)
+		)
+
 		@Language("xml")
 		val xml = """
 			<parent>
