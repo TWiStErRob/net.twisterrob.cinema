@@ -3,6 +3,7 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -119,59 +120,58 @@ class JacksonSerializationTest {
 	}
 
 	data class References(
-		val child: Child,
-		val parent: Parent
+		val referenced: Referenced,
+		val referencing: Referencing,
 	) {
 
-		data class Parent(
+		data class Referencing(
 			@JacksonXmlProperty(isAttribute = true)
 			val id: Long
 		) {
 
 			// missing from serialized
 			@Suppress("DataClassShouldBeImmutable")
-			@JsonBackReference("childRef")
+			@JsonManagedReference("refName")
+			@JsonIdentityReference(alwaysAsId = true)
 			@JacksonXmlProperty(isAttribute = true)
-			private lateinit var child: Child
+			private lateinit var reference: Referenced
 
-			constructor(id: Long, child: Child) : this(id) {
-				this.child = child
+			constructor(id: Long, reference: Referenced) : this(id) {
+				this.reference = reference
 			}
 		}
 
 		@JsonIdentityInfo(
-			scope = Child::class,
+			scope = Referenced::class,
 			generator = ObjectIdGenerators.PropertyGenerator::class,
 			property = "id"
 		)
-		data class Child(
+		data class Referenced(
 			@JacksonXmlProperty(isAttribute = true)
 			val id: Long
 		) {
 
 			@Suppress("DataClassShouldBeImmutable")
-			@JsonIgnore // has no effect :(
-			@JsonManagedReference("childRef")
-			lateinit var parent: Parent
+			@JsonBackReference("refName")
+			lateinit var referencing: Referencing
 		}
 	}
 
-	@Disabled("Child.parent insists on duplicating the referenced object during serialization")
 	@Test fun `References serialization is reversible`() {
 		val sut = jackson()
-		val child = References.Child(42)
-		val parent = References.Parent(43, child)
-		child.parent = parent
+		val referenced = References.Referenced(42)
+		val referencing = References.Referencing(43, referenced)
+		referenced.referencing = referencing
 
 		val data = References(
-			child = child,
-			parent = parent
+			referenced = referenced,
+			referencing = referencing
 		)
 		@Language("xml")
 		val xml = """
 			<References>
-			  <child id="42"/>
-			  <parent id="43" child="42"/>
+			  <referenced id="42"/>
+			  <referencing id="43" reference="42"/>
 			</References>
 		""".trimIndent()
 

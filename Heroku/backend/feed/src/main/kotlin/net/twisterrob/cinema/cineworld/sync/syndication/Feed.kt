@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -178,7 +179,7 @@ data class Feed(
 		val serviceList = services.split(",")
 
 		@Suppress("DataClassShouldBeImmutable")
-		@JsonManagedReference("cinema")
+		@JsonBackReference("cinema")
 		lateinit var performances: List<Performance>
 			private set
 	}
@@ -268,7 +269,7 @@ data class Feed(
 		val attributeList = attributes.split(",")
 
 		@Suppress("DataClassShouldBeImmutable")
-		@JsonManagedReference("film")
+		@JsonBackReference("film")
 		lateinit var performances: List<Performance>
 			private set
 	}
@@ -277,14 +278,16 @@ data class Feed(
 		/**
 		 * @sample `"163254"`
 		 */
-		@JsonBackReference("film")
+		@JsonManagedReference("film")
+		@JsonIdentityReference(alwaysAsId = true)
 		@JacksonXmlProperty(isAttribute = true)
 		val film: Film,
 
 		/**
 		 * @sample `"1"`
 		 */
-		@JsonBackReference("cinema")
+		@JsonManagedReference("cinema")
+		@JsonIdentityReference(alwaysAsId = true)
 		@JacksonXmlProperty(isAttribute = true)
 		val cinema: Cinema,
 
