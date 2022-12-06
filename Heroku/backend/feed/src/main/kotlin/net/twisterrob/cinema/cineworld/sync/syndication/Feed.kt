@@ -8,14 +8,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -33,6 +34,7 @@ fun feedReader(): XmlMapper {
 		registerModule(JavaTimeModule())
 		// I want to know when new things are added to syndication.
 		enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		enable(SerializationFeature.INDENT_OUTPUT)
 	}
 }
 
@@ -74,7 +76,7 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
  * and then later it's set via reflection, so it should be a `lateinit val`, which is not possible.
  * To work around this, the IDs are made nullable, but should never be null.
  */
-@JacksonXmlRootElement(localName = "feed")
+@JsonRootName("feed")
 data class Feed(
 	@JacksonXmlElementWrapper(localName = "attributes")
 //	@JacksonXmlProperty(localName = "attribute")
