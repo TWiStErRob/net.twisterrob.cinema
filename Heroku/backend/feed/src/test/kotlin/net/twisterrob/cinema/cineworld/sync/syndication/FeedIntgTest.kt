@@ -6,7 +6,7 @@ import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.GENRES
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.SCREENING_TYPES
 import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
-import net.twisterrob.test.get
+import net.twisterrob.test.buildList
 import net.twisterrob.test.set
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -43,29 +43,21 @@ class FeedIntgTest {
 	@Test fun `serialization is reversible`() {
 		val fixture = JFixture()
 		val fixtFeed = fixture.build<Feed>().apply {
-			cinemas.forEach { it["performances"] = emptyList<Feed.Performance>() }
-			films.forEach { it["performances"] = emptyList<Feed.Performance>() }
+			this["_films"] = fixture.buildList<Feed.Film>()
+			this["_cinemas"] = fixture.buildList<Feed.Cinema>()
 			this["_performances"] = (0..2).map {
-				@Suppress("NestedScopeFunctions") // Ensure created Performance object is correct before escaping scope.
 				Feed.Performance(
 					film = films.random(),
 					cinema = cinemas.random(),
 					url = fixture.build(),
 					attributes = SCREENING_TYPES.random().code,
 					date = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.SECONDS),
-				).apply {
-					film.add("performances", this)
-					cinema.add("performances", this)
-				}
+				)
 			}
+			sanityCheck()
 		}
 		val serialized = feedReader().writeValueAsString(fixtFeed)
 		val feed = feedReader().readValue<Feed>(serialized)
 		assertEquals(fixtFeed, feed)
-	}
-
-	private fun <T> Any.add(fieldName: String, value: T) {
-		val current: Iterable<T> = this[fieldName]
-		this[fieldName] = current + value
 	}
 }

@@ -18,6 +18,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.util.InternalAPI
+import io.ktor.util.rootCause
 import net.twisterrob.test.assertAll
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -420,26 +422,30 @@ private fun jackson(
 		configure()
 	}
 
+private fun Any?.short(): String =
+	this.toString().replace("[\r\n]".toRegex(), "")
+
+@OptIn(InternalAPI::class)
 private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
 	assertAll {
 		o {
 			val actualXml: String = try {
 				sut.writeValueAsString(expectedData)
 			} catch (e: Throwable) {
-				fail("Cannot serialize $expectedData", e)
+				fail("Cannot serialize data to XML\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message}", e)
 			}
 			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
-				"Serialized XML doesn't match, input: $expectedData"
+				"Serialized XML doesn't match, input data:\n\t\t${expectedData.short()}"
 			}
 		}
 		o {
 			val actualData: T = try {
 				sut.readValue(expectedXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize $expectedXml", e)
+				fail("Cannot deserialize XML to data:\n\t\t${expectedXml.short()}\n\t\t${e.rootCause!!.message}", e)
 			}
 			assertEquals(expectedData, actualData) {
-				"Deserialized data doesn't match, input: $expectedXml"
+				"Deserialized data doesn't match, input XML:\n\t\t${expectedXml.short()}"
 			}
 		}
 		o {
@@ -447,10 +453,10 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 			val reRead: T = try {
 				sut.readValue(actualXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize serialized $actualXml", e)
+				fail("Cannot deserialize serialized XML:\n\t\t${actualXml.short()}\n\t\t${e.rootCause!!.message}", e)
 			}
 			assertEquals(expectedData, reRead) {
-				"Re-read data don't match, input: $expectedData -> $actualXml"
+				"Re-read data don't match, input data:\n\t\t${expectedData.short()}\n\t\t->\n\t\t${actualXml.short()}"
 			}
 		}
 	}

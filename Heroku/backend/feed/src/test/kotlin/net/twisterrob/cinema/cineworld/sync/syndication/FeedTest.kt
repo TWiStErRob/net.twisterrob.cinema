@@ -5,10 +5,23 @@ import net.twisterrob.test.build
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Test
 
 class FeedTest {
+
+	@Test fun `Fixture can be built`() {
+		val fixture = JFixture()
+
+		val feed: Feed = fixture.build()
+
+		assertThat(feed.cinemas, not(empty()))
+		assertThat(feed.films, not(empty()))
+		assertThat(feed.attributes, not(empty()))
+		assertThat(feed.performances, not(empty()))
+	}
 
 	@Test fun `plus adds all fields together`() {
 		val fixture = JFixture()
