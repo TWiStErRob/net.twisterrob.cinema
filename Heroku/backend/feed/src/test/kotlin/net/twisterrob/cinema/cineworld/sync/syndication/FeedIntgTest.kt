@@ -8,6 +8,7 @@ import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.set
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -38,6 +39,68 @@ class FeedIntgTest {
 		assertNotNull(feed)
 		feed.sanityCheck()
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
+	}
+
+	@Test fun `write feed XML`() {
+		val fixture = JFixture()
+		val fixtCinema = fixture.build<Feed.Cinema>()
+		val fixtFilm = fixture.build<Feed.Film>()
+		val fixtPerformance = Feed.Performance(
+			film = fixtFilm,
+			cinema = fixtCinema,
+			url = fixture.build(),
+			date = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.SECONDS),
+			attributes = fixture.build(),
+		)
+
+		val fixtAttribute = Feed.Attribute(fixtPerformance.attributes, fixture.build())
+		val fixtFeed = Feed(
+			attributes = listOf(fixtAttribute),
+			performances = listOf(fixtPerformance),
+		)
+		val serialized = feedReader().writeValueAsString(fixtFeed)
+		@Language("xml")
+		val expected = """
+			<feed>
+			  <attributes>
+			    <attribute code="${fixtAttribute.code}">${fixtAttribute.title}</attribute>
+			  </attributes>
+			  <cinemas>
+			    <cinema id="${fixtCinema.id}">
+			      <url>${fixtCinema.url}</url>
+			      <name>${fixtCinema.name}</name>
+			      <address>${fixtCinema.address}</address>
+			      <postcode>${fixtCinema.postcode}</postcode>
+			      <phone>${fixtCinema.phone}</phone>
+			      <services>${fixtCinema.services}</services>
+			    </cinema>
+			  </cinemas>
+			  <films>
+			    <film id="${fixtFilm.id}">
+			      <title>${fixtFilm.title}</title>
+			      <url>${fixtFilm.url}</url>
+			      <classification>${fixtFilm.classification}</classification>
+			      <releaseDate>${fixtFilm.releaseDate}T00:00:00Z</releaseDate>
+			      <runningTime>${fixtFilm.runningTime}</runningTime>
+			      <director>${fixtFilm.director}</director>
+			      <cast>${fixtFilm.cast}</cast>
+			      <synopsis>${fixtFilm.synopsis}</synopsis>
+			      <posterUrl>${fixtFilm.posterUrl}</posterUrl>
+			      <reasonToSee>${fixtFilm.reasonToSee}</reasonToSee>
+			      <attributes>${fixtFilm.attributes}</attributes>
+			      <trailerUrl>${fixtFilm.trailerUrl}</trailerUrl>
+			    </film>
+			  </films>
+			  <performances>
+			    <screening film="${fixtFilm.id}" cinema="${fixtCinema.id}">
+			      <url>${fixtPerformance.url}</url>
+			      <date>${fixtPerformance.date}</date>
+			      <attributes>${fixtPerformance.attributes}</attributes>
+			    </screening>
+			  </performances>
+			</feed>
+		""".trimIndent()
+		assertEquals(expected + "\n", serialized.replace(System.lineSeparator(), "\n"))
 	}
 
 	@Test fun `serialization is reversible`() {
