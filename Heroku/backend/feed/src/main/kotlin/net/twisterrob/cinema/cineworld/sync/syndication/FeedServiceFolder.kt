@@ -1,18 +1,28 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
-import com.fasterxml.jackson.module.kotlin.readValue
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import java.io.File
 
-class FeedServiceFolder(
-	private val baseFolder: File
+class FeedServiceFolder @AssistedInject constructor(
+	@Assisted
+	private val baseFolder: File,
+	private val feedMapper: FeedMapper,
 ) : FeedService {
 
 	override fun getWeeklyFilmTimes(): Feed =
 		getUKWeeklyFilmTimes() + getIrelandWeeklyFilmTimes()
 
 	private fun getUKWeeklyFilmTimes(): Feed =
-		feedReader().readValue(File(baseFolder, "weekly_film_times.xml"))
+		feedMapper.read(File(baseFolder, "weekly_film_times.xml"))
 
 	private fun getIrelandWeeklyFilmTimes(): Feed =
-		feedReader().readValue(File(baseFolder, "weekly_film_times_ie.xml"))
+		feedMapper.read(File(baseFolder, "weekly_film_times_ie.xml"))
+
+	@AssistedFactory
+	interface FeedServiceFolderFactory {
+
+		fun create(baseFolder: File): FeedServiceFolder
+	}
 }

@@ -23,7 +23,7 @@ class UriEncodingFixingUriDeserializerIntgTest {
 	 * This calls [UriEncodingFixingUriDeserializer] through [JsonDeserialize] in a realistic context.
 	 */
 	private fun executeSutCall(input: String): Film =
-		feedReader().readValue(input.byteInputStream())
+		feedMapper().readValue(input.byteInputStream())
 
 	@Suppress("HttpUrlsUsage") // Testing old style URLs.
 	@Test fun `can decode valid url`() {

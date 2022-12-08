@@ -22,7 +22,7 @@ class FeedIntgTest {
 		val resource = "/$fileName"
 		val stream = FeedIntgTest::class.java.getResourceAsStream(resource)
 			?: error("Cannot find $resource near ${FeedIntgTest::class.java}")
-		return feedReader().readValue(stream)
+		return feedMapper().readValue(stream)
 	}
 
 	@Test fun `read UK weekly film times XML`() {
@@ -58,7 +58,7 @@ class FeedIntgTest {
 			attributes = listOf(fixtAttribute),
 			performances = listOf(fixtPerformance),
 		)
-		val serialized = feedReader().writeValueAsString(fixtFeed)
+		val serialized = feedMapper().writeValueAsString(fixtFeed)
 		@Language("xml")
 		val expected = """
 			<feed>
@@ -119,8 +119,8 @@ class FeedIntgTest {
 			}
 			sanityCheck()
 		}
-		val serialized = feedReader().writeValueAsString(fixtFeed)
-		val feed = feedReader().readValue<Feed>(serialized)
+		val serialized = feedMapper().writeValueAsString(fixtFeed)
+		val feed = feedMapper().readValue<Feed>(serialized)
 		assertEquals(fixtFeed, feed)
 	}
 }

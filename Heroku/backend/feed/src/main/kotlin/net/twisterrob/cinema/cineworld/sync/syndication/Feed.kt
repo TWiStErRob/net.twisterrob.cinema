@@ -24,7 +24,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
 
-fun feedReader(): XmlMapper {
+internal fun feedMapper(): XmlMapper {
 	val jackson = JacksonXmlModule().apply {
 		setXMLTextElementName("innerText")
 	}
