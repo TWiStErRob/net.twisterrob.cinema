@@ -3,6 +3,7 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -17,6 +18,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.util.InternalAPI
+import io.ktor.util.rootCause
 import net.twisterrob.test.assertAll
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -119,59 +122,58 @@ class JacksonSerializationTest {
 	}
 
 	data class References(
-		val child: Child,
-		val parent: Parent
+		val referenced: Referenced,
+		val referencing: Referencing,
 	) {
 
-		data class Parent(
+		data class Referencing(
 			@JacksonXmlProperty(isAttribute = true)
 			val id: Long
 		) {
 
 			// missing from serialized
 			@Suppress("DataClassShouldBeImmutable")
-			@JsonBackReference("childRef")
+			@JsonManagedReference("refName")
+			@JsonIdentityReference(alwaysAsId = true)
 			@JacksonXmlProperty(isAttribute = true)
-			private lateinit var child: Child
+			private lateinit var reference: Referenced
 
-			constructor(id: Long, child: Child) : this(id) {
-				this.child = child
+			constructor(id: Long, reference: Referenced) : this(id) {
+				this.reference = reference
 			}
 		}
 
 		@JsonIdentityInfo(
-			scope = Child::class,
+			scope = Referenced::class,
 			generator = ObjectIdGenerators.PropertyGenerator::class,
 			property = "id"
 		)
-		data class Child(
+		data class Referenced(
 			@JacksonXmlProperty(isAttribute = true)
 			val id: Long
 		) {
 
 			@Suppress("DataClassShouldBeImmutable")
-			@JsonIgnore // has no effect :(
-			@JsonManagedReference("childRef")
-			lateinit var parent: Parent
+			@JsonBackReference("refName")
+			lateinit var referencing: Referencing
 		}
 	}
 
-	@Disabled("Child.parent insists on duplicating the referenced object during serialization")
 	@Test fun `References serialization is reversible`() {
 		val sut = jackson()
-		val child = References.Child(42)
-		val parent = References.Parent(43, child)
-		child.parent = parent
+		val referenced = References.Referenced(42)
+		val referencing = References.Referencing(43, referenced)
+		referenced.referencing = referencing
 
 		val data = References(
-			child = child,
-			parent = parent
+			referenced = referenced,
+			referencing = referencing
 		)
 		@Language("xml")
 		val xml = """
 			<References>
-			  <child id="42"/>
-			  <parent id="43" child="42"/>
+			  <referenced id="42"/>
+			  <referencing id="43" reference="42"/>
 			</References>
 		""".trimIndent()
 
@@ -200,6 +202,7 @@ class JacksonSerializationTest {
 		)
 	}
 
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
 	@Disabled("JacksonXmlProperty localName is used for serialization correctly, but breaks deserialization")
 	@Test fun `RootElementWithChildren serialization is reversible`() {
 		val sut = jackson()
@@ -213,6 +216,87 @@ class JacksonSerializationTest {
 				RootElementWithChildren.Element2("Text 2-2")
 			)
 		)
+		@Language("xml")
+		val xml = """
+			<parent>
+			  <element1s>
+			    <element1>
+			      <content>Text 1-1</content>
+			    </element1>
+			    <element1>
+			      <content>Text 1-2</content>
+			    </element1>
+			  </element1s>
+			  <element2s>
+			    <element2>
+			      <content>Text 2-1</content>
+			    </element2>
+			    <element2>
+			      <content>Text 2-2</content>
+			    </element2>
+			  </element2s>
+			</parent>
+		""".trimIndent()
+
+		testSerialization(sut, data, xml)
+	}
+
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
+	// Workarounds from:
+	//  * https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-525304875
+	//  * https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-692011574
+	@JacksonXmlRootElement(localName = "parent")
+	data class RootElementWithChildrenWorkaround(
+		@Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
+		private var _element1s: List<Element1> = emptyList(),
+
+		@Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
+		private var _element2s: List<Element2> = emptyList(),
+	) {
+
+		@Suppress("DataClassShouldBeImmutable")
+		@get:JacksonXmlElementWrapper(localName = "element1s")
+		@get:JacksonXmlProperty(localName = "element1")
+		@get:JsonProperty(index = 1)
+		var element1s: List<Element1>
+			get() = _element1s
+			private set(value) {
+				_element1s = value
+			}
+
+		@Suppress("DataClassShouldBeImmutable")
+		@get:JacksonXmlElementWrapper(localName = "element2s")
+		@get:JacksonXmlProperty(localName = "element2")
+		@get:JsonProperty(index = 2)
+		var element2s: List<Element2>
+			get() = _element2s
+			private set(value) {
+				_element2s = value
+			}
+
+		data class Element1(
+			val content: String
+		)
+
+		data class Element2(
+			val content: String
+		)
+	}
+
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
+	@Test fun `RootElementWithChildrenWorkaround serialization is reversible`() {
+		val sut = jackson()
+		val data = RootElementWithChildrenWorkaround(
+			mutableListOf(
+				RootElementWithChildrenWorkaround.Element1("Text 1-1"),
+				RootElementWithChildrenWorkaround.Element1("Text 1-2")
+			),
+			mutableListOf(
+				RootElementWithChildrenWorkaround.Element2("Text 2-1"),
+				RootElementWithChildrenWorkaround.Element2("Text 2-2")
+			)
+		)
+
 		@Language("xml")
 		val xml = """
 			<parent>
@@ -342,26 +426,33 @@ private fun jackson(
 		configure()
 	}
 
+private fun Any?.short(): String =
+	this.toString().replace("[\r\n]".toRegex(), "")
+
+@OptIn(InternalAPI::class)
+private fun details(expectedData: Any, e: Throwable): String =
+	"\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message ?: "No message"}"
+
 private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
 	assertAll {
 		o {
 			val actualXml: String = try {
 				sut.writeValueAsString(expectedData)
 			} catch (e: Throwable) {
-				fail("Cannot serialize $expectedData", e)
+				fail("Cannot serialize data to XML:${details(expectedData, e)}", e)
 			}
 			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
-				"Serialized XML doesn't match, input: $expectedData"
+				"Serialized XML doesn't match, input data:\n\t\t${expectedData.short()}"
 			}
 		}
 		o {
 			val actualData: T = try {
 				sut.readValue(expectedXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize $expectedXml", e)
+				fail("Cannot deserialize XML to data:${details(expectedXml, e)}", e)
 			}
 			assertEquals(expectedData, actualData) {
-				"Deserialized data doesn't match, input: $expectedXml"
+				"Deserialized data doesn't match, input XML:\n\t\t${expectedXml.short()}"
 			}
 		}
 		o {
@@ -369,10 +460,10 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 			val reRead: T = try {
 				sut.readValue(actualXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize serialized $actualXml", e)
+				fail("Cannot deserialize serialized XML:${details(actualXml, e)}", e)
 			}
 			assertEquals(expectedData, reRead) {
-				"Re-read data don't match, input: $expectedData -> $actualXml"
+				"Re-read data don't match, input data:\n\t\t${expectedData.short()}\n\t\t->\n\t\t${actualXml.short()}"
 			}
 		}
 	}

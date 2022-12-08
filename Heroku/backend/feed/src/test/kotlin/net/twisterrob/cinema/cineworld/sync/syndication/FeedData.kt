@@ -74,6 +74,7 @@ fun Feed.verifyHasAllAttributes(attributes: Set<Feed.Attribute>) {
 
 fun Feed.sanityCheck() {
 	verifyAllAttributesAreValid()
+	verifyCalculatedProperties()
 }
 
 fun Feed.verifyAllAttributesAreValid() {
@@ -81,4 +82,10 @@ fun Feed.verifyAllAttributesAreValid() {
 		assertNotNull(attribute.code)
 		assertNotNull(attribute.title)
 	}
+}
+
+fun Feed.verifyCalculatedProperties() {
+	this.films.forEach { it.attributeList }
+	this.cinemas.forEach { it.serviceList }
+	this.performances.forEach { it.attributeList }
 }

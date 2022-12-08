@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import net.twisterrob.test.TagExternal
 import net.twisterrob.test.TagIntegration
 import org.junit.jupiter.api.Assumptions.assumeFalse
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @TagIntegration
@@ -13,6 +14,7 @@ class FeedServiceNetworkIntgExtTest {
 
 	private val sut = FeedServiceNetwork(HttpClient())
 
+	@Disabled("Endpoint is dead, returns HTML error page")
 	@Test fun `read weekly film times XML`() {
 		try {
 			val feed = sut.getWeeklyFilmTimes()
