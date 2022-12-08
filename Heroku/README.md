@@ -3,11 +3,6 @@
 ### Setup
 * node (`nvm use <version from package.json>`)
    * npm (`npm install --global npm@<version from package.json>`)
-* heroku (`npm install --global heroku`) or [any other way](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
- * git
-    * `git --work-tree=Heroku remote add heroku https://git.heroku.com/twisterrob-cinema.git`
-    * `heroku login` (otherwise fetch and push fails)
-    * `git fetch -a`
  * `git clone https://github.com/TWiStErRob/net.twisterrob.cinema.history.git history`
  * `scripts/env.bat` (or copy contents to global vars)
 

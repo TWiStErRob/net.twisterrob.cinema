@@ -26,7 +26,6 @@
 		"updateFromCineworldPerformances": "gradlew :backend:sync:run --args \"performances\"",
 		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
 		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",
-		"heroku-postbuild": "cd frontend && npm run build:prod",
 		"test": "(cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
 		"install": "(cd frontend && npm install && cd ..) && (cd test && npm install && cd ..)",
 		"update": "(cd frontend && npm update && cd ..) && (cd test && npm update && cd ..)",
