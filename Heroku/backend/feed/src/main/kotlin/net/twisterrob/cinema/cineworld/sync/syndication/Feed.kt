@@ -1,20 +1,21 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -23,7 +24,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
 
-fun feedReader(): XmlMapper {
+internal fun feedMapper(): XmlMapper {
 	val jackson = JacksonXmlModule().apply {
 		setXMLTextElementName("innerText")
 	}
@@ -32,18 +33,20 @@ fun feedReader(): XmlMapper {
 		registerModule(JavaTimeModule())
 		// I want to know when new things are added to syndication.
 		enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		enable(SerializationFeature.INDENT_OUTPUT)
+		disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 	}
 }
 
 operator fun Feed.plus(other: Feed): Feed = Feed(
 	// merge the attributes, keep only unique ones
-	attributes = (this.attributes + other.attributes).distinctBy { it.code },
+	_attributes = (this.attributes + other.attributes).distinctBy { it.code },
 	// different country -> different cinemas
-	cinemas = this.cinemas + other.cinemas,
+	_cinemas = this.cinemas + other.cinemas,
 	// both countries play the same movies
-	films = (this.films + other.films).distinctBy { it.id },
+	_films = (this.films + other.films).distinctBy { it.id },
 	// performances are separate by cinemas, see cinemas above
-	performances = this.performances + other.performances
+	_performances = this.performances + other.performances
 )
 
 /**
@@ -72,38 +75,79 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
  * At the first instantiation of the object the ObjectId field is set as null,
  * and then later it's set via reflection, so it should be a `lateinit val`, which is not possible.
  * To work around this, the IDs are made nullable, but should never be null.
+ *
+ * ### Different [JacksonXmlElementWrapper] and [JacksonXmlProperty] names
+ *  * Everything has to be var, because serialization needs to be able to populate it.
+ *  * The constructor parameters cannot be used with annotations because [JacksonXmlElementWrapper] is ignored.
+ *  * This solution is demonstrated in isolation in `JacksonSerializationTest`.
+ * See https://github.com/FasterXML/jackson-module-kotlin/issues/153 for more details.
  */
-@JacksonXmlRootElement(localName = "feed")
-data class Feed(
-	@JacksonXmlElementWrapper(localName = "attributes")
-//	@JacksonXmlProperty(localName = "attribute")
-	@JsonProperty(index = 1)
-	val attributes: List<Attribute>,
-
-	@JacksonXmlElementWrapper(localName = "cinemas")
-//	@JacksonXmlProperty(localName = "cinema")
-	@JsonProperty(index = 2)
-	val cinemas: List<Cinema>,
-
-	@JacksonXmlElementWrapper(localName = "films")
-//	@JacksonXmlProperty(localName = "film")
-	@JsonProperty(index = 3)
-	val films: List<Film>,
-
-	@JacksonXmlElementWrapper(localName = "performances")
-//	@JacksonXmlProperty(localName = "screening")
-	@JsonProperty(index = 4)
-	val performances: List<Performance>,
+@JsonRootName("feed")
+data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable") constructor(
+	private var _attributes: List<Attribute> = emptyList(),
+	private var _cinemas: List<Cinema> = emptyList(),
+	private var _films: List<Film> = emptyList(),
+	private var _performances: List<Performance> = emptyList(),
 ) {
+
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153 see JacksonSerializationTest for more info.
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "attributes")
+	@get:JacksonXmlProperty(localName = "attribute")
+	@get:JsonProperty(index = 1)
+	var attributes: List<Attribute>
+		get() = _attributes
+		private set(value) {
+			_attributes = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "cinemas")
+	@get:JacksonXmlProperty(localName = "cinema")
+	@get:JsonProperty(index = 2)
+	var cinemas: List<Cinema>
+		get() = _cinemas
+		private set(value) {
+			_cinemas = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "films")
+	@get:JacksonXmlProperty(localName = "film")
+	@get:JsonProperty(index = 3)
+	var films: List<Film>
+		get() = _films
+		private set(value) {
+			_films = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "performances")
+	@get:JacksonXmlProperty(localName = "screening")
+	@get:JsonProperty(index = 4)
+	var performances: List<Performance>
+		get() = _performances
+		private set(value) {
+			_performances = value
+		}
+
+	// Hide default constructor from JFixture.
+	private constructor() : this(emptyList(), emptyList(), emptyList(), emptyList())
 
 	constructor(
 		attributes: List<Attribute>,
 		performances: List<Performance>
 	) : this(attributes, performances.map { it.cinema }, performances.map { it.film }, performances) {
+		verifyPerformanceAttributes()
+	}
+
+	private fun verifyPerformanceAttributes() {
 		val attributeCodes = attributes.map { it.code }
 		performances.forEach { performance ->
 			performance.attributeList.forEach { attributeCode ->
-				check(attributeCode in attributeCodes)
+				check(attributeCode in attributeCodes) {
+					"${performance} has attribute ${attributeCode}, but it's not in the feed (${attributeCodes})."
+				}
 			}
 		}
 	}
@@ -176,11 +220,6 @@ data class Feed(
 
 		@JsonIgnore
 		val serviceList = services.split(",")
-
-		@Suppress("DataClassShouldBeImmutable")
-		@JsonManagedReference("cinema")
-		lateinit var performances: List<Performance>
-			private set
 	}
 
 	@JsonIdentityInfo(
@@ -266,25 +305,22 @@ data class Feed(
 
 		@JsonIgnore
 		val attributeList = attributes.split(",")
-
-		@Suppress("DataClassShouldBeImmutable")
-		@JsonManagedReference("film")
-		lateinit var performances: List<Performance>
-			private set
 	}
 
 	data class Performance(
 		/**
 		 * @sample `"163254"`
 		 */
-		@JsonBackReference("film")
+		@JsonManagedReference("film")
+		@JsonIdentityReference(alwaysAsId = true)
 		@JacksonXmlProperty(isAttribute = true)
 		val film: Film,
 
 		/**
 		 * @sample `"1"`
 		 */
-		@JsonBackReference("cinema")
+		@JsonManagedReference("cinema")
+		@JsonIdentityReference(alwaysAsId = true)
 		@JacksonXmlProperty(isAttribute = true)
 		val cinema: Cinema,
 

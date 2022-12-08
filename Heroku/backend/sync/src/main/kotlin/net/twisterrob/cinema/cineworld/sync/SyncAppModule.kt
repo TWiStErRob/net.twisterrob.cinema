@@ -80,9 +80,13 @@ class SyncAppModule {
 		}
 
 	@Provides
-	fun feedService(params: MainParameters, network: Provider<FeedServiceNetwork>): FeedService =
+	fun feedService(
+		params: MainParameters,
+		network: Provider<FeedServiceNetwork>,
+		local: FeedServiceFolder.FeedServiceFolderFactory,
+	): FeedService =
 		if (params.fromFolder != null) {
-			FeedServiceFolder(params.fromFolder)
+			local.create(params.fromFolder)
 		} else {
 			network.get()
 		}

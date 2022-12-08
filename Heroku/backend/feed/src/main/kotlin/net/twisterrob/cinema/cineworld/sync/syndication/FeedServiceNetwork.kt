@@ -15,7 +15,7 @@ class FeedServiceNetwork @Inject constructor(
 	private val client = client.config {
 		install(ContentNegotiation) {
 			// Poor man's XmlPlugin
-			register(ContentType.Application.Xml, JacksonConverter(feedReader()))
+			register(ContentType.Application.Xml, JacksonConverter(feedMapper()))
 		}
 	}
 
