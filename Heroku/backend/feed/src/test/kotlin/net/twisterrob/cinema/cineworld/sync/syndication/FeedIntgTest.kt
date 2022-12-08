@@ -41,6 +41,7 @@ class FeedIntgTest {
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
 	}
 
+	@Suppress("LongMethod") // THe constant shouldn't matter, but it needs all the local variables.
 	@Test fun `write feed XML`() {
 		val fixture = JFixture()
 		val fixtCinema = fixture.build<Feed.Cinema>()

@@ -241,17 +241,20 @@ class JacksonSerializationTest {
 		testSerialization(sut, data, xml)
 	}
 
-	// https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-525304875
-	// https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-692011574
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153
+	// Workarounds from:
+	//  * https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-525304875
+	//  * https://github.com/FasterXML/jackson-module-kotlin/issues/153#issuecomment-692011574
 	@JacksonXmlRootElement(localName = "parent")
 	data class RootElementWithChildrenWorkaround(
-		@Suppress("ConstructorParameterNaming")
+		@Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
 		private var _element1s: List<Element1> = emptyList(),
 
-		@Suppress("ConstructorParameterNaming")
+		@Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
 		private var _element2s: List<Element2> = emptyList(),
 	) {
 
+		@Suppress("DataClassShouldBeImmutable")
 		@get:JacksonXmlElementWrapper(localName = "element1s")
 		@get:JacksonXmlProperty(localName = "element1")
 		@get:JsonProperty(index = 1)
@@ -261,10 +264,11 @@ class JacksonSerializationTest {
 				_element1s = value
 			}
 
+		@Suppress("DataClassShouldBeImmutable")
 		@get:JacksonXmlElementWrapper(localName = "element2s")
 		@get:JacksonXmlProperty(localName = "element2")
 		@get:JsonProperty(index = 2)
-		var element2s: List<Element2> 
+		var element2s: List<Element2>
 			get() = _element2s
 			private set(value) {
 				_element2s = value
@@ -426,13 +430,16 @@ private fun Any?.short(): String =
 	this.toString().replace("[\r\n]".toRegex(), "")
 
 @OptIn(InternalAPI::class)
+private fun details(expectedData: Any, e: Throwable): String =
+	"\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message ?: "No message"}"
+
 private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
 	assertAll {
 		o {
 			val actualXml: String = try {
 				sut.writeValueAsString(expectedData)
 			} catch (e: Throwable) {
-				fail("Cannot serialize data to XML\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message}", e)
+				fail("Cannot serialize data to XML:${details(expectedData, e)}", e)
 			}
 			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
 				"Serialized XML doesn't match, input data:\n\t\t${expectedData.short()}"
@@ -442,7 +449,7 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 			val actualData: T = try {
 				sut.readValue(expectedXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize XML to data:\n\t\t${expectedXml.short()}\n\t\t${e.rootCause!!.message}", e)
+				fail("Cannot deserialize XML to data:${details(expectedXml, e)}", e)
 			}
 			assertEquals(expectedData, actualData) {
 				"Deserialized data doesn't match, input XML:\n\t\t${expectedXml.short()}"
@@ -453,7 +460,7 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 			val reRead: T = try {
 				sut.readValue(actualXml)
 			} catch (e: Throwable) {
-				fail("Cannot deserialize serialized XML:\n\t\t${actualXml.short()}\n\t\t${e.rootCause!!.message}", e)
+				fail("Cannot deserialize serialized XML:${details(actualXml, e)}", e)
 			}
 			assertEquals(expectedData, reRead) {
 				"Re-read data don't match, input data:\n\t\t${expectedData.short()}\n\t\t->\n\t\t${actualXml.short()}"

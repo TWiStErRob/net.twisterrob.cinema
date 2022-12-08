@@ -75,6 +75,12 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
  * At the first instantiation of the object the ObjectId field is set as null,
  * and then later it's set via reflection, so it should be a `lateinit val`, which is not possible.
  * To work around this, the IDs are made nullable, but should never be null.
+ *
+ * ### Different [JacksonXmlElementWrapper] and [JacksonXmlProperty] names
+ *  * Everything has to be var, because serialization needs to be able to populate it.
+ *  * The constructor parameters cannot be used with annotations because [JacksonXmlElementWrapper] is ignored.
+ *  * This solution is demonstrated in isolation in `JacksonSerializationTest`.
+ * See https://github.com/FasterXML/jackson-module-kotlin/issues/153 for more details.
  */
 @JsonRootName("feed")
 data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable") constructor(
@@ -84,6 +90,7 @@ data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmuta
 	private var _performances: List<Performance> = emptyList(),
 ) {
 
+	// TODEL https://github.com/FasterXML/jackson-module-kotlin/issues/153 see JacksonSerializationTest for more info.
 	@Suppress("DataClassShouldBeImmutable")
 	@get:JacksonXmlElementWrapper(localName = "attributes")
 	@get:JacksonXmlProperty(localName = "attribute")
