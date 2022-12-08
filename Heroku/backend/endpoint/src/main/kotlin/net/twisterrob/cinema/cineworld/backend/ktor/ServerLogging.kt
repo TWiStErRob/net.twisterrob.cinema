@@ -55,7 +55,9 @@ class ServerLogging(
 			if (level.showInfo) {
 				val requestURI = call.request.path()
 				appendLine("REQUEST")
-				appendLine(call.request.origin.run { "${method.value} $scheme://$host:$port$requestURI $version" })
+				appendLine(call.request.origin.run {
+					"${method.value} $scheme://$serverHost:$serverPort$requestURI $version"
+				})
 			}
 			if (level.showHeaders) {
 				appendLine("REQUEST HEADERS")
