@@ -118,6 +118,10 @@ potential-bugs:
 
 style:
 
+  DataClassContainsFunctions:
+    # TODEL Looks like there's no use for this https://github.com/detekt/detekt/issues/5321#issuecomment-1252937894
+    active: false
+
   ForbiddenComment:
     values:
       - 'FIXME'

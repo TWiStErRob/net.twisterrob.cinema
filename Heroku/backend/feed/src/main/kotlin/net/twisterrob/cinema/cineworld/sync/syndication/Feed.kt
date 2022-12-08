@@ -77,15 +77,55 @@ operator fun Feed.plus(other: Feed): Feed = Feed(
  * To work around this, the IDs are made nullable, but should never be null.
  */
 @JsonRootName("feed")
-data class Feed @Suppress("ConstructorParameterNaming") constructor(
+data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable") constructor(
 	private var _attributes: List<Attribute> = emptyList(),
 	private var _cinemas: List<Cinema> = emptyList(),
 	private var _films: List<Film> = emptyList(),
 	private var _performances: List<Performance> = emptyList(),
 ) {
 
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "attributes")
+	@get:JacksonXmlProperty(localName = "attribute")
+	@get:JsonProperty(index = 1)
+	var attributes: List<Attribute>
+		get() = _attributes
+		private set(value) {
+			_attributes = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "cinemas")
+	@get:JacksonXmlProperty(localName = "cinema")
+	@get:JsonProperty(index = 2)
+	var cinemas: List<Cinema>
+		get() = _cinemas
+		private set(value) {
+			_cinemas = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "films")
+	@get:JacksonXmlProperty(localName = "film")
+	@get:JsonProperty(index = 3)
+	var films: List<Film>
+		get() = _films
+		private set(value) {
+			_films = value
+		}
+
+	@Suppress("DataClassShouldBeImmutable")
+	@get:JacksonXmlElementWrapper(localName = "performances")
+	@get:JacksonXmlProperty(localName = "screening")
+	@get:JsonProperty(index = 4)
+	var performances: List<Performance>
+		get() = _performances
+		private set(value) {
+			_performances = value
+		}
+
 	// Hide default constructor from JFixture.
-	private constructor(): this(emptyList(), emptyList(), emptyList(), emptyList())
+	private constructor() : this(emptyList(), emptyList(), emptyList(), emptyList())
 
 	constructor(
 		attributes: List<Attribute>,
@@ -104,42 +144,6 @@ data class Feed @Suppress("ConstructorParameterNaming") constructor(
 			}
 		}
 	}
-
-	@get:JacksonXmlElementWrapper(localName = "attributes")
-	@get:JacksonXmlProperty(localName = "attribute")
-	@get:JsonProperty(index = 1)
-	var attributes: List<Attribute>
-		get() = _attributes
-		private set(value) {
-			_attributes = value
-		}
-
-	@get:JacksonXmlElementWrapper(localName = "cinemas")
-	@get:JacksonXmlProperty(localName = "cinema")
-	@get:JsonProperty(index = 2)
-	var cinemas: List<Cinema>
-		get() = _cinemas
-		private set(value) {
-			_cinemas = value
-		}
-
-	@get:JacksonXmlElementWrapper(localName = "films")
-	@get:JacksonXmlProperty(localName = "film")
-	@get:JsonProperty(index = 3)
-	var films: List<Film>
-		get() = _films
-		private set(value) {
-			_films = value
-		}
-
-	@get:JacksonXmlElementWrapper(localName = "performances")
-	@get:JacksonXmlProperty(localName = "screening")
-	@get:JsonProperty(index = 4)
-	var performances: List<Performance>
-		get() = _performances
-		private set(value) {
-			_performances = value
-		}
 
 	data class Attribute(
 		/**
