@@ -10,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.decodeURLPart
 import io.ktor.http.headersOf
 import io.ktor.server.application.Application
 import io.ktor.server.testing.TestApplicationCall
@@ -85,7 +86,7 @@ class AuthIntgTest {
 			stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
 			verify(mockRepository)
 				.addUser(eq(fakeUserId), eq(fakeEmail), eq(fakeName), eq("http://${fakeHost}/"), any())
-			assertThat(cookie, startsWith("userId=%2523s${fakeUserId}/")) // %2523 is # double-encoded.
+			assertThat(cookie, startsWith("userId=%23s${fakeUserId}/")) // %23 is # double-encoded.
 			verifyNoMoreInteractions(mockRepository)
 			stubClient.verifyNoMoreInteractions()
 		}
@@ -315,7 +316,7 @@ private fun TestApplicationEngine.receiveAuthorizationFromGoogle(
 	val setCookie = call.response.headers[HttpHeaders.SetCookie]!!
 	val cookieDetails = Regex("auth=(?<value>[^;]+)(;.+)?").find(setCookie)
 		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${setCookie}'.")
-	return cookieDetails.groups["value"]!!.value
+	return cookieDetails.groups["value"]!!.value.decodeURLPart()
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
