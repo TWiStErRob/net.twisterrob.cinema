@@ -61,3 +61,11 @@ For PR/manual deployments there's a best-effort `Delete from Google App Engine` 
    * NEO4J_URL: ...
 3. run `npm start` in `frontend` (in the background)
 4. Debug `src\main\javascript\index.js` in `backend` folder
+
+## Set up example Database
+Overwrite XML files in `backend/sync/test/` and then import them.
+
+1. `set NEO4J_URL=...`
+2. `gradlew :backend:sync:generate --args "test/weekly_film_times.xml"`
+3. `gradlew :backend:sync:run --args "--folder=test performances"`
+4. https://cinema.twisterrob.net/planner?d=2022-03-16&c=78&c=72&f=355506&f=267959

@@ -24,6 +24,13 @@ application {
 	}
 }
 
+tasks.register<JavaExec>("generate") {
+	dependsOn(tasks.jar)
+	classpath(sourceSets["main"].runtimeClasspath)
+	mainClass.set("net.twisterrob.cinema.cineworld.generate.Main")
+	args("test/weekly_film_times.xml")
+}
+
 dependencies {
 	implementation(projects.backend.database)
 	implementation(projects.backend.feed)
