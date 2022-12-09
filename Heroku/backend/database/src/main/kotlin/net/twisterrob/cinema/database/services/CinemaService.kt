@@ -27,7 +27,7 @@ class CinemaService @Inject constructor(
 		session.query(
 			"""
 				MATCH (c:Cinema)
-				WHERE NOT exists (c._deleted)
+				WHERE c._deleted IS NULL
 				RETURN c AS cinema
 			""".trimIndent()
 		)
@@ -56,7 +56,7 @@ class CinemaService @Inject constructor(
 			.query(
 				"""
 					MATCH (c:Cinema)
-					WHERE NOT exists (c._deleted)
+					WHERE c._deleted IS NULL
 					OPTIONAL MATCH (c)<-[f:GOESTO]-(u:User { id: ${"$"}userID })
 					RETURN c AS cinema, f IS NOT NULL AS fav
 				""".trimIndent(),
