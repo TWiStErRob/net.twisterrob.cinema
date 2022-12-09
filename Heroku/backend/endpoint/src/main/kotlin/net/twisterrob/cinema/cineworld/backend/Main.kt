@@ -1,30 +1,41 @@
 package net.twisterrob.cinema.cineworld.backend
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.server.application.Application
+import io.ktor.server.engine.addShutdownHook
+import io.ktor.server.engine.commandLineEnvironment
+import io.ktor.server.engine.stop
+import io.ktor.server.netty.NettyApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 fun main(vararg args: String) {
-	val port = getPort()
-	val staticContentPath = if (args.isNotEmpty()) args[0] else null
-	val fakeContentPath = if (args.size >= 2) args[1] else null
-	embeddedServer(Netty, port) {
-		when {
-			staticContentPath != null && fakeContentPath != null ->
-				configuration(staticRootFolder = File(staticContentPath), fakeRootFolder = File(fakeContentPath))
-			staticContentPath != null ->
-				configuration(staticRootFolder = File(staticContentPath))
-			else ->
-				configuration()
-		}
-		daggerApplication()
-	}.start(wait = true)
-}
+	// Same as io.ktor.server.netty.EngineMain.main(args.toList().toTypedArray()), but with extra module:
+	val applicationEnvironment = commandLineEnvironment(args.toList().toTypedArray()) {
+		modules.add {
+			// TODO re-wire to use proper configuration.
+			// Note: can't use YAML because of this lambda, but can use HOCON.
+			val staticContentPath = if (args.isNotEmpty()) args[0] else null
+			val fakeContentPath = if (args.size >= 2) args[1] else null
+			when {
+				staticContentPath != null && fakeContentPath != null ->
+					configuration(staticRootFolder = File(staticContentPath), fakeRootFolder = File(fakeContentPath))
 
-private fun getPort(): Int {
-	val port = System.getenv("PORT")
-		?: error("PORT environment variable must be defined (=1234).")
-	return port.toInt()
+				staticContentPath != null ->
+					configuration(staticRootFolder = File(staticContentPath))
+
+				else ->
+					configuration()
+			}
+		}
+		// Note: because this has to be second, cannot use ktor.application.modules.
+		modules.add(Application::daggerApplication)
+	}
+	val engine = NettyApplicationEngine(applicationEnvironment)
+	engine.addShutdownHook {
+		@Suppress("MagicNumber")
+		engine.stop(3, 5, TimeUnit.SECONDS)
+	}
+	engine.start(true)
 }
