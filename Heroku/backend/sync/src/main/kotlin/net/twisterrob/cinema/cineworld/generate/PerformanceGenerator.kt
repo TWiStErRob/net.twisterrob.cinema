@@ -31,49 +31,61 @@ class PerformanceGenerator @Inject constructor(
 		)
 	}
 
-	private fun mapCinema(it: Cinema): Feed.Cinema =
+	private fun mapCinema(cinema: Cinema): Feed.Cinema =
 		Feed.Cinema(
-			id = it.cineworldID,
-			url = it.cinema_url,
-			name = it.name,
-			address = it.address,
-			postcode = it.postcode,
-			phone = it.telephone,
+			id = cinema.cineworldID,
+			url = cinema.cinema_url,
+			name = cinema.name,
+			address = cinema.address,
+			postcode = cinema.postcode,
+			phone = cinema.telephone,
 			services = "",
 		)
 
-	private fun mapFilm(it: Film): Feed.Film =
+	private fun mapFilm(film: Film): Feed.Film =
 		Feed.Film(
-			id = it.edi,
-			title = it.title,
-			url = it.film_url,
-			classification = it.classification,
-			releaseDate = it.release.toLocalDate(),
-			runningTime = it.runtime.toInt(),
-			director = it.director,
-			cast = it.actors,
+			id = film.edi,
+			title = film.title,
+			url = film.film_url,
+			classification = film.classification,
+			releaseDate = film.release.toLocalDate(),
+			runningTime = film.runtime.toInt(),
+			director = film.director,
+			cast = film.actors,
 			synopsis = "",
-			posterUrl = it.poster_url,
+			posterUrl = film.poster_url,
 			reasonToSee = null,
-			attributes = inferAttributes(it).joinToString(separator = ","),
-			trailerUrl = it.trailer,
+			attributes = inferAttributes(film).joinToString(separator = ","),
+			trailerUrl = film.trailer,
 		)
 
-	private fun inferAttributes(it: Film): List<String> =
+	/** @see net.twisterrob.cinema.cineworld.sync.copyPropertiesFrom */
+	private fun inferAttributes(film: Film): List<String> =
 		listOfNotNull(
-			if (it.is3D) "3D" else null,
-			if (it.isIMAX) "IMAX" else null,
-			*when (it.format) {
+			if (film.is3D) "3D" else null,
+			if (film.isIMAX) "IMAX" else null,
+			// See net.twisterrob.cinema.cineworld.sync.findFormat
+			*when (film.format) {
 				"IMAX2D" -> arrayOf("IMAX", "2D")
 				"IMAX3D" -> arrayOf("IMAX", "3D")
 				"IMAX" -> arrayOf("IMAX")
 				else -> emptyArray()
 			},
-		)
+			// See net.twisterrob.cinema.cineworld.sync.formatTitle
+			*parseAttributesFromTitle(film.title).toTypedArray()
+		).distinct().sorted()
+
+	private fun parseAttributesFromTitle(title: String): List<String> =
+		@Suppress("RegExpRedundantEscape")
+		Regex("""^.*? \[(.*)\]$""")
+			.find(title)
+			?.let { it.groupValues[1] }
+			?.split(", ")
+			.orEmpty()
 
 	companion object {
 
-		private const val ACTIVE_FILM_COUNT = 30
+		private const val ACTIVE_FILM_COUNT = 20
 	}
 }
 
@@ -128,7 +140,7 @@ class RandomPerformanceCreator @Inject constructor() {
 
 		private const val SCREENING_START_HOUR = 10
 		private const val SCREENING_END_HOUR = 21
-		private const val START_DAY_RELATIVE = -2
-		private const val END_DAY_RELATIVE = +14
+		private const val START_DAY_RELATIVE = -1
+		private const val END_DAY_RELATIVE = +7
 	}
 }

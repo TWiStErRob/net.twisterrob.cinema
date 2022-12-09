@@ -40,8 +40,17 @@ private fun formatTitle(title: String, attributeList: List<String>): String {
 		.filterNot { it == "2D" }
 		.sorted()
 		.joinToString(separator = ", ")
-	val noFormatTitle = Regex("""\(.*\) (.*)""").find(title)?.let { it.groupValues[1] } ?: title
-	return "$noFormatTitle [$format]"
+
+	// Ignore (2D) in front coming from feed, and [IMAX, 3D, AD] in the end coming from generator so import is idempotent.
+	// https://regex101.com/r/NWTzLC/1
+	@Suppress("RegExpRedundantEscape")
+	val noFormatTitle = Regex("""^(?:\(.*?\) )?(.*?)( \[[^\[\]]*\])?${'$'}""")
+		.find(title)
+		?.let { it.groupValues[1] }
+		?: title
+
+	// Make sure we don't get "Title []"
+	return if (format.isNotEmpty()) "${noFormatTitle} [${format}]" else noFormatTitle
 }
 
 private fun findFormat(attributeList: List<String>): String =
