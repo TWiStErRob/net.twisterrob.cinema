@@ -356,6 +356,18 @@ jobs:
           patch-dependency-tree "root"
           patch-dependency-tree "test-helpers"
 
+      - name: List diff dir
+        working-directory: diff
+        run: ls -la
+
+      - name: Disk usage
+        working-directory: diff
+        run: du -h -d 1
+
+      - name: Disk quota
+        working-directory: diff
+        run: df
+
       - name: Merge diffs into a single file (all.dependencies.diff).
         working-directory: diff
         run: |
@@ -596,7 +608,9 @@ jobs:
       - name: Start Backend.
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/frontend/static ../../test/fake-data" >backend.log 2>&1 &
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run \
+            --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../test/fake-data" \
+            >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 
