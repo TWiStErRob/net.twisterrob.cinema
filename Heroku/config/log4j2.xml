@@ -93,19 +93,8 @@
 			Default logging is JUL, so customised with
 			.withCustomProperty("Bolt_Logging", org.neo4j.driver.Logging.slf4j())
 			but then the level is ALL by default from <Root>.
-			These Loggers don't have a namespace so need to list them explicitly one by one.
 		-->
-		<Logger name="ChannelConnectedListener" level="INFO" />
-		<Logger name="ChunkDecoder" level="INFO" />
-		<Logger name="ConnectionPool" level="INFO" />
-		<Logger name="Driver" level="INFO" />
-		<Logger name="HandshakeHandler" level="INFO" />
-		<Logger name="InboundMessageDispatcher" level="INFO" />
-		<Logger name="InboundMessageHandler" level="INFO" />
-		<Logger name="LeastConnectedLoadBalancingStrategy" level="INFO" />
-		<Logger name="LoadBalancer" level="INFO" />
-		<Logger name="NettyChannelTracker" level="INFO" />
-		<Logger name="OutboundMessageHandler" level="INFO" />
+		<Logger name="org.neo4j.driver.internal" level="INFO" />
 
 		<!-- on every request these lines are logged:
 			DEBUG (BoltTransaction.java:61) No current transaction, starting a new one

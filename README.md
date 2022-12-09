@@ -14,7 +14,7 @@ Round two, a year later, a DAO layer in Java with direct Quickbook JSON calls + 
 
 ## Heroku (Node)
 Started out as a backend migration from AppEngine (Java) to Heroku (Node.js) wrapping a Neo4J graph database.
-Later evolved into a scheduled synchronization from Cineoworld Quickbook into the Neo4J database and a middleware BFF to save favourites.
+Later evolved into a scheduled synchronization from Cineworld Quickbook into the Neo4J database and a middleware BFF to save favourites.
 
 ## Heroku (planner)
 Building on the previous migration, I rewrote the frontend from JQuery to Angular JS (the v1 and only at the time).
@@ -22,12 +22,15 @@ Additionally added the capability to select multiple films and cinemas and get a
 
 ## Heroku (OGM)
 Having an unmaintained ORM library in NodeJS and the lack of strong typing prompted me to migrate the Neo4J DAO layer from Node.js to Neo4J Java ORM in a Kotlin ktor app keeping the same JSON contract as before.
-Also the synchronization mechanism of the Cineworld API was broken, so I rewrote the sync to work on the Cineworld Syndication Feed (XML).
+Also, the synchronization mechanism of the Cineworld API was broken, so I rewrote the sync to work on the Cineworld Syndication Feed (XML).
 
 ## Current state
 Sadly the Syndication feed of Cineworld is as good as dead since their recent redesign of the website and mobile app.
-The Quickbok API with access key is also not available any more. At this point this app is pretty much defunt unless I find a data source for it.
-At this point (2022 November), even Google struggles with the show times showing "No showings" for most days: https://www.google.com/search?q=cineworld+wood+green
+The Quickbook API with access key is also not available anymore. At this point this app is pretty much defunct unless I find a data source for it.
+At this point (2022 November), even [Google](https://www.google.com/search?q=cineworld+wood+green) struggles with the show times showing "No showings" for most days.
+The database is still populated with random data, just for demonstration purposes.
+
+**Visit [The planner](https://cinema.twisterrob.net/planner) and click "All" above "New Films" to see what this is.**
 
 ## map
-A few hour-long hack in Kotlin Scripting to consume the cinema listing of Cineworld and generate a .kml file from it so it can be imported in Google Maps.
+A few hour-long hack in Kotlin Scripting to consume the cinema listing of Cineworld and generate a .kml file from it, so it can be imported in Google Maps.
