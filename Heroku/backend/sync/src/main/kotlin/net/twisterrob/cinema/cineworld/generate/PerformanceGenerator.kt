@@ -27,7 +27,7 @@ class PerformanceGenerator @Inject constructor(
 			emptyList(),
 			feedCinemas,
 			feedFilms,
-			generatePerformances(feedCinemas, feedFilms),
+			creator.generatePerformances(feedCinemas, feedFilms),
 		)
 	}
 
@@ -71,17 +71,48 @@ class PerformanceGenerator @Inject constructor(
 			},
 		)
 
-	private fun generatePerformances(
-		feedCinemas: List<Feed.Cinema>,
-		feedFilms: List<Feed.Film>
-	): List<Feed.Performance> =
-		feedCinemas
-			.flatMap { cinema -> feedFilms.map { film -> cinema to film } }
-			.filter { random() < FUZZY_THRESHOLD }
-			.flatMap { (cinema, film) ->
-				val performanceCount = (random() * MAX_PERFORMANCES_IN_CINEMA).toInt()
-				(0..performanceCount).map { creator.create(film, cinema) }
+}
+
+class RandomPerformanceCreator @Inject constructor() {
+
+	fun generatePerformances(feedCinemas: List<Feed.Cinema>, feedFilms: List<Feed.Film>): List<Feed.Performance> {
+		val dates = relativeDates(START_DAY_RELATIVE, END_DAY_RELATIVE)
+		return feedCinemas
+			.flatMap { cinema ->
+				feedFilms.flatMap { film ->
+					dates.map { date ->
+						Triple(cinema, film, date)
+					}
+				}
 			}
+			.filter { random() < FUZZY_THRESHOLD }
+			.flatMap { (cinema, film, date) ->
+				val performanceCount = (random() * MAX_PERFORMANCES_IN_CINEMA).toInt()
+				(0..performanceCount).map { create(cinema, film, date) }
+			}
+	}
+
+	private fun relativeDates(start: Int, endInclusive: Int): List<LocalDate> =
+		(start .. endInclusive)
+			.map { LocalDate.now().plusDays(it.toLong()) }
+
+	private fun create(cinema: Feed.Cinema, film: Feed.Film, date: LocalDate): Feed.Performance =
+		Feed.Performance(
+			film = film,
+			cinema = cinema,
+			url = URI.create("https://www.cineworld.co.uk"),
+			date = randomTime(date).atOffset(ZoneOffset.UTC),
+			attributes = "",
+		)
+
+	private fun randomTime(date: LocalDate): LocalDateTime =
+		date
+			.atStartOfDay()
+			.plusHours(randBetween(SCREENING_START_HOUR, SCREENING_END_HOUR).toLong())
+			.plusMinutes(@Suppress("MagicNumber") (randBetween(0, 6) * 10).toLong())
+
+	private fun randBetween(start: Int, endExclusive: Int): Int =
+		start + (random() * (endExclusive - start)).toInt()
 
 	companion object {
 
@@ -90,31 +121,6 @@ class PerformanceGenerator @Inject constructor(
 
 		/** It's a realistic value, screenings per movie per day in a specific cinema. */
 		private const val MAX_PERFORMANCES_IN_CINEMA = 5
-	}
-}
-
-class RandomPerformanceCreator @Inject constructor() {
-
-	fun create(film: Feed.Film, cinema: Feed.Cinema): Feed.Performance =
-		Feed.Performance(
-			film = film,
-			cinema = cinema,
-			url = URI.create("https://www.cineworld.co.uk"),
-			date = randomTime().atOffset(ZoneOffset.UTC),
-			attributes = "",
-		)
-
-	private fun randomTime(): LocalDateTime =
-		LocalDate.now()
-			.atStartOfDay() // today
-			.plusDays(randBetween(START_DAY_RELATIVE, END_DAY_RELATIVE).toLong())
-			.plusHours(randBetween(SCREENING_START_HOUR, SCREENING_END_HOUR).toLong())
-			.plusMinutes(@Suppress("MagicNumber") (randBetween(0, 6) * 10).toLong())
-
-	private fun randBetween(start: Int, endExclusive: Int): Int =
-		start + (random() * (endExclusive - start)).toInt()
-
-	companion object {
 
 		private const val SCREENING_START_HOUR = 10
 		private const val SCREENING_END_HOUR = 21
