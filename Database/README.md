@@ -5,7 +5,7 @@
 1. Export database, Export database in dialog
 1. Download in dialog, close
 
-## Cleanup
+## Cleanupf
 1. Launch Neo4J Browser
 1. `match (f:Film) where not (f)--() return f`
 1. If the result shows a warning, don't be alarmed, it's just display, the data is returned:  
