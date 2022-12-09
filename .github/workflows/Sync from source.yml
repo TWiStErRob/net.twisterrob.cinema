@@ -1,14 +1,17 @@
-name: Generate random data
+name: Sync from source
 on:
   workflow_dispatch:
 #  schedule:
 #    - cron: '0 3 * * *'
 
 jobs:
-  generate:
+  sync: # based on scripts/cloud-sync-with-history.sh
     name: Sync from source with history
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
+      HISTORY_DIR: Heroku/backend/sync/build/sync
     steps:
 
       - name: Set up JDK 17.
@@ -20,31 +23,39 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
-      - name: Clean up workspace.
-        run: |
-          rm --verbose --force backend/sync/test/weekly_film_times.xml
-          #rm --verbose --force backend/sync/test/weekly_film_times_ie.xml
-
-      - name: Generate random data.
-        env:
-          NEO4J_URL: ${{ secrets.NEO4J_URL }}
-        working-directory: Heroku
-        run: >
-          ./gradlew
-          :backend:sync:generate
-          --args="test/weekly_film_times.xml"
-
-      - name: Upload "weekly_film_times.xml".
-        uses: actions/upload-artifact@v3
+      - name: Checkout default branch in ${{ env.HISTORY_REPO }} repository.
+        uses: actions/checkout@v3
         with:
-          name: Heroku Detekt Results
-          path: ${{ github.workspace }}/Heroku/backend/sync/test/weekly_film_times.xml
+          repository: ${{ env.HISTORY_REPO }}
+          path: ${{ env.HISTORY_DIR }}
+          ssh-key: ${{ secrets.HISTORY_REPO_DEPLOY_KEY }}
 
-      - name: Import generated data
+      - name: Clean up workspace in ${{ env.HISTORY_DIR }}.
+        working-directory: ${{ env.HISTORY_DIR }}
+        run: |
+          rm --verbose --force weekly_film_times.xml
+          rm --verbose --force weekly_film_times_ie.xml
+          rm --verbose --force weekly_film_times.log
+      
+      - name: Build and Run Sync.
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
         working-directory: Heroku
+        # HISTORY_DIR is relative to work tree, `tee` needs a relative path to Heroku. actions/checkout created the folder.
         run: >
           ./gradlew
           :backend:sync:run
-          --args="--folder=test performances films"
+          --args "cinemas films performances"
+          -Pnet.twisterrob.run.verboseSync=true
+          2>&1 | tee backend/sync/build/sync/weekly_film_times.log
+
+      - name: Save changes to history.
+        working-directory: ${{ env.HISTORY_DIR }}
+        if: success() || failure()
+        run: |
+          git add .
+          git status
+          git config user.email "github-scheduler+sync@twisterrob.net"
+          git config user.name "GitHub Scheduler"
+          git commit -m "GitHub Scheduler: Sync"
+          git push
