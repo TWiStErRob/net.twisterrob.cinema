@@ -615,7 +615,9 @@ jobs:
       - name: Start Backend.
         working-directory: Heroku
         run: |
-          ./gradlew --no-daemon --stacktrace :backend:endpoint:run --args "../../deploy/frontend/static ../../test/fake-data" >backend.log 2>&1 &
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run \
+            --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../test/fake-data" \
+            >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
 
