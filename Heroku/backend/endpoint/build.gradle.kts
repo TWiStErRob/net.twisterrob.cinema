@@ -14,7 +14,7 @@ application {
 		jvmArgs(
 			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
 		)
-		// Can be overridden with `gradlew :backend:endpoint:run --args <static-folder> <fake-folder>`.
+		// Can be overridden with `gradlew :backend:endpoint:run --args="<static-folder> <fake-folder>"`.
 		args(
 			// The folder that :frontend builds into.
 			"../../deploy/frontend/static",
