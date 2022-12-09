@@ -16,18 +16,13 @@ val ApplicationConfig.app: ApplicationConfig
 	get() = this.config("twisterrob.cinema")
 
 val ApplicationConfig.environment: Env
-	get() = this.app.property("environment")
-		.let { Env.valueOf(it.getString().uppercase()) }
+	get() = Env.valueOf(this.app.property("environment").getString().uppercase())
 
 val ApplicationConfig.staticRootFolder: File
-	get() = this.app.property("staticRootFolder")
-		.getString()
-		.let(::File)
+	get() = File(this.app.property("staticRootFolder").getString())
 
 val ApplicationConfig.fakeRootFolder: File
-	get() = this.app.property("fakeRootFolder")
-		.getString()
-		.let(::File)
+	get() = File(this.app.property("fakeRootFolder").getString())
 
 fun MapApplicationConfig.putIfAbsent(key: String, value: String) {
 	if (key !in keys()) {
