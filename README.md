@@ -27,7 +27,10 @@ Also, the synchronization mechanism of the Cineworld API was broken, so I rewrot
 ## Current state
 Sadly the Syndication feed of Cineworld is as good as dead since their recent redesign of the website and mobile app.
 The Quickbook API with access key is also not available anymore. At this point this app is pretty much defunct unless I find a data source for it.
-At this point (2022 November), even Google struggles with the show times showing "No showings" for most days: https://www.google.com/search?q=cineworld+wood+green
+At this point (2022 November), even [Google](https://www.google.com/search?q=cineworld+wood+green) struggles with the show times showing "No showings" for most days.
+The database is still populated with random data, just for demonstration purposes.
+
+**Visit [The planner](https://cinema.twisterrob.net/planner) and click "All" above "New Films" to see what this is.**
 
 ## map
 A few hour-long hack in Kotlin Scripting to consume the cinema listing of Cineworld and generate a .kml file from it, so it can be imported in Google Maps.
