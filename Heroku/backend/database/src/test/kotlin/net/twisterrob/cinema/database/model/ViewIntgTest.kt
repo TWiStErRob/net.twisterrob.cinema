@@ -104,6 +104,7 @@ fun View.inUTC() {
 fun assertSameData(expected: View, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("View"))
+		@Suppress("DEPRECATION", "removal") // TODEL https://github.com/neo4j/neo4j-ogm/issues/924
 		that("id", actual.id, equalTo(expected.graphId))
 		val expectedProperties = mapOf<String, Any?>(
 			"date" to expected.date.toEpochMilli(),

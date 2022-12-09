@@ -81,6 +81,7 @@ fun Performance.inUTC() {
 fun assertSameData(expected: Performance, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("Performance"))
+		@Suppress("DEPRECATION", "removal") // TODEL https://github.com/neo4j/neo4j-ogm/issues/924
 		that("id", actual.id, equalTo(expected.graphId))
 		val expectedProperties = mapOf(
 			"class" to expected.className,

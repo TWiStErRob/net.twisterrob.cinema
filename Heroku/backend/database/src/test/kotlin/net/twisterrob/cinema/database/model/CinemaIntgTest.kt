@@ -96,6 +96,7 @@ fun Cinema.inUTC() {
 fun assertSameData(expected: Cinema, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("Cinema"))
+		@Suppress("DEPRECATION", "removal") // TODEL https://github.com/neo4j/neo4j-ogm/issues/924
 		that("id", actual.id, equalTo(expected.graphId))
 		val expectedProperties = mapOf(
 			"_created" to TimestampConverter().toGraphProperty(expected._created),
