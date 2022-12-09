@@ -3,6 +3,7 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
 import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.MapApplicationConfig
 import java.io.File
 
 enum class Env {
@@ -27,3 +28,9 @@ val ApplicationConfig.fakeRootFolder: File
 	get() = this.app.property("fakeRootFolder")
 		.getString()
 		.let(::File)
+
+fun MapApplicationConfig.putIfAbsent(key: String, value: String) {
+	if (key !in keys()) {
+		put(key, value)
+	}
+}

@@ -4,7 +4,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
-import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -18,7 +17,7 @@ class AppFuncTest {
 	 * @see App.Routes.Home
 	 */
 	@Test fun `root serves index html`(@TempDir tempDir: File) = endpointTest(
-		configure = { configuration(staticRootFolder = tempDir) }
+		testConfig = mapOf("twisterrob.cinema.staticRootFolder" to tempDir.absolutePath),
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
@@ -29,7 +28,7 @@ class AppFuncTest {
 	}
 
 	@Test fun `index is directly accessible`(@TempDir tempDir: File) = endpointTest(
-		configure = { configuration(staticRootFolder = tempDir) }
+		testConfig = mapOf("twisterrob.cinema.staticRootFolder" to tempDir.absolutePath),
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
@@ -40,7 +39,7 @@ class AppFuncTest {
 	}
 
 	@Test fun `other files are directly accessible`(@TempDir tempDir: File) = endpointTest(
-		configure = { configuration(staticRootFolder = tempDir) }
+		testConfig = mapOf("twisterrob.cinema.staticRootFolder" to tempDir.absolutePath),
 	) {
 		tempDir.resolve("other.file").writeText("fake content")
 
@@ -51,7 +50,7 @@ class AppFuncTest {
 	}
 
 	@Test fun `other files in subfolders are directly accessible`(@TempDir tempDir: File) = endpointTest(
-		configure = { configuration(staticRootFolder = tempDir) }
+		testConfig = mapOf("twisterrob.cinema.staticRootFolder" to tempDir.absolutePath),
 	) {
 		tempDir.resolve("sub/folder/other.file").ensureParent().writeText("fake content")
 
@@ -62,7 +61,7 @@ class AppFuncTest {
 	}
 
 	@Test fun `planner serves index html`(@TempDir tempDir: File) = endpointTest(
-		configure = { configuration(staticRootFolder = tempDir) }
+		testConfig = mapOf("twisterrob.cinema.staticRootFolder" to tempDir.absolutePath),
 	) {
 		tempDir.resolve("planner/index.html").ensureParent().writeText("fake index")
 
