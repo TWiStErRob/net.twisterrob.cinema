@@ -9,17 +9,17 @@ plugins {
 
 application {
 	publishSlimJar()
-	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
+	mainClass.set("io.ktor.server.netty.EngineMain")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
 			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
 		)
-		// Can be overridden with `gradlew :backend:endpoint:run --args="<static-folder> <fake-folder>"`.
+		// Can be overridden with `gradlew :backend:endpoint:run --args="-P:twisterrob.cinema.staticRootFolder=<static-folder> -P:twisterrob.cinema.fakeRootFolder=<fake-folder>"`.
 		args(
 			// The folder that :frontend builds into.
-			"../../deploy/frontend/static",
+			"-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static",
 			// The folder that is looked at for debug builds for fake data for reproducible testing.
-			"../src/test/fake"
+			"-P:twisterrob.cinema.fakeRootFolder=../src/test/fake"
 		)
 	}
 }

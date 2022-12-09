@@ -18,11 +18,12 @@ fun ApplicationCall.absoluteUrl(path: String = "/"): String {
 		// isProduction() to prevent:
 		// > Error 400: redirect_uri_mismatch
 		// > You can't sign in to this app because it doesn't comply with Google's OAuth 2.0 policy.
-		// > redirect_uri: http://cinema.twisterrob.net:6741/auth/google/return
+		// > If you're the app developer, register the redirect URI in the Google Cloud Console.
+		// > Request details: redirect_uri=http://cinema.twisterrob.net:8081/auth/google/return
 		if (port == defaultPort || isProduction()) "" else ":$port"
 	}
 	val protocol = request.origin.scheme
-	return "$protocol://$hostPort$path"
+	return "${protocol}://${hostPort}${path}"
 }
 
 private fun ApplicationCall.isProduction(): Boolean =

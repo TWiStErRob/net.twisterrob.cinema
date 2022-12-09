@@ -3,29 +3,38 @@ package net.twisterrob.cinema.cineworld.backend.endpoint
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.application.log
+import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.withApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
+import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
 import org.slf4j.Logger
 
 /**
  * @param configure A call to [configuration], but some tests will need to pass in an optional argument.
  * @param daggerApp A call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
  * @param logLevel How much logging should be done.
+ * @param testConfig Configuration overrides for the ktor application. See `src/main/resources/application.conf`.
  * @param test Test code to execute after the application has started up.
  */
 fun endpointTest(
 	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { daggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
+	testConfig: Map<String, String> = emptyMap(),
 	test: TestApplicationEngine.() -> Unit
 ) {
 	@Suppress("DEPRECATION") // TODO https://github.com/TWiStErRob/net.twisterrob.cinema/issues/167
 	withApplication(
 		environment = createTestEnvironment {
+			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
+				putIfAbsent("twisterrob.cinema.environment", "test")
+				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
+				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
+			}
 			developmentMode = true
 			val originalLog = log
 			log = object : Logger by originalLog {
