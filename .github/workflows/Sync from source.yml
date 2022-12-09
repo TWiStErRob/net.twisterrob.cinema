@@ -34,6 +34,12 @@ jobs:
           :backend:sync:generate
           --args="test/weekly_film_times.xml"
 
+      - name: Upload "weekly_film_times.xml".
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Detekt Results
+          path: ${{ github.workspace }}/Heroku/backend/sync/test/weekly_film_times.xml
+
       - name: Import generated data
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
