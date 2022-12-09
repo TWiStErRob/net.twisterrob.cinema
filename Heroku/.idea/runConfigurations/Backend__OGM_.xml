@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Backend (OGM)" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="net.twisterrob.cinema.cineworld.backend.MainKt" />
+    <option name="MAIN_CLASS_NAME" value="io.ktor.server.netty.EngineMain" />
     <module name="Cinema-Heroku.backend.endpoint.main" />
     <shortenClasspath name="NONE" />
     <option name="VM_PARAMETERS" value="-Dlog4j.configurationFile=log4j2.xml,log4j2-endpoint.xml" />

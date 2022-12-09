@@ -9,7 +9,7 @@ plugins {
 
 application {
 	publishSlimJar()
-	mainClass.set("net.twisterrob.cinema.cineworld.backend.MainKt")
+	mainClass.set("io.ktor.server.netty.EngineMain")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
 			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
