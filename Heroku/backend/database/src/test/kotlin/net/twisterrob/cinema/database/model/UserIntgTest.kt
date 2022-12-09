@@ -74,7 +74,7 @@ fun User.inUTC() {
 fun assertSameData(expected: User, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("User"))
-		that("id", actual.id, equalTo(expected.graphId))
+		that("id", actual.elementId, equalTo(expected.graphId))
 		val expectedProperties = mapOf<String, Any?>(
 			"_created" to TimestampConverter().toGraphProperty(expected._created),
 			"class" to expected.className,

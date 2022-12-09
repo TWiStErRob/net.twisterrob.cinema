@@ -97,7 +97,7 @@ fun Film.inUTC() {
 fun assertSameData(expected: Film, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("Film"))
-		that("id", actual.id, equalTo(expected.graphId))
+		that("id", actual.elementId, equalTo(expected.graphId))
 		val expectedProperties = mapOf<String, Any?>(
 			"_created" to TimestampConverter().toGraphProperty(expected._created),
 			"_updated" to TimestampConverter().toGraphProperty(expected._updated),

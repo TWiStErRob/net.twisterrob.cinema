@@ -104,7 +104,7 @@ fun View.inUTC() {
 fun assertSameData(expected: View, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("View"))
-		that("id", actual.id, equalTo(expected.graphId))
+		that("id", actual.elementId, equalTo(expected.graphId))
 		val expectedProperties = mapOf<String, Any?>(
 			"date" to expected.date.toEpochMilli(),
 			"class" to expected.className

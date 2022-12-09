@@ -81,7 +81,7 @@ fun Performance.inUTC() {
 fun assertSameData(expected: Performance, actual: Node) {
 	assertAll {
 		that("labels", actual, hasLabels("Performance"))
-		that("id", actual.id, equalTo(expected.graphId))
+		that("id", actual.elementId, equalTo(expected.graphId))
 		val expectedProperties = mapOf(
 			"class" to expected.className,
 			"time" to expected.time,
