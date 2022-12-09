@@ -17,5 +17,8 @@ env_variables:
   # Used by endpoint and sync. URL of the Neo4J graph database server, including authentication details. e.g. neo4j+s://user:pass@host:1234",
   NEO4J_URL: @NEO4J_URL@
 
-# Redirect HTTP to HTTPS
-secure: always
+handlers:
+  - url: /.*
+    # Redirect HTTP to HTTPS
+    secure: always
+    redirect_http_response_code: 301
