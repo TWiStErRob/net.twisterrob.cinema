@@ -17,6 +17,7 @@ import org.slf4j.Logger
  * @param configure A call to [configuration], but some tests will need to pass in an optional argument.
  * @param daggerApp A call to [daggerApplication], but some tests may decide to call with a custom [dagger.Component].
  * @param logLevel How much logging should be done.
+ * @param testConfig Configuration overrides for the ktor application. See `src/main/resources/application.conf`.
  * @param test Test code to execute after the application has started up.
  */
 fun endpointTest(
