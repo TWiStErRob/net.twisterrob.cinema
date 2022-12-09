@@ -8,7 +8,7 @@ jobs:
   generate:
     name: Sync from source with history
     runs-on: ubuntu-22.04
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
 
       - name: Set up JDK 17.
@@ -47,4 +47,4 @@ jobs:
         run: >
           ./gradlew
           :backend:sync:run
-          --args="--folder=test performances"
+          --args="--folder=test performances films"

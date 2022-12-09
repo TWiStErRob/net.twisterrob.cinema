@@ -20,9 +20,9 @@ class PerformanceGenerator @Inject constructor(
 
 	fun generate(): Feed {
 		val cinemas = cinemaService.getActiveCinemas()
-		val films = filmService.getActiveFilms()
+		val films = filmService.getAllFilms()
 		val feedCinemas = cinemas.map(::mapCinema)
-		val feedFilms = films.map(::mapFilm)
+		val feedFilms = films.shuffled().take(ACTIVE_FILM_COUNT).map(::mapFilm)
 		return Feed(
 			emptyList(),
 			feedCinemas,
@@ -71,6 +71,10 @@ class PerformanceGenerator @Inject constructor(
 			},
 		)
 
+	companion object {
+
+		private const val ACTIVE_FILM_COUNT = 30
+	}
 }
 
 class RandomPerformanceCreator @Inject constructor() {
@@ -93,7 +97,7 @@ class RandomPerformanceCreator @Inject constructor() {
 	}
 
 	private fun relativeDates(start: Int, endInclusive: Int): List<LocalDate> =
-		(start .. endInclusive)
+		(start..endInclusive)
 			.map { LocalDate.now().plusDays(it.toLong()) }
 
 	private fun create(cinema: Feed.Cinema, film: Feed.Film, date: LocalDate): Feed.Performance =

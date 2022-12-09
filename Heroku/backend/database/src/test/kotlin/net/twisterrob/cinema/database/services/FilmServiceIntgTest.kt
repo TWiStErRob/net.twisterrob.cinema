@@ -46,6 +46,23 @@ class FilmServiceIntgTest {
 		assertThat(result, containsInAnyOrder(sameBeanAs(fixtFilms[0]), sameBeanAs(fixtFilms[2])))
 	}
 
+	@Test fun `getAllFilms() includes deleted films`(session: Session) {
+		val fixtFilms: List<Film> = fixture.buildList(size = 3)
+		fixtFilms[0]._deleted = null // active
+		fixtFilms[1]._deleted = fixture.build() // inactive
+		fixtFilms[2]._deleted = null // active
+		fixtFilms.forEach { it.inUTC() }
+		fixtFilms.forEach(session::save)
+		session.clear()
+
+		val result = sut.getAllFilms().toList()
+
+		assertThat(
+			result,
+			containsInAnyOrder(sameBeanAs(fixtFilms[0]), sameBeanAs(fixtFilms[1]), sameBeanAs(fixtFilms[2]))
+		)
+	}
+
 	@Test fun `getFilm() by edi returns null when not found`(session: Session) {
 		val fixtFilms: List<Film> = fixture.buildList(size = 3)
 		fixtFilms.forEach(session::save)
