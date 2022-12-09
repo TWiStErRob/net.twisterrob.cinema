@@ -32,10 +32,10 @@ class Cinema : Historical() {
 	@Property(name = "cinema_url")
 	lateinit var cinema_url: URI
 
-	@Relationship(type = "GOESTO", direction = Relationship.INCOMING)
+	@Relationship(type = "GOESTO", direction = Relationship.Direction.INCOMING)
 	var users: MutableCollection<User> = mutableSetOf()
 
-	@Relationship(type = "AT", direction = Relationship.INCOMING)
+	@Relationship(type = "AT", direction = Relationship.Direction.INCOMING)
 	var views: MutableCollection<View> = mutableSetOf()
 
 	override fun toString(): String =

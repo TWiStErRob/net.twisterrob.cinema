@@ -20,20 +20,19 @@
 		"start:documentation": "Assumes: `cd frontend && npm run build:<env> && cd ..`",
 		"start": "gradlew :backend:endpoint:run",
 		"start:fake:documentation": "echo http://localhost:8080/planner?cineworldDate=&c=103&d=2017-07-14&f=160231&f=160454&f=184739&f=189108&f=223046",
-		"start:fake": "gradlew :backend:endpoint:run --args \"../../deploy/frontend/static ../../test/fake-data\"",
-		"updateFromCineworld": "gradlew :backend:sync:run --args \"cinemas films performances\"",
-		"updateFromCineworldFromTestFolder": "gradlew :backend:sync:run --args \"cinemas films performances --folder=test\"",
-		"updateFromCineworldPerformances": "gradlew :backend:sync:run --args \"performances\"",
-		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args \"cinemas\"",
-		"updateFromCineworldFilms": "gradlew :backend:sync:run --args \"films\"",
-		"heroku-postbuild": "cd frontend && npm run build:prod",
+		"start:fake": "gradlew :backend:endpoint:run --args=\"../../deploy/frontend/static ../../test/fake-data\"",
+		"updateFromCineworld": "gradlew :backend:sync:run --args=\"cinemas films performances\"",
+		"updateFromCineworldFromTestFolder": "gradlew :backend:sync:run --args=\"cinemas films performances --folder=test\"",
+		"updateFromCineworldPerformances": "gradlew :backend:sync:run --args=\"performances\"",
+		"updateFromCineworldCinemas": "gradlew :backend:sync:run --args=\"cinemas\"",
+		"updateFromCineworldFilms": "gradlew :backend:sync:run --args=\"films\"",
 		"test": "(cd frontend && npm test && cd ..) && (cd test && npm test && cd ..)",
 		"install": "(cd frontend && npm install && cd ..) && (cd test && npm install && cd ..)",
 		"update": "(cd frontend && npm update && cd ..) && (cd test && npm update && cd ..)",
 		"devTest": "npm-run-all --race --parallel devTest:*",
 		"devTest:selenium": "(cd test && npm run selenium && cd..)",
 		"devTest:frontend": "(cd frontend && npm start && cd ..)",
-		"devTest:backend": "gradlew :backend:endpoint:run --args \"../../deploy/frontend/static ../../test/fake-data\""
+		"devTest:backend": "gradlew :backend:endpoint:run --args=\"../../deploy/frontend/static ../../test/fake-data\""
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5"

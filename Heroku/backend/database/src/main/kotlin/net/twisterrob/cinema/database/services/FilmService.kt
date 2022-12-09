@@ -34,6 +34,17 @@ class FilmService @Inject constructor(
 		)
 
 	/**
+	 * Return all films.
+	 */
+	fun getAllFilms(): Iterable<Film> =
+		session.query(
+			"""
+				MATCH (f:Film)
+				RETURN f AS film
+			""".trimIndent()
+		)
+
+	/**
 	 * Find a film by [edi].
 	 * @param edi [Film.edi]
 	 */

@@ -16,12 +16,19 @@ application {
 			else
 				"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
 		)
-		// Can be overridden with `gradlew :backend:sync:run --args <sync-type...>`.
+		// Can be overridden with `gradlew :backend:sync:run --args="<sync-type...>"`.
 		args(
 			// Types of entities synchronized from syndication.
 			"cinemas", "films", "performances"
 		)
 	}
+}
+
+tasks.register<JavaExec>("generate") {
+	dependsOn(tasks.jar)
+	classpath(sourceSets["main"].runtimeClasspath)
+	mainClass.set("net.twisterrob.cinema.cineworld.generate.Main")
+	args("test/weekly_film_times.xml")
 }
 
 dependencies {

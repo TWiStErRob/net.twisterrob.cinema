@@ -55,7 +55,12 @@ class ModelIntgTestExtension : BeforeEachCallback, AfterEachCallback, ParameterR
 	}
 
 	override fun afterEach(extensionContext: ExtensionContext) {
-		extensionContext.store.get<Neo4j>()!!.close()
+		if (!extensionContext.executionException.isPresent) {
+			// Don't try to close if there was an error during initialization.
+			extensionContext.store.get<Neo4j>()?.close()
+		} else {
+			extensionContext.store.get<Neo4j>()!!.close()
+		}
 		extensionContext.store.remove<Neo4j>()
 		extensionContext.store.remove<ModelIntgTestExtensionComponent>()
 	}

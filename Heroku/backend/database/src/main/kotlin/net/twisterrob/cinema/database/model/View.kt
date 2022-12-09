@@ -26,13 +26,13 @@ class View : BaseNode() {
 	@DateLong
 	lateinit var date: Instant
 
-	@Relationship(type = "AT", direction = Relationship.OUTGOING)
+	@Relationship(type = "AT", direction = Relationship.Direction.OUTGOING)
 	lateinit var atCinema: Cinema
 
-	@Relationship(type = "WATCHED", direction = Relationship.OUTGOING)
+	@Relationship(type = "WATCHED", direction = Relationship.Direction.OUTGOING)
 	lateinit var watchedFilm: Film
 
-	@Relationship(type = "ATTENDED", direction = Relationship.INCOMING)
+	@Relationship(type = "ATTENDED", direction = Relationship.Direction.INCOMING)
 	lateinit var userRef: User
 
 	override fun toString(): String =
