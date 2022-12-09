@@ -44,36 +44,26 @@ import kotlinx.html.h2
 import kotlinx.html.head
 import kotlinx.html.pre
 import kotlinx.html.title
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.email
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.openid
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.profile
-import java.io.File
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 /**
- * @param staticRootFolder for serving static content (`.` is the Heroku project folder when ran from IDEA).
- * @param fakeRootFolder fallback folder for requests for testing (`.` is the Heroku project folder when ran from IDEA).
  * @param oauthHttpClient [HttpClient] to use for OAuth.
  * @param config configuration containing non-hardcoded constants for the server.
  * @see RouteControllerRegistrar
  */
 @Suppress("LongMethod") // TODO find a way to split this up into smaller pieces, while keeping visibility.
 internal fun Application.configuration(
-	staticRootFolder: File = File("./deploy/frontend/static"),
-	fakeRootFolder: File = File("./backend/src/test/fake"),
 	oauthHttpClient: HttpClient = HttpClient(),
 	config: Map<String, Any?> = jacksonObjectMapper()
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
 ) {
 	log.info("Configuring app as ${environment.config.environment} environment.")
-
-	this.attributes.staticRootFolder = staticRootFolder
-	this.attributes.fakeRootFolder = fakeRootFolder
 
 	install(DefaultHeaders)
 	install(CallLogging)

@@ -11,8 +11,8 @@ import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.application
 import io.ktor.server.routing.get
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.staticRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
+import net.twisterrob.cinema.cineworld.backend.ktor.staticRootFolder
 import javax.inject.Inject
 
 /**
@@ -34,7 +34,7 @@ class AppController @Inject constructor(
 		}
 
 		static("/") {
-			staticRootFolder = application.attributes.staticRootFolder
+			staticRootFolder = application.environment.config.staticRootFolder
 			application.log.debug(
 				"""
 					Running static content at / from ${staticRootFolder}

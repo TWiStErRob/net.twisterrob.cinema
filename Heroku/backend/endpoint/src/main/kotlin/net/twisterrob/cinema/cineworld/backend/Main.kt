@@ -7,7 +7,6 @@ import io.ktor.server.engine.stop
 import io.ktor.server.netty.NettyApplicationEngine
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 fun main(vararg args: String) {
@@ -16,18 +15,7 @@ fun main(vararg args: String) {
 		modules.add {
 			// TODO re-wire to use proper configuration.
 			// Note: can't use YAML because of this lambda, but can use HOCON.
-			val staticContentPath = if (args.isNotEmpty()) args[0] else null
-			val fakeContentPath = if (args.size >= 2) args[1] else null
-			when {
-				staticContentPath != null && fakeContentPath != null ->
-					configuration(staticRootFolder = File(staticContentPath), fakeRootFolder = File(fakeContentPath))
-
-				staticContentPath != null ->
-					configuration(staticRootFolder = File(staticContentPath))
-
-				else ->
-					configuration()
-			}
+			configuration()
 		}
 		// Note: because this has to be second, cannot use ktor.application.modules.
 		modules.add(Application::daggerApplication)

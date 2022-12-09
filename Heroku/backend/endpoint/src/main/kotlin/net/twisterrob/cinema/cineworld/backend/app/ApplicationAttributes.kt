@@ -7,7 +7,6 @@ import io.ktor.server.routing.RoutingApplicationCall
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
-import java.io.File
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -21,14 +20,6 @@ object ApplicationAttributes {
 	private val DaggerComponentAttribute = AttributeKey<ApplicationComponent>("dagger")
 
 	var Attributes.dagger: ApplicationComponent by requiredKey(DaggerComponentAttribute)
-
-	private val StaticRootFolderAttribute = AttributeKey<File>("staticRootFolder")
-
-	var Attributes.staticRootFolder: File by requiredKey(StaticRootFolderAttribute)
-
-	private val FakeRootFolderAttribute = AttributeKey<File>("fakeRootFolder")
-
-	var Attributes.fakeRootFolder: File by requiredKey(FakeRootFolderAttribute)
 
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
 

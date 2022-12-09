@@ -14,10 +14,10 @@ import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.launch
-import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.fakeRootFolder
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.environment
+import net.twisterrob.cinema.cineworld.backend.ktor.fakeRootFolder
 import java.io.File
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ class TestController @Inject constructor(
 	override fun Routing.registerRoutes() {
 		if (application.environment.config.environment == Env.PRODUCTION) return
 
-		val root = application.attributes.fakeRootFolder
+		val root = application.environment.config.fakeRootFolder
 		application.log.debug(
 			"""
 				Running fake content from ${root}
