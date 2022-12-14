@@ -51,7 +51,7 @@ test-jsonAssert = "1.5.1"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "4.9.0"
+test-mockito = "4.10.0"
 test-mockito-kotlin = "4.1.0"
 
 [libraries]
