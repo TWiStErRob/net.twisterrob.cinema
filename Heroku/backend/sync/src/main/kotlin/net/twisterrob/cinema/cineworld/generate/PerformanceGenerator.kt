@@ -103,7 +103,12 @@ class RandomPerformanceCreator @Inject constructor() {
 			}
 			.filter { random() < FUZZY_THRESHOLD }
 			.flatMap { (cinema, film, date) ->
-				val performanceCount = (random() * MAX_PERFORMANCES_IN_CINEMA).toInt()
+				val maxPerformanceCount =
+					if (cinema.name.startsWith("London - "))
+						MAX_PERFORMANCES_IN_LONDON_CINEMA
+					else
+						MAX_PERFORMANCES_IN_RURAL_CINEMA
+				val performanceCount = (random() * maxPerformanceCount).toInt()
 				(0..performanceCount).map { create(cinema, film, date) }
 			}
 	}
@@ -132,11 +137,12 @@ class RandomPerformanceCreator @Inject constructor() {
 
 	companion object {
 
-		/** Only 70% of the combinations will be populated so not all movies are screened in all cinemas. */
-		private const val FUZZY_THRESHOLD = 0.7
+		/** Only 60% of the combinations will be populated so not all movies are screened in all cinemas. */
+		private const val FUZZY_THRESHOLD = 0.6
 
 		/** It's a realistic value, screenings per movie per day in a specific cinema. */
-		private const val MAX_PERFORMANCES_IN_CINEMA = 5
+		private const val MAX_PERFORMANCES_IN_LONDON_CINEMA = 5
+		private const val MAX_PERFORMANCES_IN_RURAL_CINEMA = 2
 
 		private const val SCREENING_START_HOUR = 10
 		private const val SCREENING_END_HOUR = 21
