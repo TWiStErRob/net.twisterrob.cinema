@@ -11,9 +11,9 @@
 // but there's no Gradle resolution in play here, so we have to pick a platform manually.
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
-@file:DependsOn("io.ktor:ktor-client-java-jvm:2.2.1")
-@file:DependsOn("io.ktor:ktor-client-content-negotiation-jvm:2.2.1")
-@file:DependsOn("io.ktor:ktor-serialization-jackson-jvm:2.2.1")
+@file:DependsOn("io.ktor:ktor-client-java-jvm:2.2.2")
+@file:DependsOn("io.ktor:ktor-client-content-negotiation-jvm:2.2.2")
+@file:DependsOn("io.ktor:ktor-serialization-jackson-jvm:2.2.2")
 // Override transitively included jaxb-impl:2.2 to avoid warning when marshalling Kml.
 // > Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (jaxb-impl-2.2.jar)
 // > to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
