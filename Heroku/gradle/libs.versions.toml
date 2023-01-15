@@ -51,7 +51,7 @@ test-jsonAssert = "1.5.1"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "4.11.0"
+test-mockito = "5.0.0"
 test-mockito-kotlin = "4.1.0"
 
 [libraries]
@@ -145,9 +145,7 @@ test-jsonAssert = { module = "org.skyscreamer:jsonassert", version.ref = "test-j
 
 test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
 
-# TODO why am I using both?
 test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
-test-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "test-mockito" }
 test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "test-mockito-kotlin" }
 test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "test-mockito" }
 
