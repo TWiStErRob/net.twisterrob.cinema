@@ -145,7 +145,7 @@ test-jsonAssert = { module = "org.skyscreamer:jsonassert", version.ref = "test-j
 
 test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
 
-test-mockito = { module = "org.mockito:mockito", version.ref = "test-mockito" }
+test-mockito = { module = "org.mockito:mockito-core", version.ref = "test-mockito" }
 test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "test-mockito-kotlin" }
 test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "test-mockito" }
 
