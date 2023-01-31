@@ -1,3 +1,5 @@
+import net.twisterrob.gradle.doNotNagAbout
+
 allprojects {
 	repositories {
 		mavenCentral()
