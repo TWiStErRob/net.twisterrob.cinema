@@ -195,12 +195,16 @@ doNotNagAbout(
 	"at org.jetbrains.plugins.gradle.tooling.util.SourceSetCachedFinder.createArtifactsMap"
 )
 
-// TODEL AppEngine 2.4.5 https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/446
-@Suppress("MaxLineLength")
-doNotNagAbout(
-	"The AbstractArchiveTask.archivePath property has been deprecated. " +
-			"This is scheduled to be removed in Gradle 9.0. " +
-			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
-	"at com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin.lambda\$configureExtensions$0"
-)
+if (libs.versions.appengine.get() < "2.4.6") {
+	// TODEL AppEngine 2.4.5 v Gradle 8: https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/446
+	@Suppress("MaxLineLength")
+	doNotNagAbout(
+		"The AbstractArchiveTask.archivePath property has been deprecated. " +
+				"This is scheduled to be removed in Gradle 9.0. " +
+				"Please use the archiveFile property instead. " +
+				"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+		"at com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin.lambda\$configureExtensions$0"
+	)
+} else {
+	error("AppEngine 2.4.6 deprecation fixed, remove suppression.")
+}

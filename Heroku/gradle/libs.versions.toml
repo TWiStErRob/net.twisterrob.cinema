@@ -20,6 +20,8 @@ dagger = "2.44.2"
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
 ktor = "2.2.2"
 
+appengine = "2.4.4"
+
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
@@ -155,4 +157,4 @@ log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # From `com.google.cloud.tools:appengine-maven-plugin`
-appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version = "2.4.4" }
+appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version = "appengine" }
