@@ -59,6 +59,7 @@ test-mockito-kotlin = "4.1.0"
 [libraries]
 
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+appengine-gradle = { module = "com.google.cloud.tools:appengine-gradle-plugin", version.ref = "appengine" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -157,4 +158,4 @@ log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # From `com.google.cloud.tools:appengine-maven-plugin`
-appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version = "appengine" }
+appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version.ref = "appengine" }
