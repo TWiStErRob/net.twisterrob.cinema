@@ -196,11 +196,21 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+      
+      - name: Take a snapshot of disk state before cloning.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
+
+      - name: Take a snapshot of disk state after cloning.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       - name: Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command).
         run: |
@@ -210,6 +220,11 @@ jobs:
       - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
+
+      - name: Take a snapshot of disk state after running dependencies scripts.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
@@ -230,14 +245,29 @@ jobs:
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
+      - name: Take a snapshot of disk state before changing branch.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
+
       - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
+      - name: Take a snapshot of disk state after changing branch.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
+
       - name: Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.head_ref }}.
         working-directory: Heroku
         run: scripts/dependencies.sh
+
+      - name: Take a snapshot of disk state after running dependencies scripts.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
@@ -257,6 +287,11 @@ jobs:
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
 
+      - name: Take a snapshot of disk state before downloading.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
+
       - name: Download "Heroku Dependencies - Base" artifact.
         uses: actions/download-artifact@v3
         with:
@@ -268,6 +303,11 @@ jobs:
         with:
           name: Heroku Dependencies
           path: diff/curr
+
+      - name: Take a snapshot of disk state after downloading and before processing.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       - name: Diff lockfiles using unix diff.
         working-directory: diff
@@ -360,13 +400,10 @@ jobs:
         working-directory: diff
         run: ls -la
 
-      - name: Disk usage
-        working-directory: diff
-        run: du -h -d 1
-
-      - name: Disk quota
-        working-directory: diff
-        run: df
+      - name: Take a snapshot of disk state after processing and before problematic step.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
 
       - name: Merge diffs into a single file (all.dependencies.diff).
         working-directory: diff
