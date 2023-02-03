@@ -412,6 +412,11 @@ jobs:
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
           ls --format=single-column --time=ctime --reverse *.dependencies.diff | xargs tail --lines=+1 > all.dependencies.diff
 
+      - name: Take a snapshot of disk state after problematic step.
+        run: |
+          df --human-readable --all --output
+          du -h -d 3
+
       - name: Upload "Heroku Dependencies - Diffs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
