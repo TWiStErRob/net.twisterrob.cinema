@@ -1,6 +1,10 @@
 name: Deploy to Google App Engine
 on:
   pull_request:
+    paths:
+      - 'Heroku/**'
+      - '.github/workflows/Deploy to Google App Engine.yml'
+      - '.github/workflows/Delete from Google App Engine.yml'
   push:
     branches:
       - release
