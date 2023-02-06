@@ -25,7 +25,7 @@ jobs:
 
       - name: Run map.main.kts.
         working-directory: map
-        run: kotlinc -script map.main.kts
+        run: kotlinc "-J--illegal-access=deny" -script map.main.kts
 
       - name: Upload "cinemas.kml" artifact.
         if: success() || failure()
