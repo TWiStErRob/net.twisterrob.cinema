@@ -17,7 +17,7 @@
 // Override transitively included jaxb-impl:2.2 to avoid warning when marshalling Kml.
 // > Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (jaxb-impl-2.2.jar)
 // > to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
-@file:DependsOn("com.sun.xml.bind:jaxb-impl:2.3.8")
+@file:DependsOn("com.sun.xml.bind:jaxb-impl:4.0.2")
 @file:DependsOn("de.micromata.jak:JavaAPIforKml:2.2.1")
 
 import com.fasterxml.jackson.databind.DeserializationFeature
