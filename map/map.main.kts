@@ -1,3 +1,5 @@
+//@file:RuntimeOptions("-J--illegal-access=deny")
+
 // Based on:
 // main.kts: https://kotlinlang.org/docs/custom-script-deps-tutorial.html
 // HttpClient: https://ktor.io/docs/http-client-engines.html#java
