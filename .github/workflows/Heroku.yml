@@ -634,6 +634,8 @@ jobs:
           node -v
           npm -v
           npm install
+          pwd; cd test/node_modules; find . -maxdepth 1
+          pwd; cd webdriver-manager; find .
 
       - name: Detect Compatible Chrome Driver
         # Working directory is actually not used, used only for context.
