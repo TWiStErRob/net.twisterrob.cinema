@@ -4,6 +4,7 @@
 # * is in a file so it can be documented (-f)
 # * replaces the input file in place (-i)
 
+### For Windows
 # Expected input in webdriver-manager.*:
 #```cmd
 #endLocal & goto #_undefined_# 2>NUL || title %COMSPEC% & "%_prog%"  "%dp0%\..\protractor\bin\webdriver-manager" %*
@@ -15,4 +16,13 @@
 #exec node  "$basedir/../protractor/bin/webdriver-manager" "$@"
 #```
 # The script will replace all the paths to point to `../webdriver-manager/bin/webdriver-manager`.
-s/protractor/webdriver-manager/g
+#
+### For Linux
+# Expected input in webdriver-manager:
+#```js
+##!/usr/bin/env node
+#require('webdriver-manager');
+#```
+# We need to replace the module name with a specific folder inside, so that the CLI is invoked.
+# Otherwise it just parses the manager package and exists.
+s/protractor/webdriver-manager/g ; s/require\('webdriver-manager'\)/require('webdriver-manager\/dist\/lib\/cli')/
