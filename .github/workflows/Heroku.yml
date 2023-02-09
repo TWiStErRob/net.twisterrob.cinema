@@ -636,7 +636,7 @@ jobs:
           npm install
 
       - name: Detect Compatible Chrome Driver
-        working-directory: Heroku/test/node_modules/webdriver-manager/selenium
+        working-directory: Heroku/test/node_modules/webdriver-manager/downloads
         run: |
           google-chrome --version
           grep --version
