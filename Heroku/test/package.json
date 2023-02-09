@@ -5,7 +5,7 @@
 	"repository": "local",
 	"scripts": {
 		"preinstall": "echo Installing Test dependencies",
-		"postinstall": "echo Working around bin conflict https://github.com/npm/cli/issues/6152 && sed -r -f webdriver-manager.patch.sed -i node_modules/.bin/webdriver-manager.* && echo Installing Selenium && npm run selenium:update && echo Hacking Backend dependencies && sed -r -f bpRunner.js.patch.sed -i node_modules/protractor/built/bpRunner.js && echo Installed Test dependencies",
+		"postinstall": "find . -maxdepth 1 && find node_modules/.bin -maxdepth 1 && find node_modules/webdriver-manager && echo Working around bin conflict https://github.com/npm/cli/issues/6152 && sed -r -f webdriver-manager.patch.sed -i node_modules/.bin/webdriver-manager.* && echo Installing Selenium && npm run selenium:update && echo Hacking Backend dependencies && sed -r -f bpRunner.js.patch.sed -i node_modules/protractor/built/bpRunner.js && echo Installed Test dependencies",
 		"postupdate": "npm-run-all --serial selenium:update",
 		"start": "npm-run-all --race --parallel selenium protractor",
 		"selenium": "webdriver-manager --versions.standalone 3.141.59 --gecko false --versions.chrome 93.0.4577.63 start",
