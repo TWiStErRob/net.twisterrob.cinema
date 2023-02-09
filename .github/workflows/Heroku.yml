@@ -636,18 +636,23 @@ jobs:
           npm install
 
       - name: Detect Compatible Chrome Driver
+        # Working directory is actually not used, used only for context.
+        # Later steps will install the detected driver into this folder implicitly.
         working-directory: Heroku/test/node_modules/webdriver-manager/downloads
         run: |
           google-chrome --version
           grep --version
           curl --version
-          echo "Parsing current Chrome version: $(google-chrome --version)"
-          export CHROME_FULL_VERSION=$(google-chrome --version)
+
+          CHROME_FULL_VERSION=$(google-chrome --version)
           echo "CHROME_FULL_VERSION=${CHROME_FULL_VERSION}" | tee --append $GITHUB_ENV
-          export CHROME_MINOR_VERSION=$(echo ${CHROME_FULL_VERSION} | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')
+
+          CHROME_MINOR_VERSION=$(echo ${CHROME_FULL_VERSION} | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')
           echo "CHROME_MINOR_VERSION=${CHROME_MINOR_VERSION}" | tee --append $GITHUB_ENV
-          echo "Querying latest Chrome Driver version: https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}"
-          export CHROME_DRIVER_VERSION=$(curl --output - --silent "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}")
+
+          LATEST_RELEASE_URL=https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}
+          echo "Querying latest Chrome Driver version: ${LATEST_RELEASE_URL}"
+          CHROME_DRIVER_VERSION=$(curl --output - --silent "${LATEST_RELEASE_URL}")
           echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
 
       - name: Install Compatible Chrome Driver.
