@@ -741,3 +741,11 @@ jobs:
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test/logs/*
             ~/.npm/_logs/
+
+      - name: Upload "Heroku Test" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Test
+          path: |
+            /home/runner/work/net.twisterrob.cinema/net.twisterrob.cinema/Heroku/test/
