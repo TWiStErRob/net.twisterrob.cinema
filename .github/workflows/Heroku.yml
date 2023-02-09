@@ -740,3 +740,4 @@ jobs:
           path: |
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test/logs/*
+            ${{ env.HOME }}/.npm/_logs/
