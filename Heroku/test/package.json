@@ -23,7 +23,7 @@
 		"protractor": "7.0.0",
 		"protractor-helpers": "1.1.813",
 		"protractor-browser-logs": "1.0.456",
-		"selenium-webdriver": "4.8.0"
+		"selenium-webdriver": "4.8.1"
 	},
 	"devDependencies": {
 		"@types/jasminewd2": "2.0.10",
