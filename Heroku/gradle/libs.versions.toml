@@ -10,7 +10,7 @@ kotlin = "1.8.10"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.6.4"
-kotlinx-serialization = "1.4.1"
+kotlinx-serialization = "1.5.0"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.22.0"
 
