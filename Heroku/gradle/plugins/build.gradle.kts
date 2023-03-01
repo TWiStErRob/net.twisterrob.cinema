@@ -14,7 +14,7 @@ dependencies {
 	api(libs.detekt.gradle)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
-	implementation(files(libs::class.java.protectionDomain.codeSource.location))
+	implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
 }
 
 dependencyLocking {
