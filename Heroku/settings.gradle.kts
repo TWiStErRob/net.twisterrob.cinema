@@ -1,3 +1,5 @@
+import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
+
 rootProject.name = "Cinema-Heroku"
 
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
@@ -23,9 +25,6 @@ pluginManagement {
 				-> {
 					useModule("com.google.cloud.tools:appengine-gradle-plugin:${requested.version}")
 				}
-				"net.twisterrob.settings" -> {
-					useModule("net.twisterrob.gradle:twister-convention-settings:${requested.version}")
-				}
 			}
 		}
 	}
@@ -33,7 +32,7 @@ pluginManagement {
 
 plugins {
 	id("net.twisterrob.cinema.heroku.plugins.settings")
-	id("net.twisterrob.settings") version "0.15"
+	id("net.twisterrob.gradle.plugin.settings") version "0.15.1"
 }
 
 buildscript {
