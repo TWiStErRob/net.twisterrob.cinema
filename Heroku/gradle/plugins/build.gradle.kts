@@ -4,10 +4,6 @@ plugins {
 	alias(libs.plugins.detekt)
 }
 
-repositories {
-	mavenCentral()
-}
-
 dependencies {
 	api(libs.kotlin.gradle)
 	implementation(libs.kotlin.serialization.gradle)
