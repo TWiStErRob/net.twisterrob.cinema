@@ -1,7 +1,6 @@
 plugins {
 	id("net.twisterrob.cinema.library")
 	id("java-test-fixtures")
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 dependencies {

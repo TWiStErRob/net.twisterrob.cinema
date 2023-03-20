@@ -1,6 +1,5 @@
 plugins {
 	id("net.twisterrob.cinema.library")
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 sourceSets {

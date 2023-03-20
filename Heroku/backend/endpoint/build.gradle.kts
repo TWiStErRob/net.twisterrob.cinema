@@ -1,7 +1,6 @@
 plugins {
 	id("net.twisterrob.cinema.application")
 	id("org.jetbrains.kotlin.plugin.serialization")
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 application {

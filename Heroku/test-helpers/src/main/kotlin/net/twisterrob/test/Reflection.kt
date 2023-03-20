@@ -7,7 +7,7 @@ inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
 	val field = this.findField(fieldName)
 
 	@Suppress("DEPRECATION")
-	val accessible = field.isAccessible
+	val isAccessible = field.isAccessible
 	try {
 		field.isAccessible = true
 		val value = field.get(this)
@@ -17,7 +17,7 @@ inline operator fun <reified T : Any?> Any.get(fieldName: String): T {
 		}
 		return value as T
 	} finally {
-		field.isAccessible = accessible
+		field.isAccessible = isAccessible
 	}
 }
 
@@ -26,26 +26,26 @@ operator fun Any.set(fieldName: String, value: Any?) {
 	val field = this.findField(fieldName)
 
 	@Suppress("DEPRECATION")
-	val accessible = field.isAccessible
+	val isAccessible = field.isAccessible
 	try {
 		field.isAccessible = true
 		field.set(this, value)
 	} catch (ex: IllegalArgumentException) {
-		val valueType = if (value != null) value::class else null
+		val valueType = if (value != null) value::class.toString() else "<null>"
 		val message = "${field} = ${valueType} is not possible"
 		throw ClassCastException(message).initCause(ex)
 	} finally {
-		field.isAccessible = accessible
+		field.isAccessible = isAccessible
 	}
 }
 
 @Deprecated(message = "Don't use directly, use Any.get or Any.set", level = DeprecationLevel.ERROR)
 fun Any.findField(fieldName: String): Field {
 	val hierarchy = generateSequence<Class<*>>(this::class.java) { it.superclass }.toList()
-	val fields = hierarchy.mapNotNull {
+	val fields = hierarchy.mapNotNull { clazz ->
 		@Suppress("SwallowedException")
 		try {
-			it.getDeclaredField(fieldName)
+			clazz.getDeclaredField(fieldName)
 		} catch (e: NoSuchFieldException) {
 			// Don't care about exact source, all we need to know is whether the field exists.
 			// ... and if it exists, we need the instance.

@@ -10,9 +10,9 @@ import com.flextrade.jfixture.utility.comparators.ConstructorParameterCountCompa
 import java.lang.reflect.Constructor
 import java.lang.reflect.Parameter
 
-private fun ignoreKotlinConstructors() = Customisation {
+private fun ignoreKotlinConstructors() = Customisation { fixture ->
 	val mostParameterConstructorRelay = ClassToConstructorRelay(MostParameterConstructorQuery(), AlwaysSpecification())
-	it.addBuilderToStartOfPipeline(mostParameterConstructorRelay)
+	fixture.addBuilderToStartOfPipeline(mostParameterConstructorRelay)
 }
 
 private class MostParameterConstructorQuery : ConstructorQuery {
@@ -43,4 +43,4 @@ private fun Constructor<*>.hasNoDefaultConstructorMarker(): Boolean =
 	this.parameters.none(Parameter::isDefaultMarker)
 
 private fun Constructor<*>.hasDefaultConstructorMarker(): Boolean =
-	this.parameters.lastOrNull()?.isDefaultMarker() ?: false
+	this.parameters.lastOrNull()?.isDefaultMarker() == true

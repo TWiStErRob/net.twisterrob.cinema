@@ -33,6 +33,8 @@ detekt {
 	config = rootProject.files("../../config/detekt/detekt.yml")
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 	basePath = rootProject.projectDir.parentFile.parentFile.parentFile.absolutePath
+	// REPORT doesn't work, "detektMain" is disabled below.
+	// source = files(source.asFileTree.filter { !it.name.endsWith(".gradle.kts") })
 
 	parallel = true
 
@@ -66,8 +68,9 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
+	// TODO see why detektMain is disabled at detekt.source.
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
-	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
+	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().matching { it.name != "detektMain" })
 }
 
 val isCI: Boolean

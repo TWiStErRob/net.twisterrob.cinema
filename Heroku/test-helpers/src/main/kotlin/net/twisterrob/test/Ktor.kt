@@ -40,6 +40,7 @@ fun mockEngine(block: MockEngineConfig.() -> Unit = {}): MockEngine {
 		// clear Dummy Stub after MockEngine has been created.
 		config.requestHandlers.clear()
 		// allow setting up configuration (e.g. reuseHandlers)
+		@Suppress("NestedScopeFunctions") // REPORT false positive
 		config.apply(block)
 	}
 }
@@ -49,19 +50,23 @@ fun HttpClient.stub(handler: MockRequestHandler) {
 	config.addHandler(handler)
 }
 
-fun HttpClient.stub(url: String, handler: MockRequestHandler) = stub { request ->
-	@Suppress("UseIfInsteadOfWhen")
-	when (request.url.toString()) {
-		url -> handler(this, request)
-		else -> fail("Expecting $url, but request url didn't match: ${request.url}")
+fun HttpClient.stub(url: String, handler: MockRequestHandler) {
+	stub { request ->
+		@Suppress("UseIfInsteadOfWhen")
+		when (request.url.toString()) {
+			url -> handler(this, request)
+			else -> fail("Expecting $url, but request url didn't match: ${request.url}")
+		}
 	}
 }
 
 fun HttpClient.verify(url: String, block: (appRequest: HttpRequestData, stubbedResponse: HttpResponseData) -> Unit) {
 	val engine = this.engine as MockEngine
+	@Suppress("DontDowncastCollectionTypes") // No other way to support [verifyNoMoreInteractions].
 	val requestHistory = engine.requestHistory as MutableList<HttpRequestData>
 	val request: HttpRequestData = requestHistory.firstOrNull()
 		?: fail("No more requests when trying to verify $url")
+	@Suppress("DontDowncastCollectionTypes") // No other way to support [verifyNoMoreInteractions].
 	val responseHistory = engine.responseHistory as MutableList<HttpResponseData>
 	val response: HttpResponseData = responseHistory.firstOrNull()
 		?: fail("No more responses when trying to verify $url")
@@ -74,7 +79,9 @@ fun HttpClient.verify(url: String, block: (appRequest: HttpRequestData, stubbedR
 	responseHistory.removeAt(0)
 }
 
-fun HttpClient.verifyNoInteractions() = verifyNoMoreInteractions()
+fun HttpClient.verifyNoInteractions() {
+	verifyNoMoreInteractions()
+}
 
 fun HttpClient.verifyNoMoreInteractions() {
 	val engine = this.engine as MockEngine

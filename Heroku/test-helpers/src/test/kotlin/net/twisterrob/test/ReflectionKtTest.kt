@@ -163,13 +163,13 @@ class ReflectionKtTest {
 		assertThat("mentions the property", ex.message, containsString("'prop'"))
 	}
 
-	@Test fun `get duplicate inherted property`() {
+	@Test fun `get duplicate inherited property`() {
 		open class S {
-			private var prop: String = "valueS"
+			private val prop: String = "valueS"
 		}
 
 		class C : S() {
-			private var prop: String = "valueC"
+			private val prop: String = "valueC"
 		}
 
 		val ex = assertThrows<NoSuchFieldException> { C()["prop"] }
@@ -180,12 +180,14 @@ class ReflectionKtTest {
 		}
 	}
 
-	@Test fun `set duplicate inherted property`() {
+	@Test fun `set duplicate inherited property`() {
 		open class S {
+			@Suppress("VarCouldBeVal")
 			private var prop: String = "valueS"
 		}
 
 		class C : S() {
+			@Suppress("VarCouldBeVal")
 			private var prop: String = "valueC"
 		}
 
