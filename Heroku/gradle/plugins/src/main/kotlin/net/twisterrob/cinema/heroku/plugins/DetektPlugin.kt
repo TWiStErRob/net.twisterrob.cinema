@@ -10,6 +10,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.withType
+import org.gradle.kotlin.dsl.assign
 
 class DetektPlugin : Plugin<Project> {
 
@@ -35,11 +36,11 @@ class DetektPlugin : Plugin<Project> {
 				// so it resolves to DetektExtension.reports (from project.detekt) instead of Detekt.reports(Action).
 				@Suppress("Deprecation", "KotlinRedundantDiagnosticSuppress")
 				reports {
-					html.required.set(true) // human
-					xml.required.set(true) // checkstyle
-					txt.required.set(true) // console
+					html.required = true // human
+					xml.required = true // checkstyle
+					txt.required = true // console
 					// https://sarifweb.azurewebsites.net
-					sarif.required.set(true) // GitHub Code Scanning
+					sarif.required = true // GitHub Code Scanning
 				}
 			}
 		}
@@ -56,7 +57,7 @@ private fun Project.configureSarifMerging() {
 		@Suppress("NestedScopeFunctions") // False positive due to kotlin-dsl https://github.com/detekt/detekt/issues/5328#issuecomment-1272534271.
 		reports {
 			// https://sarifweb.azurewebsites.net
-			sarif.required.set(true) // GitHub Code Scanning
+			sarif.required = true // GitHub Code Scanning
 		}
 	}
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
