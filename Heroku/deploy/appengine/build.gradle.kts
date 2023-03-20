@@ -3,6 +3,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
+	id("net.twisterrob.cinema.library")
 	id("java-library")
 	// https://github.com/GoogleCloudPlatform/app-gradle-plugin/blob/master/USER_GUIDE.md#app-engine-appyaml-based-projects
 	alias(libs.plugins.appengine.yaml)

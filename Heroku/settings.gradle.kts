@@ -4,12 +4,14 @@ rootProject.name = "Cinema-Heroku"
 
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
+include(":backend")
 include(":backend:sync")
 include(":backend:feed")
 include(":backend:quickbook")
 include(":backend:database")
 include(":backend:network")
 include(":backend:endpoint")
+include(":deploy")
 include(":deploy:appengine")
 
 include(":test-helpers")

@@ -1,4 +1,5 @@
 plugins {
+	id("net.twisterrob.cinema.application")
 	id("java")
 	id("application")
 	id("org.jetbrains.kotlin.jvm")

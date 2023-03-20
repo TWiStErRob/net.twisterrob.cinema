@@ -1,4 +1,5 @@
 plugins {
+	id("net.twisterrob.cinema.library")
 	id("java")
 	id("org.jetbrains.kotlin.jvm")
 	id("net.twisterrob.cinema.heroku.plugins.detekt")
