@@ -1,3 +1,4 @@
+import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.gradle.doNotNagAbout
 
 tasks.register<Delete>("clean") {

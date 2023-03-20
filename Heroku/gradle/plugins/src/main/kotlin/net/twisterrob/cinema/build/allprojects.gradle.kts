@@ -6,11 +6,11 @@ import configureDependencyLocking
 import configureSLF4JBindings
 import configureVerboseReportsForGithubActions
 import forceKotlinVersion
-import net.twisterrob.cinema.heroku.plugins.internal.libs
-import notDependsOn
+import net.twisterrob.cinema.build.dsl.libs
+import net.twisterrob.cinema.build.dsl.notDependsOn
+import net.twisterrob.cinema.build.dsl.slug
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import parallelJUnit5Execution
-import slug
 
 project.configureDependencyLocking()
 project.forceKotlinVersion()

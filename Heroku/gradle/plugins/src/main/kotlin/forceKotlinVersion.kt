@@ -1,4 +1,4 @@
-import net.twisterrob.cinema.heroku.plugins.internal.libs
+import net.twisterrob.cinema.build.dsl.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 

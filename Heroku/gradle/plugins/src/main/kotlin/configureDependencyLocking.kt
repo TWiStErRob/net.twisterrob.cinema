@@ -1,3 +1,4 @@
+import net.twisterrob.cinema.build.dsl.slug
 import org.gradle.api.Project
 
 /**

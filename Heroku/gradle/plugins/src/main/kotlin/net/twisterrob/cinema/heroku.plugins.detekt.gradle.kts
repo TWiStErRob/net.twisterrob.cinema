@@ -2,9 +2,9 @@ package net.twisterrob.cinema
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
-import isCI
-import net.twisterrob.cinema.heroku.plugins.internal.libs
-import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
+import net.twisterrob.cinema.build.dsl.isCI
+import net.twisterrob.cinema.build.dsl.libs
+import net.twisterrob.cinema.build.dsl.maybeRegister
 
 plugins {
 	id("io.gitlab.arturbosch.detekt")
