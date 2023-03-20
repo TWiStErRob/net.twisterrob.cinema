@@ -1,10 +1,6 @@
 plugins {
 	id("net.twisterrob.cinema.application")
-	id("java")
 	id("java-test-fixtures")
-	id("application")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
 }
 
 application {

@@ -1,9 +1,6 @@
 plugins {
 	id("net.twisterrob.cinema.library")
-	id("java-library")
 	id("java-test-fixtures")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
 	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
