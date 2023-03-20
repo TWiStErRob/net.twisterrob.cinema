@@ -73,7 +73,7 @@ allprojects {
 				// Logging is relevant in integration tests, so the methods need to be synchronized.
 				parallelJUnit5Execution(Concurrency.PerClass)
 				// For for each test as it needs more memory to set up embedded Neo4j.
-				setForkEvery(1)
+				forkEvery = 1
 				useJUnitPlatform {
 					includeTags("integration")
 					excludeTags("external")
@@ -85,7 +85,7 @@ allprojects {
 				// In these tests global state may be used, so everything needs to be synchronized.
 				parallelJUnit5Execution(Concurrency.PerSuite)
 				// Separate integration tests as much as possible.
-				setForkEvery(1)
+				forkEvery = 1
 				useJUnitPlatform {
 					includeTags("integration & external")
 				}
