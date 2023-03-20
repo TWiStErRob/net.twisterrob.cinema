@@ -36,11 +36,9 @@ gradlePlugin {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	kotlinOptions {
-		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-opt-in=kotlin.RequiresOptIn",
-			"-opt-in=kotlin.contracts.ExperimentalContracts",
-		)
+	compilerOptions {
+		freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+		freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
 	}
 }
 
