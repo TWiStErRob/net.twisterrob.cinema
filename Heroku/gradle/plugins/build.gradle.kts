@@ -24,10 +24,6 @@ dependencyLocking {
 
 gradlePlugin {
 	plugins {
-		create("net.twisterrob.cinema.heroku.plugins.settings") {
-			id = "net.twisterrob.cinema.heroku.plugins.settings"
-			implementationClass = "net.twisterrob.cinema.heroku.plugins.SettingsPlugin"
-		}
 	}
 }
 
