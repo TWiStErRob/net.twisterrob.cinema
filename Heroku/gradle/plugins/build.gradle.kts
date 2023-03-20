@@ -18,11 +18,6 @@ dependencyLocking {
 	lockFile = file("../../gradle/dependency-locks/plugins.lockfile")
 }
 
-gradlePlugin {
-	plugins {
-	}
-}
-
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 	compilerOptions {
 		freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
