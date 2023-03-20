@@ -35,6 +35,13 @@ plugins {
 	id("net.twisterrob.gradle.plugin.settings") version "0.15.1"
 }
 
+dependencyResolutionManagement {
+	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+	repositories {
+		mavenCentral()
+	}
+}
+
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()

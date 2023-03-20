@@ -2,9 +2,6 @@ import net.twisterrob.gradle.doNotNagAbout
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 allprojects {
-	repositories {
-		mavenCentral()
-	}
 	this@allprojects.configureDependencyLocking()
 	this@allprojects.forceKotlinVersion()
 	this@allprojects.configureSLF4JBindings()
