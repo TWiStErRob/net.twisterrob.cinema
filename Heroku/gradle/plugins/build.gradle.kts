@@ -19,7 +19,7 @@ dependencies {
 
 dependencyLocking {
 	lockAllConfigurations()
-	lockFile.set(file("../../gradle/dependency-locks/plugins.lockfile"))
+	lockFile = file("../../gradle/dependency-locks/plugins.lockfile")
 }
 
 gradlePlugin {
@@ -55,22 +55,22 @@ detekt {
 
 	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
-			html.required.set(true) // human
-			xml.required.set(true) // checkstyle
-			txt.required.set(true) // console
+			html.required = true // human
+			xml.required = true // checkstyle
+			txt.required = true // console
 			// https://sarifweb.azurewebsites.net
-			sarif.required.set(true) // GitHub Code Scanning
+			sarif.required = true // GitHub Code Scanning
 		}
 	}
 }
 
 val detektReportMergeTask = rootProject.tasks.register<io.gitlab.arturbosch.detekt.report.ReportMergeTask>("detektReportMergeSarif") {
-	output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
+	output = rootProject.buildDir.resolve("reports/detekt/merge.sarif")
 }
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 	reports {
 		// https://sarifweb.azurewebsites.net
-		sarif.required.set(true) // GitHub Code Scanning
+		sarif.required = true // GitHub Code Scanning
 	}
 }
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {

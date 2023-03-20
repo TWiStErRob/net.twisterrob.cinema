@@ -1,4 +1,5 @@
 import net.twisterrob.gradle.doNotNagAbout
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 allprojects {
 	repositories {
@@ -17,8 +18,8 @@ allprojects {
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-			kotlinOptions {
-				jvmTarget = libs.versions.java.get()
+			compilerOptions {
+				jvmTarget = JvmTarget.fromTarget(libs.versions.java.get())
 				allWarningsAsErrors = true
 				verbose = true
 			}
