@@ -33,7 +33,7 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.cinema.heroku.plugins.settings")
+	id("net.twisterrob.cinema.settings")
 	id("net.twisterrob.gradle.plugin.settings") version "0.15.1"
 }
 
