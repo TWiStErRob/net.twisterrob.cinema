@@ -98,6 +98,15 @@ allprojects {
 				dependsOn(functionalTest)
 				dependsOn(integrationTest)
 			}
+			// TODEL https://github.com/TWiStErRob/net.twisterrob.cinema/issues/306
+			afterEvaluate {
+				withType<Test>().configureEach {
+					@Suppress("NAME_SHADOWING")
+					val test = this@allprojects.the<TestingExtension>().suites["test"] as JvmTestSuite
+					testClassesDirs = test.sources.output.classesDirs
+					classpath = test.sources.runtimeClasspath
+				}
+			}
 			"check" {
 				// Remove default dependency, because it runs all tests.
 				notDependsOn { it == test.name }
