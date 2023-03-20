@@ -1,22 +1,16 @@
-package net.twisterrob.cinema.heroku.plugins
+package net.twisterrob.cinema
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import isCI
-import net.twisterrob.cinema.heroku.plugins.internal.detekt
 import net.twisterrob.cinema.heroku.plugins.internal.libs
 import net.twisterrob.cinema.heroku.plugins.internal.maybeRegister
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.named
-import org.gradle.kotlin.dsl.withType
-import org.gradle.kotlin.dsl.assign
 
-class DetektPlugin : Plugin<Project> {
+plugins {
+	id("io.gitlab.arturbosch.detekt")
+}
 
-	override fun apply(project: Project) {
-		project.plugins.apply("io.gitlab.arturbosch.detekt")
-		project.detekt {
+		detekt {
 			ignoreFailures = isCI
 			// TODEL https://github.com/detekt/detekt/issues/4926
 			buildUponDefaultConfig = false
@@ -45,10 +39,8 @@ class DetektPlugin : Plugin<Project> {
 			}
 		}
 		project.configureSarifMerging()
-	}
-}
 
-private fun Project.configureSarifMerging() {
+fun Project.configureSarifMerging() {
 	check(this != rootProject) { "Sarif merging cannot be applied on root project." }
 	rootProject.tasks.maybeRegister<ReportMergeTask>("detektReportMergeSarif") {
 		output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))

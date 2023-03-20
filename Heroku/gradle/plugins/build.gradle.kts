@@ -28,10 +28,6 @@ gradlePlugin {
 			id = "net.twisterrob.cinema.heroku.plugins.settings"
 			implementationClass = "net.twisterrob.cinema.heroku.plugins.SettingsPlugin"
 		}
-		create("net.twisterrob.cinema.heroku.plugins.detekt") {
-			id = "net.twisterrob.cinema.heroku.plugins.detekt"
-			implementationClass = "net.twisterrob.cinema.heroku.plugins.DetektPlugin"
-		}
 	}
 }
 
