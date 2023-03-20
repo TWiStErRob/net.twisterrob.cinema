@@ -13,7 +13,6 @@ include(":deploy:appengine")
 include(":test-helpers")
 
 pluginManagement {
-	@Suppress("UnstableApiUsage")
 	includeBuild("gradle/plugins")
 	resolutionStrategy {
 		eachPlugin {
