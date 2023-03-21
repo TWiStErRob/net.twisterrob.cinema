@@ -22,7 +22,7 @@ import org.mockito.kotlin.whenever
 import net.twisterrob.cinema.database.model.View as DBView
 
 @ExtendWith(ModelFixtureExtension::class)
-class ViewMapperTest {
+class ViewMapperUnitTest {
 
 	private val mockFilmMapper: FilmMapper = mock()
 	private val mockCinemaMapper: CinemaMapper = mock()

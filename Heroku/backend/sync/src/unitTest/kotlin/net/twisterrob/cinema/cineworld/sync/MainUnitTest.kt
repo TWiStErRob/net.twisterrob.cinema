@@ -15,7 +15,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import org.neo4j.ogm.session.SessionFactory
 
-class MainTest {
+class MainUnitTest {
 
 	private val mockFeedService: FeedService = mock()
 	private val mockCinemaSync: CinemaSync = mock()

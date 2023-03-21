@@ -20,7 +20,7 @@ import java.time.OffsetDateTime
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
 @ExtendWith(ModelFixtureExtension::class)
-class CinemaSyncTest {
+class CinemaSyncUnitTest {
 
 	private val calculator: CinemaSyncCalculator = mock()
 	private val dbService: CinemaService = mock()

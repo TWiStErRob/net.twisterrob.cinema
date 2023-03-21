@@ -10,32 +10,27 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ModelFixtureExtension::class)
-class CinemaTest {
+class FilmUnitTest {
 
 	private lateinit var fixture: JFixture
 
 	@Test fun `copy creates a full copy`() {
-		val fixtCinema: Cinema = fixture.build()
-		fixtCinema.views = fixture.buildList()
-		fixtCinema.users = fixture.buildList()
+		val fixtFilm: Film = fixture.build()
+		fixtFilm.views = fixture.buildList()
 
-		val result = fixtCinema.copy()
+		val result = fixtFilm.copy()
 
-		assertThat(result, sameBeanAs(fixtCinema))
+		assertThat(result, sameBeanAs(fixtFilm))
 	}
 
 	@Test fun `copy creates a shallow copy`() {
-		val fixtCinema: Cinema = fixture.build()
-		fixtCinema.views = fixture.buildList()
-		fixtCinema.users = fixture.buildList()
+		val fixtFilm: Film = fixture.build()
+		fixtFilm.views = fixture.buildList()
 
-		val result = fixtCinema.copy()
+		val result = fixtFilm.copy()
 
 		result.views.forEachIndexed { index, view ->
-			assertThat(view, sameInstance(fixtCinema.views.elementAt(index)))
-		}
-		result.users.forEachIndexed { index, user ->
-			assertThat(user, sameInstance(fixtCinema.users.elementAt(index)))
+			assertThat(view, sameInstance(fixtFilm.views.elementAt(index)))
 		}
 	}
 }

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 @Suppress("ClassName", "RemoveExplicitTypeArguments")
-class SyncResultsTest {
+class SyncResultsUnitTest {
 
 	private class Data : Historical()
 

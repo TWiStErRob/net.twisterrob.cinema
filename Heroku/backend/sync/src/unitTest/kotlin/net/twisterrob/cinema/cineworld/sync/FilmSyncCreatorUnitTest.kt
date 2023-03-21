@@ -19,7 +19,7 @@ import net.twisterrob.cinema.database.model.Film as DBFilm
  * @see SyncAppModule.cinemaEntityFactory sut
  * @see DBFilm.copyPropertiesFrom delegate
  */
-class FilmSyncCreatorTest {
+class FilmSyncCreatorUnitTest {
 
 	private val fixture = JFixture()
 	private lateinit var sut: Creator<FeedFilm, DBFilm>

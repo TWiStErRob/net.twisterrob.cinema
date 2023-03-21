@@ -15,7 +15,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @ExtendWith(KtorExtension::class)
-class RouteControllerRegistrarTest {
+class RouteControllerRegistrarUnitTest {
 
 	private val controllers: MutableSet<RouteController> = LinkedHashSet()
 

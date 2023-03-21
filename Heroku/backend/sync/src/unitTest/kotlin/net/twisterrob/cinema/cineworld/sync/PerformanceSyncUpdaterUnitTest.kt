@@ -26,7 +26,7 @@ import net.twisterrob.cinema.database.model.Performance as DBPerformance
  * @see DBPerformance.copyPropertiesFrom delegate
  */
 @ExtendWith(ModelFixtureExtension::class)
-class PerformanceSyncUpdaterTest {
+class PerformanceSyncUpdaterUnitTest {
 
 	private lateinit var fixture: JFixture
 	private lateinit var sut: Updater<DBPerformance, FeedPerformance>

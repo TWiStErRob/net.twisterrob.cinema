@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
-class MainParametersParserTest {
+class MainParametersParserUnitTest {
 
 	private val sut = MainParametersParser()
 

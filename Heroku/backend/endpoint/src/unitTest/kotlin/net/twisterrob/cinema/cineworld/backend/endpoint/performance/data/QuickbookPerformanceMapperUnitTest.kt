@@ -19,7 +19,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-class QuickbookPerformanceMapperTest {
+class QuickbookPerformanceMapperUnitTest {
 
 	private val fixture = JFixture()
 	private val sut = QuickbookPerformanceMapper()

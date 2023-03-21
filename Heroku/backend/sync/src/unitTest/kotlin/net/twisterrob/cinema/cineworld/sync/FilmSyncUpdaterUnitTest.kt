@@ -26,7 +26,7 @@ import net.twisterrob.cinema.database.model.Film as DBFilm
  * @see DBFilm.copyPropertiesFrom delegate
  */
 @ExtendWith(ModelFixtureExtension::class)
-class FilmSyncUpdaterTest {
+class FilmSyncUpdaterUnitTest {
 
 	private lateinit var fixture: JFixture
 	private lateinit var sut: Updater<DBFilm, FeedFilm>

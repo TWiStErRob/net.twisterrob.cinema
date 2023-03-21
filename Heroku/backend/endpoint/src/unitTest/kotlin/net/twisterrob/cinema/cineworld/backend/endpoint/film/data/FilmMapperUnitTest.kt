@@ -23,7 +23,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film as Fronte
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
 @ExtendWith(ModelFixtureExtension::class)
-class FilmMapperTest {
+class FilmMapperUnitTest {
 
 	private val mockViewMapper: ViewMapper = mock()
 

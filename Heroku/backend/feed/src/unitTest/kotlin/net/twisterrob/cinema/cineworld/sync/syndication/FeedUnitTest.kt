@@ -10,7 +10,7 @@ import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Test
 
-class FeedTest {
+class FeedUnitTest {
 
 	@Test fun `Fixture can be built`() {
 		val fixture = JFixture()

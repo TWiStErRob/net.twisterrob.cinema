@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
 @ExtendWith(ModelFixtureExtension::class)
-class CinemaMapperTest {
+class CinemaMapperUnitTest {
 
 	private lateinit var fixture: JFixture
 	private lateinit var sut: CinemaMapper

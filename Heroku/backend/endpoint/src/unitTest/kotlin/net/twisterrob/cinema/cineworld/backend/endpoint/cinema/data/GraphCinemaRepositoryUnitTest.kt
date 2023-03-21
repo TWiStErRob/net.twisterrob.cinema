@@ -21,7 +21,7 @@ import net.twisterrob.cinema.database.model.Cinema as DBCinema
 
 @ExtendWith(ModelFixtureExtension::class)
 @ExtendWith(MockitoExtension::class)
-class GraphCinemaRepositoryTest {
+class GraphCinemaRepositoryUnitTest {
 
 	@Mock lateinit var mockService: CinemaService
 	@Mock lateinit var mockMapper: CinemaMapper

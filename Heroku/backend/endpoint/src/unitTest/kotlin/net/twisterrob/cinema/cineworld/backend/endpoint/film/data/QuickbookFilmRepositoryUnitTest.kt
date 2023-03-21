@@ -20,7 +20,7 @@ import net.twisterrob.cinema.database.model.Film as DBFilm
 
 @ExtendWith(ModelFixtureExtension::class)
 @ExtendWith(MockitoExtension::class)
-class QuickbookFilmRepositoryTest {
+class QuickbookFilmRepositoryUnitTest {
 
 	@Mock lateinit var mockService: FilmService
 	@Mock lateinit var mockMapper: FilmMapper

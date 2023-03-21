@@ -30,7 +30,7 @@ import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-class JacksonSerializationTest {
+class JacksonSerializationUnitTest {
 
 	data class SubelementsAndAttributes(
 		@JacksonXmlProperty(isAttribute = true)

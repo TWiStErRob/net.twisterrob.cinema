@@ -19,7 +19,7 @@ import net.twisterrob.cinema.database.model.Performance as DBPerformance
  * @see SyncAppModule.cinemaEntityFactory sut
  * @see DBPerformance.copyPropertiesFrom delegate
  */
-class PerformanceSyncCreatorTest {
+class PerformanceSyncCreatorUnitTest {
 
 	private val fixture = JFixture().applyCustomisation {
 		add(javaURIRealistic())

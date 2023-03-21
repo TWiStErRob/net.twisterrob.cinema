@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ModelFixtureExtension::class)
-class ModelFixtureExtensionTest {
+class ModelFixtureExtensionUnitTest {
 
 	private lateinit var fixture: JFixture
 
