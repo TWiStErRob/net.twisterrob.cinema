@@ -22,20 +22,20 @@ tasks.withType<Test> {
 	)
 }
 
-tasks {
-	val sourceSets = java.sourceSets
-	val copyLoggingResources = register<Copy>("copyLoggingResources") {
-		from(rootProject.file("config/log4j2.xml"))
-		into(sourceSets["main"].resources.srcDirs.first())
+registerCopyLoggingResourcesFor(java.sourceSets["main"])
+
+@Suppress("UnstableApiUsage")
+extensions.getByName<TestingExtension>("testing").suites.withType<JvmTestSuite>().configureEach {
+	registerCopyLoggingResourcesFor(sources)
+}
+
+fun Project.registerCopyLoggingResourcesFor(sourceSet: SourceSet) {
+	val copy = tasks.register<Copy>(sourceSet.getTaskName("copyLogging", "resources")) {
+		from(project.rootProject.file("config/log4j2.xml"))
+		into(sourceSet.resources.srcDirs.first())
 	}
-	"processResources" {
-		dependsOn(copyLoggingResources)
-	}
-	val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
-		from(rootProject.file("config/log4j2.xml"))
-		into(sourceSets["test"].resources.srcDirs.first())
-	}
-	"processTestResources" {
-		dependsOn(copyLoggingTestResources)
+
+	tasks.named(sourceSet.processResourcesTaskName) {
+		dependsOn(copy)
 	}
 }

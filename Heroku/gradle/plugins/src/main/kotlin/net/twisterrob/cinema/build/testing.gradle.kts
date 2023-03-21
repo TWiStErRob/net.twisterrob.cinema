@@ -22,8 +22,7 @@ tasks.withType<Test> {
 testing {
 	// JUnit 5 Tag setup, see JUnit5Tags.kt
 	suites {
-		withType<JvmTestSuite>().configureEach {
-			if (this.name == "test") return@configureEach
+		withType<JvmTestSuite>().matching { it.name != "test" }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
 			centralizedSetup(configurations)
@@ -33,7 +32,9 @@ testing {
 			testType = "ignored"
 			targets.configureEach {
 				testTask.configure {
-					doFirst { error("This should never execute, because it has no sources. Move test code to `src/*Test/`.") }
+					doFirst {
+						error("This should never execute, because it has no sources. Move test code to `src/*Test/`.")
+					}
 				}
 			}
 		}
