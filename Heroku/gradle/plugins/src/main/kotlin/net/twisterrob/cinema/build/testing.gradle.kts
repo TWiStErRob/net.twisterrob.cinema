@@ -27,15 +27,6 @@ testing {
 				implementation(testFixtures(project()))
 			}
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
-			targets.configureEach {
-				testTask.configure {
-					dependsOn("testClasses")
-					testClassesDirs = files(
-						testClassesDirs, // Keep original.
-						sourceSets["test"].output.classesDirs,
-					)
-				}
-			}
 		}
 
 		val unitTest = named<JvmTestSuite>("test") {
