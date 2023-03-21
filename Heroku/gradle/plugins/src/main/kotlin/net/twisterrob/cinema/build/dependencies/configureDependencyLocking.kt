@@ -1,3 +1,6 @@
+// TODEL https://github.com/gradle/gradle/issues/24409
+@file:Suppress("UnusedImport", "UnusedImports")
+
 package net.twisterrob.cinema.build.dependencies
 
 import net.twisterrob.cinema.build.dsl.slug

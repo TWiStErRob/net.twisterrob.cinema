@@ -34,7 +34,11 @@ detekt {
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 	basePath = rootProject.projectDir.parentFile.parentFile.parentFile.absolutePath
 	// REPORT doesn't work, "detektMain" is disabled below.
-	// source = files(source.asFileTree.filter { !it.name.endsWith(".gradle.kts") })
+	// > Execution failed for task ':plugins:detektMain'.
+	// > > Front-end Internal error: Failed to analyze declaration P__projects_workspace_net_twisterrob_cinema_Heroku_gradle_plugins_src_main_kotlin_net_twisterrob_cinema_build_compilation_gradle
+	// > File being compiled: (4,49) in /P:\projects\workspace\net.twisterrob.cinema\Heroku\gradle\plugins\src\main\kotlin\net\twisterrob\cinema\build\compilation.gradle.kts
+	// > The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at: org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
+	//source = files(source.asFileTree.filter { !it.name.endsWith(".gradle.kts") })
 
 	parallel = true
 
