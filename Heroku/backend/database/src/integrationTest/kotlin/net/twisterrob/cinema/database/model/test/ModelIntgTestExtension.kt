@@ -7,6 +7,7 @@ import net.twisterrob.test.get
 import net.twisterrob.test.put
 import net.twisterrob.test.remove
 import org.junit.jupiter.api.extension.AfterEachCallback
+import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
@@ -15,6 +16,7 @@ import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.harness.Neo4j
 import org.neo4j.harness.Neo4jBuilders
 import org.neo4j.ogm.session.Session
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Injects parameter [GraphDatabaseService], only one graph will exist during a test.
@@ -41,7 +43,14 @@ import org.neo4j.ogm.session.Session
  * }
  * ```
  */
-class ModelIntgTestExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
+class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachCallback, ParameterResolver {
+
+	override fun beforeAll(context: ExtensionContext) {
+		val testClass = context.testClass.getOrNull() ?: return
+		require(testClass.name.endsWith("IntgTest")) {
+			"Integration tests must end with 'IntgTest' to be run with ${this::class.simpleName}."
+		}
+	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val testServer = Neo4jBuilders.newInProcessBuilder().build()
