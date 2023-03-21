@@ -2,10 +2,9 @@ plugins {
 	id("net.twisterrob.cinema.library")
 }
 
-sourceSets {
-	test {
-		resources.srcDir(projects.backend.sync.dependencyProject.file("test"))
-	}
+@Suppress("UnstableApiUsage")
+testing.suites.named<JvmTestSuite>("integrationTest") {
+	sources.resources.srcDir(projects.backend.sync.dependencyProject.file("test"))
 }
 
 dependencies {

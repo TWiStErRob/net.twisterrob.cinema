@@ -1,12 +1,16 @@
 package net.twisterrob.cinema.build
 
-import net.twisterrob.cinema.build.dsl.notDependsOn
+import net.twisterrob.cinema.build.dsl.extendsFrom
+import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.Concurrency
 import net.twisterrob.cinema.build.testing.allowUnsafe
 import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
 
 plugins {
 	id("org.gradle.jvm-test-suite")
+	id("org.jetbrains.kotlin.jvm")
+	id("org.jetbrains.kotlin.kapt")
+	id("org.gradle.java-test-fixtures")
 }
 
 tasks.withType<Test> {
@@ -14,70 +18,147 @@ tasks.withType<Test> {
 	allowUnsafe()
 }
 
-// JUnit 5 Tag setup, see JUnit5Tags.kt
-tasks {
-	val test = "test"(Test::class) {
-		parallelJUnit5Execution(Concurrency.PerMethod)
-		useJUnitPlatform {
+@Suppress("UnstableApiUsage")
+testing {
+	suites {
+		withType<JvmTestSuite>().matching { it.name != "test" }.configureEach {
+			useJUnitJupiter(libs.versions.test.junit.jupiter)
+			conventionalSetup(configurations)
+			centralizedSetup(configurations)
+		}
+
+		/**
+		 * Standard Unit tests for a single class or function.
+		 * Most/all dependencies are mocked, stubbed or faked out.
+		 */
+		val unitTest by registering(JvmTestSuite::class) {
+			testType = TestSuiteType.UNIT_TEST
+			targets.configureEach {
+				testTask.configure {
+					// Logging is not relevant in unit tests.
+					parallelJUnit5Execution(Concurrency.PerMethod)
+					shouldRunAfter()
+				}
+			}
+		}
+
+		/**
+		 * Functional tests test multiple classes in tandem.
+		 * Building a dependency graph, but still mocking/stubbing out partially.
+		 */
+		val functionalTest by registering(JvmTestSuite::class) {
+			testType = TestSuiteType.FUNCTIONAL_TEST
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in functional tests, so the methods need to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerClass)
+					shouldRunAfter(unitTest)
+				}
+			}
+		}
+
+		/**
+		 * Integration test uses an internal third party to simulate real behavior.
+		 * For example using a full embedded database.
+		 */
+		val integrationTest by registering(JvmTestSuite::class) {
+			testType = TestSuiteType.INTEGRATION_TEST
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in integration tests, so the methods need to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerClass)
+					// Fork for each test as it needs more memory to set up embedded Neo4j.
+					forkEvery = 1
+					shouldRunAfter(unitTest, functionalTest)
+				}
+			}
+		}
+
+		/**
+		 * Integration tests use an external third party to execute real behavior.
+		 * This means that test status depends on something external to the test.
+		 * For example hitting a network endpoint.
+		 */
+		val integrationExternalTest by registering(JvmTestSuite::class) {
+			testType = "integration-external-test"
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in integration tests.
+					// In these tests global state may be used, so everything needs to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerSuite)
+					// Separate integration tests as much as possible.
+					forkEvery = 1
+					shouldRunAfter(unitTest, functionalTest, integrationTest)
+				}
+			}
+		}
+
+		/*
+		 * This is a dummy test suite that is never executed.
+		 * It's created by default and there's no way to prevent that.
+		 * So reusing it as a hook for all other tests.
+		 */
+		named<JvmTestSuite>(JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME) {
+			testType = "ignored" // Allow unitTest to be unit-test.
+			targets.configureEach {
+				testTask.configure {
+					dependsOn(unitTest)
+					dependsOn(functionalTest)
+					dependsOn(integrationTest)
+					@Suppress("ConstantConditionIf")
+					if (false) {
+						// Don't want to run it automatically, ever.
+						dependsOn(integrationExternalTest)
+					}
+					doFirst {
+						// TaskActions won't execute, because the task outcome will be NO-SOURCE.
+						// Dependencies will still execute when this task is requested, just like `check` and `build`.
+						error("This should never execute, because it has no sources. Move test code to `src/*Test/`.")
+					}
+				}
+			}
 		}
 	}
-	val unitTest = register<Test>("unitTest") {
-		// Logging is not relevant in unit tests.
-		parallelJUnit5Execution(Concurrency.PerMethod)
-		useJUnitPlatform {
-			excludeTags("functional", "integration")
-		}
-		shouldRunAfter()
+}
+
+/**
+ * Simulate conventional test setup, similar to how src/test/java is set up with testImplementation and the like.
+ */
+@Suppress("UnstableApiUsage")
+fun JvmTestSuite.conventionalSetup(configurations: ConfigurationContainer) {
+	dependencies {
+		// Depend on main project.
+		this.implementation(project())
+		// Depend on testFixtures of the project.
+		this.implementation(this.testFixtures(project()))
 	}
-	val functionalTest = register<Test>("functionalTest") {
-		// Logging is relevant in functional tests, so the methods need to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerClass)
-		useJUnitPlatform {
-			includeTags("functional")
-		}
-		shouldRunAfter(unitTest)
+	// Depend on main project's internal dependencies.
+	configurations.named(sources.implementationConfigurationName)
+		.extendsFrom(configurations.implementation)
+	// Allow usages of internal code elements in tests.
+	kotlin.target.compilations.named(this.name) {
+		associateWith(kotlin.target.compilations.getByName("main"))
 	}
-	val integrationTest = register<Test>("integrationTest") {
-		// Logging is relevant in integration tests, so the methods need to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerClass)
-		// For for each test as it needs more memory to set up embedded Neo4j.
-		forkEvery = 1
-		useJUnitPlatform {
-			includeTags("integration")
-			excludeTags("external")
-		}
-		shouldRunAfter(unitTest, functionalTest)
-	}
-	val integrationExternalTest = register<Test>("integrationExternalTest") {
-		// Logging is relevant in integration tests.
-		// In these tests global state may be used, so everything needs to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerSuite)
-		// Separate integration tests as much as possible.
-		forkEvery = 1
-		useJUnitPlatform {
-			includeTags("integration & external")
-		}
-		shouldRunAfter(unitTest, functionalTest, integrationTest)
-	}
-	val tests = register<Task>("tests") {
-		dependsOn(unitTest)
-		dependsOn(functionalTest)
-		dependsOn(integrationTest)
-	}
-	// TODEL https://github.com/TWiStErRob/net.twisterrob.cinema/issues/306
-	afterEvaluate {
-		withType<Test>().configureEach {
-			@Suppress("NAME_SHADOWING")
-			val test = testing.suites["test"] as JvmTestSuite
-			testClassesDirs = test.sources.output.classesDirs
-			classpath = test.sources.runtimeClasspath
-		}
-	}
-	"check" {
-		// Remove default dependency, because it runs all tests.
-		notDependsOn { it == test.name }
-		dependsOn(tests)
-		// Don't want to run it automatically, ever.
-		notDependsOn { it == integrationExternalTest.name }
-	}
+}
+
+/**
+ * Simulate AGP's approach to flavors by reusing the built-in test configurations.
+ * ```
+ * project.testing.suites.withType<JvmTestSuite>().configureEach { dependencies { implementation(...) } }
+ * ```
+ * becomes
+ * ```
+ * project.dependencies { testImplementation(...) }
+ * ```
+ * and similarly for `compileOnly` and `runtimeOnly`.
+ */
+@Suppress("UnstableApiUsage")
+fun JvmTestSuite.centralizedSetup(configurations: ConfigurationContainer) {
+	configurations.named(sources.implementationConfigurationName).extendsFrom(configurations.testImplementation)
+	configurations.named(sources.compileOnlyConfigurationName).extendsFrom(configurations.testCompileOnly)
+	configurations.named(sources.runtimeOnlyConfigurationName).extendsFrom(configurations.testRuntimeOnly)
+	// Doesn't work for some reason, probably some internal Kotlin magic.
+	//val baseName = sources.annotationProcessorConfigurationName
+	//	.removeSuffix(JvmConstants.ANNOTATION_PROCESSOR_CONFIGURATION_NAME.replaceFirstChar(Char::titlecase))
+	//configurations.named("kapt${baseName.replaceFirstChar(Char::titlecase)}").extendsFrom(configurations.kaptTest)
 }

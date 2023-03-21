@@ -1,6 +1,5 @@
 plugins {
 	id("net.twisterrob.cinema.library")
-	id("java-test-fixtures")
 }
 
 dependencies {

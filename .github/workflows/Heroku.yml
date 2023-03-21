@@ -81,8 +81,11 @@ jobs:
           --stacktrace
           :plugins:detektEach
           detektMain
-          detektTest
           detektTestFixtures
+          detektUnitTest
+          detektFunctionalTest
+          detektIntegrationTest
+          detektIntegrationExternalTest
           :detektReportMergeSarif
 
       - name: Upload "Heroku Detekt Results".
@@ -117,7 +120,7 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          tests :allTestsReport
+          test :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 

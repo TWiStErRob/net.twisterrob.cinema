@@ -7,7 +7,7 @@ application {
 	mainClass = "io.ktor.server.netty.EngineMain"
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
-			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
+			"-Dlog4j.configurationFile=log4j2.xml,log4j2-endpoint.xml"
 		)
 		// Can be overridden with `gradlew :backend:endpoint:run --args="-P:twisterrob.cinema.staticRootFolder=<static-folder> -P:twisterrob.cinema.fakeRootFolder=<fake-folder>"`.
 		args(
@@ -68,5 +68,4 @@ dependencies {
 	testImplementation(libs.kotlinx.serialization.json)
 	testImplementation(libs.ktor.client.mock)
 	testImplementation(libs.ktor.server.test)
-	kaptTest(libs.dagger.apt)
 }

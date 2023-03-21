@@ -17,11 +17,11 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 		val engine = TestApplicationEngine(createTestEnvironment()) {}
 		engine.start()
 		engine.application.log.trace("Ktor test starting {}.{}", context.requiredTestClass, context.requiredTestMethod)
-		context.store.put<ApplicationEngine>(engine)
+		context.store.applicationEngine = engine
 	}
 
 	override fun afterEach(context: ExtensionContext) {
-		val engine = context.store.get<ApplicationEngine>()!!
+		val engine = context.store.applicationEngine
 		engine.application.log.trace("Ktor test finishing {}.{}", context.requiredTestClass, context.requiredTestMethod)
 		engine.stop(0L, 0L)
 		context.store.remove<ApplicationEngine>()
@@ -30,15 +30,16 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
 		parameterContext.parameter.type in SUPPORTED_PARAMETER_TYPES
 
-	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? =
+	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any =
 		when (parameterContext.parameter.type) {
 			TestApplicationEngine::class.java ->
-				extensionContext.store.get<ApplicationEngine>() as TestApplicationEngine
+				extensionContext.store.applicationEngine as TestApplicationEngine
 			ApplicationEngine::class.java ->
-				extensionContext.store.get<ApplicationEngine>()
+				extensionContext.store.applicationEngine
 			Application::class.java ->
-				extensionContext.store.get<ApplicationEngine>()!!.application
-			else -> error("Unsupported $parameterContext")
+				extensionContext.store.applicationEngine.application
+			else ->
+				error("Unsupported $parameterContext")
 		}
 
 	companion object {
@@ -54,3 +55,10 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 private val ExtensionContext.store: ExtensionContext.Store
 	get() = this.getStore(ExtensionContext.Namespace.create("ktor"))
+
+private var ExtensionContext.Store.applicationEngine: ApplicationEngine
+	get() = this.get<ApplicationEngine>()
+		?: error("Missing ApplicationEngine in ${this}.")
+	set(value) {
+		this.put<ApplicationEngine>(value)
+	}
