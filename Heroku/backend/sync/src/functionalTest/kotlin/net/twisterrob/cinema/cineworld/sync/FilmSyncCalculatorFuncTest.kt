@@ -3,7 +3,6 @@ package net.twisterrob.cinema.cineworld.sync
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.model.ModelFixtureExtension
-import net.twisterrob.test.TagFunctional
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.that
@@ -25,7 +24,6 @@ import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Film as FeedFilm
 import net.twisterrob.cinema.database.model.Film as DBFilm
 
 @ExtendWith(ModelFixtureExtension::class)
-@TagFunctional
 class FilmSyncCalculatorFuncTest {
 
 	private lateinit var fixture: JFixture

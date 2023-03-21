@@ -9,7 +9,6 @@ import net.twisterrob.cinema.database.model.View
 import net.twisterrob.cinema.database.model.fixup
 import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -22,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.ogm.session.Session
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class FilmServiceIntgTest {
 
 	private lateinit var fixture: JFixture

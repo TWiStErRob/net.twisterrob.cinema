@@ -2,7 +2,6 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.module.kotlin.readValue
-import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.URI
 
-@TagIntegration
 class UriEncodingFixingUriDeserializerIntgTest {
 
 	data class Film(

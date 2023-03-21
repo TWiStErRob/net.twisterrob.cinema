@@ -8,7 +8,6 @@ import net.twisterrob.cinema.database.model.User
 import net.twisterrob.cinema.database.model.assertSameData
 import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.emptyIterable
@@ -28,7 +27,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class UserServiceIntgTest {
 
 	private lateinit var fixture: JFixture

@@ -25,7 +25,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.View
 import net.twisterrob.cinema.cineworld.backend.endpoint.view.data.ViewRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.applyCustomisation
 import net.twisterrob.test.build
 import net.twisterrob.test.java8TimeRealistic
@@ -51,7 +50,6 @@ import javax.inject.Singleton
  * @see Views.Routes
  * @see ViewsController
  */
-@TagIntegration
 class ViewsIntgTest {
 
 	@Inject lateinit var mockRepository: ViewRepository

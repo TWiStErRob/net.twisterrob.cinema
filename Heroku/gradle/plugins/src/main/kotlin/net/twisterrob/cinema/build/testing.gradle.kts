@@ -20,7 +20,6 @@ tasks.withType<Test> {
 
 @Suppress("UnstableApiUsage")
 testing {
-	// JUnit 5 Tag setup, see JUnit5Tags.kt
 	suites {
 		withType<JvmTestSuite>().matching { it.name != "test" }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
@@ -39,35 +38,40 @@ testing {
 			}
 		}
 
+		/**
+		 * Standard Unit tests for a single class or function.
+		 * Most/all dependencies are mocked, stubbed or faked out.
+		 */
 		val unitTest by registering(JvmTestSuite::class) {
 			testType = TestSuiteType.UNIT_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is not relevant in unit tests.
 					parallelJUnit5Execution(Concurrency.PerMethod)
-					options {
-						this as JUnitPlatformOptions
-						excludeTags("functional", "integration")
-					}
 					shouldRunAfter()
 				}
 			}
 		}
 
+		/**
+		 * Functional tests test multiple classes in tandem.
+		 * Building a dependency graph, but still mocking/stubbing out partially.
+		 */
 		val functionalTest by registering(JvmTestSuite::class) {
 			testType = TestSuiteType.FUNCTIONAL_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
 					parallelJUnit5Execution(Concurrency.PerClass)
-					options {
-						this as JUnitPlatformOptions
-						includeTags("functional")
-					}
 					shouldRunAfter(unitTest)
 				}
 			}
 		}
+		
+		/**
+		 * Integration test uses an internal third party to simulate real behavior.
+		 * For example using a full embedded database.
+		 */
 		val integrationTest by registering(JvmTestSuite::class) {
 			testType = TestSuiteType.INTEGRATION_TEST
 			targets.configureEach {
@@ -76,15 +80,16 @@ testing {
 					parallelJUnit5Execution(Concurrency.PerClass)
 					// Fork for each test as it needs more memory to set up embedded Neo4j.
 					forkEvery = 1
-					options {
-						this as JUnitPlatformOptions
-						includeTags("integration")
-						excludeTags("external")
-					}
 					shouldRunAfter(unitTest, functionalTest)
 				}
 			}
 		}
+
+		/**
+		 * Integration tests use an external third party to execute real behavior.
+		 * This means that test status depends on something external to the test.
+		 * For example hitting a network endpoint.
+		 */
 		val integrationExternalTest by registering(JvmTestSuite::class) {
 			testType = "integration-external-test"
 			targets.configureEach {
@@ -94,10 +99,6 @@ testing {
 					parallelJUnit5Execution(Concurrency.PerSuite)
 					// Separate integration tests as much as possible.
 					forkEvery = 1
-					options {
-						this as JUnitPlatformOptions
-						includeTags("integration & external")
-					}
 					shouldRunAfter(unitTest, functionalTest, integrationTest)
 				}
 			}

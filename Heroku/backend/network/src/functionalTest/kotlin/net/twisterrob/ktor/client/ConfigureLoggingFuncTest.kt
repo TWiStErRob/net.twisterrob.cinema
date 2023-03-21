@@ -9,7 +9,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
-import net.twisterrob.test.TagFunctional
 import net.twisterrob.test.captureSingle
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
@@ -47,15 +46,14 @@ import org.slf4j.LoggerFactory
  *   so I replaced [Test] with [RetryingTest] to give it 3 tries max.
  * @see configureLogging
  */
-@TagFunctional
 @TestInstance(Lifecycle.PER_METHOD)
 @Execution(ExecutionMode.SAME_THREAD)
-class ConfigureLoggingTest {
+class ConfigureLoggingFuncTest {
 
 	/**
 	 * Using a real logger so the output of the test setup is visible during execution.
 	 */
-	private val realLogger: Logger = LoggerFactory.getLogger(ConfigureLoggingTest::class.java)
+	private val realLogger: Logger = LoggerFactory.getLogger(ConfigureLoggingFuncTest::class.java)
 
 	/**
 	 * This instance is a [spy], but created in an extremely long-winded way,

@@ -11,16 +11,12 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
-import net.twisterrob.test.TagExternal
-import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import javax.inject.Singleton
 
-@TagIntegration
-@TagExternal
 class CinemasIntgExtTest {
 
 	@Test fun `list all cinemas`() = cinemasEndpointTest {

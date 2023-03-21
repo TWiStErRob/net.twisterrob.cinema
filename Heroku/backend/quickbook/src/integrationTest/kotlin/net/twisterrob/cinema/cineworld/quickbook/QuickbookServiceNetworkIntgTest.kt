@@ -13,7 +13,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import io.ktor.http.headersOf
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -23,7 +22,6 @@ import java.time.LocalDate
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
-@TagIntegration
 class QuickbookServiceNetworkIntgTest {
 
 	private val mockClient = HttpClient(mockEngine()).config {

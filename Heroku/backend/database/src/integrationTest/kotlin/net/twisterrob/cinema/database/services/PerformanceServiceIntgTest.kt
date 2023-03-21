@@ -9,7 +9,6 @@ import net.twisterrob.cinema.database.model.ModelFixtureExtension
 import net.twisterrob.cinema.database.model.Performance
 import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -21,7 +20,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class PerformanceServiceIntgTest {
 
 	private lateinit var fixture: JFixture

@@ -2,14 +2,10 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.databind.deser.impl.PropertyBasedObjectIdGenerator
 import io.ktor.client.HttpClient
-import net.twisterrob.test.TagExternal
-import net.twisterrob.test.TagIntegration
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-@TagIntegration
-@TagExternal
 class FeedServiceNetworkIntgExtTest {
 
 	private val sut = FeedServiceNetwork(HttpClient())

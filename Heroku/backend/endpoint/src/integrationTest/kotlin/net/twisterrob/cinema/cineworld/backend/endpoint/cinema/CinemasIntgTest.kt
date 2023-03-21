@@ -17,7 +17,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaReposi
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.serialized
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.buildList
 import net.twisterrob.test.mockEngine
@@ -38,7 +37,6 @@ import javax.inject.Singleton
  * @see Cinemas.Routes
  * @see CinemasController
  */
-@TagIntegration
 class CinemasIntgTest {
 
 	@Inject lateinit var mockRepository: CinemaRepository

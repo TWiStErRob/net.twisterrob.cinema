@@ -12,7 +12,6 @@ import net.twisterrob.cinema.database.model.assertSameData
 import net.twisterrob.cinema.database.model.inUTC
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
@@ -29,7 +28,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class ViewServiceIntgTest {
 
 	private lateinit var fixture: JFixture

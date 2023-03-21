@@ -5,7 +5,6 @@ import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.services.Services
-import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.junit.jupiter.api.AfterEach
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.neo4j.harness.Neo4j
 import org.neo4j.harness.Neo4jBuilders
 
-@TagIntegration
 class FilmSyncIntgTest {
 
 	private lateinit var testServer: Neo4j

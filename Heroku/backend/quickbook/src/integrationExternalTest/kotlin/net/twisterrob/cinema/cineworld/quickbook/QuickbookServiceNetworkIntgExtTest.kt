@@ -5,8 +5,6 @@ import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import net.twisterrob.test.TagExternal
-import net.twisterrob.test.TagIntegration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.not
@@ -14,8 +12,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-@TagIntegration
-@TagExternal
 class QuickbookServiceNetworkIntgExtTest {
 
 	private val client = HttpClient().config {

@@ -24,7 +24,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
@@ -48,7 +47,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@TagIntegration
 class AuthIntgTest {
 
 	@Inject lateinit var mockRepository: AuthRepository

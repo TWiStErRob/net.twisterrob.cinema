@@ -5,7 +5,6 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.neo4j.ogm.TimestampConverter
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
@@ -23,7 +22,6 @@ import org.neo4j.ogm.session.loadAll
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class UserIntgTest {
 
 	private lateinit var fixture: JFixture

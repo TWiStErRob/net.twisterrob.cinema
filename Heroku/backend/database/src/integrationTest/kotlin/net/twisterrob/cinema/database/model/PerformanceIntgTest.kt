@@ -5,7 +5,6 @@ import com.shazam.shazamcrest.MatcherAssert.assertThat
 import com.shazam.shazamcrest.matcher.Matchers.sameBeanAs
 import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.neo4j.mockito.hasLabels
@@ -22,7 +21,6 @@ import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@TagIntegration
 class PerformanceIntgTest {
 
 	private lateinit var fixture: JFixture

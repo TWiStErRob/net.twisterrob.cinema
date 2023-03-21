@@ -4,14 +4,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
-import net.twisterrob.test.TagFunctional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
-@TagFunctional
-class AppFuncTest {
+class AppIntgTest {
 
 	/**
 	 * @see App.Routes.Home

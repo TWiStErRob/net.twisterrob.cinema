@@ -24,7 +24,6 @@ import org.neo4j.ogm.session.Session
  * This prevents caching problems with changing data and getting data from cache instead of from DB.
  * ```kotlin
  * @ExtendWith(ModelIntgTestExtension::class)
- * @TagIntegration
  * class SomeIntgTest {
  *     private lateinit var sut: UserService
  *

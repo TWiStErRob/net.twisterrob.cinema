@@ -15,7 +15,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.Perform
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.Performances.Performance
 import net.twisterrob.cinema.cineworld.backend.endpoint.serialized
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
-import net.twisterrob.test.TagIntegration
 import net.twisterrob.test.buildList
 import net.twisterrob.test.mockEngine
 import org.intellij.lang.annotations.Language
@@ -38,7 +37,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.Perform
  * @see Performances.Routes
  * @see PerformanceController
  */
-@TagIntegration
 class PerformancesIntgTest {
 
 	@Inject lateinit var mockRepository: PerformanceRepository
