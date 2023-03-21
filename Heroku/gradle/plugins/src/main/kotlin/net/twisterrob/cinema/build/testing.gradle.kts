@@ -1,12 +1,13 @@
 package net.twisterrob.cinema.build
 
-import net.twisterrob.cinema.build.dsl.notDependsOn
+import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.Concurrency
 import net.twisterrob.cinema.build.testing.allowUnsafe
 import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
 
 plugins {
 	id("org.gradle.jvm-test-suite")
+	id("org.jetbrains.kotlin.jvm")
 }
 
 tasks.withType<Test> {
@@ -14,70 +15,107 @@ tasks.withType<Test> {
 	allowUnsafe()
 }
 
-// JUnit 5 Tag setup, see JUnit5Tags.kt
-tasks {
-	val test = "test"(Test::class) {
-		parallelJUnit5Execution(Concurrency.PerMethod)
-		useJUnitPlatform {
+@Suppress("UnstableApiUsage")
+testing {
+	// JUnit 5 Tag setup, see JUnit5Tags.kt
+	suites {
+		withType<JvmTestSuite>().configureEach {
+			//sources.kotlin.srcDir("src/test/kotlin")
+			dependencies {
+				implementation(project())
+				plugins.withId("org.gradle.java-test-fixtures") {
+					implementation(testFixtures(project()))
+				}
+			}
+			useJUnitJupiter(libs.versions.test.junit.jupiter)
+			targets.configureEach {
+				testTask.configure {
+					dependsOn("testClasses")
+					testClassesDirs = files(
+						testClassesDirs, // Keep original.
+						sourceSets["test"].output.classesDirs,
+					)
+				}
+			}
 		}
-	}
-	val unitTest = register<Test>("unitTest") {
-		// Logging is not relevant in unit tests.
-		parallelJUnit5Execution(Concurrency.PerMethod)
-		useJUnitPlatform {
-			excludeTags("functional", "integration")
+
+		val unitTest = named<JvmTestSuite>("test") {
+			targets.configureEach { 
+				testTask.configure {
+					// Logging is not relevant in unit tests.
+					parallelJUnit5Execution(Concurrency.PerMethod)
+					options {
+						this as JUnitPlatformOptions
+						excludeTags("functional", "integration")
+					}
+					shouldRunAfter()
+				}
+			}
 		}
-		shouldRunAfter()
-	}
-	val functionalTest = register<Test>("functionalTest") {
-		// Logging is relevant in functional tests, so the methods need to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerClass)
-		useJUnitPlatform {
-			includeTags("functional")
+
+		val functionalTest by registering(JvmTestSuite::class) {
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in functional tests, so the methods need to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerClass)
+					options {
+						this as JUnitPlatformOptions
+						includeTags("functional")
+					}
+					shouldRunAfter(unitTest.tasks)
+				}
+			}
 		}
-		shouldRunAfter(unitTest)
-	}
-	val integrationTest = register<Test>("integrationTest") {
-		// Logging is relevant in integration tests, so the methods need to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerClass)
-		// For for each test as it needs more memory to set up embedded Neo4j.
-		forkEvery = 1
-		useJUnitPlatform {
-			includeTags("integration")
-			excludeTags("external")
+		val integrationTest by registering(JvmTestSuite::class) {
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in integration tests, so the methods need to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerClass)
+					// Fork for each test as it needs more memory to set up embedded Neo4j.
+					forkEvery = 1
+					options {
+						this as JUnitPlatformOptions
+						includeTags("integration")
+						excludeTags("external")
+					}
+					shouldRunAfter(unitTest.tasks, functionalTest.tasks)
+				}
+			}
 		}
-		shouldRunAfter(unitTest, functionalTest)
-	}
-	val integrationExternalTest = register<Test>("integrationExternalTest") {
-		// Logging is relevant in integration tests.
-		// In these tests global state may be used, so everything needs to be synchronized.
-		parallelJUnit5Execution(Concurrency.PerSuite)
-		// Separate integration tests as much as possible.
-		forkEvery = 1
-		useJUnitPlatform {
-			includeTags("integration & external")
+		val integrationExternalTest  by registering(JvmTestSuite::class) {
+			targets.configureEach {
+				testTask.configure {
+					// Logging is relevant in integration tests.
+					// In these tests global state may be used, so everything needs to be synchronized.
+					parallelJUnit5Execution(Concurrency.PerSuite)
+					// Separate integration tests as much as possible.
+					forkEvery = 1
+					options {
+						this as JUnitPlatformOptions
+						includeTags("integration & external")
+					}
+					shouldRunAfter(unitTest.tasks, functionalTest.tasks, integrationTest.tasks)
+				}
+			}
 		}
-		shouldRunAfter(unitTest, functionalTest, integrationTest)
-	}
-	val tests = register<Task>("tests") {
-		dependsOn(unitTest)
-		dependsOn(functionalTest)
-		dependsOn(integrationTest)
-	}
-	// TODEL https://github.com/TWiStErRob/net.twisterrob.cinema/issues/306
-	afterEvaluate {
-		withType<Test>().configureEach {
-			@Suppress("NAME_SHADOWING")
-			val test = testing.suites["test"] as JvmTestSuite
-			testClassesDirs = test.sources.output.classesDirs
-			classpath = test.sources.runtimeClasspath
+		tasks.register<Task>("tests") {
+			dependsOn(unitTest.tasks)
+			dependsOn(functionalTest.tasks)
+			dependsOn(integrationTest.tasks)
 		}
-	}
-	"check" {
-		// Remove default dependency, because it runs all tests.
-		notDependsOn { it == test.name }
-		dependsOn(tests)
-		// Don't want to run it automatically, ever.
-		notDependsOn { it == integrationExternalTest.name }
+
+		tasks.named("check") {
+			dependsOn(unitTest.tasks)
+			dependsOn(functionalTest.tasks)
+			dependsOn(integrationTest.tasks)
+			@Suppress("ConstantConditionIf")
+			if (false) {
+				// Don't want to run it automatically, ever.
+				dependsOn(integrationExternalTest.tasks)
+			}
+		}
 	}
 }
+
+val NamedDomainObjectProvider<JvmTestSuite>.tasks
+	get() = this.map { it.targets.map { it.testTask } }
