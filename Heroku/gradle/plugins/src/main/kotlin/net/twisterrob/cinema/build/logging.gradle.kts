@@ -22,14 +22,14 @@ tasks.withType<Test> {
 	)
 }
 
-registerCopyLoggingResourcesFor(java.sourceSets["main"])
+registerCopyLoggingFor(java.sourceSets["main"])
 
 @Suppress("UnstableApiUsage")
 extensions.getByName<TestingExtension>("testing").suites.withType<JvmTestSuite>().configureEach {
-	registerCopyLoggingResourcesFor(sources)
+	registerCopyLoggingFor(sources)
 }
 
-fun Project.registerCopyLoggingResourcesFor(sourceSet: SourceSet) {
+fun Project.registerCopyLoggingFor(sourceSet: SourceSet) {
 	val copy = tasks.register<Copy>(sourceSet.getTaskName("copyLogging", "resources")) {
 		from(project.rootProject.file("config/log4j2.xml"))
 		into(sourceSet.resources.srcDirs.first())
