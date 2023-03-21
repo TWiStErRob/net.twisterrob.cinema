@@ -2,57 +2,13 @@ package net.twisterrob.cinema.build
 
 import Concurrency
 import allowUnsafe
-import configureDependencyLocking
-import configureSLF4JBindings
-import configureVerboseReportsForGithubActions
-import forceKotlinVersion
-import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.dsl.notDependsOn
-import net.twisterrob.cinema.build.dsl.slug
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import parallelJUnit5Execution
-
-project.configureDependencyLocking()
-project.forceKotlinVersion()
-project.configureSLF4JBindings()
-
-plugins.withId("java") {
-	configure<JavaPluginExtension> {
-		sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-		targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-	}
-}
-
-plugins.withId("org.jetbrains.kotlin.jvm") {
-	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-		compilerOptions {
-			jvmTarget = JvmTarget.fromTarget(libs.versions.java.get())
-			allWarningsAsErrors = true
-			verbose = true
-		}
-	}
-}
-
-plugins.withId("java") {
-	configure<BasePluginExtension> {
-		archivesName.set("twisterrob-cinema-${slug}")
-	}
-}
 
 plugins.withId("java") {
 	tasks.withType<Test> {
 		maxHeapSize = "512M"
 		allowUnsafe()
-		if (project.property("net.twisterrob.build.verboseReports").toString().toBoolean()) {
-			configureVerboseReportsForGithubActions()
-		} else {
-			//afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
-			//	logger.quiet("Executing test ${descriptor.className}.${descriptor.name} with result: ${result.resultType}")
-			//}))
-		}
-		jvmArgs(
-			"-Djava.util.logging.config.file=${rootProject.file("config/logging.properties")}"
-		)
 	}
 
 	// JUnit 5 Tag setup, see JUnit5Tags.kt
@@ -121,26 +77,6 @@ plugins.withId("java") {
 			dependsOn(tests)
 			// Don't want to run it automatically, ever.
 			notDependsOn { it == integrationExternalTest.name }
-		}
-	}
-}
-
-plugins.withId("java") {
-	project.tasks {
-		val sourceSets = project.the<JavaPluginExtension>().sourceSets
-		val copyLoggingResources = register<Copy>("copyLoggingResources") {
-			from(rootProject.file("config/log4j2.xml"))
-			into(sourceSets["main"].resources.srcDirs.first())
-		}
-		"processResources" {
-			dependsOn(copyLoggingResources)
-		}
-		val copyLoggingTestResources = register<Copy>("copyLoggingTestResources") {
-			from(rootProject.file("config/log4j2.xml"))
-			into(sourceSets["test"].resources.srcDirs.first())
-		}
-		"processTestResources"{
-			dependsOn(copyLoggingTestResources)
 		}
 	}
 }
