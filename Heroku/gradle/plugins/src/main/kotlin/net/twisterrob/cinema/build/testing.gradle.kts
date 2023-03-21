@@ -27,17 +27,6 @@ testing {
 			centralizedSetup(configurations)
 		}
 
-		named<JvmTestSuite>("test") {
-			testType = "ignored"
-			targets.configureEach {
-				testTask.configure {
-					doFirst {
-						error("This should never execute, because it has no sources. Move test code to `src/*Test/`.")
-					}
-				}
-			}
-		}
-
 		/**
 		 * Standard Unit tests for a single class or function.
 		 * Most/all dependencies are mocked, stubbed or faked out.
@@ -103,14 +92,30 @@ testing {
 				}
 			}
 		}
-		tasks.named("test") {
-			dependsOn(unitTest)
-			dependsOn(functionalTest)
-			dependsOn(integrationTest)
-			@Suppress("ConstantConditionIf")
-			if (false) {
-				// Don't want to run it automatically, ever.
-				dependsOn(integrationExternalTest)
+
+		/*
+		 * This is a dummy test suite that is never executed.
+		 * It's created by default and there's no way to prevent that.
+		 * So reusing it as a hook for all other tests.
+		 */
+		named<JvmTestSuite>(JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME) {
+			testType = "ignored" // Allow unitTest to be unit-test.
+			targets.configureEach {
+				testTask.configure {
+					dependsOn(unitTest)
+					dependsOn(functionalTest)
+					dependsOn(integrationTest)
+					@Suppress("ConstantConditionIf")
+					if (false) {
+						// Don't want to run it automatically, ever.
+						dependsOn(integrationExternalTest)
+					}
+					doFirst {
+						// TaskActions won't execute, because the task outcome will be NO-SOURCE.
+						// Dependencies will still execute when this task is requested, just like `check` and `build`.
+						error("This should never execute, because it has no sources. Move test code to `src/*Test/`.")
+					}
+				}
 			}
 		}
 	}
