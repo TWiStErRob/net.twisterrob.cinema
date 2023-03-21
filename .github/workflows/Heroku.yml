@@ -117,7 +117,7 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          tests :allTestsReport
+          test :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
