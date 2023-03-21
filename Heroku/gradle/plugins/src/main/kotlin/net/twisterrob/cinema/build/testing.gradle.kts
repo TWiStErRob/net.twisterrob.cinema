@@ -63,7 +63,7 @@ testing {
 						this as JUnitPlatformOptions
 						includeTags("functional")
 					}
-					shouldRunAfter(unitTest.tasks)
+					shouldRunAfter(unitTest)
 				}
 			}
 		}
@@ -80,7 +80,7 @@ testing {
 						includeTags("integration")
 						excludeTags("external")
 					}
-					shouldRunAfter(unitTest.tasks, functionalTest.tasks)
+					shouldRunAfter(unitTest, functionalTest)
 				}
 			}
 		}
@@ -97,30 +97,25 @@ testing {
 						this as JUnitPlatformOptions
 						includeTags("integration & external")
 					}
-					shouldRunAfter(unitTest.tasks, functionalTest.tasks, integrationTest.tasks)
+					shouldRunAfter(unitTest, functionalTest, integrationTest)
 				}
 			}
 		}
 		tasks.register<Task>("tests") {
-			dependsOn(unitTest.tasks)
-			dependsOn(functionalTest.tasks)
-			dependsOn(integrationTest.tasks)
+			dependsOn(unitTest)
+			dependsOn(functionalTest)
+			dependsOn(integrationTest)
 		}
 
 		tasks.named("check") {
-			dependsOn(unitTest.tasks)
-			dependsOn(functionalTest.tasks)
-			dependsOn(integrationTest.tasks)
+			dependsOn(unitTest)
+			dependsOn(functionalTest)
+			dependsOn(integrationTest)
 			@Suppress("ConstantConditionIf")
 			if (false) {
 				// Don't want to run it automatically, ever.
-				dependsOn(integrationExternalTest.tasks)
+				dependsOn(integrationExternalTest)
 			}
 		}
 	}
 }
-
-// This can be removed according to last line of org.gradle.api.plugins.JavaPlugin.configureBuiltInTest
-@Suppress("UnstableApiUsage")
-val NamedDomainObjectProvider<JvmTestSuite>.tasks: Provider<List<TaskProvider<Test>>>
-	get() = this.map { it.targets.map { target -> target.testTask } }
