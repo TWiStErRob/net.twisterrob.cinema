@@ -21,6 +21,7 @@ testing {
 	// JUnit 5 Tag setup, see JUnit5Tags.kt
 	suites {
 		withType<JvmTestSuite>().configureEach {
+			if (this.name == "test") return@configureEach
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			// Simulate conventional test setup
 			dependencies {
@@ -31,10 +32,29 @@ testing {
 					.configure { extendsFrom(configurations.implementation.get()) }
 				// Depend on testFixtures of the project.
 				implementation(testFixtures(project()))
+				
+				// Simulate AGP's approach to variants by reusing the built-in test configurations.
+				// `project.testing.suites.withType<JvmTestSuite>().configureEach { dependencies { implementation(...) } }`
+				// becomes
+				// `project.dependencies { testImplementation(...) }`
+				// and similarly for compileOnly and runtimeOnly.
+				configurations.named(sources.compileOnlyConfigurationName)
+					.configure { extendsFrom(configurations.testCompileOnly.get()) }
+				configurations.named(sources.implementationConfigurationName)
+					.configure { extendsFrom(configurations.testImplementation.get()) }
+				configurations.named(sources.runtimeOnlyConfigurationName)
+					.configure { extendsFrom(configurations.testRuntimeOnly.get()) }
 			}
 		}
 
-		named<JvmTestSuite>("test") { testType = "ignored" } 
+		named<JvmTestSuite>("test") {
+			testType = "ignored"
+			targets.configureEach {
+				testTask.configure {
+					doFirst { error("This should never execute, because it has no sources. Move test code to `src/*Test/`.") }
+				}
+			}
+		} 
 
 		val unitTest by registering(JvmTestSuite::class) {
 			testType = TestSuiteType.UNIT_TEST
