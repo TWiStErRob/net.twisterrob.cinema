@@ -56,7 +56,7 @@ testing {
 				}
 			}
 		}
-		
+
 		/**
 		 * Integration test uses an internal third party to simulate real behavior.
 		 * For example using a full embedded database.
