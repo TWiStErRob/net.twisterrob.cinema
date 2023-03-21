@@ -31,63 +31,63 @@ class MainParametersParserTest {
 	@Test fun `performances sync everything`() {
 		val result = sut.parse("performances")
 
-		assertTrue(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertTrue(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertTrue(result.isSyncPerformances)
 		assertNull(result.fromFolder)
 	}
 
 	@Test fun `'cinemas' sync cinemas`() {
 		val result = sut.parse("cinemas")
 
-		assertTrue(result.syncCinemas)
-		assertFalse(result.syncFilms)
-		assertFalse(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertFalse(result.isSyncFilms)
+		assertFalse(result.isSyncPerformances)
 		assertNull(result.fromFolder)
 	}
 
 	@Test fun `'films' sync films`() {
 		val result = sut.parse("films")
 
-		assertFalse(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertFalse(result.syncPerformances)
+		assertFalse(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertFalse(result.isSyncPerformances)
 		assertNull(result.fromFolder)
 	}
 
 	@Test fun `'cinemas' and 'films' sync cinemas and films`() {
 		val result = sut.parse("cinemas", "films")
 
-		assertTrue(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertFalse(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertFalse(result.isSyncPerformances)
 		assertNull(result.fromFolder)
 	}
 
 	@Test fun `'cinemas', 'films' and 'performances' sync those`() {
 		val result = sut.parse("cinemas", "films", "performances")
 
-		assertTrue(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertTrue(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertTrue(result.isSyncPerformances)
 		assertNull(result.fromFolder)
 	}
 
 	@Test fun `'performances' from specific folder`(@TempDir tempDir: File) {
 		val result = sut.parse("performances", "--folder=${tempDir.absolutePath}")
 
-		assertTrue(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertTrue(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertTrue(result.isSyncPerformances)
 		assertEquals(tempDir, result.fromFolder)
 	}
 
 	@Test fun `'films' and 'cinemas' from specific folder`(@TempDir tempDir: File) {
 		val result = sut.parse("--folder=${tempDir.absolutePath}", "films", "cinemas")
 
-		assertTrue(result.syncCinemas)
-		assertTrue(result.syncFilms)
-		assertFalse(result.syncPerformances)
+		assertTrue(result.isSyncCinemas)
+		assertTrue(result.isSyncFilms)
+		assertFalse(result.isSyncPerformances)
 		assertEquals(tempDir, result.fromFolder)
 	}
 }

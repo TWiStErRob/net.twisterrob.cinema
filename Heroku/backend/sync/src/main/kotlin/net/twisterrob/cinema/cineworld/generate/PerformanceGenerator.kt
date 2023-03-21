@@ -24,10 +24,10 @@ class PerformanceGenerator @Inject constructor(
 		val feedCinemas = cinemas.map(::mapCinema)
 		val feedFilms = films.shuffled().take(ACTIVE_FILM_COUNT).map(::mapFilm)
 		return Feed(
-			emptyList(),
-			feedCinemas,
-			feedFilms,
-			creator.generatePerformances(feedCinemas, feedFilms),
+			_attributes = emptyList(),
+			_cinemas = feedCinemas,
+			_films = feedFilms,
+			_performances = creator.generatePerformances(feedCinemas, feedFilms),
 		)
 	}
 
@@ -79,8 +79,7 @@ class PerformanceGenerator @Inject constructor(
 		@Suppress("RegExpRedundantEscape")
 		Regex("""^.*? \[(.*)\]$""")
 			.find(title)
-			?.let { it.groupValues[1] }
-			?.split(", ")
+			?.let { it.groupValues[1].split(", ") }
 			.orEmpty()
 
 	companion object {
@@ -94,6 +93,7 @@ class RandomPerformanceCreator @Inject constructor() {
 	fun generatePerformances(feedCinemas: List<Feed.Cinema>, feedFilms: List<Feed.Film>): List<Feed.Performance> {
 		val dates = relativeDates(START_DAY_RELATIVE, END_DAY_RELATIVE)
 		return feedCinemas
+			.asSequence()
 			.flatMap { cinema ->
 				feedFilms.flatMap { film ->
 					dates.map { date ->
@@ -104,13 +104,15 @@ class RandomPerformanceCreator @Inject constructor() {
 			.filter { random() < FUZZY_THRESHOLD }
 			.flatMap { (cinema, film, date) ->
 				val maxPerformanceCount =
-					if (cinema.name.startsWith("London - "))
+					if (cinema.name.startsWith("London - ")) {
 						MAX_PERFORMANCES_IN_LONDON_CINEMA
-					else
+					} else {
 						MAX_PERFORMANCES_IN_RURAL_CINEMA
+					}
 				val performanceCount = (random() * maxPerformanceCount).toInt()
 				(0..performanceCount).map { create(cinema, film, date) }
 			}
+			.toList()
 	}
 
 	private fun relativeDates(start: Int, endInclusive: Int): List<LocalDate> =

@@ -20,8 +20,10 @@ class CinemaSyncCalculator @Inject constructor(
 		LOG.trace(dbCinemas.toString())
 
 		val changes = calculateChanges(
-			dbCinemas, DBCinema::cineworldID,
-			feedCinemas, FeedCinema::id
+			database = dbCinemas,
+			databaseIdentity = DBCinema::cineworldID,
+			feed = feedCinemas,
+			feedIdentity = FeedCinema::id
 		)
 		return nodeSyncer.update(feed, changes, now)
 	}

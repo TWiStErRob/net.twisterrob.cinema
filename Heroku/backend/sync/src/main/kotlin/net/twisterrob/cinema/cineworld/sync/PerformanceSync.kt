@@ -24,8 +24,8 @@ class PerformanceSync @Inject constructor(
 
 		val performances = feed.performances.map { performance ->
 			performance.toEntity(feed).apply {
-				this.screensFilm = films[performance.film.id]!!
-				this.inCinema = cinemas[performance.cinema.id]!!
+				this.screensFilm = films.getValue(performance.film.id)
+				this.inCinema = cinemas.getValue(performance.cinema.id)
 			}
 		}
 

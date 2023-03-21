@@ -5,20 +5,21 @@ import java.io.File
 class MainParametersParser {
 
 	fun parse(vararg args: String): MainParameters {
-		val syncCinemas = "cinemas" in args
-		val syncFilms = "films" in args
-		val syncPerformances = "performances" in args
+		val isSyncCinemas = "cinemas" in args
+		val isSyncFilms = "films" in args
+		val isSyncPerformances = "performances" in args
 		val folder = args.singleOrNull { it.startsWith(ARG_FOLDER) }?.removePrefix(ARG_FOLDER)
 		val params = MainParameters(
-			syncCinemas = syncCinemas || syncPerformances,
-			syncFilms = syncFilms || syncPerformances,
-			syncPerformances = syncPerformances,
+			isSyncCinemas = isSyncCinemas || isSyncPerformances,
+			isSyncFilms = isSyncFilms || isSyncPerformances,
+			isSyncPerformances = isSyncPerformances,
 			fromFolder = folder?.let { File(it).absoluteFile },
 		)
 		require(params.fromFolder?.exists() != false) {
+			@Suppress("NullableToStringCall") // It's always non-null, because require() ensured it.
 			"Folder does not exist: ${params.fromFolder}"
 		}
-		require(params.syncCinemas || params.syncFilms || params.syncPerformances) {
+		require(params.isSyncCinemas || params.isSyncFilms || params.isSyncPerformances) {
 			"""Must have "cinemas" or "films" or "performances" or any/all as an argument."""
 		}
 		val unprocessed = args.toList()

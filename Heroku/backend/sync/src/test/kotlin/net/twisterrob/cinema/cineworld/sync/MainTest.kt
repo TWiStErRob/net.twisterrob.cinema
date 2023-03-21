@@ -32,7 +32,7 @@ class MainTest {
 	}
 
 	@Test fun `syncs none when requested`() {
-		val input = MainParameters(syncCinemas = false, syncFilms = false, syncPerformances = false)
+		val input = MainParameters(isSyncCinemas = false, isSyncFilms = false, isSyncPerformances = false)
 
 		sut.sync(input)
 
@@ -42,7 +42,7 @@ class MainTest {
 	@Test fun `syncs cinemas when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = false, syncPerformances = false)
+		val input = MainParameters(isSyncCinemas = true, isSyncFilms = false, isSyncPerformances = false)
 
 		sut.sync(input)
 
@@ -54,7 +54,7 @@ class MainTest {
 	@Test fun `syncs cinemas when requested together with performances`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = false, syncPerformances = true)
+		val input = MainParameters(isSyncCinemas = true, isSyncFilms = false, isSyncPerformances = true)
 
 		sut.sync(input)
 
@@ -67,7 +67,7 @@ class MainTest {
 	@Test fun `syncs films when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = false, syncFilms = true, syncPerformances = false)
+		val input = MainParameters(isSyncCinemas = false, isSyncFilms = true, isSyncPerformances = false)
 
 		sut.sync(input)
 
@@ -79,7 +79,7 @@ class MainTest {
 	@Test fun `syncs films when requested together with performances`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = false, syncFilms = true, syncPerformances = true)
+		val input = MainParameters(isSyncCinemas = false, isSyncFilms = true, isSyncPerformances = true)
 
 		sut.sync(input)
 
@@ -92,7 +92,7 @@ class MainTest {
 	@Test fun `syncs cinemas and films when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = false)
+		val input = MainParameters(isSyncCinemas = true, isSyncFilms = true, isSyncPerformances = false)
 
 		sut.sync(input)
 
@@ -105,7 +105,7 @@ class MainTest {
 	@Test fun `syncs all when requested`() {
 		val fixtFeed: Feed = fixture.build()
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenReturn(fixtFeed)
-		val input = MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = true)
+		val input = MainParameters(isSyncCinemas = true, isSyncFilms = true, isSyncPerformances = true)
 
 		sut.sync(input)
 
@@ -121,7 +121,7 @@ class MainTest {
 		whenever(mockFeedService.getWeeklyFilmTimes()).thenThrow(fakeException)
 
 		val ex = assertThrows<Throwable> {
-			sut.sync(MainParameters(syncCinemas = true, syncFilms = true, syncPerformances = true))
+			sut.sync(MainParameters(isSyncCinemas = true, isSyncFilms = true, isSyncPerformances = true))
 		}
 		assertSame(fakeException, ex)
 

@@ -20,8 +20,10 @@ class FilmSyncCalculator @Inject constructor(
 		LOG.trace(dbFilms.toString())
 
 		val changes = calculateChanges(
-			dbFilms, DBFilm::edi,
-			feedFilms, FeedFilm::id
+			database = dbFilms,
+			databaseIdentity = DBFilm::edi,
+			feed = feedFilms,
+			feedIdentity = FeedFilm::id
 		)
 		return nodeSyncer.update(feed, changes, now)
 	}
