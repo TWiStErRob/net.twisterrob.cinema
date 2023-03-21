@@ -1,3 +1,6 @@
+import Deps.junit5
+import org.jetbrains.kotlin.gradle.utils.extendsFrom
+
 plugins {
 	id("net.twisterrob.cinema.application")
 }
@@ -39,24 +42,6 @@ dependencies {
 
 // Test
 dependencies {
-	Deps.junit5(project)
-	testImplementation(libs.test.jfixture)
-	testImplementation(libs.test.hamcrest)
-	testImplementation(libs.test.shazamcrest) {
-		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
-		// Except for ComparisonFailure, which is provided by :test-helpers.
-		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
-	}
-	testImplementation(libs.test.mockito)
-	testImplementation(libs.test.mockito.kotlin)
-	testImplementation(projects.testHelpers)
-	testImplementation(testFixtures(projects.backend.database))
-
-	testImplementation(libs.jackson.module.kotlin)
-	testImplementation(libs.jackson.datatype.java8)
-	testImplementation(libs.neo4j)
-	testImplementation(libs.neo4j.harness)
-
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)
 	testFixturesImplementation(libs.kotlin.stdlib8)
@@ -65,4 +50,30 @@ dependencies {
 
 configurations.all {
 	//resolutionStrategy.failOnVersionConflict()
+}
+
+testing {
+	suites.withType<JvmTestSuite>().configureEach {
+		configurations.named(sources.implementationConfigurationName)
+			.configure { extendsFrom(configurations.implementation.get()) }
+		dependencies {
+			junit5(project)
+			implementation(libs.test.jfixture)
+			implementation(libs.test.hamcrest)
+			implementation(libs.test.shazamcrest) {
+				// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
+				// Except for ComparisonFailure, which is provided by :test-helpers.
+				exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
+			}
+			implementation(libs.test.mockito)
+			implementation(libs.test.mockito.kotlin)
+			implementation(projects.testHelpers)
+			implementation(testFixtures(projects.backend.database))
+
+			implementation(libs.jackson.module.kotlin)
+			implementation(libs.jackson.datatype.java8)
+			implementation(libs.neo4j)
+			implementation(libs.neo4j.harness)
+		}
+	}
 }

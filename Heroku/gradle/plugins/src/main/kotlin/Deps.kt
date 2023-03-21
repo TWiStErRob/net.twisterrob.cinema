@@ -1,10 +1,18 @@
 import net.twisterrob.cinema.build.dsl.libs
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
 
 @Suppress("StringLiteralDuplication", "MaxChainedCallsOnSameLine")
 object Deps {
 
+	fun DependencyHandlerScope.junit5(project: Project) {
+		add("implementation", project.libs.test.junit.jupiter)
+		add("implementation", project.libs.test.junit.jupiter.params)
+		add("implementation", project.libs.test.junit.pioneer)
+		add("runtimeOnly", project.libs.test.junit.jupiter.engine)
+	}
+	
 	fun junit5(project: Project) {
 		project.dependencies {
 			add("testImplementation", project.libs.test.junit.jupiter)
