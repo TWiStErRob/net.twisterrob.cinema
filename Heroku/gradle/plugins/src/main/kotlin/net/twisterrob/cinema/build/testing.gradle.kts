@@ -34,8 +34,10 @@ testing {
 			}
 		}
 
-		val unitTest = named<JvmTestSuite>("test") {
-			testType.set(TestSuiteType.UNIT_TEST)
+		named<JvmTestSuite>("test") { testType = "ignored" } 
+
+		val unitTest by registering(JvmTestSuite::class) {
+			testType = TestSuiteType.UNIT_TEST
 			targets.configureEach { 
 				testTask.configure {
 					// Logging is not relevant in unit tests.
@@ -50,7 +52,7 @@ testing {
 		}
 
 		val functionalTest by registering(JvmTestSuite::class) {
-			testType.set(TestSuiteType.FUNCTIONAL_TEST)
+			testType = TestSuiteType.FUNCTIONAL_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
@@ -64,7 +66,7 @@ testing {
 			}
 		}
 		val integrationTest by registering(JvmTestSuite::class) {
-			testType.set(TestSuiteType.INTEGRATION_TEST)
+			testType = TestSuiteType.INTEGRATION_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests, so the methods need to be synchronized.
@@ -81,7 +83,7 @@ testing {
 			}
 		}
 		val integrationExternalTest  by registering(JvmTestSuite::class) {
-			testType.set("integration-external-test")
+			testType = "integration-external-test"
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests.
@@ -97,13 +99,7 @@ testing {
 				}
 			}
 		}
-		tasks.register<Task>("tests") {
-			dependsOn(unitTest)
-			dependsOn(functionalTest)
-			dependsOn(integrationTest)
-		}
-
-		tasks.named("check") {
+		tasks.named("test") {
 			dependsOn(unitTest)
 			dependsOn(functionalTest)
 			dependsOn(integrationTest)
