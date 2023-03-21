@@ -73,3 +73,14 @@ doNotNagAbout(
 			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
 	"at org.jetbrains.plugins.gradle.tooling.util.SourceSetCachedFinder.createArtifactsMap"
 )
+
+// TODEL Gradle sync in IDEA 2023.1 (vs. Gradle 8.1): https://issuetracker.google.com/issues/274469173 
+@Suppress("MaxLineLength")
+doNotNagAbout(
+	"The org.gradle.util.VersionNumber type has been deprecated. " +
+			"This is scheduled to be removed in Gradle 9.0. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#org_gradle_util_reports_deprecations",
+	// There are 3 instances on consecutive lines, so just ignore the whole file.
+	"at com.android.ide.gradle.model.builder.AndroidStudioToolingPluginKt.isGradleAtLeast(AndroidStudioToolingPlugin.kt:"
+)
