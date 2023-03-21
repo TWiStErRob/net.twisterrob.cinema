@@ -39,6 +39,7 @@ testing {
 		}
 
 		val unitTest = named<JvmTestSuite>("test") {
+			testType.set(TestSuiteType.UNIT_TEST)
 			targets.configureEach { 
 				testTask.configure {
 					// Logging is not relevant in unit tests.
@@ -53,6 +54,7 @@ testing {
 		}
 
 		val functionalTest by registering(JvmTestSuite::class) {
+			testType.set(TestSuiteType.FUNCTIONAL_TEST)
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
@@ -66,6 +68,7 @@ testing {
 			}
 		}
 		val integrationTest by registering(JvmTestSuite::class) {
+			testType.set(TestSuiteType.INTEGRATION_TEST)
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests, so the methods need to be synchronized.
@@ -82,6 +85,7 @@ testing {
 			}
 		}
 		val integrationExternalTest  by registering(JvmTestSuite::class) {
+			testType.set("integration-external-test")
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests.
@@ -116,6 +120,7 @@ testing {
 	}
 }
 
+// This can be removed according to last line of org.gradle.api.plugins.JavaPlugin.configureBuiltInTest
 @Suppress("UnstableApiUsage")
 val NamedDomainObjectProvider<JvmTestSuite>.tasks: Provider<List<TaskProvider<Test>>>
 	get() = this.map { it.targets.map { target -> target.testTask } }
