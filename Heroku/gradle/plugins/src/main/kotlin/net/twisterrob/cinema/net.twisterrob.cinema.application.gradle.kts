@@ -2,9 +2,6 @@ import net.twisterrob.cinema.build.publishing.publishSlimJar
 
 plugins {
 	id("org.gradle.application")
-	id("org.gradle.java")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
 	id("net.twisterrob.cinema.build.dependencies")
 	id("net.twisterrob.cinema.build.detekt")
 	id("net.twisterrob.cinema.build.logging")

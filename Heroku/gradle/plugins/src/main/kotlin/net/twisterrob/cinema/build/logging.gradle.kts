@@ -3,6 +3,10 @@ package net.twisterrob.cinema.build
 import net.twisterrob.cinema.build.logging.configureSLF4JBindings
 import net.twisterrob.cinema.build.logging.configureVerboseReportsForGithubActions
 
+plugins {
+	id("org.gradle.java")
+}
+
 configureSLF4JBindings()
 
 tasks.withType<Test> {
@@ -19,7 +23,7 @@ tasks.withType<Test> {
 }
 
 tasks {
-	val sourceSets = the<JavaPluginExtension>().sourceSets
+	val sourceSets = java.sourceSets
 	val copyLoggingResources = register<Copy>("copyLoggingResources") {
 		from(rootProject.file("config/log4j2.xml"))
 		into(sourceSets["main"].resources.srcDirs.first())

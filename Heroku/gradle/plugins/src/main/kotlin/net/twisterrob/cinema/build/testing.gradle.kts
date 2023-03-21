@@ -68,7 +68,7 @@ tasks {
 	afterEvaluate {
 		withType<Test>().configureEach {
 			@Suppress("NAME_SHADOWING")
-			val test = project.the<TestingExtension>().suites["test"] as JvmTestSuite
+			val test = testing.suites["test"] as JvmTestSuite
 			testClassesDirs = test.sources.output.classesDirs
 			classpath = test.sources.runtimeClasspath
 		}
