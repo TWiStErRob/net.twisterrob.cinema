@@ -19,13 +19,13 @@ tasks.register<Task>("allDependencies") {
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 tasks.create<TestReport>("allTestsReport") {
-	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
+	destinationDirectory = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
 			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
 				ignoreFailures = true
-				reports.junitXml.required.set(true)
+				reports.junitXml.required = true
 				this@create.testResults.from(this@withType)
 			}
 		}

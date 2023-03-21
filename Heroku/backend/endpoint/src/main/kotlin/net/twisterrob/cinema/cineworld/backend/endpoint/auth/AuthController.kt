@@ -139,9 +139,7 @@ class AuthController @Inject constructor(
 					created = OffsetDateTime.now()
 				)
 
-				call.sessions.set(
-					AuthSession(userId = data.sub)
-				)
+				call.sessions.set(AuthSession(userId = data.sub))
 				call.respondRedirect(App.Routes.Home.href())
 			}
 		}

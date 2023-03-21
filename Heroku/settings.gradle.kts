@@ -47,6 +47,6 @@ dependencyResolutionManagement {
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()
-		lockFile.set(file("gradle/dependency-locks/root-settings.lockfile"))
+		lockFile = file("gradle/dependency-locks/root-settings.lockfile")
 	}
 }

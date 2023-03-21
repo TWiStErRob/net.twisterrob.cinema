@@ -39,7 +39,7 @@ configureSarifMerging()
 fun Project.configureSarifMerging() {
 	check(this != rootProject) { "Sarif merging cannot be applied on root project." }
 	rootProject.tasks.maybeRegister<ReportMergeTask>("detektReportMergeSarif") {
-		output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
+		output = rootProject.buildDir.resolve("reports/detekt/merge.sarif")
 	}
 	tasks.withType<Detekt>().configureEach {
 		reports {
