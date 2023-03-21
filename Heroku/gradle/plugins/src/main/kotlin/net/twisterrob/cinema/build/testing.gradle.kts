@@ -5,7 +5,6 @@ import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.Concurrency
 import net.twisterrob.cinema.build.testing.allowUnsafe
 import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
-import org.gradle.api.internal.tasks.JvmConstants
 
 plugins {
 	id("org.gradle.jvm-test-suite")
@@ -129,6 +128,10 @@ fun JvmTestSuite.conventionalSetup(configurations: ConfigurationContainer) {
 	// Depend on main project's internal dependencies.
 	configurations.named(sources.implementationConfigurationName)
 		.extendsFrom(configurations.implementation)
+	// Allow usages of internal code elements in tests.
+	kotlin.target.compilations.named(this.name) {
+		associateWith(kotlin.target.compilations.getByName("main"))
+	}
 }
 
 /**
