@@ -8,6 +8,7 @@ import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
 plugins {
 	id("org.gradle.jvm-test-suite")
 	id("org.jetbrains.kotlin.jvm")
+	id("org.gradle.java-test-fixtures")
 }
 
 tasks.withType<Test> {
@@ -23,9 +24,7 @@ testing {
 			//sources.kotlin.srcDir("src/test/kotlin")
 			dependencies {
 				implementation(project())
-				plugins.withId("org.gradle.java-test-fixtures") {
-					implementation(testFixtures(project()))
-				}
+				implementation(testFixtures(project()))
 			}
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			targets.configureEach {
