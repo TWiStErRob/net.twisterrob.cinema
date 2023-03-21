@@ -10,6 +10,10 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
+/**
+ * Rough approximation of 10 years in milliseconds.
+ */
+@Suppress("MagicNumber")
 private val TEN_YEARS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS) * 365 * 10
 
 fun java8TimeRealistic(): Customisation =

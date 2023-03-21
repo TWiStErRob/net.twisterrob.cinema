@@ -47,9 +47,8 @@ constructor(
 	inline fun o(crossinline function: () -> Unit) {
 		try {
 			function.invoke()
-		} catch (t: Throwable) {
+		} catch (@Suppress("TooGenericExceptionCaught") t: Throwable) {
 			UnrecoverableExceptions.rethrowIfUnrecoverable(t)
-
 			failures.add(t)
 		}
 	}

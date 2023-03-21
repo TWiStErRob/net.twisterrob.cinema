@@ -48,7 +48,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	override fun beforeAll(context: ExtensionContext) {
 		val testClass = context.testClass.getOrNull() ?: return
 		require(testClass.name.endsWith("IntgTest")) {
-			"Integration tests must end with 'IntgTest' to be run with ${this::class.simpleName}."
+			"Integration tests must end with 'IntgTest' to be run with ${ModelIntgTestExtension::class}."
 		}
 	}
 

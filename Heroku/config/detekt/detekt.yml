@@ -53,7 +53,25 @@ complexity:
 
   NamedArguments:
     # Exclude in test code, mocking doesn't need to have explicit named arguments, since a minor mistake will fail the tests.
-    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
+
+  StringLiteralDuplication:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
+
+  TooManyFunctions:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
+
+
+exceptions:
+  
+  InstanceOfCheckForException:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
+
+  ThrowingExceptionsWithoutMessageOrCause:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
+
+  TooGenericExceptionCaught:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 
 
 naming:
@@ -65,6 +83,9 @@ naming:
     excludes:
       - '**/endpoint/*/data/*.kt'
       - '**/quickbook/Quickbook*.kt'
+
+  FunctionNaming:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 
   FunctionMaxLength:
     ignoreAnnotated:
@@ -102,6 +123,7 @@ potential-bugs:
       - 'org.junit.jupiter.api.Test'
 
   LateinitUsage:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
     ignoreAnnotated:
       - 'org.neo4j.ogm.annotation.Property'
       - 'org.neo4j.ogm.annotation.Relationship'
@@ -114,6 +136,9 @@ potential-bugs:
       - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
+
+  UnsafeCallOnNullableType:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 
 
 style:
@@ -130,6 +155,9 @@ style:
   NoTabs:
     # I'm a tab guy, I don't pay for space in advance.
     active: false
+
+  MagicNumber:
+    excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 
   MaxLineLength:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
