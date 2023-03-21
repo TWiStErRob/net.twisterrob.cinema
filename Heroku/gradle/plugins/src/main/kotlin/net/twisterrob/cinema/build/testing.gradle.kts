@@ -21,12 +21,17 @@ testing {
 	// JUnit 5 Tag setup, see JUnit5Tags.kt
 	suites {
 		withType<JvmTestSuite>().configureEach {
-			//sources.kotlin.srcDir("src/test/kotlin")
+			useJUnitJupiter(libs.versions.test.junit.jupiter)
+			// Simulate conventional test setup
 			dependencies {
+				// Depend on main project.
 				implementation(project())
+				// Depend on main project's internal dependencies.
+				configurations.named(sources.implementationConfigurationName)
+					.configure { extendsFrom(configurations.implementation.get()) }
+				// Depend on testFixtures of the project.
 				implementation(testFixtures(project()))
 			}
-			useJUnitJupiter(libs.versions.test.junit.jupiter)
 		}
 
 		val unitTest = named<JvmTestSuite>("test") {

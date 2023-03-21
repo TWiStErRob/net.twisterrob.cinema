@@ -54,8 +54,6 @@ configurations.all {
 
 testing {
 	suites.withType<JvmTestSuite>().configureEach {
-		configurations.named(sources.implementationConfigurationName)
-			.configure { extendsFrom(configurations.implementation.get()) }
 		dependencies {
 			junit5(project)
 			implementation(libs.test.jfixture)
