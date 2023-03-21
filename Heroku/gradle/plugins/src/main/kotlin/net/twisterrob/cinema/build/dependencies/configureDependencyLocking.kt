@@ -1,3 +1,5 @@
+package net.twisterrob.cinema.build.dependencies
+
 import net.twisterrob.cinema.build.dsl.slug
 import org.gradle.api.Project
 

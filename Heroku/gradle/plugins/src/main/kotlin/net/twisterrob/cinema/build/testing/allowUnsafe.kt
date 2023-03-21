@@ -1,3 +1,5 @@
+package net.twisterrob.cinema.build.testing
+
 import org.gradle.api.JavaVersion
 import org.gradle.api.tasks.testing.Test
 

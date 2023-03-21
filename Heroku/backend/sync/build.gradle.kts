@@ -4,7 +4,6 @@ plugins {
 }
 
 application {
-	publishSlimJar()
 	mainClass.set("net.twisterrob.cinema.cineworld.sync.Main")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(

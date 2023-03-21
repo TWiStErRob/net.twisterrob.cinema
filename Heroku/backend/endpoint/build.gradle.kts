@@ -4,7 +4,6 @@ plugins {
 }
 
 application {
-	publishSlimJar()
 	mainClass.set("io.ktor.server.netty.EngineMain")
 	tasks.named<JavaExec>("run") {
 		jvmArgs(

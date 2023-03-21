@@ -1,3 +1,5 @@
+import net.twisterrob.cinema.build.publishing.publishSlimJar
+
 plugins {
 	id("org.gradle.application")
 	id("org.gradle.java")
@@ -8,4 +10,9 @@ plugins {
 	id("net.twisterrob.cinema.build.logging")
 	id("net.twisterrob.cinema.build.compilation")
 	id("net.twisterrob.cinema.build.testing")
+	id("net.twisterrob.cinema.build.publishing")
+}
+
+application {
+	publishSlimJar()
 }

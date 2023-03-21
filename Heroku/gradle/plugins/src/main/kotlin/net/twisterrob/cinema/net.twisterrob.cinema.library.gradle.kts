@@ -7,4 +7,5 @@ plugins {
 	id("net.twisterrob.cinema.build.logging")
 	id("net.twisterrob.cinema.build.compilation")
 	id("net.twisterrob.cinema.build.testing")
+	id("net.twisterrob.cinema.build.publishing")
 }

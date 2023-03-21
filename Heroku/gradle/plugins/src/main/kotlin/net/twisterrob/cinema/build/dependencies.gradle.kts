@@ -1,14 +1,7 @@
 package net.twisterrob.cinema.build
 
-import configureDependencyLocking
-import forceKotlinVersion
-import net.twisterrob.cinema.build.dsl.slug
+import net.twisterrob.cinema.build.dependencies.configureDependencyLocking
+import net.twisterrob.cinema.build.dependencies.forceKotlinVersion
 
-project.configureDependencyLocking()
-project.forceKotlinVersion()
-
-plugins.withId("java") {
-	configure<BasePluginExtension> {
-		archivesName.set("twisterrob-cinema-${slug}")
-	}
-}
+configureDependencyLocking()
+forceKotlinVersion()
