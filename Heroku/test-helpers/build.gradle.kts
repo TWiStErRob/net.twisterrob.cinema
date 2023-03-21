@@ -1,6 +1,5 @@
 plugins {
-	id("java")
-	id("org.jetbrains.kotlin.jvm")
+	id("net.twisterrob.cinema.library")
 }
 
 dependencies {

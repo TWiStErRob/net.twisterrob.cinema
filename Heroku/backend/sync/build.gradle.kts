@@ -1,14 +1,10 @@
 plugins {
-	id("java")
+	id("net.twisterrob.cinema.application")
 	id("java-test-fixtures")
-	id("application")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
 }
 
 application {
-	publishSlimJar()
-	mainClass.set("net.twisterrob.cinema.cineworld.sync.Main")
+	mainClass = "net.twisterrob.cinema.cineworld.sync.Main"
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
 			if (project.property("net.twisterrob.run.verboseSync").toString().toBoolean())
@@ -27,7 +23,7 @@ application {
 tasks.register<JavaExec>("generate") {
 	dependsOn(tasks.jar)
 	classpath(sourceSets["main"].runtimeClasspath)
-	mainClass.set("net.twisterrob.cinema.cineworld.generate.Main")
+	mainClass = "net.twisterrob.cinema.cineworld.generate.Main"
 	args("test/weekly_film_times.xml")
 }
 

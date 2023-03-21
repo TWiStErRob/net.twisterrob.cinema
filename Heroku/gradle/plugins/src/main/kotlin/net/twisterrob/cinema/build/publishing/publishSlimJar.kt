@@ -1,3 +1,5 @@
+package net.twisterrob.cinema.build.publishing
+
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.tasks.Copy

@@ -4,10 +4,6 @@ plugins {
 	alias(libs.plugins.detekt)
 }
 
-repositories {
-	mavenCentral()
-}
-
 dependencies {
 	api(libs.kotlin.gradle)
 	implementation(libs.kotlin.serialization.gradle)
@@ -19,28 +15,13 @@ dependencies {
 
 dependencyLocking {
 	lockAllConfigurations()
-	lockFile.set(file("../../gradle/dependency-locks/plugins.lockfile"))
-}
-
-gradlePlugin {
-	plugins {
-		create("net.twisterrob.cinema.heroku.plugins.settings") {
-			id = "net.twisterrob.cinema.heroku.plugins.settings"
-			implementationClass = "net.twisterrob.cinema.heroku.plugins.SettingsPlugin"
-		}
-		create("net.twisterrob.cinema.heroku.plugins.detekt") {
-			id = "net.twisterrob.cinema.heroku.plugins.detekt"
-			implementationClass = "net.twisterrob.cinema.heroku.plugins.DetektPlugin"
-		}
-	}
+	lockFile = file("../../gradle/dependency-locks/plugins.lockfile")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	kotlinOptions {
-		freeCompilerArgs = freeCompilerArgs + listOf(
-			"-opt-in=kotlin.RequiresOptIn",
-			"-opt-in=kotlin.contracts.ExperimentalContracts",
-		)
+	compilerOptions {
+		freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+		freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
 	}
 }
 
@@ -52,27 +33,33 @@ detekt {
 	config = rootProject.files("../../config/detekt/detekt.yml")
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 	basePath = rootProject.projectDir.parentFile.parentFile.parentFile.absolutePath
+	// REPORT doesn't work, "detektMain" is disabled below.
+	// > Execution failed for task ':plugins:detektMain'.
+	// > > Front-end Internal error: Failed to analyze declaration P__projects_workspace_net_twisterrob_cinema_Heroku_gradle_plugins_src_main_kotlin_net_twisterrob_cinema_build_compilation_gradle
+	// > File being compiled: (4,49) in /P:\projects\workspace\net.twisterrob.cinema\Heroku\gradle\plugins\src\main\kotlin\net\twisterrob\cinema\build\compilation.gradle.kts
+	// > The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at: org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
+	//source = files(source.asFileTree.filter { !it.name.endsWith(".gradle.kts") })
 
 	parallel = true
 
 	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
-			html.required.set(true) // human
-			xml.required.set(true) // checkstyle
-			txt.required.set(true) // console
+			html.required = true // human
+			xml.required = true // checkstyle
+			txt.required = true // console
 			// https://sarifweb.azurewebsites.net
-			sarif.required.set(true) // GitHub Code Scanning
+			sarif.required = true // GitHub Code Scanning
 		}
 	}
 }
 
 val detektReportMergeTask = rootProject.tasks.register<io.gitlab.arturbosch.detekt.report.ReportMergeTask>("detektReportMergeSarif") {
-	output.set(rootProject.buildDir.resolve("reports/detekt/merge.sarif"))
+	output = rootProject.buildDir.resolve("reports/detekt/merge.sarif")
 }
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 	reports {
 		// https://sarifweb.azurewebsites.net
-		sarif.required.set(true) // GitHub Code Scanning
+		sarif.required = true // GitHub Code Scanning
 	}
 }
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
@@ -85,8 +72,9 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
+	// TODO see why detektMain is disabled at detekt.source.
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
-	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
+	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().matching { it.name != "detektMain" })
 }
 
 val isCI: Boolean

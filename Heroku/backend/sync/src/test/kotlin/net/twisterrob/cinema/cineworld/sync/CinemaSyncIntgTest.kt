@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.neo4j.harness.Neo4j
 import org.neo4j.harness.Neo4jBuilders
-import kotlin.streams.toList
 
 @TagIntegration
 class CinemaSyncIntgTest {
@@ -43,7 +42,7 @@ class CinemaSyncIntgTest {
 		sut.sync(emptyFeed)
 
 		testServer.defaultDatabaseService().beginTx().apply {
-			val allNodes = this.allNodes.stream().toList()
+			val allNodes = this.allNodes.toList()
 			assertThat(allNodes, empty())
 			// no relationships either, since there are no nodes to connect
 		}

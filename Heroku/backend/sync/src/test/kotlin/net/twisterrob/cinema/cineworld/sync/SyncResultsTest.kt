@@ -61,7 +61,7 @@ class SyncResultsTest {
 		}
 
 		@Test fun `a set _deleted is not valid`() {
-			assertThrows<IllegalStateException> {
+			val ex = assertThrows<IllegalStateException> {
 				SyncResults<Data>(
 					insert = listOf(fixture.buildValidInsert<Data>().apply { _deleted = fixture.build() }),
 					update = emptyList(),
@@ -69,7 +69,8 @@ class SyncResultsTest {
 					delete = emptyList(),
 					alreadyDeleted = emptyList()
 				).validate()
-			}.let { ex -> assertThat(ex.message, containsString("should not be deleted")) }
+			}
+			assertThat(ex.message, containsString("should not be deleted"))
 		}
 	}
 
@@ -87,7 +88,7 @@ class SyncResultsTest {
 		}
 
 		@Test fun `a set _deleted is not valid`() {
-			assertThrows<IllegalStateException> {
+			val ex = assertThrows<IllegalStateException> {
 				SyncResults<Data>(
 					insert = emptyList(),
 					update = listOf(fixture.buildValidUpdate<Data>().apply { _deleted = fixture.build() }),
@@ -95,7 +96,8 @@ class SyncResultsTest {
 					delete = emptyList(),
 					alreadyDeleted = emptyList()
 				).validate()
-			}.let { ex -> assertThat(ex.message, containsString("should not be deleted")) }
+			}
+			assertThat(ex.message, containsString("should not be deleted"))
 		}
 	}
 
@@ -113,7 +115,7 @@ class SyncResultsTest {
 		}
 
 		@Test fun `a set _deleted is not valid`() {
-			assertThrows<IllegalStateException> {
+			val ex = assertThrows<IllegalStateException> {
 				SyncResults<Data>(
 					insert = emptyList(),
 					update = emptyList(),
@@ -121,7 +123,8 @@ class SyncResultsTest {
 					delete = emptyList(),
 					alreadyDeleted = emptyList()
 				).validate()
-			}.let { ex -> assertThat(ex.message, containsString("should not be deleted")) }
+			}
+			assertThat(ex.message, containsString("should not be deleted"))
 		}
 	}
 
@@ -139,7 +142,7 @@ class SyncResultsTest {
 		}
 
 		@Test fun `a missing _deleted is not valid`() {
-			assertThrows<IllegalStateException> {
+			val ex = assertThrows<IllegalStateException> {
 				SyncResults<Data>(
 					insert = emptyList(),
 					update = emptyList(),
@@ -147,7 +150,8 @@ class SyncResultsTest {
 					delete = listOf(fixture.buildValidDelete<Data>().apply { _deleted = null }),
 					alreadyDeleted = emptyList()
 				).validate()
-			}.let { ex -> assertThat(ex.message, containsString("should be deleted")) }
+			}
+			assertThat(ex.message, containsString("should be deleted"))
 		}
 	}
 
@@ -165,7 +169,7 @@ class SyncResultsTest {
 		}
 
 		@Test fun `a missing _deleted is not valid`() {
-			assertThrows<IllegalStateException> {
+			val ex = assertThrows<IllegalStateException> {
 				SyncResults<Data>(
 					insert = emptyList(),
 					update = emptyList(),
@@ -173,7 +177,8 @@ class SyncResultsTest {
 					delete = emptyList(),
 					alreadyDeleted = listOf(fixture.buildValidAlreadyDeleted<Data>().apply { _deleted = null })
 				).validate()
-			}.let { ex -> assertThat(ex.message, containsString("should be deleted")) }
+			}
+			assertThat(ex.message, containsString("should be deleted"))
 		}
 	}
 }

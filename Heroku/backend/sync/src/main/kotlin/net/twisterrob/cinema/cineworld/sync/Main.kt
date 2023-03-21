@@ -3,9 +3,12 @@ package net.twisterrob.cinema.cineworld.sync
 import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import org.neo4j.ogm.session.SessionFactory
+import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.net.URI
 import javax.inject.Inject
+
+private val LOG = LoggerFactory.getLogger(Main::class.java)
 
 class Main @Inject constructor(
 	private val feedService: FeedService,
@@ -17,15 +20,15 @@ class Main @Inject constructor(
 ) : Closeable {
 
 	fun sync(params: MainParameters) {
-		println("Syncing: $params")
+		LOG.info("Syncing: $params")
 		val feed by lazy { feedService.getWeeklyFilmTimes() }
-		if (params.syncCinemas) {
+		if (params.isSyncCinemas) {
 			cinemaSync.sync(feed)
 		}
-		if (params.syncFilms) {
+		if (params.isSyncFilms) {
 			filmSync.sync(feed)
 		}
-		if (params.syncPerformances) {
+		if (params.isSyncPerformances) {
 			performanceSync.sync(feed)
 		}
 	}

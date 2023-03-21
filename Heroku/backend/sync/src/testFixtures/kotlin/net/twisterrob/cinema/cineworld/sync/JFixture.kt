@@ -14,25 +14,25 @@ import net.twisterrob.test.buildList
 inline fun <reified T : Historical> syncResults(): Customisation = Customisation { fixture ->
 	fixture.customise().lazyInstance(SyncResults::class.java) {
 		SyncResults(
-			insert = fixture.buildList<T>().onEach {
-				it._updated = null
-				it._deleted = null
+			insert = fixture.buildList<T>().onEach { hist ->
+				hist._updated = null
+				hist._deleted = null
 			},
-			restore = fixture.buildList<T>().onEach {
-				it._deleted = null
+			restore = fixture.buildList<T>().onEach { hist ->
+				hist._deleted = null
 			},
-			delete = fixture.buildList<T>().onEach {
+			delete = fixture.buildList<T>().onEach { hist ->
 				if (fixture.build()) {
-					it._updated = null
+					hist._updated = null
 				}
 			},
-			alreadyDeleted = fixture.buildList<T>().onEach {
+			alreadyDeleted = fixture.buildList<T>().onEach { hist ->
 				if (fixture.build()) {
-					it._updated = null
+					hist._updated = null
 				}
 			},
-			update = fixture.buildList<T>().onEach {
-				it._deleted = null
+			update = fixture.buildList<T>().onEach { hist ->
+				hist._deleted = null
 			}
 		)
 	}

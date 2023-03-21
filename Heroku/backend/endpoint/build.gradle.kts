@@ -1,15 +1,10 @@
 plugins {
-	id("java")
-	id("application")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
+	id("net.twisterrob.cinema.application")
 	id("org.jetbrains.kotlin.plugin.serialization")
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
 }
 
 application {
-	publishSlimJar()
-	mainClass.set("io.ktor.server.netty.EngineMain")
+	mainClass = "io.ktor.server.netty.EngineMain"
 	tasks.named<JavaExec>("run") {
 		jvmArgs(
 			"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"

@@ -67,7 +67,8 @@ data class SyncResults<DB : Historical>(
 		update.forEach(::checkNotDeleted)
 	}
 
-	private fun identity(it: DB) = "${it::class.java}[${it.graphId}]"
+	private fun identity(it: DB): String =
+		"${it::class.java}[${it.graphId ?: "<no ID>"}]"
 
 	/**
 	 * External (to [it]/[DB]) version of `it::_created.isInitialized`.
@@ -85,15 +86,21 @@ data class SyncResults<DB : Historical>(
 		// Nothing to check null/non-null both valid.
 	}
 
-	private fun checkUpdated(it: DB) =
-		check(it._updated != null) { "${identity(it)} should be updated." }
+	private fun checkUpdated(it: DB) {
+		checkNotNull(it._updated) { "${identity(it)} should be updated." }
+	}
 
-	private fun checkNotUpdated(it: DB) =
+	private fun checkNotUpdated(it: DB) {
+		@Suppress("NullableToStringCall") // It's always non-null, because check() ensured it.
 		check(it._updated == null) { "${identity(it)} should not be updated, but was updated at ${it._updated}." }
+	}
 
-	private fun checkDeleted(it: DB) =
-		check(it._deleted != null) { "${identity(it)} should be deleted." }
+	private fun checkDeleted(it: DB) {
+		checkNotNull(it._deleted) { "${identity(it)} should be deleted." }
+	}
 
-	private fun checkNotDeleted(it: DB) =
+	private fun checkNotDeleted(it: DB) {
+		@Suppress("NullableToStringCall") // It's always non-null, because check() ensured it.
 		check(it._deleted == null) { "${identity(it)} should not be deleted, but was deleted at ${it._deleted}." }
+	}
 }

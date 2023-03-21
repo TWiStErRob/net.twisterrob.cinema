@@ -1,4 +1,11 @@
+// TODEL https://github.com/gradle/gradle/issues/24409
+@file:Suppress("UnusedImport", "UnusedImports")
+
+package net.twisterrob.cinema.build.dependencies
+
+import net.twisterrob.cinema.build.dsl.slug
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.assign
 
 /**
  * To generate lockfiles, call:
@@ -28,6 +35,6 @@ fun Project.configureDependencyLocking() {
 		}
 		val fileName = this@configureDependencyLocking.slug
 		/** @see org.gradle.internal.locking.LockFileReaderWriter.DEPENDENCY_LOCKING_FOLDER */
-		lockFile.set(rootProject.file("gradle/dependency-locks/${fileName}.lockfile"))
+		lockFile = rootProject.file("gradle/dependency-locks/${fileName}.lockfile")
 	}
 }

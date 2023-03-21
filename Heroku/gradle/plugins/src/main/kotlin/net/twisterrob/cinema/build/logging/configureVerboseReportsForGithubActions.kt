@@ -1,3 +1,5 @@
+package net.twisterrob.cinema.build.logging
+
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestOutputEvent

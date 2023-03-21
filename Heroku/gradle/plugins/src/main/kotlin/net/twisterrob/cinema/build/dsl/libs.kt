@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.heroku.plugins.internal
+package net.twisterrob.cinema.build.dsl
 
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Project

@@ -3,9 +3,12 @@ package net.twisterrob.cinema.cineworld.generate
 import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedMapper
 import org.neo4j.ogm.session.SessionFactory
+import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.net.URI
 import javax.inject.Inject
+
+private val LOG = LoggerFactory.getLogger(Main::class.java)
 
 class Main @Inject constructor(
 	private val neo4j: SessionFactory,
@@ -15,7 +18,7 @@ class Main @Inject constructor(
 ) : Closeable {
 
 	fun generate(params: MainParameters) {
-		println("Generating: $params")
+		LOG.info("Generating: $params")
 		val feed = generator.generate()
 		writer.write(params.targetFile, feed)
 	}

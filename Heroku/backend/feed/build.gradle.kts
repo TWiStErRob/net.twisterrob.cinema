@@ -1,8 +1,5 @@
 plugins {
-	id("java")
-	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
-	id("net.twisterrob.cinema.heroku.plugins.detekt")
+	id("net.twisterrob.cinema.library")
 }
 
 sourceSets {

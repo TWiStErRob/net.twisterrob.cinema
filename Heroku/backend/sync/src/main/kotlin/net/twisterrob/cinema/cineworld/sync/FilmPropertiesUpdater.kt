@@ -24,9 +24,11 @@ fun Film.copyPropertiesFrom(feedFilm: Feed.Film, feed: Feed) {
 	this.classification = feedFilm.classification
 	this.release = ukMidnight(feedFilm.releaseDate)
 	this.categories = feedFilm.attributeList
+		.asSequence()
 		.filter { it.startsWith("gn:") }
 		.map { attr -> feed.attributes.single { it.code == attr } }
 		.map { it.title }
+		.toList()
 }
 
 private fun ukMidnight(date: LocalDate): OffsetDateTime {
@@ -36,6 +38,7 @@ private fun ukMidnight(date: LocalDate): OffsetDateTime {
 
 private fun formatTitle(title: String, attributeList: List<String>): String {
 	val format = attributeList
+		.asSequence()
 		.filterNot { it.startsWith("gn:") }
 		.filterNot { it == "2D" }
 		.sorted()
