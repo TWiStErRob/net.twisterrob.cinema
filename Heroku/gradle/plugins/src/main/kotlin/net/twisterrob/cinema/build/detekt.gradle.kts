@@ -1,4 +1,4 @@
-package net.twisterrob.cinema
+package net.twisterrob.cinema.build
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
