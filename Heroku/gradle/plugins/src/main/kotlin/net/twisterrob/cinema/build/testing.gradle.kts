@@ -116,5 +116,6 @@ testing {
 	}
 }
 
-val NamedDomainObjectProvider<JvmTestSuite>.tasks
-	get() = this.map { it.targets.map { it.testTask } }
+@Suppress("UnstableApiUsage")
+val NamedDomainObjectProvider<JvmTestSuite>.tasks: Provider<List<TaskProvider<Test>>>
+	get() = this.map { it.targets.map { target -> target.testTask } }
