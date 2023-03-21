@@ -1,13 +1,16 @@
 package net.twisterrob.cinema.build
 
+import net.twisterrob.cinema.build.dsl.extendsFrom
 import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.Concurrency
 import net.twisterrob.cinema.build.testing.allowUnsafe
 import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
+import org.gradle.api.internal.tasks.JvmConstants
 
 plugins {
 	id("org.gradle.jvm-test-suite")
 	id("org.jetbrains.kotlin.jvm")
+	id("org.jetbrains.kotlin.kapt")
 	id("org.gradle.java-test-fixtures")
 }
 
@@ -23,28 +26,8 @@ testing {
 		withType<JvmTestSuite>().configureEach {
 			if (this.name == "test") return@configureEach
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
-			// Simulate conventional test setup
-			dependencies {
-				// Depend on main project.
-				implementation(project())
-				// Depend on main project's internal dependencies.
-				configurations.named(sources.implementationConfigurationName)
-					.configure { extendsFrom(configurations.implementation.get()) }
-				// Depend on testFixtures of the project.
-				implementation(testFixtures(project()))
-				
-				// Simulate AGP's approach to variants by reusing the built-in test configurations.
-				// `project.testing.suites.withType<JvmTestSuite>().configureEach { dependencies { implementation(...) } }`
-				// becomes
-				// `project.dependencies { testImplementation(...) }`
-				// and similarly for compileOnly and runtimeOnly.
-				configurations.named(sources.compileOnlyConfigurationName)
-					.configure { extendsFrom(configurations.testCompileOnly.get()) }
-				configurations.named(sources.implementationConfigurationName)
-					.configure { extendsFrom(configurations.testImplementation.get()) }
-				configurations.named(sources.runtimeOnlyConfigurationName)
-					.configure { extendsFrom(configurations.testRuntimeOnly.get()) }
-			}
+			conventionalSetup(configurations)
+			centralizedSetup(configurations)
 		}
 
 		named<JvmTestSuite>("test") {
@@ -54,11 +37,11 @@ testing {
 					doFirst { error("This should never execute, because it has no sources. Move test code to `src/*Test/`.") }
 				}
 			}
-		} 
+		}
 
 		val unitTest by registering(JvmTestSuite::class) {
 			testType = TestSuiteType.UNIT_TEST
-			targets.configureEach { 
+			targets.configureEach {
 				testTask.configure {
 					// Logging is not relevant in unit tests.
 					parallelJUnit5Execution(Concurrency.PerMethod)
@@ -102,7 +85,7 @@ testing {
 				}
 			}
 		}
-		val integrationExternalTest  by registering(JvmTestSuite::class) {
+		val integrationExternalTest by registering(JvmTestSuite::class) {
 			testType = "integration-external-test"
 			targets.configureEach {
 				testTask.configure {
@@ -130,4 +113,42 @@ testing {
 			}
 		}
 	}
+}
+
+/**
+ * Simulate conventional test setup, similar to how src/test/java is set up with testImplementation and the like.
+ */
+@Suppress("UnstableApiUsage")
+fun JvmTestSuite.conventionalSetup(configurations: ConfigurationContainer) {
+	dependencies {
+		// Depend on main project.
+		this.implementation(project())
+		// Depend on testFixtures of the project.
+		this.implementation(this.testFixtures(project()))
+	}
+	// Depend on main project's internal dependencies.
+	configurations.named(sources.implementationConfigurationName)
+		.extendsFrom(configurations.implementation)
+}
+
+/**
+ * Simulate AGP's approach to flavors by reusing the built-in test configurations.
+ * ```
+ * project.testing.suites.withType<JvmTestSuite>().configureEach { dependencies { implementation(...) } }
+ * ```
+ * becomes
+ * ```
+ * project.dependencies { testImplementation(...) }
+ * ```
+ * and similarly for `compileOnly` and `runtimeOnly`.
+ */
+@Suppress("UnstableApiUsage")
+fun JvmTestSuite.centralizedSetup(configurations: ConfigurationContainer) {
+	configurations.named(sources.implementationConfigurationName).extendsFrom(configurations.testImplementation)
+	configurations.named(sources.compileOnlyConfigurationName).extendsFrom(configurations.testCompileOnly)
+	configurations.named(sources.runtimeOnlyConfigurationName).extendsFrom(configurations.testRuntimeOnly)
+	// Doesn't work for some reason, probably some internal Kotlin magic.
+	//val baseName = sources.annotationProcessorConfigurationName
+	//	.removeSuffix(JvmConstants.ANNOTATION_PROCESSOR_CONFIGURATION_NAME.replaceFirstChar(Char::titlecase))
+	//configurations.named("kapt${baseName.replaceFirstChar(Char::titlecase)}").extendsFrom(configurations.kaptTest)
 }

@@ -68,5 +68,4 @@ dependencies {
 	testImplementation(libs.kotlinx.serialization.json)
 	testImplementation(libs.ktor.client.mock)
 	testImplementation(libs.ktor.server.test)
-	kaptTest(libs.dagger.apt)
 }

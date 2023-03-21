@@ -1,6 +1,3 @@
-import Deps.junit5
-import net.twisterrob.cinema.build.testing.kapt
-
 plugins {
 	id("net.twisterrob.cinema.application")
 }
@@ -42,7 +39,24 @@ dependencies {
 
 // Test
 dependencies {
+	Deps.junit5(project)
+	testImplementation(libs.test.jfixture)
+	testImplementation(libs.test.hamcrest)
+	testImplementation(libs.test.shazamcrest) {
+		// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
+		// Except for ComparisonFailure, which is provided by :test-helpers.
+		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
+	}
+	testImplementation(libs.test.mockito)
+	testImplementation(libs.test.mockito.kotlin)
 	testImplementation(projects.testHelpers)
+	testImplementation(testFixtures(projects.backend.database))
+
+	testImplementation(libs.jackson.module.kotlin)
+	testImplementation(libs.jackson.datatype.java8)
+	testImplementation(libs.neo4j)
+	testImplementation(libs.neo4j.harness)
+
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)
 	testFixturesImplementation(libs.kotlin.stdlib8)
@@ -51,42 +65,4 @@ dependencies {
 
 configurations.all {
 	//resolutionStrategy.failOnVersionConflict()
-}
-
-testing {
-	suites {
-		named<JvmTestSuite>("unitTest") {
-			dependencies {
-				implementation(libs.test.jfixture)
-				implementation(libs.test.hamcrest)
-				implementation(libs.test.shazamcrest) {
-					// Exclude JUnit 4, we're on JUnit 5, no need for old annotations and classes
-					// Except for ComparisonFailure, which is provided by :test-helpers.
-					exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
-				}
-				implementation(libs.test.mockito)
-				implementation(libs.test.mockito.kotlin)
-				implementation(testFixtures(projects.backend.database))
-				implementation(libs.jackson.module.kotlin)
-				kapt(project.libs.dagger.apt)
-			}
-		}
-		named<JvmTestSuite>("functionalTest") {
-			dependencies {
-				implementation(libs.test.jfixture)
-				implementation(libs.test.hamcrest)
-				implementation(libs.test.mockito)
-				implementation(libs.test.mockito.kotlin)
-				implementation(testFixtures(projects.backend.database))
-				
-			}
-		}
-		named<JvmTestSuite>("integrationTest") {
-			dependencies {
-				implementation(libs.test.hamcrest)
-				implementation(libs.neo4j.harness)
-				kapt(project.libs.dagger.apt)
-			}
-		}
-	}
 }
