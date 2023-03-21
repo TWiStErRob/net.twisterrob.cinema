@@ -1,5 +1,5 @@
 import Deps.junit5
-import org.jetbrains.kotlin.gradle.utils.extendsFrom
+import net.twisterrob.cinema.build.testing.kapt
 
 plugins {
 	id("net.twisterrob.cinema.application")
@@ -74,6 +74,7 @@ testing {
 			implementation(libs.jackson.datatype.java8)
 			implementation(libs.neo4j)
 			implementation(libs.neo4j.harness)
+			kapt(project.libs.dagger.apt)
 		}
 	}
 }
