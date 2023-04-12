@@ -201,6 +201,8 @@ export default {
 	wait,
 	goToPlanner: function (url = '') {
 		browser.get('/planner' + url);
+		// Add explicit wait to make sure the default redirects happen.
+		browser.waitForAngular();
 	},
 	login,
 	logout,
