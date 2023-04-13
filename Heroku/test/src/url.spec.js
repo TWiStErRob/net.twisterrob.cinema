@@ -26,6 +26,8 @@ describe('URL Hash', function () {
 
 		it('should preselect favorites', async function () {
 			await app.goToPlanner();
+			// Not sure why, but this particular test was really flaky without this sleep, but only on GitHub Actions CI.
+			await browser.sleep(3000);
 
 			expect(browser).toHaveUrlQuery('c', (c) =>
 					c === '103');
