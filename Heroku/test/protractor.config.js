@@ -69,7 +69,8 @@ exports.config = {
 			jasmine.MAX_PRETTY_PRINT_DEPTH = 4;
 			jasmine.addMatchers(require('./src/matchers/generic').default);
 			jasmine.addMatchers(require('./src/matchers/app').default);
-			browser.driver.manage().window().maximize();
+			// Not needed: Window size is set in chromeOptions.
+			//browser.driver.manage().window().maximize();
 			disableAnimations();
 		});
 		printTestingProgress();
