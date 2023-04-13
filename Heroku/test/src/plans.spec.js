@@ -5,8 +5,8 @@ describe('Planner display', function () {
 
 	describe('Groups', function () {
 
-		it('loads plans', function () {
-			app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
+		it('loads plans', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
 
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
@@ -17,8 +17,8 @@ describe('Planner display', function () {
 			expect(plan.root).toBeDisplayed();
 		});
 
-		it('should be collapsible', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
+		it('should be collapsible', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
@@ -28,8 +28,8 @@ describe('Planner display', function () {
 			expect(cinemaPlan.list).not.toBeDisplayed();
 		});
 
-		it('should be expandable', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
+		it('should be expandable', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Wood Green");
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).not.toBeDisplayed();
@@ -39,8 +39,8 @@ describe('Planner display', function () {
 			expect(cinemaPlan.list).toBeDisplayed();
 		});
 
-		it('should toggle', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
+		it('should toggle', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
@@ -58,8 +58,8 @@ describe('Planner display', function () {
 			expect(cinemaPlan.list).not.toBeDisplayed();
 		});
 
-		it('should show more', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
+		it('should show more', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
@@ -69,8 +69,8 @@ describe('Planner display', function () {
 			expect(cinemaPlan.items).toBeArrayOfSize(6);
 		});
 
-		it('should show all', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
+		it('should show all', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
@@ -86,8 +86,8 @@ describe('Planner display', function () {
 		/**
 		 * @returns {Plan}
 		 */
-		function gotoPlan() {
-			app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
+		async function gotoPlan() {
+			await app.goToPlanner('?d=2017-07-14&c=103&f=184739&f=189108');
 
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.listPlans();
@@ -96,8 +96,8 @@ describe('Planner display', function () {
 			return cinemaPlan.get(0);
 		}
 
-		it('should be removable', function () {
-			const plan = gotoPlan();
+		it('should be removable', async function () {
+			const plan = await gotoPlan();
 			expect(plan.root).toBeDisplayed();
 			expect(plan.delete).toBeDisplayed();
 
@@ -106,8 +106,8 @@ describe('Planner display', function () {
 			expect(plan.root).not.toBePresent();
 		});
 
-		it('should contain films and breaks', function () {
-			const plan = gotoPlan();
+		it('should contain films and breaks', async function () {
+			const plan = await gotoPlan();
 			expect(plan.scheduleStart).toHaveText("18:25");
 			expect(plan.scheduleEnd).toHaveText("22:58");
 			expect(plan.scheduleItems).toBeArrayOfSize(3);
@@ -120,8 +120,8 @@ describe('Planner display', function () {
 			expect(plan.getItemAsMovie(2).title).toMatchRegex(/Spider-Man/);
 		});
 
-		it('should filter by film', function () {
-			app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108&f=223046');
+		it('should filter by film', async function () {
+			await app.goToPlanner('?d=2017-07-14&c=70&c=103&f=184739&f=189108&f=223046');
 			const cinemaPlan = plans.groupForCinema("Leicester Square");
 			cinemaPlan.moreAll.click();
 			const plan = cinemaPlan.get(0);

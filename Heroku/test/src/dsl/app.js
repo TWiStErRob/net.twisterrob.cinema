@@ -52,7 +52,7 @@ export const date = {
 };
 export const cinemas = {
 	wait() {
-		waitFor('.cinemas-loading');
+		return waitFor('.cinemas-loading');
 	},
 	buttons: {
 		all: element(by.id('cinemas-all')),
@@ -67,7 +67,7 @@ export const cinemas = {
 
 export const films = {
 	wait() {
-		waitFor('.films-loading');
+		return waitFor('.films-loading');
 	},
 	buttons: {
 		addView: element(by.id('films-addView')),
@@ -99,7 +99,7 @@ const byFilmRoot = element(by.id('performances-by-film'));
 const byCinemaRoot = element(by.id('performances-by-cinema'));
 export const performances = {
 	wait() {
-		waitFor('#performances-waiting')
+		return waitFor('#performances-waiting')
 				.then(() => waitFor('#performances-loading'));
 	},
 	buttons: {
@@ -174,15 +174,15 @@ export const plans = {
 	},
 };
 
-function wait() {
-	cinemas.wait();
+async function wait() {
+	await cinemas.wait();
 	element(by.id('cinemas'))
 			.all(by.className('cinema'))
 			.filter((cinema) => cinema.element(by.css('[type="checkbox"]')).getAttribute('checked'))
 			.count()
 			.then((count) => {
 				if (count > 0) {
-					films.wait();
+					return films.wait();
 				}
 			});
 	element(by.id('films'))
@@ -191,18 +191,16 @@ function wait() {
 			.count()
 			.then((count) => {
 				if (count > 0) {
-					performances.wait();
+					return performances.wait();
 				}
 			});
-	browser.waitForAngular();
+	return browser.waitForAngular();
 }
 
 export default {
 	wait,
 	goToPlanner: function (url = '') {
-		browser.get('/planner' + url);
-		// Add explicit wait to make sure the default redirects happen.
-		browser.waitForAngular();
+		return browser.get('/planner' + url);
 	},
 	login,
 	logout,

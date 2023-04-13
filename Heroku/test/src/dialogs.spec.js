@@ -49,10 +49,10 @@ describe('Dialogs', function () {
 		expect(films.removeViewDialog.buttons.cancel).toBeDisplayed();
 	});
 
-	it('can open plan options', function () {
+	it('can open plan options', async function () {
 		expect(films.buttons.all).not.toBeDisabled();
 		films.buttons.all.click();
-		app.wait();
+		await app.wait();
 		expect(performances.buttons.options).not.toBeDisabled();
 
 		performances.buttons.options.click();
