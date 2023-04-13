@@ -200,7 +200,7 @@ async function wait() {
 export default {
 	wait,
 	goToPlanner: function (url = '') {
-		return browser.get('/planner' + url);
+		return browser.get('/planner' + url).then(() => browser.waitForAngular());
 	},
 	login,
 	logout,
