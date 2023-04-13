@@ -93,7 +93,8 @@ describe('Planner display', function () {
 			cinemaPlan.listPlans();
 			expect(cinemaPlan.list).toBeDisplayed();
 			expect(cinemaPlan.items).toBeArrayOfSize(1);
-			return cinemaPlan.get(0);
+			// noinspection ES6RedundantAwait, this helps synchronize the await and expect mixture.
+			return await cinemaPlan.get(0);
 		}
 
 		it('should be removable', async function () {
