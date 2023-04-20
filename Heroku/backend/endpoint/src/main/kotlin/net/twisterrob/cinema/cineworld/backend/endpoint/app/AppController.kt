@@ -4,7 +4,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.server.http.content.staticFiles
-import io.ktor.server.http.content.staticRootFolder
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
@@ -30,12 +29,13 @@ class AppController @Inject constructor(
 			call.respondRedirect("https://www.google.com/s2/favicons?domain=www.cineworld.co.uk")
 		}
 
-		staticFiles("/", application.environment.config.staticRootFolder) {
+		val staticRootFolder = application.environment.config.staticRootFolder
+		staticFiles("/", staticRootFolder) {
 			application.log.debug(
 				"""
 					Running static content at / from ${staticRootFolder}
-					  -> ${staticRootFolder?.absolutePath}
-					  -> ${staticRootFolder?.canonicalPath}
+					  -> ${staticRootFolder.absolutePath}
+					  -> ${staticRootFolder.canonicalPath}
 				""".trimIndent()
 			)
 		}
