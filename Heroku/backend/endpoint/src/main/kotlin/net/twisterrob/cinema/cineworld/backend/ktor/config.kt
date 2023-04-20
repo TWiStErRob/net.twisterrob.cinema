@@ -12,15 +12,19 @@ enum class Env {
 	DEVELOPMENT
 }
 
+/** Property names: `twisterrob.cinema.*`. */
 val ApplicationConfig.app: ApplicationConfig
 	get() = this.config("twisterrob.cinema")
 
+/** Property name: `twisterrob.cinema.environment`. */
 val ApplicationConfig.environment: Env
 	get() = Env.valueOf(this.app.property("environment").getString().uppercase())
 
+/** Property name: `twisterrob.cinema.staticRootFolder`. */
 val ApplicationConfig.staticRootFolder: File
 	get() = File(this.app.property("staticRootFolder").getString())
 
+/** Property name: `twisterrob.cinema.fakeRootFolder`. */
 val ApplicationConfig.fakeRootFolder: File
 	get() = File(this.app.property("fakeRootFolder").getString())
 
