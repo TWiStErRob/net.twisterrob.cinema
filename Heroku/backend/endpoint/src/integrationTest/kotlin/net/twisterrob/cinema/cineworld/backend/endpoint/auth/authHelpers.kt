@@ -11,7 +11,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.test.build
-import org.eclipse.jetty.http.HttpHeader
 import org.mockito.kotlin.whenever
 
 object AuthTestConstants {
@@ -51,6 +50,6 @@ fun AuthRepository.setupAuth(): User {
  */
 fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
 	handleRequest {
-		addHeader(HttpHeader.COOKIE.toString(), AuthTestConstants.realisticCookie)
+		addHeader(HttpHeaders.Cookie, AuthTestConstants.realisticCookie)
 		block()
 	}
