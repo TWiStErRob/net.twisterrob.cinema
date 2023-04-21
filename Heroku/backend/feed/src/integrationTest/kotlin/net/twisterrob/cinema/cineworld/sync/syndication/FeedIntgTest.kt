@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 class FeedIntgTest {
@@ -120,6 +121,14 @@ class FeedIntgTest {
 		}
 		val serialized = feedMapper().writeValueAsString(fixtFeed)
 		val feed = feedMapper().readValue<Feed>(serialized)
-		assertEquals(fixtFeed, feed)
+		val expected = fixtFeed.copy(
+			_performances = fixtFeed.performances.map {
+				it.copy(
+					// If test is executed in a different timezone or during DST, it fails.
+					date = it.date.withOffsetSameInstant(ZoneOffset.UTC)
+				)
+			}
+		)
+		assertEquals(expected, feed)
 	}
 }
