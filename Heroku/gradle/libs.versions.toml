@@ -44,7 +44,7 @@ slf4j = "2.0.7"
 log4j = "2.20.0"
 
 test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.9.2"
+test-junit-jupiter = "5.9.3"
 test-junit-pioneer = "2.0.1"
 
 test-hamcrest = "2.2"
