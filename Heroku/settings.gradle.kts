@@ -60,7 +60,9 @@ doNotNagAbout(
 	"The AbstractArchiveTask.archivePath property has been deprecated. " +
 			"This is scheduled to be removed in Gradle 9.0. " +
 			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+			"For more information, please refer to " +
+			"https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath" +
+			" in the Gradle documentation.",
 	"at org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl\$_getSourceSets_closure"
 )
 
@@ -70,7 +72,9 @@ doNotNagAbout(
 	"The AbstractArchiveTask.archivePath property has been deprecated. " +
 			"This is scheduled to be removed in Gradle 9.0. " +
 			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+			"For more information, please refer to " +
+			"https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath" +
+			" in the Gradle documentation.",
 	"at org.jetbrains.plugins.gradle.tooling.util.SourceSetCachedFinder.createArtifactsMap"
 )
 
