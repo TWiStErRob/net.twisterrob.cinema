@@ -60,7 +60,9 @@ doNotNagAbout(
 	"The AbstractArchiveTask.archivePath property has been deprecated. " +
 			"This is scheduled to be removed in Gradle 9.0. " +
 			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+			"For more information, please refer to " +
+			"https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath" +
+			" in the Gradle documentation.",
 	"at org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl\$_getSourceSets_closure"
 )
 
@@ -70,7 +72,9 @@ doNotNagAbout(
 	"The AbstractArchiveTask.archivePath property has been deprecated. " +
 			"This is scheduled to be removed in Gradle 9.0. " +
 			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+			"For more information, please refer to " +
+			"https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath" +
+			" in the Gradle documentation.",
 	"at org.jetbrains.plugins.gradle.tooling.util.SourceSetCachedFinder.createArtifactsMap"
 )
 
@@ -83,4 +87,22 @@ doNotNagAbout(
 			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#org_gradle_util_reports_deprecations",
 	// There are 3 instances on consecutive lines, so just ignore the whole file.
 	"at com.android.ide.gradle.model.builder.AndroidStudioToolingPluginKt.isGradleAtLeast(AndroidStudioToolingPlugin.kt:"
+)
+
+// TODEL Gradle 8.2 vs Kotlin 1.8.20 https://github.com/gradle/gradle/pull/24271#issuecomment-1546706115
+@Suppress("MaxLineLength")
+doNotNagAbout(
+	Regex(
+		Regex.escape("The resolvable usage is already allowed on configuration ") +
+				"':.*?:testFixturesRuntimeClasspath'. " +
+				Regex.escape("This behavior has been deprecated. ") +
+				Regex.escape("This behavior is scheduled to be removed in Gradle 9.0. ") +
+				Regex.escape("Remove the call to setCanBeResolved(true), it has no effect. ") +
+				Regex.escape("Consult the upgrading guide for further information: ") +
+				Regex.escape("https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#redundant_configuration_usage_activation") +
+				".*" +
+				// Task :generatePrecompiledScriptPluginAccessors 
+				Regex.escape("at org.jetbrains.kotlin.gradle.plugin.mpp.compilationImpl.factory.KotlinCompilationDependencyConfigurationsFactoriesKt.KotlinCompilationDependencyConfigurationsContainer") +
+				".*"
+	)
 )

@@ -56,9 +56,12 @@ if (libs.versions.appengine.get() < "2.4.6") {
 		"The AbstractArchiveTask.archivePath property has been deprecated. " +
 				"This is scheduled to be removed in Gradle 9.0. " +
 				"Please use the archiveFile property instead. " +
-				"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
+				"For more information, please refer to " +
+				"https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath" +
+				" in the Gradle documentation.",
 		"at com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin.lambda\$configureExtensions$0"
 	)
 } else {
+	val error: (String) -> Unit = (if (isCI) ::error else logger::warn)
 	error("AppEngine 2.4.6 deprecation fixed, remove suppression.")
 }
