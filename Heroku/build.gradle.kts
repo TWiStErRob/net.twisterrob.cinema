@@ -62,5 +62,6 @@ if (libs.versions.appengine.get() < "2.4.6") {
 		"at com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin.lambda\$configureExtensions$0"
 	)
 } else {
+	val error: (String) -> Unit = (if (isCI) ::error else logger::warn)
 	error("AppEngine 2.4.6 deprecation fixed, remove suppression.")
 }
