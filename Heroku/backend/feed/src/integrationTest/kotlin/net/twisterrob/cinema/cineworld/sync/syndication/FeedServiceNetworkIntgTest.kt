@@ -32,7 +32,9 @@ class FeedServiceNetworkIntgTest {
 					respond(loadFeed(fileName), headers = responseHeaders)
 				}
 
-				else -> error("Unhandled ${request.url}")
+				else -> {
+					error("Unhandled ${request.url}")
+				}
 			}
 		}
 
