@@ -18,6 +18,11 @@ tasks.withType<Test> {
 	allowUnsafe()
 }
 
+// Allow testFixtures to see into production internals.
+kotlin.target.compilations.named("testFixtures") {
+	associateWith(kotlin.target.compilations.getByName("main"))
+}
+
 @Suppress("UnstableApiUsage")
 testing {
 	suites {

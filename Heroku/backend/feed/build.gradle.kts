@@ -42,5 +42,7 @@ dependencies {
 	testImplementation(libs.ktor.client.logging)
 	testRuntimeOnly(libs.ktor.client.engine.okhttp)
 
+	testFixturesImplementation(libs.test.junit.jupiter)
+
 	Deps.slf4jToLog4jForTest(project)
 }

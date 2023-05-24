@@ -21,7 +21,7 @@ object QuickbookModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
-		fun quickbookApiKey(@Named(API_KEY) key: String = "9qfgpF7B"): Builder
+		fun quickbookApiKey(@Named(API_KEY) key: String): Builder
 	}
 
 	internal const val API_KEY = "quickbook_api_key"
