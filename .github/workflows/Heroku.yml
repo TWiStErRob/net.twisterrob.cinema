@@ -72,6 +72,22 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
+      - name: Build Heroku.
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          assemble
+          testClasses
+          unitTestClasses
+          functionalTestClasses
+          integrationTestClasses
+          integrationExternalTestClasses
+
+
       - name: Check Heroku with Detekt.
         working-directory: Heroku
         run: >
@@ -101,21 +117,6 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
-
-      - name: Build Heroku.
-        working-directory: Heroku
-        run: >
-          ./gradlew
-          --no-daemon
-          --no-build-cache
-          --stacktrace
-          --continue
-          assemble
-          testClasses
-          unitTestClasses
-          functionalTestClasses
-          integrationTestClasses
-          integrationExternalTestClasses
 
 
       - name: Test Heroku.
