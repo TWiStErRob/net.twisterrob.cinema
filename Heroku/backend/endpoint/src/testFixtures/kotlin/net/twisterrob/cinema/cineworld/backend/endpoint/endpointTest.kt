@@ -7,6 +7,7 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.withApplication
+import kotlinx.serialization.json.Json.Default.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
