@@ -20,6 +20,7 @@ application {
 }
 
 dependencies {
+	implementation(projects.shared)
 	implementation(projects.backend.database)
 	implementation(projects.backend.quickbook)
 	implementation(projects.backend.network)

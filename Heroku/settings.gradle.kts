@@ -14,6 +14,7 @@ include(":backend:network")
 include(":backend:endpoint")
 include(":deploy")
 include(":deploy:appengine")
+include(":shared")
 
 include(":test-helpers")
 
