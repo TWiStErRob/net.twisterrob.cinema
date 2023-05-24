@@ -25,7 +25,7 @@ jobs:
     name: 🔨 Build & Check (Gradle)
     runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
@@ -72,6 +72,22 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
+      - name: Build Heroku.
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          assemble
+          testClasses
+          unitTestClasses
+          functionalTestClasses
+          integrationTestClasses
+          integrationExternalTestClasses
+
+
       - name: Check Heroku with Detekt.
         working-directory: Heroku
         run: >
@@ -101,16 +117,6 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
-
-      - name: Build Heroku.
-        working-directory: Heroku
-        run: >
-          ./gradlew
-          --no-daemon
-          --no-build-cache
-          --stacktrace
-          --continue
-          assemble testClasses
 
 
       - name: Test Heroku.

@@ -68,5 +68,6 @@ dependencies {
 	testImplementation(libs.jackson.datatype.java8)
 	testImplementation(libs.kotlinx.serialization.json)
 	testImplementation(libs.ktor.client.mock)
-	testImplementation(libs.ktor.server.test)
+
+	testFixturesApi(libs.ktor.server.test)
 }

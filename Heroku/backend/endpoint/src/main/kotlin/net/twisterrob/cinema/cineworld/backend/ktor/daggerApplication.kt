@@ -21,7 +21,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	builder.application(this)
 	builder.featureToggles(FeatureToggles(useQuickBook = false))
 	builder.graphDBUri(getNeo4jUrl())
-	builder.quickbookApiKey()
+	builder.quickbookApiKey("9qfgpF7B")
 	initComponent(builder)
 	val dagger = builder.build()
 	componentReady(dagger)
