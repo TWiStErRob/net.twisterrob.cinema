@@ -49,6 +49,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.email
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.openid
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID.Scopes.profile
+import net.twisterrob.cinema.shared.getTypedValue
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -118,8 +119,8 @@ internal fun Application.configuration(
 			requestMethod = HttpMethod.Post,
 
 			// https://console.developers.google.com/apis/credentials?project=twisterrob-cinema > OAuth 2.0 Client IDs
-			clientId = config["GOOGLE_CLIENT_ID"] as String,
-			clientSecret = config["GOOGLE_CLIENT_SECRET"] as String,
+			clientId = config.getTypedValue("GOOGLE_CLIENT_ID"),
+			clientSecret = config.getTypedValue("GOOGLE_CLIENT_SECRET"),
 			// https://console.developers.google.com/apis/credentials/consent/edit?project=twisterrob-cinema
 			defaultScopes = listOf(openid, email, profile)
 		)

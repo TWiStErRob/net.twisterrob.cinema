@@ -21,6 +21,7 @@ object QuickbookModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
+		@Suppress("PropertyUsedBeforeDeclaration") // TODEL False positive. https://github.com/detekt/detekt/issues/6125
 		fun quickbookApiKey(@Named(API_KEY) key: String = "9qfgpF7B"): Builder
 	}
 

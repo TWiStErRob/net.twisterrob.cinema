@@ -2,6 +2,7 @@ package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Cinema
 import net.twisterrob.cinema.database.model.User
+import net.twisterrob.cinema.shared.getTypedValue
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import org.neo4j.ogm.session.query
@@ -66,8 +67,8 @@ class CinemaService @Inject constructor(
 			)
 			.queryResults()
 			.associateBy(
-				keySelector = { it.getValue("cinema") as Cinema },
-				valueTransform = { it.getValue("fav") as Boolean }
+				keySelector = { it.getTypedValue("cinema") },
+				valueTransform = { it.getTypedValue("fav") }
 			)
 
 	/**

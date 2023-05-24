@@ -25,7 +25,7 @@ private val DOCUMENTATION = Unit
  * @see Session.deleteAll
  */
 inline fun <reified T> Session.deleteForCount(filters: Iterable<Filter> = emptyList()): Long =
-	delete(T::class.java, filters, false) as Long
+	(delete(T::class.java, filters, false) ?: error("delete returned null")) as Long
 
 /**
  * Delete all entities of type matching filter.
@@ -39,7 +39,7 @@ inline fun <reified T> Session.deleteForCount(filters: Iterable<Filter> = emptyL
  */
 @Suppress("UNCHECKED_CAST") // necessary because of List's generics
 inline fun <reified T> Session.deleteForIds(filters: Iterable<Filter> = emptyList()): List<Long> =
-	delete(T::class.java, filters, true) as List<Long>
+	(delete(T::class.java, filters, true) ?: error("delete returned null")) as List<Long>
 
 /**
  * A cypher statement this method will return a collection of domain objects that is hydrated to

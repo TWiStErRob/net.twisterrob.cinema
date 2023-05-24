@@ -41,9 +41,7 @@ private val LOG = LoggerFactory.getLogger(UriEncodingFixingUriDeserializer::clas
 class UriEncodingFixingUriDeserializer : JsonDeserializer<URI>() {
 
 	override fun deserialize(p: JsonParser, ctxt: DeserializationContext): URI {
-		@Suppress("UNCHECKED_CAST") // Jackson methods are not generic.
-		val de = JdkDeserializers.find(ctxt, URI::class.java, URI::class.java.name)
-				as JsonDeserializer<URI>
+		val de: JsonDeserializer<URI> = ctxt.findJdkDeserializer()
 		@Suppress("LiftReturnOrAssignment")
 		try {
 			return de.deserialize(p, ctxt)
@@ -65,4 +63,14 @@ class UriEncodingFixingUriDeserializer : JsonDeserializer<URI>() {
 			}
 		}
 	}
+}
+
+private inline fun <reified T> DeserializationContext.findJdkDeserializer(): JsonDeserializer<T> =
+	this.findJdkDeserializer(T::class.java, T::class.java.name)
+
+private fun <T> DeserializationContext.findJdkDeserializer(rawType: Class<T>, clsName: String): JsonDeserializer<T> {
+	val result = JdkDeserializers.find(this, rawType, clsName)
+		?: error("Cannot find JDK deserializer for type ${rawType} and class name ${clsName}.")
+	@Suppress("UNCHECKED_CAST") // Jackson find method is not generic.
+	return result as JsonDeserializer<T>
 }
