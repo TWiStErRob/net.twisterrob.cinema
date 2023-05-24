@@ -431,6 +431,7 @@ private fun Any?.short(): String =
 
 @OptIn(InternalAPI::class)
 private fun details(expectedData: Any, e: Throwable): String =
+	@Suppress("StringShouldBeRawString")
 	"\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message ?: "No message"}"
 
 private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
@@ -442,7 +443,10 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 				fail("Cannot serialize data to XML:${details(expectedData, e)}", e)
 			}
 			assertEquals(expectedXml.cleanForComparison(), actualXml.cleanForComparison()) {
-				"Serialized XML doesn't match, input data:\n\t\t${expectedData.short()}"
+				"""
+					Serialized XML doesn't match, input data:
+							${expectedData.short()}
+				""".trimIndent()
 			}
 		}
 		o {
@@ -452,7 +456,10 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 				fail("Cannot deserialize XML to data:${details(expectedXml, e)}", e)
 			}
 			assertEquals(expectedData, actualData) {
-				"Deserialized data doesn't match, input XML:\n\t\t${expectedXml.short()}"
+				"""
+					Deserialized data doesn't match, input XML:
+							${expectedXml.short()}
+				""".trimIndent()
 			}
 		}
 		o {
@@ -463,7 +470,12 @@ private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedD
 				fail("Cannot deserialize serialized XML:${details(actualXml, e)}", e)
 			}
 			assertEquals(expectedData, reRead) {
-				"Re-read data don't match, input data:\n\t\t${expectedData.short()}\n\t\t->\n\t\t${actualXml.short()}"
+				"""
+					Re-read data don't match, input data:
+							${expectedData.short()}
+							->
+							${actualXml.short()}
+				""".trimIndent()
 			}
 		}
 	}
