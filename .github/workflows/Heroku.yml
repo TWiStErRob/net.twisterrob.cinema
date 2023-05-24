@@ -109,7 +109,12 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          assemble testClasses
+          assemble
+          testClasses
+          unitTestClasses
+          functionalTestClasses
+          integrationTestClasses
+          integrationExternalTestClasses
 
 
       - name: Test Heroku.
