@@ -10,6 +10,7 @@ testing.suites.named<JvmTestSuite>("integrationTest") {
 dependencies {
 	implementation(libs.kotlin.stdlib8)
 	implementation(libs.kotlin.reflect)
+	implementation(projects.shared)
 
 	Deps.dagger(project)
 

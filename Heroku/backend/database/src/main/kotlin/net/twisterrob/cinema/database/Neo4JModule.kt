@@ -51,6 +51,7 @@ object Neo4JModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
+		@Suppress("PropertyUsedBeforeDeclaration") // TODEL False positive. https://github.com/detekt/detekt/issues/6125
 		fun graphDBUri(@Named(GRAPH_DB) uri: URI): Builder
 	}
 
@@ -109,7 +110,7 @@ object Neo4JModule {
 			this.register(object : EventListenerAdapter() {
 				override fun onPreSave(event: Event) {
 					// Make sure all entities extend BaseNode.
-					val entity = event.`object` as BaseNode
+					val entity = event.affectedObject as BaseNode
 					// Execute all getters to trigger any lateinit misses.
 					entity::class.declaredMemberProperties.forEach { unwrapITE { it.getter.call(entity) } }
 				}
@@ -122,3 +123,6 @@ object Neo4JModule {
 	fun session(factory: SessionFactory): Session =
 		factory.openSession()
 }
+
+private val Event.affectedObject: Any
+	get() = this.`object` ?: error("Event is missing affected object.")

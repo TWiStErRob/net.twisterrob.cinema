@@ -15,7 +15,7 @@ detekt {
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
-	config = rootProject.files("config/detekt/detekt.yml")
+	config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 	baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
 	basePath = rootProject.projectDir.parentFile.absolutePath
 
