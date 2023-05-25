@@ -1,11 +1,11 @@
-name: Release from master
+name: Release from main
 on:
   workflow_dispatch:
     inputs:
       reason:
         description: 'Reason for release'
         required: false
-        default: 'Publish latest changes from master'
+        default: 'Publish latest changes from main'
 jobs:
   release:
     name: Release to release branch (${{ github.event.inputs.reason }})
@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 1
     env:
       RELEASE_BRANCH: 'release'
-      TRIGGER_BRANCH: 'master'
+      TRIGGER_BRANCH: 'main'
     steps:
       - name: Checkout ${{ env.RELEASE_BRANCH }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3

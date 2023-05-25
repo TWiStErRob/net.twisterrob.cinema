@@ -35,7 +35,7 @@ jobs:
               // on:pull_request:closed[!pull_request.merged]'s ref is the merge branch.
               // So reconstruct the merge branch name in both cases.
               pull_request: `refs/pull/${context.payload.number}/merge`,
-              // on:delete's context.ref is always `refs/heads/master`
+              // on:delete's context.ref is always `refs/heads/main`
               // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
               // See https://stackoverflow.com/a/62293570/253468
               delete: `refs/heads/${context.payload.ref}`,
@@ -43,7 +43,7 @@ jobs:
               workflow_dispatch: context.ref,
             }[context.eventName]
             return branch
-              // refs/heads/master from workflow_dispatch and delete events.
+              // refs/heads/main from workflow_dispatch and delete events.
               .replace('refs/heads/', 'br-')
               // refs/pull/123/merge from pull_request.closed event.
               .replace('refs/pull/', 'pr-')

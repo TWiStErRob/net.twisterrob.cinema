@@ -2,7 +2,7 @@ name: map
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - 'map/**'
       - '.github/workflows/map.yml'
@@ -11,7 +11,7 @@ on:
       - 'map/**'
       - '.github/workflows/map.yml'
 concurrency:
-  group: ${{ github.ref == 'refs/heads/master' && format('ci-map-master-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-map-main-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
   cancel-in-progress: true
 jobs:
   run:

@@ -34,7 +34,7 @@ On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` 
  * Every PR is automatically deployed to a unique URL.
  * Every push to `release` branch is automatically deployed to production.
 
-Push code to deploy to `origin/release` branch, or execute "Release from master" workflow from GitHub Actions.
+Push code to deploy to `origin/release` branch, or execute "Release from main" workflow from GitHub Actions.
 
 All deployments are visible at [Google Cloud Console - Versions](https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema).
 

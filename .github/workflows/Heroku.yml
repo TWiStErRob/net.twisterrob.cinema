@@ -8,9 +8,9 @@ on:
       - '.github/workflows/Heroku.yml'
 concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
-  # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
   # More info: https://stackoverflow.com/a/68422069/253468:
-  group: ${{ github.ref == 'refs/heads/master' && format('ci-heroku-master-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-heroku-main-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
   cancel-in-progress: true
 #env:
 #  # Choose Java 17 explicitly via setup-java.
@@ -172,8 +172,8 @@ jobs:
 
   pull_request:
     name: Find PR
-    # Don't execute on master, it'll never be PR'd.
-    if: github.ref != 'refs/heads/master' && (success() || failure())
+    # Don't execute on main, it'll never be PR'd.
+    if: github.ref != 'refs/heads/main' && (success() || failure())
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     outputs:
@@ -259,7 +259,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Dependencies - Base
-          # Cannot error on this yet, because `master` has no dependencyLocking set up.
+          # Cannot error on this yet, because `main` has no dependencyLocking set up.
           if-no-files-found: warn
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 

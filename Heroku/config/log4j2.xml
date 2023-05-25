@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	strict="true"
 	status="warn"
-	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/apache/logging-log4j2/master/log4j-core/src/main/resources/Log4j-config.xsd"
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/apache/logging-log4j2/2.x/log4j-core/src/main/resources/Log4j-config.xsd"
 >
 	<!--
 		Note: to debug Log4j, set status="trace"

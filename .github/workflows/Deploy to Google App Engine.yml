@@ -51,7 +51,7 @@ jobs:
               // Use blank to indicate that this is a release to production and should use automatic naming.
               ? 'release'
               : context.ref
-                // refs/heads/master from workflow_dispatch and push events.
+                // refs/heads/main from workflow_dispatch and push events.
                 .replace('refs/heads/', 'br-')
                 // refs/pull/123/merge from pull_request event.
                 .replace('refs/pull/', 'pr-')
