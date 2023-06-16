@@ -13,8 +13,8 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"engines": {
-		"node": "16.x",
-		"npm": "8.x"
+		"node": "18.x",
+		"npm": "9.x"
 	},
 	"scripts": {
 		"start:documentation": "Assumes: `cd frontend && npm run build:<env> && cd ..`",
