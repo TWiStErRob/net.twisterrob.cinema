@@ -20,7 +20,7 @@ class FeedServiceNetworkIntgTest {
 
 	@Test fun `read weekly film times XML`() {
 		mockClient.stub { request ->
-			@Suppress("UseIfInsteadOfWhen") // Conventionally this is a when-expression.
+			@Suppress("UseIfInsteadOfWhen", "OptionalWhenBraces") // Conventionally this is a when-expression.
 			when {
 				request.url.toString().startsWith("https://classic.cineworld.co.uk/syndication/") -> {
 					val fileName = request.url.encodedPath.split("/").last()
