@@ -44,6 +44,18 @@
 			],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
+		},
+		{
+			"description": "Disable these Gradle Plugin Markers, because they don't exist. The mapping from id(com.google.cloud.tools.appengine*) to com.google.cloud.tools:appengine-gradle-plugin is done in settings.gradle.kts.",
+			"matchPackageNames": [
+				"com.google.cloud.tools.appengine:com.google.cloud.tools.appengine.gradle.plugin",
+				"com.google.cloud.tools.appengine-appyaml:com.google.cloud.tools.appengine-appyaml.gradle.plugin",
+				"com.google.cloud.tools.appengine-appenginewebxml:com.google.cloud.tools.appengine-appenginewebxml.gradle.plugin"
+			],
+			"matchPaths": [
+				"Heroku/gradle/libs.versions.toml"
+			],
+			"enabled": false
 		}
 	]
 }
