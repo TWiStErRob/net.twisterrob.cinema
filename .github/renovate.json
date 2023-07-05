@@ -28,7 +28,7 @@
 			"matchPackageNames": [
 				"com.sun.xml.bind:jaxb-impl"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"map/map.main.kts"
 			],
 			"matchUpdateTypes": ["major", "minor"],
@@ -39,7 +39,7 @@
 			"matchPackageNames": [
 				"bootstrap"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"Heroku/frontend/package.json"
 			],
 			"matchUpdateTypes": ["major"],
@@ -52,7 +52,7 @@
 				"com.google.cloud.tools.appengine-appyaml:com.google.cloud.tools.appengine-appyaml.gradle.plugin",
 				"com.google.cloud.tools.appengine-appenginewebxml:com.google.cloud.tools.appengine-appenginewebxml.gradle.plugin"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"Heroku/gradle/libs.versions.toml"
 			],
 			"enabled": false
