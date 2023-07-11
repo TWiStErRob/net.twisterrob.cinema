@@ -24,17 +24,6 @@
 	],
 	"packageRules": [
 		{
-			"description": "Disable JAXB updates, because 3.x and 4.x causes reflective errors. e.g. 4.x on Java 17: 'Unable to make protected final java.lang.Class java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int) throws java.lang.ClassFormatError accessible' at com.sun.xml.bind.v2.runtime.reflect.opt.Injector.",
-			"matchPackageNames": [
-				"com.sun.xml.bind:jaxb-impl"
-			],
-			"matchFileNames": [
-				"map/map.main.kts"
-			],
-			"matchUpdateTypes": ["major", "minor"],
-			"enabled": false
-		},
-		{
 			"description": "Disable updating Bootstrap, as major versions contain breaking changes which would fully break the UI.",
 			"matchPackageNames": [
 				"bootstrap"
