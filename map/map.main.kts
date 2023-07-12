@@ -19,7 +19,7 @@
 // Override transitively included jaxb-impl:2.2 to avoid warning when marshalling Kml.
 // > Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (jaxb-impl-2.2.jar)
 // > to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
-@file:DependsOn("com.sun.xml.bind:jaxb-impl:2.3.8")
+@file:DependsOn("com.sun.xml.bind:jaxb-impl:4.0.3")
 @file:DependsOn("de.micromata.jak:JavaAPIforKml:2.2.1")
 
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -69,6 +69,27 @@ data class CinemasResponse(
 fun ObjectMapper.cineworldConfig() {
 	configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
+
+//<editor-fold desc="JAXB setup for modern Java" defaultstate="collapsed">
+fun initJAXB() {
+	// See https://stackoverflow.com/a/50251510/253468
+	// In jaxb-impl 3.x and 4.x it is necessary to disable this optimization to allow running on Java 17.
+	System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true")
+
+	// Disable logging about the optimization being disabled:
+	// > Jul 11, 2023 5:06:10 PM com.sun.xml.bind.v2.runtime.reflect.opt.AccessorInjector <clinit>
+	// > INFO: The optimized code generation is disabled
+
+	// Need to keep a strong reference to the logger instance, otherwise the level customization gets garbage collected.
+	val logger: java.util.logging.Logger = java.util.logging.Logger
+		.getLogger("com.sun.xml.bind.v2.runtime.reflect.opt.AccessorInjector")
+
+	logger.level = java.util.logging.Level.OFF
+	// Load the class to trigger the static initializer that logs the above message.
+	Class.forName("com.sun.xml.bind.v2.runtime.reflect.opt.AccessorInjector")
+	logger.level = null
+}
+//</editor-fold>
 
 fun loadFile(): List<CinemasResponse.CinemasBody.Cinema> {
 	val client = jacksonObjectMapper().apply { cineworldConfig() }.reader()
@@ -151,6 +172,7 @@ val kml = Kml().apply {
 
 val kmlFile = File("cinemas.kml").apply {
 	delete()
+	initJAXB()
 	kml.marshal(this)
 	writeText(readText().replace("ns2:", "").replace("xmlns:ns2", "xmlns"))
 }
