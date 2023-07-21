@@ -2,7 +2,7 @@ import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.gradle.doNotNagAbout
 
 tasks.register<Delete>("clean") {
-	delete(rootProject.buildDir)
+	delete(rootProject.layout.buildDirectory)
 }
 
 tasks.register<Task>("allDependencies") {
@@ -19,7 +19,7 @@ tasks.register<Task>("allDependencies") {
 
 // Need to eagerly create this, so that we can call tasks.withType in it.
 tasks.create<TestReport>("allTestsReport") {
-	destinationDirectory = file("${buildDir}/reports/tests/all")
+	destinationDirectory = layout.buildDirectory.dir("reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
