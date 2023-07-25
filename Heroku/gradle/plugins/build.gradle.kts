@@ -54,7 +54,7 @@ detekt {
 }
 
 val detektReportMergeTask = rootProject.tasks.register<io.gitlab.arturbosch.detekt.report.ReportMergeTask>("detektReportMergeSarif") {
-	output = rootProject.buildDir.resolve("reports/detekt/merge.sarif")
+	output = rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif")
 }
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 	reports {
