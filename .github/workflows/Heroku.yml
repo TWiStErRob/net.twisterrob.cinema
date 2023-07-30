@@ -655,21 +655,16 @@ jobs:
           grep --version
           curl --version
 
-          CHROME_FULL_VERSION=$(google-chrome --version)
-          echo "CHROME_FULL_VERSION=${CHROME_FULL_VERSION}" | tee --append $GITHUB_ENV
+          CHROME_VERSION_OUTPUT=$(google-chrome --version)
+          echo "CHROME_VERSION_OUTPUT=${CHROME_VERSION_OUTPUT}" | tee --append $GITHUB_ENV
 
-          CHROME_MINOR_VERSION=$(echo ${CHROME_FULL_VERSION} | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')
-          echo "CHROME_MINOR_VERSION=${CHROME_MINOR_VERSION}" | tee --append $GITHUB_ENV
-
-          LATEST_RELEASE_URL=https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}
-          echo "Querying latest Chrome Driver version: ${LATEST_RELEASE_URL}"
-          CHROME_DRIVER_VERSION=$(curl --output - --silent "${LATEST_RELEASE_URL}")
-          echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
+          CHROME_VERSION_FULL=$(echo ${CHROME_VERSION_OUTPUT} | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+\.\d+)')
+          echo "CHROME_VERSION_FULL=${CHROME_VERSION_FULL}" | tee --append $GITHUB_ENV
 
       - name: Install Compatible Chrome Driver.
         working-directory: Heroku/test
         run: |
-          npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
+          npm run selenium:update -- --versions.chrome ${{ env.CHROME_VERSION_FULL }}
 
       - name: Test
         working-directory: Heroku
