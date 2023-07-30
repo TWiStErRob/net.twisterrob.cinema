@@ -664,7 +664,12 @@ jobs:
       - name: Install Compatible Chrome Driver.
         working-directory: Heroku/test
         run: |
-          npm run selenium:update -- --versions.chrome ${{ env.CHROME_VERSION_FULL }}
+          SELENIUM_VERSION=4.10.0
+          curl --silent --show-error --location --remote-name \
+              https://github.com/SeleniumHQ/selenium/raw/selenium-${SELENIUM_VERSION}/common/manager/linux/selenium-manager
+          chmod +x selenium-manager
+          ./selenium-manager --version
+          ./selenium-manager --driver=chromedriver --driver-version=${{ env.CHROME_VERSION_FULL }}
 
       - name: Test
         working-directory: Heroku
