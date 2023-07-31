@@ -712,7 +712,7 @@ jobs:
       - name: Start Selenium.
         working-directory: Heroku/test
         run: |
-          npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} >../selenium.log 2>&1 &
+          npm run selenium -- --versions.chrome ${{ env.CHROME_VERSION_FULL }} >../selenium.log 2>&1 &
           echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
           sleep 10
 
