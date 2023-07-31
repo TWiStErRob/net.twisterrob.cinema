@@ -669,7 +669,9 @@ jobs:
               https://github.com/SeleniumHQ/selenium/raw/selenium-${SELENIUM_VERSION}/common/manager/linux/selenium-manager
           chmod +x selenium-manager
           ./selenium-manager --version
-          ./selenium-manager --driver=chromedriver --driver-version=${{ env.CHROME_VERSION_FULL }}
+          DRIVER_PATH_OUTPUT=$(./selenium-manager --driver=chromedriver --driver-version=${{ env.CHROME_VERSION_FULL }})
+          DRIVER_PATH=$(echo ${DRIVER_PATH_OUTPUT} | grep -oP '(?<=INFO	Driver path: )(.*)') 
+          cp $(DRIVER_PATH) ./node_modules/webdriver-manager/downloads/chromedriver_${{ env.CHROME_VERSION_FULL }}
 
       - name: Test
         working-directory: Heroku
