@@ -1,9 +1,7 @@
 package net.twisterrob.cinema.frontend.test.framework
 
-import org.openqa.selenium.WebDriver
-
 abstract class BasePage(
-	protected val driver: WebDriver
+	protected val browser: Browser
 ) {
 
 	/**

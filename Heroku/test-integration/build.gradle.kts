@@ -10,6 +10,8 @@ plugins {
 
 dependencies {
 	Deps.junit5(project)
+	Deps.slf4jToLog4jForTest(project, testType = "integrationTest")
+	integrationTestImplementation(projects.testHelpers)
 
 	implementation(libs.test.selenium)
 	integrationTestRuntimeOnly(libs.test.selenium.jdkHttp)
