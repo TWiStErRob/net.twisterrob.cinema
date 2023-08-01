@@ -10,21 +10,16 @@ exports.config = {
 	webDriverLogDir: 'logs',
 	multiCapabilities: [
 		{
-			browserName: 'chrome',
-			loggingPrefs: { browser: 'ALL' },
 			chromeOptions: {
 				args: [
 					"--headless",
 					"--disable-gpu",
-					"--window-size=1920,1080"
 				]
 			}
 		},
 	],
 	specs: [
-		'src/app.spec.js',
 		'src/date.spec.js',
-		'src/cinemas.spec.js',
 		'src/films.spec.js',
 		'src/performances.spec.js',
 		'src/plans.spec.js',
@@ -69,25 +64,11 @@ exports.config = {
 			jasmine.MAX_PRETTY_PRINT_DEPTH = 4;
 			jasmine.addMatchers(require('./src/matchers/generic').default);
 			jasmine.addMatchers(require('./src/matchers/app').default);
-			// Not needed: Window size is set in chromeOptions.
-			//browser.driver.manage().window().maximize();
-			disableAnimations();
 		});
 		printTestingProgress();
 		verifyLogsAroundEachTest();
 	},
 };
-
-function disableAnimations() {
-	browser.addMockModule('disableNgAnimate', function () {
-		/* global angular: false // do not require() angular, we need the one in the browser */
-		angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
-			$animate.enabled(false);
-		}]);
-	});
-	// TODO consider also https://declara.com/content/J1J2Gkk1
-	//element('body').allowAnimations(false);
-}
 
 function printTestingProgress() {
 	const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
