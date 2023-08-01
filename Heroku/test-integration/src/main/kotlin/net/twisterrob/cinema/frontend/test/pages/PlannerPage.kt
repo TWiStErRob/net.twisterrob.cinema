@@ -271,7 +271,7 @@ class PlannerPage(
 					performances.waitToLoad()
 				}
 			}
-		browser.waitForAngular() // STOPSHIP real wait from protractor
+		browser.waitForAngular()
 	}
 
 	override fun open() {

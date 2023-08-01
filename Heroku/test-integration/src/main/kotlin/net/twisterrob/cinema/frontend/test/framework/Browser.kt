@@ -2,6 +2,7 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import org.openqa.selenium.By
 import org.openqa.selenium.Dimension
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.SearchContext
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -11,10 +12,10 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel
 
 class Browser(
-	driver: ChromeDriver? = null
+	driver: WebDriver? = null
 ) : SearchContext {
 
-	val driver: WebDriver by lazy { driver ?: createDriver() }
+	val driver: WebDriver by lazy { (driver ?: createDriver()).let { AngularDriver(it, it as JavascriptExecutor) } }
 
 	fun get(relativeUrl: String) {
 		navigateToAngularPage("${Options.host}${relativeUrl}")
@@ -54,5 +55,40 @@ class Browser(
 			}
 			return driver
 		}
+	}
+}
+
+/**
+ * Wrapper to call [waitForAngular] before actions that retrieve data.
+ * Based on `ProtractorBrowser` in node_modules\protractor\built\browser.js.
+ * Other waits are handled by STOPSHIP based on `sendRequestToStabilize` in `blocking-proxy\built\lib\angular_wait_barrier.js
+ */
+private class AngularDriver(
+	private val driver: WebDriver,
+	private val executor: JavascriptExecutor,
+) : WebDriver by driver, JavascriptExecutor by executor {
+
+	/**
+	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
+	 */
+	override fun getTitle(): String {
+		waitForAngular()
+		return driver.title
+	}
+
+	/**
+	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
+	 */
+	override fun getCurrentUrl(): String {
+		waitForAngular()
+		return driver.currentUrl
+	}
+
+	/**
+	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
+	 */
+	override fun getPageSource(): String {
+		waitForAngular()
+		return driver.pageSource
 	}
 }

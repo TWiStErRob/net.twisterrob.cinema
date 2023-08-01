@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
 
@@ -7,12 +8,21 @@ fun Browser.navigateToAngularPage(url: String) {
 	driver.get("data:text/html,<html></html>")
 	deferAngularBootstrap()
 	driver.get(url)
-	waitForAngular()
+	waitForAngularToExist()
 	disableAngularAnimations()
 	resumeAngular()
+	waitForAngular()
 }
 
-fun Browser.waitForAngular(timeout: Duration = Duration.ofSeconds(15)) {
+private fun Browser.deferAngularBootstrap() {
+	executeScript<Unit>(
+		"""
+			window.name = "NG_DEFER_BOOTSTRAP!" + window.name;
+		""".trimIndent()
+	)
+}
+
+fun Browser.waitForAngularToExist(timeout: Duration = Duration.ofSeconds(15)) {
 	val result = WebDriverWait(driver, timeout).until { hasAngular }
 	check(result) { "Page has no angular." }
 }
@@ -25,12 +35,18 @@ private val Browser.hasAngular: Boolean
 		""".trimIndent()
 	)
 
-private fun Browser.deferAngularBootstrap() {
+private fun Browser.disableAngularAnimations() {
+	val animate = """${'$'}animate"""
 	executeScript<Unit>(
 		"""
-			window.name = "NG_DEFER_BOOTSTRAP!" + window.name;
+			/* global angular: false // Comes from the opened page. */
+			angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
+				$animate.enabled(false);
+			}]);
 		""".trimIndent()
 	)
+	// TODO consider also https://declara.com/content/J1J2Gkk1
+	//findElement(By.tagName("body")).allowAnimations(false);
 }
 
 private fun Browser.resumeAngular() {
@@ -43,16 +59,16 @@ private fun Browser.resumeAngular() {
 	)
 }
 
-private fun Browser.disableAngularAnimations() {
-	val animate = """${'$'}animate"""
-	executeScript<Unit>(
+fun Browser.waitForAngular() {
+	driver.waitForAngular()
+}
+
+fun WebDriver.waitForAngular() {
+	executeAsyncScript<Unit>(
 		"""
-			/* global angular: false // Comes from the opened page. */
-			angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
-				$animate.enabled(false);
-			}]);
+			const injector = window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__;
+			const testability = injector.get('${'$'}${'$'}testability');
+			testability.whenStable(arguments[0]);
 		""".trimIndent()
 	)
-	// TODO consider also https://declara.com/content/J1J2Gkk1
-	//element(By.tagName("body")).allowAnimations(false);
 }
