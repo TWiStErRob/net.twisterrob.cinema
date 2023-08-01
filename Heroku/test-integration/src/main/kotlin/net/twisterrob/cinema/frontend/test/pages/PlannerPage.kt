@@ -4,12 +4,16 @@ import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.Byk
 import net.twisterrob.cinema.frontend.test.framework.Options
+import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.buttonText
+import net.twisterrob.cinema.frontend.test.framework.element
+import net.twisterrob.cinema.frontend.test.framework.filterByText
+import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
 import net.twisterrob.cinema.frontend.test.framework.repeater
+import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
-import net.twisterrob.cinema.frontend.test.framework.waitForJQuery
 import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 import org.openqa.selenium.SearchContext
@@ -23,65 +27,6 @@ object jasmine {
 	fun pp(any: Any) {
 		println("jasmine.pp: $any")	
 	}
-}
-
-/**
- * @param {string|RegExp} text string contains or regex match
- * @param {boolean} inverse negate the result
- * @return {ElementArrayFinder}
- * @see ElementArrayFinder.filter
- * @see ElementFinder.filterByText
- */
-fun List<WebElement>.filterByText(text: String, inverse: Boolean = false): List<WebElement> {
-	return this.filter { item -> item.filterByText(text, inverse) }
-}
-
-/**
- * Creates a filter function to match the text of the element.
- * @param {string|RegExp} text string contains or regex match
- * @param {boolean} inverse negate the result
- * @return {Promise<boolean>}
- * @see ElementArrayFinder.filter
- */
-fun WebElement.filterByText(text: String, inverse: Boolean = false): Boolean =
-	filterByText(Regex(Regex.escape(text)), inverse)
-
-fun WebElement.filterByText(text: Regex, inverse: Boolean = false): Boolean {
-	val matcher = fun (label: String) = text.matches(label)
-	val filter = if (inverse) ({ x -> !matcher(x) }) else matcher
-	return this.text.let(filter)
-}
-
-/**
- * Creates a filter function to match that the element has a class.
- * @return {Promise<boolean>}
- */
-fun WebElement.filterByClass(className: String): Boolean {
-	return this
-		.getAttribute("class")
-		.let { classes -> (classes ?: "").split(Regex("""\s+""")).indexOf(className) != -1 }
-}
-
-/**
- *
- * @param {function(ElementFinder): Promise<boolean>} filter
- * @return {Promise<int>}
- */
-fun List<WebElement>.indexOf(filter: (WebElement) -> Boolean): Int {
-	val INITIAL_VALUE = -1
-	val stack = Throwable().stackTrace
-	//noinspection JSValidateTypes it will be a Promise<int>, but the generics don't resolve it on reduce/then
-	return this
-		.foldIndexed(INITIAL_VALUE) { acc, index, element ->
-			if (acc != INITIAL_VALUE) return@foldIndexed acc
-			return@foldIndexed if(filter(element)) index  else acc
-		}
-		.let { index ->
-			assertThat(index)
-				.overridingErrorMessage { "Cannot find index of ${filter} in ${jasmine.pp(this)}\n${stack}" }
-				.isGreaterThanOrEqualTo(0)
-			return@let index
-		}
 }
 
 class PlannerPage(
@@ -103,25 +48,54 @@ class PlannerPage(
 		return browser.waitForElementToDisappear(elemToWaitFor)
 	}
 
-	class CinemaGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".cinema")
-	class FilmGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".film")
-	class PlanGroup(root: String): Group(root, ".plans", ".plan")
-	sealed class Group(root: String, content: String, items: String) {
-		init {
-			println("Group: $root, $content, $items")
+	inner class CinemaGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".cinema")
+	inner class FilmGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".film")
+	inner class PlanGroup(root: String): Group(root, ".plans", ".plan")
+	/**
+	 * @param root root element or CSS selector
+	 * @param content content element or CSS selector inside root
+	 * @param items elements or CSS selector in content
+	 */
+	open inner class Group(
+		private val _root: String,
+		private val _content: String,
+		private val _items: String,
+	) {
+		val root get() = element(By.cssSelector(_root))
+		val header get() = this.root.element(By.className("accordion-toggle"))
+		val list get() = this.root.element(By.cssSelector(_content))
+		val items get() = this.list.all(By.cssSelector(_items))
+
+		fun click() {
+			this.header.click()
+		}
+
+		fun collapse() {
+			if (this.list.isDisplayed) {
+				// displayed means it's expanded, so click to collapse
+				this.click()
+			} else {
+				// not displayed, so it's already collapsed
+			}
+		}
+
+		fun expand() {
+			if (this.list.isDisplayed) {
+				// displayed means it's already expanded
+			} else {
+				// not displayed means it's expanded, so click to collapse
+				this.click()
+			}
 		}
 	}
+
 	fun element(by: By): WebElement = browser.findElement(by)
-	fun SearchContext.element(by: By): WebElement = this.findElement(by)
-	fun WebElement.element(by: By): WebElement = this.findElement(by)
-	fun WebElement.all(by: By): List<WebElement> = this.findElements(by)
-	fun List<WebElement>.all(by: By): List<WebElement> = this.flatMap { it.findElements(by) }
 
 	fun goToPlanner(url: String = "") {
 		browser.get("/planner$url")
 	}
 	
-	val date get() = Date()
+	val date by lazy { Date() }
 	inner class Date {
 		val buttons = Buttons()
 		inner class Buttons {
@@ -159,19 +133,19 @@ class PlannerPage(
 		fun waitToLoad() {
 			waitFor(".cinemas-loading")
 		}
-		val buttons = Buttons()
+		val buttons get() = Buttons()
 		inner class Buttons {
-			val all = element(By.id("cinemas-all"))
-			val favorites = element(By.id("cinemas-favs"))
-			val london = element(By.id("cinemas-london"))
-			val none = element(By.id("cinemas-none"))
+			val all get()  = element(By.id("cinemas-all"))
+			val favorites get()  = element(By.id("cinemas-favs"))
+			val london get()  = element(By.id("cinemas-london"))
+			val none get()  = element(By.id("cinemas-none"))
 		}
-		val london = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
-		val favorites = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
-		val other = CinemaGroup("#cinemas-group-other", "#cinemas-list-other")
+		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
+		val favorites get() = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
+		val other get() = CinemaGroup("#cinemas-group-other", "#cinemas-list-other")
 	}
 
-	val films get() = Films()
+	val films by lazy { Films() }
 	inner class Films {
 		fun waitToLoad() {
 			waitFor(".films-loading")
@@ -201,11 +175,11 @@ class PlannerPage(
 			val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
 		}
 		}
-	};
+	}
 
-	val byFilmRoot get() = element(By.id("performances-by-film"))
-	val byCinemaRoot get() = element(By.id("performances-by-cinema"))
-	val performances get() = Performances()
+	val byFilmRoot by lazy { element(By.id("performances-by-film")) }
+	val byCinemaRoot by lazy { element(By.id("performances-by-cinema")) }
+	val performances by lazy { Performances() }
 	inner class Performances {
 		fun waitToLoad() {
 			waitFor("#performances-waiting")
@@ -251,7 +225,7 @@ class PlannerPage(
 					// get the cell contents
 					.all(Byk.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
-					.all(By.cssSelector(".performance"));
+					.all(By.cssSelector(".performance"))
 			}
 		}
 		inner class optionsDialog {
@@ -273,7 +247,7 @@ class PlannerPage(
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
 				group.element(By.className("cinema-name")).filterByText(cinemaName)
-			return PlanGroup(this.groups.filter(::byCinemaName).first().toString()) // TODO only() === firstOrFail // STOPSHIP removetostring
+			return PlanGroup(this.groups.filter(::byCinemaName).first().toString()) // TODO only() == firstOrFail // STOPSHIP removetostring
 		}
 	}
 	
@@ -297,7 +271,7 @@ class PlannerPage(
 					performances.waitToLoad()
 				}
 			}
-		browser.waitForJQuery() // STOPSHIP waitForAngular()
+		browser.waitForAngular() // STOPSHIP real wait from protractor
 	}
 
 	override fun open() {

@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.frontend.test.framework
 
 import net.twisterrob.cinema.frontend.test.pages.jasmine
+import org.intellij.lang.annotations.Language
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.PageFactory
@@ -28,15 +29,9 @@ fun <F> Wait<F>.whilst(isTrue: (F) -> Boolean): Boolean =
  * Based on [How to get selenium to wait for ajax response?](https://stackoverflow.com/a/46682394/253468).
  */
 fun Browser.waitForJQuery(timeout: Duration = Duration.ofSeconds(15)) {
-	val result = WebDriverWait(driver, timeout).whilst { this.isJQueryActive }
-	check(result) { "jQuery is still active, something is wrong with until" }
+	val result = WebDriverWait(driver, timeout).until { !isJQueryActive }
+	check(result) { "jQuery is still active" }
 }
-
-val Browser.isJQueryActive: Boolean
-	get() = (driver as JavascriptExecutor).isJQueryActive
-
-val JavascriptExecutor.isJQueryActive: Boolean
-	get() = executeScript("return jQuery.active !== 0") as Boolean
 
 fun Browser.waitForElementToDisappear(
 	element: WebElement,
@@ -45,3 +40,10 @@ fun Browser.waitForElementToDisappear(
 	val result = WebDriverWait(driver, timeout).whilst { element.isDisplayed }
 	check(result) { "${element} did not disappear." }
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Browser.executeScript(@Language("javascript") script: String, vararg args: Any): T =
+	(driver as JavascriptExecutor).executeScript(script, *args) as T
+
+private val Browser.isJQueryActive: Boolean
+	get() = executeScript("return jQuery.active !== 0")

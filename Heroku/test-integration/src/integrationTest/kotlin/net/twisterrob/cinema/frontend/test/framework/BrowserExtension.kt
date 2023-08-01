@@ -8,13 +8,16 @@ import org.junit.jupiter.api.extension.ParameterResolver
 
 class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
-	override fun beforeEach(context: ExtensionContext) {
-		context.store.browser = Browser(Browser.createDriver())
+	override fun beforeEach(extensionContext: ExtensionContext) {
+		val browser = Browser()
+		extensionContext.store.browser = browser
+		extensionContext.requiredTestInstances.allInstances.forEach { injectBrowser(it, browser) }
+		extensionContext.requiredTestInstances.allInstances.forEach { injectPages(it, browser) }
 	}
 
-	override fun afterEach(context: ExtensionContext) {
+	override fun afterEach(extensionContext: ExtensionContext) {
 		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
-		context.store.clearBrowser()?.driver?.quit()
+		extensionContext.store.clearBrowser()?.driver?.quit()
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
@@ -39,5 +42,19 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 		private fun ExtensionContext.Store.clearBrowser(): Browser? =
 			this.remove(BROWSER_KEY, BROWSER_VALUE_TYPE)
+
+		private fun injectBrowser(instance: Any, browser: Browser) {
+			instance::class.java
+				.declaredFields
+				.filter { it.type == BROWSER_VALUE_TYPE }
+				.forEach { it.set(instance, browser) }
+		}
+
+		private fun injectPages(instance: Any, browser: Browser) {
+			instance::class.java
+				.declaredFields
+				.filter { BasePage::class.java.isAssignableFrom(it.type) }
+				.forEach { it.set(instance, it.type.getConstructor(BROWSER_VALUE_TYPE).newInstance(browser)) }
+		}
 	}
 }
