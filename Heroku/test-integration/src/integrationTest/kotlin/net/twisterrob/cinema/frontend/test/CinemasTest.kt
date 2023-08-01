@@ -22,16 +22,16 @@ class CinemasTest {
 
 	lateinit var app: PlannerPage
 
-	fun notFavoritedCinema(cinema: WebElement): Boolean =
+	private fun notFavoritedCinema(cinema: WebElement): Boolean =
 		noneWithText(app.cinemas.favorites.items, cinema.text)
 
-	fun favoritedCinema(cinema: WebElement): Boolean =
+	private fun favoritedCinema(cinema: WebElement): Boolean =
 		anyWithText(app.cinemas.favorites.items, cinema.text)
 
-	fun notLondonCinema(cinema: WebElement): Boolean =
+	private fun notLondonCinema(cinema: WebElement): Boolean =
 		noneWithText(app.cinemas.london.items, cinema.text)
 
-	fun londonCinema(cinema: WebElement): Boolean =
+	private fun londonCinema(cinema: WebElement): Boolean =
 		anyWithText(app.cinemas.london.items, cinema.text)
 
 	@Nested
