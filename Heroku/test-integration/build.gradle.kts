@@ -15,7 +15,7 @@ dependencies {
 
 	implementation(libs.test.selenium)
 	integrationTestRuntimeOnly(libs.test.selenium.jdkHttp)
-	implementation("org.assertj:assertj-core:3.24.2")
+	implementation("org.assertj:assertj-core:3.24.2") // STOPSHIP
 	implementation("com.paulhammant:ngwebdriver:1.2")
 }
 
