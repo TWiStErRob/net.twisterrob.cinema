@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.JavascriptExecutor
@@ -10,10 +11,13 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel
+import org.openqa.selenium.logging.LogType
+import org.openqa.selenium.logging.LoggingPreferences
 import org.openqa.selenium.remote.Command
 import org.openqa.selenium.remote.CommandExecutor
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.remote.Response
+import java.util.logging.Level
 
 class Browser(
 	driver: WebDriver? = null
@@ -39,15 +43,25 @@ class Browser(
 		// Automatically will use https://www.selenium.dev/documentation/selenium_manager/.
 		fun createDriver(): WebDriver {
 			val options = ChromeOptions().apply {
+				setCapability(ChromeOptions.LOGGING_PREFS, LoggingPreferences().apply {
+					enable(LogType.BROWSER, Level.ALL)
+				})
+				// TODO is this faster?
+				//addArguments("--disable-extensions")
+				// TODO what does this mean?
+				//addArguments("--no-sandbox")
 				if (Options.headless) {
 					addArguments("--headless=new")
 					// Implicit via driver.manage() below, it doesn't work with new headless mode.
 					//addArguments("--window-size=1920,1080")
+					// Not sure if necessary, keep it for future reference.
+					//addArguments("--disable-gpu")
 				}
 			}
 			val service = ChromeDriverService.Builder()
 				.withLogLevel(ChromiumDriverLogLevel.INFO)
 				.withLogOutput(System.out)
+				.withReadableTimestamp(true)
 				.build()
 			// https://www.selenium.dev/blog/2022/using-java11-httpclient/
 			System.setProperty("webdriver.http.factory", "jdk-http-client")
@@ -56,6 +70,7 @@ class Browser(
 				//timeouts().implicitlyWait(Duration.ofSeconds(10))
 				// Ensure there's a fixed size, so tests behave the same, this is necessary in headless too.
 				window().size = Dimension(1920, 1080)
+				assertThat(logs().availableLogTypes).contains(LogType.BROWSER)
 			}
 			return driver
 		}
@@ -126,13 +141,13 @@ private class AngularCommandExecutor(
 		return response
 	}
 
-		/**
-		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
-		 * 
-		 * List from protractor:
-		 * "executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
-		 * "moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
-		 */
+	/**
+	 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
+	 *
+	 * List from protractor: STOPSHIP
+	 * "executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
+	 * "moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
+	 */
 	companion object {
 
 		private val noStabilize: Set<String> = setOf(
@@ -149,6 +164,7 @@ private class AngularCommandExecutor(
 			//"getElementAttribute",
 			//"isElementSelected",
 		)
+
 		/**
 		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
 		 */

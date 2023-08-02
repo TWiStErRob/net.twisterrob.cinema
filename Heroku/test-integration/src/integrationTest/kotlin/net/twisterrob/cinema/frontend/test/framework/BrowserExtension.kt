@@ -1,10 +1,13 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.logging.LogType
 
 class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
@@ -17,7 +20,13 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 	override fun afterEach(extensionContext: ExtensionContext) {
 		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
-		extensionContext.store.clearBrowser()?.driver?.quit()
+		extensionContext.store.clearBrowser()?.apply {
+			try {
+				driver.verifyLogs()
+			} finally {
+				driver.quit()
+			}
+		}
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
@@ -55,6 +64,30 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 				.declaredFields
 				.filter { BasePage::class.java.isAssignableFrom(it.type) }
 				.forEach { it.set(instance, it.type.getConstructor(BROWSER_VALUE_TYPE).newInstance(browser)) }
+		}
+
+		/**
+		 * Grab logs from Chrome console at the end of the test, so we can make sure there are no problems:
+		 *  * Chrome deprecations
+		 *  * JavaScript errors
+		 *  * JavaScript warnings
+		 *  * Angular deprecations
+		 *  * Leftover console.log() calls
+		 *  * etc.
+		 */
+		private fun WebDriver.verifyLogs() {
+			// JavaScript running in the browser: console.log("hello");
+			// Results in the following output to driver logs: 
+			// > [1690997212.256][DEBUG]: DevTools WebSocket Event: Runtime.consoleAPICalled (session_id=...) ... {
+			// >   "args": [ {
+			// >     "type": "string",
+			// >     "value": "hello"
+			// >   } ],
+			// >   "executionContextId": 1,
+			// >   "stackTrace": { ... }
+			val logs = manage().logs().get(LogType.BROWSER).all
+			logs.forEach(LogPrinter()::print)
+			assertThat(logs).isEmpty()
 		}
 	}
 }
