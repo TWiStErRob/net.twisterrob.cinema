@@ -46,6 +46,12 @@ class Browser(
 				setCapability(ChromeOptions.LOGGING_PREFS, LoggingPreferences().apply {
 					enable(LogType.BROWSER, Level.ALL)
 				})
+				// Try to fix error on GitHub Actions CI (based on https://stackoverflow.com/a/50642913/253468)
+				// > org.openqa.selenium.SessionNotCreatedException:
+				// > Could not start a new session. Response code 500.
+				// > Message: unknown error: Chrome failed to start: exited abnormally.
+				// > (unknown error: DevToolsActivePort file doesn't exist)
+				addArguments("--disable-dev-shm-usage")
 				// TODO is this faster?
 				//addArguments("--disable-extensions")
 				// TODO what does this mean?

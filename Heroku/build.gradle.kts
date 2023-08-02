@@ -23,6 +23,7 @@ tasks.create<TestReport>("allTestsReport") {
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
+			if (this.path == ":test-integration:integrationTest") return@withType
 			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
 				ignoreFailures = true
 				reports.junitXml.required = true

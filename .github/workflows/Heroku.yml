@@ -127,7 +127,7 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          test :allTestsReport
+          :allTestsReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
@@ -159,6 +159,7 @@ jobs:
           check_name: 🔔 Test Results
           comment_mode: off
           report_individual_runs: true
+          action_fail_on_inconclusive: true
           test_changes_limit: 0
           junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
@@ -707,6 +708,31 @@ jobs:
       - name: Stop Frontend (at ${{ env.PID_FRONTEND }}).
         if: always()
         run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
+
+      - name: Upload "Heroku Integration Test Results XMLs" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Integration Test Results XMLs
+          path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationTest/TEST-*.xml
+
+      - name: Upload "Heroku Integration Test Results HTML" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heroku Integration Test Results HTML
+          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationTest/
+
+      - name: Publish "🔔 Integration Test Results" check run.
+        if: success() || failure()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: 🔔 Integration Test Results
+          comment_mode: off
+          report_individual_runs: true
+          test_changes_limit: 0
+          action_fail_on_inconclusive: true
+          junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/integrationTest/TEST-*.xml
 
       - name: Upload "Heroku Test Logs" artifact.
         if: success() || failure()
