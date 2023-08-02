@@ -24,7 +24,7 @@ class PlansUiTest {
 			@Test fun `loads plans`() {
 				app.goToPlanner("?d=2017-07-14&c=103&f=184739&f=189108")
 
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.list).isDisplayed()
 				assertThat(cinemaPlan.items).hasSize(1)
@@ -35,7 +35,7 @@ class PlansUiTest {
 
 			@Test fun `should be collapsible`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108")
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.list).isDisplayed()
 
@@ -46,7 +46,7 @@ class PlansUiTest {
 
 			@Test fun `should be expandable`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108")
-				val cinemaPlan = app.plans.groupForCinema("Wood Green")
+				val cinemaPlan = app.plans.groupForCinema("London - Wood Green")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.list).isNotDisplayed()
 
@@ -57,7 +57,7 @@ class PlansUiTest {
 
 			@Test fun `should toggle`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108")
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.list).isDisplayed()
 
@@ -76,7 +76,7 @@ class PlansUiTest {
 
 			@Test fun `should show more`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108")
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.items).hasSize(1)
 
@@ -87,7 +87,7 @@ class PlansUiTest {
 
 			@Test fun `should show all`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108")
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.items).hasSize(1)
 
@@ -102,7 +102,7 @@ class PlansUiTest {
 			fun gotoPlan() : PlannerPage.Plan {
 				app.goToPlanner("?d=2017-07-14&c=103&f=184739&f=189108")
 
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.listPlans()
 				assertThat(cinemaPlan.list).isDisplayed()
 				assertThat(cinemaPlan.items).hasSize(1)
@@ -127,16 +127,16 @@ class PlansUiTest {
 				assertThat(plan.scheduleItems).hasSize(3)
 				assertThat(plan.getItemAsMovie(0).startTime).text().isEqualTo("18:25")
 				assertThat(plan.getItemAsMovie(0).endTime).text().isEqualTo("20:18")
-				assertThat(plan.getItemAsMovie(0).title).text().matches("""Baby Driver """)
-				assertThat(plan.getItemAsBreak(1).length).text().matches("""\b27 minutes\b""")
+				assertThat(plan.getItemAsMovie(0).title).text().isEqualTo("Baby Driver")
+				assertThat(plan.getItemAsBreak(1).length).text().isEqualTo("27 minutes")
 				assertThat(plan.getItemAsMovie(2).startTime).text().isEqualTo("20:45")
 				assertThat(plan.getItemAsMovie(2).endTime).text().isEqualTo("22:58")
-				assertThat(plan.getItemAsMovie(2).title).text().matches("""Spider-Man""")
+				assertThat(plan.getItemAsMovie(2).title).text().isEqualTo("(IMAX 3-D) Spider-Man : HOMECOMING")
 			}
 
 			@Test fun `should filter by film`() {
 				app.goToPlanner("?d=2017-07-14&c=70&c=103&f=184739&f=189108&f=223046")
-				val cinemaPlan = app.plans.groupForCinema("Leicester Square")
+				val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 				cinemaPlan.moreAll.click()
 				val firstMovieInPlan = cinemaPlan[0].getItemAsMovie(0)
 

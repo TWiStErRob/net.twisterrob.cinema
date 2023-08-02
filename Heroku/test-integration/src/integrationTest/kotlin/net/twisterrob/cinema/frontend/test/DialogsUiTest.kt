@@ -39,7 +39,7 @@ class DialogsUiTest {
 			app.films.buttons.addView.click()
 
 			assertThat(app.films.addViewDialog.element).isDisplayed()
-			assertThat(app.films.addViewDialog.header).text().matches("""^View of""")
+			assertThat(app.films.addViewDialog.header).text().isEqualTo("View of")
 			assertThat(app.films.addViewDialog.buttons.add).isDisplayed()
 			assertThat(app.films.addViewDialog.buttons.cancel).isDisplayed()
 		}
@@ -51,7 +51,7 @@ class DialogsUiTest {
 			film.iconEl.click()
 
 			assertThat(app.films.addViewDialog.element).isDisplayed()
-			assertThat(app.films.addViewDialog.header).text().matches("""^View of""")
+			assertThat(app.films.addViewDialog.header).text().startsWith("View of ")
 			assertThat(app.films.addViewDialog.header.text).contains(film.nameEl2.text)
 			assertThat(app.films.addViewDialog.buttons.add).isDisplayed()
 			assertThat(app.films.addViewDialog.buttons.cancel).isDisplayed()

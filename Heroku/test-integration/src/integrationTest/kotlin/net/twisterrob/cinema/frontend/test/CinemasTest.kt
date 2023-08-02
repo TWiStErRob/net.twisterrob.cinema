@@ -13,9 +13,7 @@ import net.twisterrob.cinema.frontend.test.framework.nameEl
 import net.twisterrob.cinema.frontend.test.framework.noneWithText
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
@@ -239,17 +237,15 @@ class CinemasTest {
 	}
 
 	@Nested
+	@Disabled("Login doesn't work: Access blocked: This app’s request is invalid Error 400: redirect_uri_mismatch")
 	inner class `Cinemas display as authenticated user` {
 
-		@BeforeAll fun beforeAll() {
-			app.login(Options.userName, Options.userPass)
-		}
-
 		@BeforeEach fun beforeEach() {
+			app.login(Options.userName, Options.userPass)
 			app.goToPlanner()
 		}
 
-		@AfterAll fun afterAll() {
+		@AfterEach fun afterAll() {
 			app.logout()
 		}
 

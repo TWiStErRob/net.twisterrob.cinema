@@ -52,9 +52,9 @@ class PlannerPage(
 		return browser.waitForElementToDisappear(elemToWaitFor)
 	}
 
-	inner class CinemaGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".cinema")
-	inner class FilmGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".film")
-	inner class PlanGroup(root: String) : Group(root, ".plans", ".plan") {
+	inner class CinemaGroup(groupCSS: String, listCSS: String) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema")
+	inner class FilmGroup(groupCSS: String, listCSS: String) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film")
+	inner class PlanGroup(root: WebElement) : Group(root, ".plans", ".plan") {
 		val moreN get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("more ..."))
 		val moreAll get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("All"))
 		val scheduleExplorer get() = root.element(By.className("schedule-explorer"))
@@ -80,37 +80,36 @@ class PlannerPage(
 	/**
 	 * @param root root element or CSS selector
 	 * @param content content element or CSS selector inside root
-	 * @param items elements or CSS selector in content
+	 * @param _items elements or CSS selector in content
 	 */
 	open inner class Group(
-		private val _root: String,
-		private val _content: String,
+		val root: WebElement,
+		private val content: String,
 		private val _items: String,
 	) {
-		val root get() = element(By.cssSelector(_root))
-		val header get() = this.root.element(By.className("accordion-toggle"))
-		val list get() = this.root.element(By.cssSelector(_content))
-		val items get() = this.list.all(By.cssSelector(_items))
+		val header get() = root.element(By.className("accordion-toggle"))
+		val list get() = root.element(By.cssSelector(content))
+		val items get() = list.all(By.cssSelector(_items))
 
 		fun click() {
-			this.header.click()
+			header.click()
 		}
 
 		fun collapse() {
-			if (this.list.isDisplayed) {
+			if (list.isDisplayed) {
 				// displayed means it's expanded, so click to collapse
-				this.click()
+				click()
 			} else {
 				// not displayed, so it's already collapsed
 			}
 		}
 
 		fun expand() {
-			if (this.list.isDisplayed) {
+			if (list.isDisplayed) {
 				// displayed means it's already expanded
 			} else {
 				// not displayed means it's expanded, so click to collapse
-				this.click()
+				click()
 			}
 		}
 	}
@@ -156,9 +155,9 @@ class PlannerPage(
 	}
 
 	class ScheduleBreakItem(
-		root: WebElement
+		private val root: WebElement
 	) {
-		val length = root
+		val length get() = root.element(By.className("length"))
 	}
 
 	fun element(by: By): WebElement = browser.findElement(by)
@@ -185,9 +184,8 @@ class PlannerPage(
 		inner class Editor {
 			val element get() = element(By.id("cineworldDate"))
 			fun getText(): String? = this.element.getAttribute("value")
-			fun getTextAsMoment(): LocalDate {
-				TODO() //return this.getText().then(t -> moment(t, "M/D/YY"))
-			}
+			fun getTextAsMoment(): LocalDate =
+				LocalDate.parse(getText(), DateTimeFormatter.ofPattern("M/d/yy"))
 		}
 
 		val label = Label()
@@ -197,9 +195,8 @@ class PlannerPage(
 			fun getText(): String? =
 				this.element.text
 
-			fun getTextAsMoment(): LocalDate {
-				TODO() //return this.getText().then(t -> moment(t, "dddd, MMMM D, YYYY"))
-			}
+			fun getTextAsMoment(): LocalDate =
+				LocalDate.parse(getText(), DateTimeFormatter.ofPattern("EEEE, LLLL d, yyyy"))
 		}
 	}
 
@@ -341,8 +338,7 @@ class PlannerPage(
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
 				group.element(By.className("cinema-name")).filterByText(cinemaName)
-			// TODO only() == firstOrFail // STOPSHIP removetostring
-			return PlanGroup(this.groups.first(::byCinemaName).toString())
+			return PlanGroup(this.groups.single(::byCinemaName))
 		}
 	}
 

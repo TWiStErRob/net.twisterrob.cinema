@@ -55,7 +55,7 @@ class WebElementAssert(
 	@CheckReturnValue
 	fun text(): AbstractStringAssert<*> {
 		val text = when (actual.tagName) {
-			"textarea" -> actual.getAttribute("value")
+			"input", "textarea" -> actual.getAttribute("value")
 			else -> actual.text
 		}
 		return assertThat(text)
