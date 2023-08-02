@@ -1,20 +1,19 @@
 package net.twisterrob.cinema.frontend.test.framework
 
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.WebDriverWait
-import java.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 fun Browser.navigateToAngularPage(url: String) {
 	driver.get("data:text/html,<html></html>")
-	deferAngularBootstrap()
+	driver.deferAngularBootstrap()
 	driver.get(url)
-	waitForAngularToExist()
-	disableAngularAnimations()
-	resumeAngular()
-	waitForAngular()
+	driver.waitForAngularToExist()
+	driver.disableAngularAnimations()
+	driver.resumeAngular()
+	driver.waitForAngular()
 }
 
-private fun Browser.deferAngularBootstrap() {
+private fun WebDriver.deferAngularBootstrap() {
 	executeScript<Unit>(
 		"""
 			window.name = "NG_DEFER_BOOTSTRAP!" + window.name;
@@ -22,12 +21,11 @@ private fun Browser.deferAngularBootstrap() {
 	)
 }
 
-fun Browser.waitForAngularToExist(timeout: Duration = Duration.ofSeconds(15)) {
-	val result = WebDriverWait(driver, timeout).until { hasAngular }
-	check(result) { "Page has no angular." }
+private fun WebDriver.waitForAngularToExist() {
+	check(waitFor(10.seconds) { hasAngular }) { "Page has no angular." }
 }
 
-private val Browser.hasAngular: Boolean
+private val WebDriver.hasAngular: Boolean
 	get() = executeScript(
 		"""
 			/* global angular: false // Comes from the opened page. */
@@ -35,7 +33,7 @@ private val Browser.hasAngular: Boolean
 		""".trimIndent()
 	)
 
-private fun Browser.disableAngularAnimations() {
+private fun WebDriver.disableAngularAnimations() {
 	val animate = """${'$'}animate"""
 	executeScript<Unit>(
 		"""
@@ -49,7 +47,7 @@ private fun Browser.disableAngularAnimations() {
 	//findElement(By.tagName("body")).allowAnimations(false);
 }
 
-private fun Browser.resumeAngular() {
+private fun WebDriver.resumeAngular() {
 	executeScript<Unit>(
 		"""
 			/* global angular: false // Comes from the opened page. */
@@ -65,10 +63,11 @@ fun Browser.waitForAngular() {
 fun WebDriver.waitForAngular() {
 	executeAsyncScript<Unit>(
 		"""
-			const callback = arguments[0]; // executeAsyncScrip's contract.
+			const callback = arguments[arguments.length - 1]; // executeAsyncScrip's contract.
 			const injector = window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__;
-			const testability = injector.get('${'$'}${'$'}testability');
+			const testability = injector.get("${'$'}${'$'}testability");
 			testability.whenStable(callback);
+			//injector.get("${'$'}browser").notifyWhenNoOutstandingRequests(callback);
 		""".trimIndent()
 	)
 }

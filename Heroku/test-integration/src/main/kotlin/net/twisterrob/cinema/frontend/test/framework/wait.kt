@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.util.function.Function
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 fun WebDriver.wait(): WebDriverWait =
@@ -14,7 +15,7 @@ fun WebDriver.wait(): WebDriverWait =
  */
 fun <T : Any> WebDriver.waitFor(
 	condition: Function<WebDriver, T>,
-	timeout: Duration = Duration.INFINITE
+	timeout: Duration = 10.seconds,
 ): T =
 	wait().withTimeout(timeout.toJavaDuration()).until(condition)
 
@@ -22,7 +23,7 @@ fun <T : Any> WebDriver.waitFor(
  * To be used with Kotlin trailing lambdas.
  */
 fun <T : Any> WebDriver.waitFor(
-	timeout: Duration = Duration.INFINITE,
-	condition: WebDriver.() -> T
+	timeout: Duration = 10.seconds,
+	condition: WebDriver.() -> T,
 ): T =
 	wait().withTimeout(timeout.toJavaDuration()).until { condition(this) }

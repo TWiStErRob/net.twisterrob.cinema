@@ -43,8 +43,8 @@ class PlannerPage(
 	val SearchContext.nameEl get() = this.element(By.className("cinema-name"))
 	val SearchContext.nameEl2 get() = this.element(By.className("film-title"))
 
-	fun waitFor(classNameToWaitFor: String) {
-		val elemToWaitFor = browser.findElements(By.cssSelector(classNameToWaitFor)).single()
+	fun waitFor(css: String) {
+		val elemToWaitFor = browser.findElements(By.cssSelector(css)).single()
 		return browser.waitForElementToDisappear(elemToWaitFor)
 	}
 
@@ -148,7 +148,7 @@ class PlannerPage(
 	val films by lazy { Films() }
 	inner class Films {
 		fun waitToLoad() {
-			waitFor(".films-loading")
+			waitFor("#films-group .films-loading")
 		}
 		val buttons = Buttons()
 		inner class Buttons {

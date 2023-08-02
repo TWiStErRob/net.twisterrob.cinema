@@ -128,7 +128,18 @@ private class AngularCommandExecutor(
 		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
 		 */
 		private val commandsToWaitFor = setOf(
-			"",
+//			"get"
+//			"executeScript",
+//			"executeAsyncScript",
+			"findElement",
+			"findChildElement",
+			"findChildElements",
+//			"getElementText",
+//			"getElementAttribute",
+//			"isElementSelected",
+			"clickElement",
+//			"quit",
+			
 			//"executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
 			//"moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
 		)
