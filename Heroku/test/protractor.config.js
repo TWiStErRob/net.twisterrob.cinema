@@ -4,8 +4,6 @@
 // https://github.com/angular/protractor/blob/5.4.0/lib/config.ts
 exports.config = {
 	baseUrl: `http://localhost:${process.env.PORT}`,
-	seleniumAddress: 'http://localhost:4444/wd/hub',
-	useBlockingProxy: true,
 	highlightDelay: 0,
 	webDriverLogDir: 'logs',
 	multiCapabilities: [
