@@ -3,6 +3,7 @@
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
+import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.anyWithText
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.hasIcon
@@ -241,7 +242,7 @@ class CinemasTest {
 	inner class `Cinemas display as authenticated user` {
 
 		@BeforeAll fun beforeAll() {
-			app.login()
+			app.login(Options.userName, Options.userPass)
 		}
 
 		@BeforeEach fun beforeEach() {

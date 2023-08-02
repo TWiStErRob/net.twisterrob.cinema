@@ -18,3 +18,17 @@ dependencies {
 	implementation("org.assertj:assertj-core:3.24.2")
 	implementation("com.paulhammant:ngwebdriver:1.2")
 }
+
+tasks.integrationTest.configure {
+	val propertyNamesToExposeToJUnitTests = listOf(
+		"net.twisterrob.test.selenium.headless",
+		"net.twisterrob.test.selenium.user.name",
+		"net.twisterrob.test.selenium.user.pass",
+	)
+	val properties = propertyNamesToExposeToJUnitTests
+		.associateBy({ it }) { project.property(it) }
+		.toMutableMap()
+	// TODEL https://github.com/gradle/gradle/issues/861
+	properties.forEach { (name, value) -> inputs.property(name, value) }
+	properties.forEach { (name, value) -> value?.let { systemProperty(name, value) } }
+}

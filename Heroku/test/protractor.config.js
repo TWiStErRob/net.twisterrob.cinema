@@ -28,12 +28,6 @@ exports.config = {
 		'src/dialogs.spec.js',
 		//'src/*.spec.js',
 	],
-	params: {
-		user: {
-			name: 'papprs@gmail.com',
-			password: 'papprspapprs',
-		},
-	},
 	framework: 'jasmine2',
 	jasmineNodeOpts: {
 		// Disable the "....F....x.." logging in favor of custom reporters

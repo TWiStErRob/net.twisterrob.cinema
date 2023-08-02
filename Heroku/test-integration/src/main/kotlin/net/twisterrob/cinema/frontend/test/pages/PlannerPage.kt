@@ -366,19 +366,19 @@ class PlannerPage(
 		browser.waitForAngular()
 	}
 
-	fun login() {
+	fun login(userName: String, password: String) {
 		browser.nonAngular {
 			browser.get("/login")
 			assertThat(browser).url().hasScheme("https").hasHost("accounts.google.com")
 
-			browser.delayedExecute(By.name("identifier")) { identifier -> identifier.sendKeys(browser.params.user.name) }
+			browser.delayedExecute(By.name("identifier")) { identifierElem -> identifierElem.sendKeys(userName) }
 			browser.delayedExecute(By.id("identifierNext")) { next -> next.click() }
 
 			// Semi-transparent blocker is shown above the form, wait for it to disappear.
 			val blocker = browser.driver.findElement(By.cssSelector("#initialView > footer ~ div"))
 			browser.driver.wait().until(stalenessOf(blocker))
 
-			browser.delayedExecute(By.name("password")) { password -> password.sendKeys(browser.params.user.password) }
+			browser.delayedExecute(By.name("password")) { passwordElem -> passwordElem.sendKeys(password) }
 			browser.delayedExecute(By.id("passwordNext")) { next -> next.click() }
 
 			browser.driver.wait()

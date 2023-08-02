@@ -645,32 +645,6 @@ jobs:
           npm -v
           npm install
 
-      - name: Detect Compatible Chrome Driver
-        # Working directory is actually not used, exists only for context.
-        # npm postinstall and later CI steps will install the detected driver into this folder implicitly.
-        # At this point postinstall has run, so it must exists, if it doesn't then there's something wrong with npm .bin.
-        working-directory: Heroku/test/node_modules/webdriver-manager/downloads
-        run: |
-          google-chrome --version
-          grep --version
-          curl --version
-
-          CHROME_FULL_VERSION=$(google-chrome --version)
-          echo "CHROME_FULL_VERSION=${CHROME_FULL_VERSION}" | tee --append $GITHUB_ENV
-
-          CHROME_MINOR_VERSION=$(echo ${CHROME_FULL_VERSION} | grep -oP '(?<=Google Chrome )(\d+\.\d+\.\d+)(?=\.\d+)')
-          echo "CHROME_MINOR_VERSION=${CHROME_MINOR_VERSION}" | tee --append $GITHUB_ENV
-
-          LATEST_RELEASE_URL=https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MINOR_VERSION}
-          echo "Querying latest Chrome Driver version: ${LATEST_RELEASE_URL}"
-          CHROME_DRIVER_VERSION=$(curl --output - --silent "${LATEST_RELEASE_URL}")
-          echo "CHROME_DRIVER_VERSION=${CHROME_DRIVER_VERSION}" | tee --append $GITHUB_ENV
-
-      - name: Install Compatible Chrome Driver.
-        working-directory: Heroku/test
-        run: |
-          npm run selenium:update -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }}
-
       - name: Test
         working-directory: Heroku
         run: |
@@ -709,18 +683,14 @@ jobs:
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
           sleep 10
 
-      - name: Start Selenium.
-        working-directory: Heroku/test
-        run: |
-          npm run selenium -- --versions.chrome ${{ env.CHROME_DRIVER_VERSION }} >../selenium.log 2>&1 &
-          echo "PID_SELENIUM=$!" | tee --append $GITHUB_ENV
-          sleep 10
-
-      - name: Run Protractor tests.
-        working-directory: Heroku/test
+      - name: Run Selenium tests.
+        working-directory: Heroku
         run: |
           mkdir logs
-          npm run protractor
+          ./gradlew --no-daemon :test-integration:integrationTest \
+          -Pnet.twisterrob.test.selenium.headless=true \
+          -Pnet.twisterrob.test.selenium.user.name=${{ secrets.UI_TEST_USERNAME }} \
+          -Pnet.twisterrob.test.selenium.user.pass=${{ secrets.UI_TEST_PASSWORD }}
 
       # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
@@ -739,15 +709,11 @@ jobs:
         if: always()
         run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
 
-      - name: Stop Selenium (at ${{ env.PID_SELENIUM }}).
-        if: always()
-        run: kill ${{ env.PID_SELENIUM }} || echo "::warning file=selenium.log::Selenium process ${{ env.PID_SYNC }} didn't exist."
-
       - name: Upload "Heroku Test Logs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Test Logs
+          name: Heroku Test Logs STOPSHIP
           path: |
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test/logs/*
