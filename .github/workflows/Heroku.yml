@@ -671,7 +671,7 @@ jobs:
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:endpoint:run \
-            --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../test/fake-data" \
+            --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../config/fake-data" \
             >backend.log 2>&1 &
           echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
           sleep 10
@@ -685,11 +685,10 @@ jobs:
 
       - name: Run Selenium tests.
         working-directory: Heroku
-        run: |
-          mkdir logs
-          ./gradlew --no-daemon :test-integration:integrationTest \
-          -Pnet.twisterrob.test.selenium.headless=true \
-          -Pnet.twisterrob.test.selenium.user.name=${{ secrets.UI_TEST_USERNAME }} \
+        run: >
+          ./gradlew --no-daemon :test-integration:integrationTest
+          -Pnet.twisterrob.test.selenium.headless=true
+          -Pnet.twisterrob.test.selenium.user.name=${{ secrets.UI_TEST_USERNAME }}
           -Pnet.twisterrob.test.selenium.user.pass=${{ secrets.UI_TEST_PASSWORD }}
 
       # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
@@ -713,8 +712,8 @@ jobs:
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Test Logs STOPSHIP
+          name: Heroku Test Logs
           path: |
             ${{ github.workspace }}/Heroku/*.log
-            ${{ github.workspace }}/Heroku/test/logs/*
+            ${{ github.workspace }}/Heroku/test-integration/build/logs/
             ~/.npm/_logs/
