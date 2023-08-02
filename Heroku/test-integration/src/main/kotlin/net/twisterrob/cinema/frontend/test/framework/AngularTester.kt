@@ -71,3 +71,15 @@ fun WebDriver.waitForAngular() {
 		""".trimIndent()
 	)
 }
+
+/**
+ * There are no automatic waits in the current system, but keeping this in case there'll be.
+ */
+inline fun <T> Browser.nonAngular(action: () -> T): T {
+	//waitForAngularEnabled(false)
+	try {
+		return action()
+	} finally {
+		//waitForAngularEnabled(true)
+	}
+}

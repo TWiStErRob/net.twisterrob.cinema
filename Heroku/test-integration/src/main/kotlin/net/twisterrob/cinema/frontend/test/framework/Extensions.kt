@@ -1,8 +1,10 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.PageFactory
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf
 
 fun Browser.initElements(page: Any) {
@@ -31,3 +33,9 @@ fun Browser.waitForJQuery() {
 
 private val WebDriver.isJQueryActive: Boolean
 	get() = executeScript("return jQuery.active !== 0")
+
+fun Browser.delayedExecute(locator: By, action: (WebElement) -> Unit) {
+	val element = driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator))
+	driver.wait().until(ExpectedConditions.visibilityOf(element))
+	action(element)
+}

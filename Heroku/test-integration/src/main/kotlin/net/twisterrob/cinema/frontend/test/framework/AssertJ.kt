@@ -2,10 +2,20 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.AbstractStringAssert
+import org.assertj.core.api.AbstractUriAssert
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.ListAssert
+import org.assertj.core.api.LocalDateAssert
+import org.assertj.core.api.StringAssert
 import org.assertj.core.util.CheckReturnValue
 import org.openqa.selenium.WebElement
+import java.net.URI
 import kotlin.reflect.KFunction1
+
+@Suppress("NOTHING_TO_INLINE")
+@CheckReturnValue
+inline fun assertThat(element: WebElement): WebElementAssert =
+	WebElementAssert(element)
 
 class WebElementAssert(
 	element: WebElement
@@ -38,6 +48,12 @@ class WebElementAssert(
 		}
 	}
 
+	fun hasIcon(iconName: String): WebElementAssert = apply {
+		if (!actual.hasIcon(iconName)) {
+			failWithMessage("Expected element to have icon <%s>.", iconName)
+		}
+	}
+
 	@CheckReturnValue
 	fun text(): AbstractStringAssert<*> {
 		val text = when (actual.tagName) {
@@ -46,6 +62,10 @@ class WebElementAssert(
 		}
 		return assertThat(text)
 	}
+
+	@CheckReturnValue
+	fun classes(): ListAssert<String> =
+		assertThat(actual.classes)
 
 	@CheckReturnValue
 	private fun check(property: KFunction1<WebElement, Boolean>, propertyName: String): WebElementAssert = apply {
@@ -71,5 +91,67 @@ class WebElementAssert(
 
 @Suppress("NOTHING_TO_INLINE")
 @CheckReturnValue
-inline fun assertThat(element: WebElement): WebElementAssert =
-	WebElementAssert(element)
+inline fun assertThat(element: Browser): BrowserAssert =
+	BrowserAssert(element)
+
+
+class BrowserAssert(
+	element: Browser
+) : AbstractAssert<BrowserAssert, Browser>(element, BrowserAssert::class.java) {
+
+	@CheckReturnValue
+	fun url(): AbstractUriAssert<*> =
+		assertThat(URI.create(actual.currentUrl))
+
+	@CheckReturnValue
+	private fun apply(block: BrowserAssert.() -> Unit): BrowserAssert {
+		isNotNull
+		block()
+		return this
+	}
+}
+
+fun AbstractUriAssert<*>.query(name: String): StringAssert =
+	TODO(name)
+
+fun StringAssert.parsedLocalDate(format: String): LocalDateAssert =
+	TODO(format)
+
+/**
+ * @param {protractor.ProtractorBrowser|WebDriver} browser
+ * @param {string} queryKey
+ * @param {function(string): boolean} matcher
+ * @returns {{message: string, pass: boolean|Promise<boolean>}}
+ /
+export function toHaveUrlQuery(browser, queryKey, matcher) {
+	const url = require('url');
+	const deferred = protractor.promise.defer();
+	const verification = {
+		message: "unknown failure",
+		pass: deferred.promise,
+	};
+	browser.getCurrentUrl().then(function (currentUrl) {
+		const urlObj = url.parse(currentUrl, true);
+
+		if (!urlObj) {
+			verification.message = `Url '${currentUrl}' could not be parsed`;
+			deferred.fulfill(false);
+		} else if (!urlObj.query) {
+			verification.message = `Url '${currentUrl}' does not have a query string`;
+			deferred.fulfill(false);
+		} else if (!urlObj.query[queryKey]) {
+			verification.message = `Url '${currentUrl}' does not have a query string param named ${queryKey}.`;
+			deferred.fulfill(false);
+		} else {
+			let queryValue = urlObj.query[queryKey];
+			if (matcher(queryValue)) {
+				deferred.fulfill(true);
+			} else {
+				verification.message = `Url '${currentUrl}' does not satisfy a condition for ${queryKey}=${queryValue} given by\n${matcher}`;
+				deferred.fulfill(false);
+			}
+		}
+	});
+	return verification;
+}
+*/

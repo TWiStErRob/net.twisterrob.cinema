@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.frontend.test.pages
 
+import com.paulhammant.ngwebdriver.ByAngular
 import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.Byk
@@ -7,24 +8,29 @@ import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.buttonText
+import net.twisterrob.cinema.frontend.test.framework.delayedExecute
 import net.twisterrob.cinema.frontend.test.framework.element
 import net.twisterrob.cinema.frontend.test.framework.filterByText
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
+import net.twisterrob.cinema.frontend.test.framework.nonAngular
 import net.twisterrob.cinema.frontend.test.framework.repeater
+import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
 import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
-import org.openqa.selenium.SearchContext
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.FindBy
-import java.time.Duration
+import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
+import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 object jasmine {
-	val DEFAULT_TIMEOUT_INTERVAL: Duration = Duration.ofMillis(30000)
+	val DEFAULT_TIMEOUT_INTERVAL: Duration = 30.seconds
 	fun pp(any: Any) {
 		println("jasmine.pp: $any")
 	}
@@ -40,10 +46,6 @@ class PlannerPage(
 	@FindBy(className = "performances-loading")
 	private lateinit var performancesEmpty: WebElement
 
-	val SearchContext.iconEl get() = this.element(By.className("glyphicon"))
-	val SearchContext.nameEl get() = this.element(By.className("cinema-name"))
-	val SearchContext.nameEl2 get() = this.element(By.className("film-title"))
-
 	fun waitFor(css: String) {
 		val elemToWaitFor = browser.findElements(By.cssSelector(css)).single()
 		return browser.waitForElementToDisappear(elemToWaitFor)
@@ -51,7 +53,28 @@ class PlannerPage(
 
 	inner class CinemaGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".cinema")
 	inner class FilmGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".film")
-	inner class PlanGroup(root: String) : Group(root, ".plans", ".plan")
+	inner class PlanGroup(root: String) : Group(root, ".plans", ".plan") {
+		val moreN get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("more ..."))
+		val moreAll get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("All"))
+		val scheduleExplorer get() = root.element(By.className("schedule-explorer"))
+
+		operator fun get(index: Int): Plan =
+			Plan(this.items[index])
+
+		fun each(block: (Plan) -> Unit) {
+			this.items.forEach { block(Plan(it)) }
+		}
+
+		// TODO This doesn't work yet, expects after this don't see this.list.
+		fun listPlans() {
+			if (this.scheduleExplorer.isSelected()) {
+				// selected means it's checked, so click to un-check
+				this.scheduleExplorer.click()
+			} else {
+				// not selected, so it's already un-checked
+			}
+		}
+	}
 
 	/**
 	 * @param root root element or CSS selector
@@ -91,6 +114,52 @@ class PlannerPage(
 		}
 	}
 
+	class Plan(
+		val root: WebElement,
+	) {
+		val delete get() = root.element(Byk.buttonText("×"))
+		val schedule get() = root.element(By.className("plan-films")) // STOPSHIP was typed array
+		val scheduleItems get() = this.schedule.all(By.cssSelector(".plan-film, .plan-film-break"))
+		val scheduleMovies get() = this.schedule.all(By.cssSelector(".plan-film"))
+		val scheduleBreaks get() = this.schedule.all(By.cssSelector(".plan-film-break"))
+
+		// start and end are classed the same way in the global timings as in individual films
+		val scheduleStart get() = root.all(By.cssSelector(".film-start")).first()
+		val scheduleEnd get() = root.all(By.cssSelector(".film-end")).first() // STOPSHIP last?
+
+		fun getItem(index: Int): WebElement =
+			this.scheduleItems[index]
+
+		fun getItemAsMovie(index: Int): ScheduleMovieItem {
+			val item = this.getItem(index)
+			assertThat(item).classes().contains("plan-film")
+			return ScheduleMovieItem(item)
+		}
+
+		fun getItemAsBreak(index: Int): ScheduleBreakItem {
+			val item = this.getItem(index)
+			assertThat(item).classes().contains("plan-film-break")
+			return ScheduleBreakItem(item)
+		}
+	}
+
+	class ScheduleMovieItem(
+		private val root: WebElement
+	) {
+		val startTime get() = root.element(By.className("film-start"))
+		val endTime get() = root.element(By.className("film-end"))
+		val title get() = root.element(By.className("film-title"))
+		val runtime get() = root.element(By.className("film-runtime"))
+		val filterByFilm get() = root.element(By.xpath("""button[i[contains(@class, "glyphicon-time")]]"""))
+		val filterByScreening get() = root.element(By.xpath("""button[i[contains(@class, "glyphicon-film")]]"""))
+	}
+
+	class ScheduleBreakItem(
+		root: WebElement
+	) {
+		val length = root
+	}
+
 	fun element(by: By): WebElement = browser.findElement(by)
 
 	fun goToPlanner(url: String = "") {
@@ -104,29 +173,31 @@ class PlannerPage(
 		inner class Buttons {
 			val london: By = By.cssSelector("#cinemas-list-london li")
 
-			val change = element(By.id("date")).element(By.cssSelector("button"))
-			val today = element(By.id("date")).element(Byk.buttonText("Today"))
-			val clear = element(By.id("date")).element(Byk.buttonText("Clear"))
-			val done = element(By.id("date")).element(Byk.buttonText("Done"))
+			val change get() = element(By.id("date")).element(By.cssSelector("button"))
+			val today get() = element(By.id("date")).element(Byk.buttonText("Today"))
+			val clear get() = element(By.id("date")).element(Byk.buttonText("Clear"))
+			val done get() = element(By.id("date")).element(Byk.buttonText("Done"))
 			fun day(day: String) = element(By.id("date")).element(Byk.buttonText(day))
 		}
+
 		val editor = Editor()
 		inner class Editor {
-			val element = element(By.id("cineworldDate"))
-			fun getText(): String? {
-				return this.element.getAttribute("value")
-			}
-			fun getTextAsMoment() {
-				TODO() //return this.getText().then(t -> moment(t, 'M/D/YY"))
+			val element get() = element(By.id("cineworldDate"))
+			fun getText(): String? = this.element.getAttribute("value")
+			fun getTextAsMoment(): LocalDate {
+				TODO() //return this.getText().then(t -> moment(t, "M/D/YY"))
 			}
 		}
+
 		val label = Label()
 		inner class Label {
-			val element = element(By.id("date")).element(By.cssSelector("em.ng-binding"))
+			val element get() = element(By.id("date")).element(By.cssSelector("em.ng-binding"))
+
 			fun getText(): String? =
 				this.element.text
-			fun getTextAsMoment() {
-				TODO() //return this.getText().then(t -> moment(t, 'dddd, MMMM D, YYYY"))
+
+			fun getTextAsMoment(): LocalDate {
+				TODO() //return this.getText().then(t -> moment(t, "dddd, MMMM D, YYYY"))
 			}
 		}
 	}
@@ -136,6 +207,7 @@ class PlannerPage(
 		fun waitToLoad() {
 			waitFor("#cinemas-group-favs .cinemas-loading")
 		}
+
 		val buttons get() = Buttons()
 		inner class Buttons {
 			val all get() = element(By.id("cinemas-all"))
@@ -143,6 +215,7 @@ class PlannerPage(
 			val london get() = element(By.id("cinemas-london"))
 			val none get() = element(By.id("cinemas-none"))
 		}
+
 		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
 		val favorites get() = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
 		val other get() = CinemaGroup("#cinemas-group-other", "#cinemas-list-other")
@@ -153,35 +226,48 @@ class PlannerPage(
 		fun waitToLoad() {
 			waitFor("#films-group .films-loading")
 		}
-		val buttons = Buttons()
+
+		val buttons get() = Buttons()
 		inner class Buttons {
-			val addView = element(By.id("films-addView"))
-			val all = element(By.id("films-all"))
-			val new = element(By.id("films-new"))
-			val none = element(By.id("films-none"))
+			val addView get() = element(By.id("films-addView"))
+			val all get() = element(By.id("films-all"))
+			val new get() = element(By.id("films-new"))
+			val none get() = element(By.id("films-none"))
 		}
+
 		val new = FilmGroup("#films-group", "#films-list")
 		val watched = FilmGroup("#films-group-watched", "#films-list-watched")
-		inner class addViewDialog {
-			val element = element(By.className("modal-dialog"))
-			val header = element(By.className("modal-dialog")).element(By.tagName("h3"))
-			inner class buttons {
-				val add = element(By.className("modal-dialog")).element(Byk.buttonText("Add"))
-				val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+
+		val addViewDialog get() = AddViewDialog()
+		inner class AddViewDialog {
+			val element get() = element(By.className("modal-dialog"))
+			val header get() = element(By.className("modal-dialog")).element(By.tagName("h3"))
+
+			val buttons get() = Buttons()
+			inner class Buttons {
+
+				val add get() = element(By.className("modal-dialog")).element(Byk.buttonText("Add"))
+				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
 			}
 		}
-		inner class removeViewDialog {
-			val element = element(By.className("modal-dialog"))
-			val header = element(By.className("modal-dialog")).element(By.tagName("h1"))
-			inner class buttons {
-				val ok = element(By.className("modal-dialog")).element(Byk.buttonText("Yes"))
-				val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+
+		val removeViewDialog get() = RemoveViewDialog()
+		inner class RemoveViewDialog {
+			val element get() = element(By.className("modal-dialog"))
+			val header get() = element(By.className("modal-dialog")).element(By.tagName("h1"))
+
+			val buttons get() = Buttons()
+			inner class Buttons {
+
+				val ok get() = element(By.className("modal-dialog")).element(Byk.buttonText("Yes"))
+				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
 			}
 		}
 	}
 
 	val byFilmRoot by lazy { element(By.id("performances-by-film")) }
 	val byCinemaRoot by lazy { element(By.id("performances-by-cinema")) }
+
 	val performances by lazy { Performances() }
 	inner class Performances {
 		fun waitToLoad() {
@@ -196,8 +282,8 @@ class PlannerPage(
 		val byFilm get() = ByFilm()
 		inner class ByFilm {
 			val table get() = byFilmRoot
-			val cinemas  get() = byFilmRoot.element(By.tagName("thead")).all(Byk.repeater("cinema in cineworld.cinemas"))
-			val films  get() = byFilmRoot.all(Byk.repeater("film in cineworld.films"))
+			val cinemas get() = byFilmRoot.element(By.tagName("thead")).all(Byk.repeater("cinema in cineworld.cinemas"))
+			val films get() = byFilmRoot.all(Byk.repeater("film in cineworld.films"))
 			fun performances(filmName: String, cinemaName: String): List<WebElement> {
 				return this
 					.films
@@ -237,7 +323,10 @@ class PlannerPage(
 		inner class OptionsDialog {
 			val element get() = element(By.className("modal-dialog"))
 			val header get() = element(By.className("modal-dialog")).element(By.tagName("h3"))
-			inner class buttons {
+
+			val buttons get() = Buttons()
+			inner class Buttons {
+
 				val plan get() = element(By.className("modal-dialog")).element(Byk.buttonText("Plan"))
 				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
 			}
@@ -246,9 +335,6 @@ class PlannerPage(
 
 	val plans by lazy { Plans() }
 	inner class Plans {
-		/**
-		 * @member {ElementArrayFinder}
-		 */
 		val groups get() = element(By.id("plan-results")).all(Byk.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
@@ -278,6 +364,37 @@ class PlannerPage(
 				}
 			}
 		browser.waitForAngular()
+	}
+
+	fun login() {
+		browser.nonAngular {
+			browser.get("/login")
+			assertThat(browser).url().hasScheme("https").hasHost("accounts.google.com")
+
+			browser.delayedExecute(By.name("identifier")) { identifier -> identifier.sendKeys(browser.params.user.name) }
+			browser.delayedExecute(By.id("identifierNext")) { next -> next.click() }
+
+			// Semi-transparent blocker is shown above the form, wait for it to disappear.
+			val blocker = browser.driver.findElement(By.cssSelector("#initialView > footer ~ div"))
+			browser.driver.wait().until(stalenessOf(blocker))
+
+			browser.delayedExecute(By.name("password")) { password -> password.sendKeys(browser.params.user.password) }
+			browser.delayedExecute(By.id("passwordNext")) { next -> next.click() }
+
+			browser.driver.wait()
+				.withMessage("Google OAuth Login should redirect to home page")
+				.until(urlMatches("""/#$"""))
+		}
+	}
+
+	fun logout() {
+		browser.nonAngular {
+			browser.get("/logout")
+
+			browser.driver.wait()
+				.withMessage("Logout should redirect to home page")
+				.until(urlMatches("""/"""))
+		}
 	}
 
 	override fun open() {

@@ -30,6 +30,9 @@ fun noneWithText(elementList: List<WebElement>, text: String): Boolean =
 fun List<WebElement>.filterByText(text: String, inverse: Boolean = false): List<WebElement> =
 	this.filter { item -> item.filterByText(text, inverse) }
 
+fun List<WebElement>.filterByText(text: Regex, inverse: Boolean = false): List<WebElement> =
+	this.filter { item -> item.filterByText(text, inverse) }
+
 /**
  * Creates a filter function to match the text of the element.
  * @param text string contains or regex match
@@ -78,7 +81,7 @@ fun WebElement.hasSelection(): Boolean =
  * Matches the element to have a Bootstrap glyphicon element inside with the given icon name
  * @param iconName the end of `glyphicon-name`
  */
-fun WebElement.hasIcon(iconName: String): Boolean {
+fun WebElement.hasIcon(iconName: String): Boolean { // STOPSHIP use Condition API?
 	val iconElement = this.element(By.className("glyphicon"))
 	return iconElement.hasClass("glyphicon-${iconName}")
 }
@@ -87,8 +90,16 @@ fun WebElement.hasIcon(iconName: String): Boolean {
  * Matches the element to have a single class among others.
  * @param expectedClass single class to check for
  */
-fun WebElement.hasClass(expectedClass: String): Boolean {
-	val classes = this.getAttribute("class")
-	// STOPSHIP val message = "Missing class '${expectedClass}' from '${classes}' on ${describe(actual)}"
-	return expectedClass in classes.split(Regex("""\s+"""))
-}
+fun WebElement.hasClass(expectedClass: String): Boolean = // STOPSHIP use Condition API?
+	// STOPSHIP val message = "Missing class '${expectedClass}' from '${classes}' on ${this}"
+	expectedClass in this.classes
+
+val WebElement.classes: List<String>
+	get() {
+		val classes = this.getAttribute("class")
+		return classes.split(Regex("""\s+"""))
+	}
+
+val WebElement.iconEl get() = this.element(By.className("glyphicon"))
+val WebElement.nameEl get() = this.element(By.className("cinema-name"))
+val WebElement.nameEl2 get() = this.element(By.className("film-title"))
