@@ -18,23 +18,6 @@ exports.config = {
 			}
 		},
 	],
-	specs: [
-		'src/date.spec.js',
-		'src/performances.spec.js',
-		'src/plans.spec.js',
-		'src/url.spec.js',
-		// TOFIX Tried these: https://stackoverflow.com/q/60117232 + https://www.protractortest.org/#/browser-setup#adding-chrome-specific-options, but no luck.
-		//'src/cinemas-auth.spec.js',
-		'src/dialogs.spec.js',
-		//'src/*.spec.js',
-	],
-	framework: 'jasmine2',
-	jasmineNodeOpts: {
-		// Disable the "....F....x.." logging in favor of custom reporters
-		print: () => void 0,
-		// sets jasmine.DEFAULT_TIMEOUT_INTERVAL
-		defaultTimeoutInterval: 30 * 1000,
-	},
 	plugins: [
 		/*{ // Warning: protractor-browser-logs cannot work together with this
 			package: 'protractor-screenshoter-plugin',
@@ -47,17 +30,6 @@ exports.config = {
 		},*/
 	],
 	onPrepare: function () {
-		patchJasmineMethods();
-		require('jasmine-expect');
-		require('jasmine-expect-moment');
-		require('protractor-helpers');
-		require('babel-core/register'); // import/export/class/etc only works after this
-		require('./src/helpers/protractor-shortcuts');
-		jasmine.getEnv().beforeAll(function () {
-			jasmine.MAX_PRETTY_PRINT_DEPTH = 4;
-			jasmine.addMatchers(require('./src/matchers/generic').default);
-			jasmine.addMatchers(require('./src/matchers/app').default);
-		});
 		printTestingProgress();
 		verifyLogsAroundEachTest();
 	},
@@ -135,37 +107,4 @@ function verifyLogsAroundEachTest() {
 					console.log(`console.\u001b[${color}m${method} - ${entry.message}\u001b[39m`);
 				});
 	}
-}
-
-function patchJasmineMethods() {
-	patchPendingToIncludeSpace();
-	patchPrettyPrintNotDeepPrintElementFinders();
-}
-
-function patchPendingToIncludeSpace() {
-	const originalPending = global.pending;
-	global.pending = function (message) {
-		originalPending(": " + message);
-	};
-}
-
-function patchPrettyPrintNotDeepPrintElementFinders() {
-	const originalPP = jasmine.pp;
-	jasmine.pp = function (arg) {
-		// better alternative to: jasmine.MAX_PRETTY_PRINT_DEPTH = 1;
-		if (arg instanceof protractor.ElementFinder) {
-			return `ElementFinder{${arg.locator().toString()}}`;
-		}
-		if (arg instanceof protractor.ElementArrayFinder) {
-			return `ElementArrayFinder{${arg.locator().toString()}}`;
-		}
-		if (arg instanceof Array) {
-			if (arg.every((item) =>
-					item instanceof protractor.ElementFinder
-					|| item instanceof protractor.ElementArrayFinder)) {
-				return `[${arg.map(item => item.locator().toString()).join(", ")}]`;
-			}
-		}
-		return originalPP(arg);
-	};
 }

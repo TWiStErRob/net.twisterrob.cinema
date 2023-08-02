@@ -3,11 +3,9 @@ package net.twisterrob.cinema.frontend.test.pages
 import com.paulhammant.ngwebdriver.ByAngular
 import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
-import net.twisterrob.cinema.frontend.test.framework.Byk
 import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.buttonText
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
 import net.twisterrob.cinema.frontend.test.framework.element
 import net.twisterrob.cinema.frontend.test.framework.filterByText
@@ -15,7 +13,6 @@ import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
 import net.twisterrob.cinema.frontend.test.framework.nonAngular
-import net.twisterrob.cinema.frontend.test.framework.repeater
 import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
@@ -27,15 +24,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
 import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-
-object jasmine {
-	val DEFAULT_TIMEOUT_INTERVAL: Duration = 30.seconds
-	fun pp(any: Any) {
-		println("jasmine.pp: $any")
-	}
-}
 
 class PlannerPage(
 	browser: Browser
@@ -117,7 +105,7 @@ class PlannerPage(
 	class Plan(
 		val root: WebElement,
 	) {
-		val delete get() = root.element(Byk.buttonText("×"))
+		val delete get() = root.element(ByAngular.buttonText("×"))
 		val schedule get() = root.element(By.className("plan-films")) // STOPSHIP was typed array
 		val scheduleItems get() = this.schedule.all(By.cssSelector(".plan-film, .plan-film-break"))
 		val scheduleMovies get() = this.schedule.all(By.cssSelector(".plan-film"))
@@ -174,10 +162,10 @@ class PlannerPage(
 			val london: By = By.cssSelector("#cinemas-list-london li")
 
 			val change get() = element(By.id("date")).element(By.cssSelector("button"))
-			val today get() = element(By.id("date")).element(Byk.buttonText("Today"))
-			val clear get() = element(By.id("date")).element(Byk.buttonText("Clear"))
-			val done get() = element(By.id("date")).element(Byk.buttonText("Done"))
-			fun day(day: String) = element(By.id("date")).element(Byk.buttonText(day))
+			val today get() = element(By.id("date")).element(ByAngular.buttonText("Today"))
+			val clear get() = element(By.id("date")).element(ByAngular.buttonText("Clear"))
+			val done get() = element(By.id("date")).element(ByAngular.buttonText("Done"))
+			fun day(day: String) = element(By.id("date")).element(ByAngular.buttonText(day))
 		}
 
 		val editor = Editor()
@@ -244,8 +232,8 @@ class PlannerPage(
 			val buttons get() = Buttons()
 			inner class Buttons {
 
-				val add get() = element(By.className("modal-dialog")).element(Byk.buttonText("Add"))
-				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+				val add get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Add"))
+				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
 			}
 		}
 
@@ -257,8 +245,8 @@ class PlannerPage(
 			val buttons get() = Buttons()
 			inner class Buttons {
 
-				val ok get() = element(By.className("modal-dialog")).element(Byk.buttonText("Yes"))
-				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+				val ok get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Yes"))
+				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
 			}
 		}
 	}
@@ -280,19 +268,19 @@ class PlannerPage(
 		val byFilm get() = ByFilm()
 		inner class ByFilm {
 			val table get() = byFilmRoot
-			val cinemas get() = byFilmRoot.element(By.tagName("thead")).all(Byk.repeater("cinema in cineworld.cinemas"))
-			val films get() = byFilmRoot.all(Byk.repeater("film in cineworld.films"))
+			val cinemas get() = byFilmRoot.element(By.tagName("thead")).all(ByAngular.repeater("cinema in cineworld.cinemas"))
+			val films get() = byFilmRoot.all(ByAngular.repeater("film in cineworld.films"))
 			fun performances(filmName: String, cinemaName: String): List<WebElement> {
 				return this
 					.films
 					// find the row for the film
 					.single { it.element(By.className("film-title")).text == filmName }
 					// in all columns
-					.all(Byk.repeater("cinema in cineworld.cinemas"))
+					.all(ByAngular.repeater("cinema in cineworld.cinemas"))
 					// pick the one that has the same index as the cinema
 					.get(this.cinemas.indexOf { it.element(By.className("cinema-name")).text == cinemaName })
 					// get the cell contents
-					.all(Byk.repeater("performance in performances"))
+					.all(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
 					.all(By.cssSelector(".performance"))
 			}
@@ -300,15 +288,15 @@ class PlannerPage(
 		val byCinema get() = ByCinema()
 		inner class ByCinema {
 			val table get() = byCinemaRoot
-			val cinemas get() = byCinemaRoot.all(Byk.repeater("cinema in cineworld.cinemas"))
-			val films get() = byCinemaRoot.element(By.tagName("thead")).all(Byk.repeater("film in cineworld.films"))
+			val cinemas get() = byCinemaRoot.all(ByAngular.repeater("cinema in cineworld.cinemas"))
+			val films get() = byCinemaRoot.element(By.tagName("thead")).all(ByAngular.repeater("film in cineworld.films"))
 			fun performances(cinemaName: String, filmName: String): List<WebElement> {
 				return this
 					.cinemas
 					// find the row for the cinema
 					.single { it.element(By.className("cinema-name")).text == cinemaName }
 					// in all columns
-					.all(Byk.repeater("film in cineworld.films"))
+					.all(ByAngular.repeater("film in cineworld.films"))
 					// pick the one that has the same index as the film
 					.get(this.films.indexOfFirst { it.element(By.className("film-title")).text == filmName })
 					// get the cell contents (cannot use this because empty cells cannot be matched with repeater)
@@ -325,15 +313,15 @@ class PlannerPage(
 			val buttons get() = Buttons()
 			inner class Buttons {
 
-				val plan get() = element(By.className("modal-dialog")).element(Byk.buttonText("Plan"))
-				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+				val plan get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Plan"))
+				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
 			}
 		}
 	}
 
 	val plans by lazy { Plans() }
 	inner class Plans {
-		val groups get() = element(By.id("plan-results")).all(Byk.repeater("cPlan in plans"))
+		val groups get() = element(By.id("plan-results")).all(ByAngular.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
@@ -401,7 +389,7 @@ class PlannerPage(
 	}
 
 	override fun assertOpened() {
-		assertThat(browser.currentUrl).startsWith("${Options.host}/planner")
+		assertThat(browser.currentUrl).startsWith("${Options.baseUrl}/planner")
 		assertThat(browser.title).isEqualTo("Cineworld Cinemas Planner - Developer Beta")
 
 		// static content

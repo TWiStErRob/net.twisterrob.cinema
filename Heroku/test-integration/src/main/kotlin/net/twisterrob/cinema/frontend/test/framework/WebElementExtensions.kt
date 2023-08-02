@@ -1,6 +1,5 @@
 package net.twisterrob.cinema.frontend.test.framework
 
-import net.twisterrob.cinema.frontend.test.pages.jasmine
 import org.assertj.core.api.Assertions
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
@@ -68,7 +67,7 @@ fun List<WebElement>.indexOf(filter: (WebElement) -> Boolean): Int {
 		}
 		.let { index ->
 			Assertions.assertThat(index)
-				.overridingErrorMessage { "Cannot find index of ${filter} in ${jasmine.pp(this)}\n${stack}" }
+				.overridingErrorMessage { "Cannot find index of ${filter} in ${this}\n${stack}" }
 				.isGreaterThanOrEqualTo(0)
 			return@let index
 		}

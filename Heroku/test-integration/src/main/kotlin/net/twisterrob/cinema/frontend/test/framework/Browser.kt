@@ -22,11 +22,11 @@ class Browser(
 	val driver: WebDriver by lazy { (driver ?: createDriver()).let { AngularDriver(it, it as JavascriptExecutor) } }
 
 	fun get(relativeUrl: String) {
-		navigateToAngularPage("${Options.host}${relativeUrl}")
+		navigateToAngularPage("${Options.baseUrl}${relativeUrl}")
 	}
 
 	val currentUrl: String
-		get() = driver.currentUrl.removePrefix(Options.host)
+		get() = driver.currentUrl.removePrefix(Options.baseUrl)
 
 	val title: String
 		get() = driver.title
