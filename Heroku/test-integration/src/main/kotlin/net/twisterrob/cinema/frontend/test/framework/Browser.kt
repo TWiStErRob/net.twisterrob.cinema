@@ -10,6 +10,10 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel
+import org.openqa.selenium.remote.Command
+import org.openqa.selenium.remote.CommandExecutor
+import org.openqa.selenium.remote.RemoteWebDriver
+import org.openqa.selenium.remote.Response
 
 class Browser(
 	driver: WebDriver? = null
@@ -59,14 +63,22 @@ class Browser(
 }
 
 /**
- * Wrapper to call [waitForAngular] before actions that retrieve data.
+ * Wrapper to call [waitForAngular] before data retrieval.
  * Based on `ProtractorBrowser` in node_modules\protractor\built\browser.js.
- * Other waits are handled by STOPSHIP based on `sendRequestToStabilize` in `blocking-proxy\built\lib\angular_wait_barrier.js
+ * Other waits are handled by [AngularCommandExecutor].
  */
 private class AngularDriver(
 	private val driver: WebDriver,
 	private val executor: JavascriptExecutor,
 ) : WebDriver by driver, JavascriptExecutor by executor {
+
+	init {
+		val executorField = RemoteWebDriver::class.java
+			.getDeclaredField("executor")
+			.apply { isAccessible = true }
+		val executor = executorField.get(driver) as CommandExecutor
+		executorField.set(driver, AngularCommandExecutor(executor) { waitForAngular() })
+	}
 
 	/**
 	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
@@ -90,5 +102,35 @@ private class AngularDriver(
 	override fun getPageSource(): String {
 		waitForAngular()
 		return driver.pageSource
+	}
+}
+
+/**
+ * Wrapper to call [waitForAngular] before actions.
+ * Data retrieval is handled by [AngularDriver].
+ * based on `sendRequestToStabilize` in `blocking-proxy\built\lib\angular_wait_barrier.js
+ */
+private class AngularCommandExecutor(
+	private val executor: CommandExecutor,
+	private val stabilize: () -> Unit,
+) : CommandExecutor {
+
+	override fun execute(command: Command): Response {
+		if (command.name in commandsToWaitFor) {
+			stabilize()
+		}
+		return executor.execute(command)
+	}
+
+	companion object {
+
+		/**
+		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
+		 */
+		private val commandsToWaitFor = setOf(
+			"",
+			//"executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
+			//"moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
+		)
 	}
 }

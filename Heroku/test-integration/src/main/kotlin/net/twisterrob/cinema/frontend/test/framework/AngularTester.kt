@@ -53,9 +53,8 @@ private fun Browser.resumeAngular() {
 	executeScript<Unit>(
 		"""
 			/* global angular: false // Comes from the opened page. */
-			window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__ = angular.resumeBootstrap(arguments[0]);
+			window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__ = angular.resumeBootstrap(["disableNgAnimate"]);
 		""".trimIndent(),
-		listOf("disableNgAnimate"),
 	)
 }
 
@@ -66,9 +65,10 @@ fun Browser.waitForAngular() {
 fun WebDriver.waitForAngular() {
 	executeAsyncScript<Unit>(
 		"""
+			const callback = arguments[0]; // executeAsyncScrip's contract.
 			const injector = window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__;
 			const testability = injector.get('${'$'}${'$'}testability');
-			testability.whenStable(arguments[0]);
+			testability.whenStable(callback);
 		""".trimIndent()
 	)
 }
