@@ -9,6 +9,7 @@ import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.buttonText
 import net.twisterrob.cinema.frontend.test.framework.element
 import net.twisterrob.cinema.frontend.test.framework.filterByText
+import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
 import net.twisterrob.cinema.frontend.test.framework.repeater
@@ -94,6 +95,7 @@ class PlannerPage(
 
 	fun goToPlanner(url: String = "") {
 		browser.get("/planner$url")
+		waitToLoad()
 	}
 
 	val date by lazy { Date() }
@@ -132,7 +134,7 @@ class PlannerPage(
 	val cinemas get() = Cinemas()
 	inner class Cinemas {
 		fun waitToLoad() {
-			waitFor(".cinemas-loading")
+			waitFor("#cinemas-group-favs .cinemas-loading")
 		}
 		val buttons get() = Buttons()
 		inner class Buttons {
@@ -257,8 +259,7 @@ class PlannerPage(
 		cinemas.waitToLoad()
 		element(By.id("cinemas"))
 			.all(By.className("cinema"))
-			.filter { cinema -> cinema.element(By.cssSelector("""[type="checkbox"]""")).getAttribute("checked") == "checked" }
-			.count()
+			.count { it.hasSelection() }
 			.let { count ->
 				if (count > 0) {
 					films.waitToLoad()
@@ -266,8 +267,7 @@ class PlannerPage(
 			}
 		element(By.id("films"))
 			.all(By.className("film"))
-			.filter { film -> film.element(By.cssSelector("""[type="checkbox"]""")).getAttribute("checked") == "checked" }
-			.count()
+			.count { it.hasSelection() }
 			.let { count ->
 				if (count > 0) {
 					performances.waitToLoad()
