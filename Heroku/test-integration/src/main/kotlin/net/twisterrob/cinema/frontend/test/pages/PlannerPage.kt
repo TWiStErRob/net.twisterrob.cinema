@@ -25,7 +25,7 @@ import java.time.LocalDate
 object jasmine {
 	val DEFAULT_TIMEOUT_INTERVAL: Duration = Duration.ofMillis(30000)
 	fun pp(any: Any) {
-		println("jasmine.pp: $any")	
+		println("jasmine.pp: $any")
 	}
 }
 
@@ -48,9 +48,10 @@ class PlannerPage(
 		return browser.waitForElementToDisappear(elemToWaitFor)
 	}
 
-	inner class CinemaGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".cinema")
-	inner class FilmGroup(groupCSS: String, listCSS: String): Group(groupCSS, listCSS, ".film")
-	inner class PlanGroup(root: String): Group(root, ".plans", ".plan")
+	inner class CinemaGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".cinema")
+	inner class FilmGroup(groupCSS: String, listCSS: String) : Group(groupCSS, listCSS, ".film")
+	inner class PlanGroup(root: String) : Group(root, ".plans", ".plan")
+
 	/**
 	 * @param root root element or CSS selector
 	 * @param content content element or CSS selector inside root
@@ -94,13 +95,13 @@ class PlannerPage(
 	fun goToPlanner(url: String = "") {
 		browser.get("/planner$url")
 	}
-	
+
 	val date by lazy { Date() }
 	inner class Date {
 		val buttons = Buttons()
 		inner class Buttons {
 			val london: By = By.cssSelector("#cinemas-list-london li")
-			
+
 			val change = element(By.id("date")).element(By.cssSelector("button"))
 			val today = element(By.id("date")).element(Byk.buttonText("Today"))
 			val clear = element(By.id("date")).element(Byk.buttonText("Clear"))
@@ -135,10 +136,10 @@ class PlannerPage(
 		}
 		val buttons get() = Buttons()
 		inner class Buttons {
-			val all get()  = element(By.id("cinemas-all"))
-			val favorites get()  = element(By.id("cinemas-favs"))
-			val london get()  = element(By.id("cinemas-london"))
-			val none get()  = element(By.id("cinemas-none"))
+			val all get() = element(By.id("cinemas-all"))
+			val favorites get() = element(By.id("cinemas-favs"))
+			val london get() = element(By.id("cinemas-london"))
+			val none get() = element(By.id("cinemas-none"))
 		}
 		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
 		val favorites get() = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
@@ -163,17 +164,17 @@ class PlannerPage(
 			val element = element(By.className("modal-dialog"))
 			val header = element(By.className("modal-dialog")).element(By.tagName("h3"))
 			inner class buttons {
-			val add = element(By.className("modal-dialog")).element(Byk.buttonText("Add"))
-			val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
-		}
+				val add = element(By.className("modal-dialog")).element(Byk.buttonText("Add"))
+				val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+			}
 		}
 		inner class removeViewDialog {
 			val element = element(By.className("modal-dialog"))
 			val header = element(By.className("modal-dialog")).element(By.tagName("h1"))
 			inner class buttons {
-			val ok = element(By.className("modal-dialog")).element(Byk.buttonText("Yes"))
-			val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
-		}
+				val ok = element(By.className("modal-dialog")).element(Byk.buttonText("Yes"))
+				val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+			}
 		}
 	}
 
@@ -247,10 +248,11 @@ class PlannerPage(
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
 				group.element(By.className("cinema-name")).filterByText(cinemaName)
-			return PlanGroup(this.groups.filter(::byCinemaName).first().toString()) // TODO only() == firstOrFail // STOPSHIP removetostring
+			// TODO only() == firstOrFail // STOPSHIP removetostring
+			return PlanGroup(this.groups.first(::byCinemaName).toString())
 		}
 	}
-	
+
 	fun waitToLoad() {
 		cinemas.waitToLoad()
 		element(By.id("cinemas"))
