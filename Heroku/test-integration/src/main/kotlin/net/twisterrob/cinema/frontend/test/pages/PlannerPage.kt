@@ -188,64 +188,68 @@ class PlannerPage(
 			waitFor("#performances-waiting")
 			waitFor("#performances-loading")
 		}
-		val buttons = Buttons()
+		val buttons get() = Buttons()
 		inner class Buttons {
-			val plan = element(By.id("plan-plan"))
-			val options = element(By.id("plan-options"))
+			val plan get() = element(By.id("plan-plan"))
+			val options get() = element(By.id("plan-options"))
 		}
-		inner class byFilm {
-			val table = byFilmRoot
-			val cinemas = byFilmRoot.element(By.tagName("thead")).all(Byk.repeater("cinema in cineworld.cinemas"))
-			val films = byFilmRoot.all(Byk.repeater("film in cineworld.films"))
+		val byFilm get() = ByFilm()
+		inner class ByFilm {
+			val table get() = byFilmRoot
+			val cinemas  get() = byFilmRoot.element(By.tagName("thead")).all(Byk.repeater("cinema in cineworld.cinemas"))
+			val films  get() = byFilmRoot.all(Byk.repeater("film in cineworld.films"))
 			fun performances(filmName: String, cinemaName: String): List<WebElement> {
 				return this
 					.films
 					// find the row for the film
-					.filterByText(filmName).first()
+					.single { it.element(By.className("film-title")).text == filmName }
 					// in all columns
 					.all(Byk.repeater("cinema in cineworld.cinemas"))
 					// pick the one that has the same index as the cinema
-					.get(this.cinemas.indexOf { element -> element.filterByText(cinemaName) })
+					.get(this.cinemas.indexOf { it.element(By.className("cinema-name")).text == cinemaName })
 					// get the cell contents
 					.all(Byk.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
 					.all(By.cssSelector(".performance"))
 			}
 		}
-		inner class byCinema {
-			val table = byCinemaRoot
-			val cinemas = byCinemaRoot.all(Byk.repeater("cinema in cineworld.cinemas"))
-			val films = byCinemaRoot.element(By.tagName("thead")).all(Byk.repeater("film in cineworld.films"))
+		val byCinema get() = ByCinema()
+		inner class ByCinema {
+			val table get() = byCinemaRoot
+			val cinemas get() = byCinemaRoot.all(Byk.repeater("cinema in cineworld.cinemas"))
+			val films get() = byCinemaRoot.element(By.tagName("thead")).all(Byk.repeater("film in cineworld.films"))
 			fun performances(cinemaName: String, filmName: String): List<WebElement> {
 				return this
 					.cinemas
 					// find the row for the cinema
-					.filterByText(cinemaName).first()
+					.single { it.element(By.className("cinema-name")).text == cinemaName }
 					// in all columns
 					.all(Byk.repeater("film in cineworld.films"))
 					// pick the one that has the same index as the film
-					.get(this.films.indexOfFirst { it.filterByText(filmName) })
-					// get the cell contents
-					.all(Byk.repeater("performance in performances"))
+					.get(this.films.indexOfFirst { it.element(By.className("film-title")).text == filmName })
+					// get the cell contents (cannot use this because empty cells cannot be matched with repeater)
+					//.all(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
 					.all(By.cssSelector(".performance"))
 			}
 		}
-		inner class optionsDialog {
-			val element = element(By.className("modal-dialog"))
-			val header = element(By.className("modal-dialog")).element(By.tagName("h3"))
+		val optionsDialog get() = OptionsDialog()
+		inner class OptionsDialog {
+			val element get() = element(By.className("modal-dialog"))
+			val header get() = element(By.className("modal-dialog")).element(By.tagName("h3"))
 			inner class buttons {
-				val plan = element(By.className("modal-dialog")).element(Byk.buttonText("Plan"))
-				val cancel = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
+				val plan get() = element(By.className("modal-dialog")).element(Byk.buttonText("Plan"))
+				val cancel get() = element(By.className("modal-dialog")).element(Byk.buttonText("Cancel"))
 			}
 		}
 	}
 
-	inner class plans {
+	val plans by lazy { Plans() }
+	inner class Plans {
 		/**
 		 * @member {ElementArrayFinder}
 		 */
-		val groups = element(By.id("plan-results")).all(Byk.repeater("cPlan in plans"))
+		val groups get() = element(By.id("plan-results")).all(Byk.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
