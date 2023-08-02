@@ -734,7 +734,7 @@ jobs:
           action_fail_on_inconclusive: true
           junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/integrationTest/TEST-*.xml
 
-      - name: Upload "Heroku Test Logs" artifact.
+      - name: Upload "Heroku Integration Test Logs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
