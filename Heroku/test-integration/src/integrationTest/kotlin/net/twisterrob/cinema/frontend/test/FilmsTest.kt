@@ -3,7 +3,6 @@
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
-import net.twisterrob.cinema.frontend.test.framework.anyWithText
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.hasIcon
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
@@ -22,10 +21,10 @@ class FilmsTest {
 	lateinit var app: PlannerPage
 
 	private fun watchedFilm(film: WebElement): Boolean =
-		anyWithText(app.films.watched.items, film.text)
+		app.films.watched.items.any { it.text == film.text }
 
 	private fun newFilm(film: WebElement): Boolean =
-		anyWithText(app.films.new.items, film.text)
+		app.films.new.items.any { it.text == film.text }
 
 	@Nested
 	inner class `Films display` {
@@ -171,8 +170,8 @@ class FilmsTest {
 
 				// distinct films
 				// TODO this fails weirdly if neither list is visible (accordions collapsed)
-				assertThat(app.films.new.items.filter(::watchedFilm)).isEmpty()
-				assertThat(app.films.watched.items.filter(::newFilm)).isEmpty()
+				assertThat(app.films.new.items).filteredOn(::watchedFilm).isEmpty()
+				assertThat(app.films.watched.items).filteredOn(::newFilm).isEmpty()
 
 				// correct icons
 				assertThat(app.films.new.items).allMatch { it.hasIcon("eye-open") }

@@ -8,7 +8,6 @@ import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
 import net.twisterrob.cinema.frontend.test.framework.element
-import net.twisterrob.cinema.frontend.test.framework.filterByText
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
@@ -50,9 +49,7 @@ class PlannerPage(
 		operator fun get(index: Int): Plan =
 			Plan(this.items[index])
 
-		fun each(block: (Plan) -> Unit) {
-			this.items.forEach { block(Plan(it)) }
-		}
+		val plans get() = this.items.map(::Plan)
 
 		// TODO This doesn't work yet, expects after this don't see this.list.
 		fun listPlans() {
@@ -325,7 +322,7 @@ class PlannerPage(
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
-				group.element(By.className("cinema-name")).filterByText(cinemaName)
+				group.element(By.className("cinema-name")).text == cinemaName
 			return PlanGroup(this.groups.single(::byCinemaName))
 		}
 	}

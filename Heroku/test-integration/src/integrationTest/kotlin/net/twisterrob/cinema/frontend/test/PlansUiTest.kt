@@ -4,7 +4,6 @@ package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.all
-import net.twisterrob.cinema.frontend.test.framework.anyWithText
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
@@ -142,9 +141,10 @@ class PlansUiTest {
 
 				firstMovieInPlan.filterByFilm.click()
 
-				cinemaPlan.each { plan ->
+				val firstMovieTitle = firstMovieInPlan.title.text
+				cinemaPlan.plans.forEach { plan ->
 					val titles = plan.scheduleMovies.all(By.className("film-title"))
-					assertThat(anyWithText(titles, firstMovieInPlan.title.text)).isTrue()
+					assertThat(titles).anyMatch { it.text == firstMovieTitle }
 				}
 				assertThat(cinemaPlan.moreAll).isDisplayed()
 				assertThat(cinemaPlan.moreN).isDisplayed()

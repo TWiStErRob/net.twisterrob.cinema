@@ -4,13 +4,11 @@ package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.Options
-import net.twisterrob.cinema.frontend.test.framework.anyWithText
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.hasIcon
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.iconEl
 import net.twisterrob.cinema.frontend.test.framework.nameEl
-import net.twisterrob.cinema.frontend.test.framework.noneWithText
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -26,17 +24,18 @@ class CinemasTest {
 
 	lateinit var app: PlannerPage
 
+	// STOPSHIP review none/empty behavior on empty lists; original anyWithText(empty) -> false, noneWithText(empty) -> true
 	private fun notFavoritedCinema(cinema: WebElement): Boolean =
-		noneWithText(app.cinemas.favorites.items, cinema.text)
+		app.cinemas.favorites.items.none { it.text == cinema.text }
 
 	private fun favoritedCinema(cinema: WebElement): Boolean =
-		anyWithText(app.cinemas.favorites.items, cinema.text)
+		app.cinemas.favorites.items.any { it.text == cinema.text }
 
 	private fun notLondonCinema(cinema: WebElement): Boolean =
-		noneWithText(app.cinemas.london.items, cinema.text)
+		app.cinemas.london.items.none { it.text == cinema.text }
 
 	private fun londonCinema(cinema: WebElement): Boolean =
-		anyWithText(app.cinemas.london.items, cinema.text)
+		app.cinemas.london.items.any { it.text == cinema.text }
 
 	@BeforeEach fun beforeEach() {
 		app.goToPlanner()
@@ -47,8 +46,12 @@ class CinemasTest {
 
 		@Test fun `should show some London cinemas`() {
 			assertThat(app.cinemas.london.items).isNotEmpty
-			assertThat(app.cinemas.london.items.filter(::notFavoritedCinema)).allMatch { it.hasIcon("star-empty") }
-			assertThat(app.cinemas.london.items.filter(::favoritedCinema)).allMatch { it.hasIcon("heart") }
+			assertThat(app.cinemas.london.items)
+				.filteredOn(::notFavoritedCinema)
+				.allMatch { it.hasIcon("star-empty") }
+			assertThat(app.cinemas.london.items)
+				.filteredOn(::favoritedCinema)
+				.allMatch { it.hasIcon("heart") }
 		}
 
 		@Test fun `should show some favorite cinemas`() {
@@ -190,8 +193,8 @@ class CinemasTest {
 			app.cinemas.buttons.london.click()
 
 			assertThat(app.cinemas.london.items).allMatch { it.hasSelection() }
-			assertThat(app.cinemas.favorites.items.filter(::londonCinema)).allMatch { it.hasSelection() }
-			assertThat(app.cinemas.favorites.items.filter(::notLondonCinema)).noneMatch { it.hasSelection() }
+			assertThat(app.cinemas.favorites.items).filteredOn(::londonCinema).allMatch { it.hasSelection() }
+			assertThat(app.cinemas.favorites.items).filteredOn(::notLondonCinema).noneMatch { it.hasSelection() }
 			assertThat(app.cinemas.other.items).noneMatch { it.hasSelection() }
 		}
 
@@ -211,10 +214,10 @@ class CinemasTest {
 			app.cinemas.buttons.favorites.click()
 
 			assertThat(app.cinemas.favorites.items).allMatch { it.hasSelection() }
-			assertThat(app.cinemas.london.items.filter(::favoritedCinema)).allMatch { it.hasSelection() }
-			assertThat(app.cinemas.london.items.filter(::notFavoritedCinema)).noneMatch { it.hasSelection() }
-			assertThat(app.cinemas.other.items.filter(::favoritedCinema)).allMatch { it.hasSelection() }
-			assertThat(app.cinemas.other.items.filter(::notFavoritedCinema)).noneMatch { it.hasSelection() }
+			assertThat(app.cinemas.london.items).filteredOn(::favoritedCinema).allMatch { it.hasSelection() }
+			assertThat(app.cinemas.london.items).filteredOn(::notFavoritedCinema).noneMatch { it.hasSelection() }
+			assertThat(app.cinemas.other.items).filteredOn(::favoritedCinema).allMatch { it.hasSelection() }
+			assertThat(app.cinemas.other.items).filteredOn(::notFavoritedCinema).noneMatch { it.hasSelection() }
 		}
 
 		@Test fun `should display favorite cinemas`() {

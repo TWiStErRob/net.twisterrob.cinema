@@ -4,58 +4,6 @@ import org.assertj.core.api.Assertions
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
-/**
- * Matches any element in [elementList] that has the same text as the resolved value of [text].
- */
-fun anyWithText(elementList: List<WebElement>, text: String): Boolean {
-	//noinspection JSValidateTypes reduce will resolve correctly: `false` + `||` -> boolean
-	return elementList.fold(false) { acc, elem ->
-		return@fold acc || text == elem.text
-	}
-}
-
-/**
- * Checks if there are no elements in [elementList] that have the same text as the resolved value of [text].
- */
-fun noneWithText(elementList: List<WebElement>, text: String): Boolean =
-	!anyWithText(elementList, text)
-
-/**
- * @param text string contains match
- * @param inverse negate the result
- * @see ElementArrayFinder.filter
- * @see ElementFinder.filterByText
- */
-fun List<WebElement>.filterByText(text: String, inverse: Boolean = false): List<WebElement> =
-	this.filter { item -> item.filterByText(text, inverse) }
-
-fun List<WebElement>.filterByText(text: Regex, inverse: Boolean = false): List<WebElement> =
-	this.filter { item -> item.filterByText(text, inverse) }
-
-/**
- * Creates a filter function to match the text of the element.
- * @param text string contains or regex match
- * @param inverse negate the result
- * @see ElementArrayFinder.filter
- */
-fun WebElement.filterByText(text: String, inverse: Boolean = false): Boolean =
-	filterByText(Regex(Regex.escape(text)), inverse)
-
-fun WebElement.filterByText(text: Regex, inverse: Boolean = false): Boolean {
-	val matcher = fun(label: String) = text.matches(label)
-	val filter = if (inverse) ({ x -> !matcher(x) }) else matcher
-	return this.text.let(filter)
-}
-
-/**
- * Creates a filter function to match that the element has a class.
- */
-fun WebElement.filterByClass(className: String): Boolean {
-	return this
-		.getAttribute("class")
-		.let { classes -> (classes ?: "").split(Regex("""\s+""")).indexOf(className) != -1 }
-}
-
 fun List<WebElement>.indexOf(filter: (WebElement) -> Boolean): Int {
 	val INITIAL_VALUE = -1
 	val stack = Throwable().stackTrace
