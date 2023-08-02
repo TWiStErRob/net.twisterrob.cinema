@@ -7,8 +7,6 @@ import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.filterByText
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
-import net.twisterrob.cinema.frontend.test.framework.parsedLocalDate
-import net.twisterrob.cinema.frontend.test.framework.query
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -31,13 +29,13 @@ class UrlUiTest {
 			@Test fun `should preselect today`() {
 				app.goToPlanner()
 
-				assertThat(browser).url().query("d").parsedLocalDate("YYYY-MM-DD").isToday
+				assertThat(browser).url().hasParameter("d", LocalDate.now().format(PlannerPage.D_FORMAT))
 			}
 
 			@Test fun `should preselect date`() {
 				app.goToPlanner("?d=2017-07-14")
 
-				assertThat(browser).url().query("d").parsedLocalDate("YYYY-MM-DD").isEqualTo(LocalDate.of(2017, 7, 14))
+				assertThat(browser).url().hasParameter("d", "2017-07-14")
 				assertThat(app.date.editor.element).text().isEqualTo("7/14/17")
 				assertThat(app.date.label.element).text().isEqualTo("Friday, July 14, 2017")
 			}
@@ -51,7 +49,7 @@ class UrlUiTest {
 				// Not sure why, but this particular test was really flaky without this sleep, but only on GitHub Actions CI.
 				Thread.sleep(3000)
 
-				assertThat(browser).url().query("c").isEqualTo("103")
+				assertThat(browser).url().hasParameter("c", "103")
 			}
 
 			@Test fun `should preselect cinemas`() {

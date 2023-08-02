@@ -5,8 +5,6 @@ package net.twisterrob.cinema.frontend.test
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.parsedLocalDate
-import net.twisterrob.cinema.frontend.test.framework.query
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -73,7 +71,7 @@ class DateUiTest {
 			}
 
 			@Test fun `should update the url`(browser: Browser) {
-				assertThat(browser).url().query("d").parsedLocalDate("YYYY-MM-DD").isEqualTo(selectedDate)
+				assertThat(browser).url().hasParameter("d", selectedDate.format(PlannerPage.D_FORMAT))
 			}
 		}
 	}

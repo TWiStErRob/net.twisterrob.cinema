@@ -26,6 +26,7 @@ import org.openqa.selenium.support.FindBy
 import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
 import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -413,5 +414,9 @@ class PlannerPage(
 		// dynamic content
 		assertThat(browser.currentUrl).contains("d=${LocalDate.now().year}")
 		assertThat(performancesEmpty).text().isEqualTo("Please select a film...")
+	}
+	
+	companion object {
+		val D_FORMAT: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 	}
 }
