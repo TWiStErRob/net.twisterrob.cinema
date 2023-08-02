@@ -116,32 +116,44 @@ private class AngularCommandExecutor(
 ) : CommandExecutor {
 
 	override fun execute(command: Command): Response {
-		if (command.name in commandsToWaitFor) {
+		if (command.name in stabilizeBefore) {
 			stabilize()
 		}
-		return executor.execute(command)
+		val response = executor.execute(command)
+		if (command.name in stabilizeAfter) {
+			stabilize()
+		}
+		return response
 	}
-
-	companion object {
 
 		/**
 		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
+		 * 
+		 * List from protractor:
+		 * "executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
+		 * "moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
 		 */
-		private val commandsToWaitFor = setOf(
-//			"get"
-//			"executeScript",
-//			"executeAsyncScript",
-			"findElement",
-			"findChildElement",
-			"findChildElements",
-//			"getElementText",
-//			"getElementAttribute",
-//			"isElementSelected",
+	companion object {
+
+		private val noStabilize: Set<String> = setOf(
+			"get",
+			"executeScript",
+			"executeAsyncScript",
+			"quit",
+		)
+		private val stabilizeBefore: Set<String> = setOf(
+			//"findElement",
+			//"findChildElement",
+			//"findChildElements",
+			//"getElementText",
+			//"getElementAttribute",
+			//"isElementSelected",
+		)
+		/**
+		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
+		 */
+		private val stabilizeAfter: Set<String> = setOf(
 			"clickElement",
-//			"quit",
-			
-			//"executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
-			//"moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
 		)
 	}
 }
