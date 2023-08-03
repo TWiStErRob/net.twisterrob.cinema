@@ -39,6 +39,6 @@ class FilmMapper @Inject constructor(
 			weighted = db.weighted,
 			slug = db.slug,
 			group = db.group,
-			view = db.views.firstOrNull()?.let { if (mapViews) viewMapper.get().map(it) else null }
+			view = if (!mapViews) null else db.views.firstOrNull()?.let { viewMapper.get().map(it) }
 		)
 }

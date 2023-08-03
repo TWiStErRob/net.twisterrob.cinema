@@ -5,7 +5,10 @@ import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.allMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.noneMeet
+import net.twisterrob.cinema.frontend.test.framework.not
+import net.twisterrob.cinema.frontend.test.framework.or
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
+import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Cinema
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Film
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -18,6 +21,12 @@ class UrlUiTest {
 
 	private lateinit var app: PlannerPage
 	private lateinit var browser: Browser
+
+	private fun filterFilmName(name: String): (Film) -> Boolean =
+		{ it.name.text == name }
+
+	private fun filterCinemaName(name: String): (Cinema) -> Boolean =
+		{ it.name.text == name }
 
 	@Nested
 	inner class Date {
@@ -51,8 +60,9 @@ class UrlUiTest {
 		@Test fun `should preselect cinemas`() {
 			app.goToPlanner("?c=70")
 
-			assertThat(app.cinemas.london.cinemas).filteredOn { it.name.text == "London - Wood Green" }.allMeet { isChecked() }
-			assertThat(app.cinemas.london.cinemas).filteredOn { it.name.text != "London - Wood Green" }.noneMeet { isChecked() }
+			val preselectedCinema = filterCinemaName("London - Wood Green")
+			assertThat(app.cinemas.london.cinemas).filteredOn(preselectedCinema).allMeet { isChecked() }
+			assertThat(app.cinemas.london.cinemas).filteredOn(!preselectedCinema).noneMeet { isChecked() }
 			assertThat(app.cinemas.other.cinemas).noneMeet { isChecked() }
 		}
 	}
@@ -63,11 +73,9 @@ class UrlUiTest {
 		@Test fun `should preselect films`() {
 			app.goToPlanner("?f=189108&f=223046")
 
-			val titles = Regex("""All Eyez On Me|Baby Driver""")
-			fun filter(item: Film): Boolean = // STOPSHIP generalize
-				item.name.text.matches(titles)
-			assertThat(app.films.new.films).filteredOn(::filter).allMeet { isChecked() }
-			assertThat(app.films.new.films).filteredOn { !filter(it) }.noneMeet { isChecked() }
+			val preselectedFilm = filterFilmName("All Eyez On Me") or filterFilmName("Baby Driver")
+			assertThat(app.films.new.films).filteredOn(preselectedFilm).allMeet { isChecked() }
+			assertThat(app.films.new.films).filteredOn(!preselectedFilm).noneMeet { isChecked() }
 			assertThat(app.films.watched.films).noneMeet { isChecked() }
 		}
 	}
@@ -79,14 +87,13 @@ class UrlUiTest {
 			app.goToPlanner("?c=70&f=189108&f=223046&d=2017-07-14")
 
 			assertThat(app.date.editor.element).text().isEqualTo("7/14/17")
-			assertThat(app.cinemas.london.cinemas).filteredOn { it.name.text == "London - Wood Green" }.allMeet { isChecked() }
-			assertThat(app.cinemas.london.cinemas).filteredOn { it.name.text != "London - Wood Green" }.noneMeet { isChecked() }
+			val preselectedCinema = filterCinemaName("London - Wood Green")
+			assertThat(app.cinemas.london.cinemas).filteredOn(preselectedCinema).allMeet { isChecked() }
+			assertThat(app.cinemas.london.cinemas).filteredOn(!preselectedCinema).noneMeet { isChecked() }
 			assertThat(app.cinemas.other.cinemas).noneMeet { isChecked() }
-			val titles = Regex("""All Eyez On Me|Baby Driver""")
-			fun filter(item: Film): Boolean = // STOPSHIP generalize
-				item.name.text.matches(titles)
-			assertThat(app.films.new.films).filteredOn(::filter).allMeet { isChecked() }
-			assertThat(app.films.new.films).filteredOn { !filter(it) }.noneMeet { isChecked() }
+			val preselectedFilm = filterFilmName("All Eyez On Me") or filterFilmName("Baby Driver")
+			assertThat(app.films.new.films).filteredOn(preselectedFilm).allMeet { isChecked() }
+			assertThat(app.films.new.films).filteredOn(!preselectedFilm).noneMeet { isChecked() }
 			assertThat(app.films.watched.films).noneMeet { isChecked() }
 		}
 	}

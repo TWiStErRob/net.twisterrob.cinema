@@ -5,6 +5,7 @@ import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.allMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.noneMeet
+import net.twisterrob.cinema.frontend.test.framework.not
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Cinema
 import org.assertj.core.api.Assertions.assertThat
@@ -20,14 +21,8 @@ class CinemasUiTest {
 
 	private lateinit var app: PlannerPage
 
-	private fun notFavoritedCinema(cinema: Cinema): Boolean =
-		app.cinemas.favorites.cinemas.none { it.name.text == cinema.name.text }
-
 	private fun favoritedCinema(cinema: Cinema): Boolean =
 		app.cinemas.favorites.cinemas.any { it.name.text == cinema.name.text }
-
-	private fun notLondonCinema(cinema: Cinema): Boolean =
-		app.cinemas.london.cinemas.none { it.name.text == cinema.name.text }
 
 	private fun londonCinema(cinema: Cinema): Boolean =
 		app.cinemas.london.cinemas.any { it.name.text == cinema.name.text }
@@ -41,7 +36,7 @@ class CinemasUiTest {
 
 		@Test fun `should show some London cinemas`() {
 			assertThat(app.cinemas.london.cinemas).isNotEmpty
-			assertThat(app.cinemas.london.cinemas).filteredOn(::notFavoritedCinema)
+			assertThat(app.cinemas.london.cinemas).filteredOn(!::favoritedCinema)
 				.allSatisfy { assertThat(it.icon).hasIcon("star-empty") }
 			assertThat(app.cinemas.london.cinemas).filteredOn(::favoritedCinema)
 				.allSatisfy { assertThat(it.icon).hasIcon("heart") }
@@ -187,7 +182,7 @@ class CinemasUiTest {
 
 			assertThat(app.cinemas.london.cinemas).allMeet { isChecked() }
 			assertThat(app.cinemas.favorites.cinemas).filteredOn(::londonCinema).allMeet { isChecked() }
-			assertThat(app.cinemas.favorites.cinemas).filteredOn(::notLondonCinema).noneMeet { isChecked() }
+			assertThat(app.cinemas.favorites.cinemas).filteredOn(!::londonCinema).noneMeet { isChecked() }
 			assertThat(app.cinemas.other.cinemas).noneMeet { isChecked() }
 		}
 
@@ -208,9 +203,9 @@ class CinemasUiTest {
 
 			assertThat(app.cinemas.favorites.cinemas).allMeet { isChecked() }
 			assertThat(app.cinemas.london.cinemas).filteredOn(::favoritedCinema).allMeet { isChecked() }
-			assertThat(app.cinemas.london.cinemas).filteredOn(::notFavoritedCinema).noneMeet { isChecked() }
+			assertThat(app.cinemas.london.cinemas).filteredOn(!::favoritedCinema).noneMeet { isChecked() }
 			assertThat(app.cinemas.other.cinemas).filteredOn(::favoritedCinema).allMeet { isChecked() }
-			assertThat(app.cinemas.other.cinemas).filteredOn(::notFavoritedCinema).noneMeet { isChecked() }
+			assertThat(app.cinemas.other.cinemas).filteredOn(!::favoritedCinema).noneMeet { isChecked() }
 		}
 
 		@Test fun `should display favorite cinemas`() {
