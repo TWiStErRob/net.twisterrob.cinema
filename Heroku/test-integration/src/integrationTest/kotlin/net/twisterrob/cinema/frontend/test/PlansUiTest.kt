@@ -4,6 +4,7 @@ import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.anyMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
+import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Plans.PlanGroup
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -96,7 +97,7 @@ class PlansUiTest {
 	@Nested
 	inner class Plan {
 
-		private fun gotoSinglePlan(): PlannerPage.PlanGroup {
+		private fun gotoSinglePlan(): PlanGroup {
 			app.goToPlanner("?d=2017-07-14&c=103&f=184739&f=189108")
 
 			val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")

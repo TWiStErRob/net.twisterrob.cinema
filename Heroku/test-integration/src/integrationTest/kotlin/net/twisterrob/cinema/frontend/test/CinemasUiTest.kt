@@ -7,7 +7,7 @@ import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.noneMeet
 import net.twisterrob.cinema.frontend.test.framework.not
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Cinema
+import net.twisterrob.cinema.frontend.test.pages.dsl.Cinema
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

@@ -30,7 +30,10 @@ fun <A : AbstractIterableAssert<*, *, WebElement, *>> A.noneMeet(assertions: Web
 	this.noneSatisfy { assertThat(it).assertions() }
 }
 
-@Suppress("TooManyFunctions") // This is how AssertJ works.
+@Suppress(
+	"TooManyFunctions", // This is how AssertJ works.
+	"NamedArguments", // Keep it simpler, types are very strong anyway.
+)
 class WebElementAssert(
 	element: WebElement
 ) : AbstractAssert<WebElementAssert, WebElement>(element, WebElementAssert::class.java) {

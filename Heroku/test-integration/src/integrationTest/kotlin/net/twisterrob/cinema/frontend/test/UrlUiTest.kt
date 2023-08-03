@@ -8,8 +8,8 @@ import net.twisterrob.cinema.frontend.test.framework.noneMeet
 import net.twisterrob.cinema.frontend.test.framework.not
 import net.twisterrob.cinema.frontend.test.framework.or
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Cinema
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Film
+import net.twisterrob.cinema.frontend.test.pages.dsl.Cinema
+import net.twisterrob.cinema.frontend.test.pages.dsl.Film
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

@@ -12,6 +12,10 @@ import net.twisterrob.cinema.frontend.test.framework.textContent
 import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
+import net.twisterrob.cinema.frontend.test.pages.dsl.Cinema
+import net.twisterrob.cinema.frontend.test.pages.dsl.Film
+import net.twisterrob.cinema.frontend.test.pages.dsl.Group
+import net.twisterrob.cinema.frontend.test.pages.dsl.Plan
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
@@ -27,219 +31,7 @@ class PlannerPage(
 		browser.waitForElementToDisappear(element(By.cssSelector(css)))
 	}
 
-	inner class CinemaGroup(
-		groupCSS: String,
-		listCSS: String,
-	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema") {
-
-		operator fun get(index: Int): Cinema =
-			Cinema(this.items[index])
-
-		val cinemas: List<Cinema>
-			get() = this.items.map(::Cinema)
-	}
-
-	class Cinema(
-		val root: WebElement,
-	) {
-
-		val name: WebElement
-			get() = root.findElement(By.className("cinema-name"))
-
-		val icon: WebElement
-			get() = root.findElement(By.className("glyphicon"))
-
-		fun favorite() {
-			assertThat(icon).hasIcon("star-empty")
-			icon.click()
-		}
-
-		fun unfavorite() {
-			assertThat(icon).hasIcon("heart")
-			icon.click()
-		}
-	}
-
-	inner class FilmGroup(
-		groupCSS: String,
-		listCSS: String,
-	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film") {
-
-		operator fun get(index: Int): Film =
-			Film(this.items[index])
-
-		val films: List<Film>
-			get() = this.items.map(::Film)
-	}
-
-	class Film(
-		val root: WebElement,
-	) {
-
-		val name: WebElement
-			get() = root.findElement(By.className("film-title"))
-
-		val icon: WebElement
-			get() = root.findElement(By.className("glyphicon"))
-
-		fun view() {
-			assertThat(icon).hasIcon("eye-open")
-			icon.click()
-		}
-
-		fun unview() {
-			assertThat(icon).hasIcon("eye-close")
-			icon.click()
-		}
-	}
-
-	inner class PlanGroup(
-		root: WebElement,
-	) : Group(root, ".plans", ".plan") {
-
-		val moreN: WebElement
-			get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("more ..."))
-
-		val moreAll: WebElement
-			get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("All"))
-
-		val scheduleExplorer: WebElement
-			get() = root.findElement(By.className("schedule-explorer"))
-
-		operator fun get(index: Int): Plan =
-			Plan(this.items[index])
-
-		val plans: List<Plan>
-			get() = this.items.map(::Plan)
-
-		fun listPlans() {
-			if (this.scheduleExplorer.isSelected) {
-				// selected means it's checked, so click to un-check
-				this.scheduleExplorer.click()
-			} else {
-				// not selected, so it's already un-checked
-			}
-		}
-	}
-
-	/**
-	 * @param root root element or CSS selector
-	 * @param content content element or CSS selector inside root
-	 * @param _items elements or CSS selector in content
-	 */
-	open class Group(
-		val root: WebElement,
-		private val content: String,
-		private val _items: String,
-	) {
-
-		val header: WebElement
-			get() = root.findElement(By.className("accordion-toggle"))
-
-		val list: WebElement
-			get() = root.findElement(By.cssSelector(content))
-
-		val items: List<WebElement>
-			get() = list.findElements(By.cssSelector(_items))
-
-		fun click() {
-			header.click()
-		}
-
-		fun collapse() {
-			if (list.isDisplayed) {
-				// displayed means it's expanded, so click to collapse
-				click()
-			} else {
-				// not displayed, so it's already collapsed
-			}
-		}
-
-		fun expand() {
-			if (list.isDisplayed) {
-				// displayed means it's already expanded
-			} else {
-				// not displayed means it's expanded, so click to collapse
-				click()
-			}
-		}
-	}
-
-	class Plan(
-		val root: WebElement,
-	) {
-
-		val delete: WebElement
-			get() = root.findElement(ByAngular.buttonText("×"))
-
-		val schedule: WebElement
-			get() = root.findElement(By.className("plan-films"))
-
-		val scheduleItems: List<WebElement>
-			get() = this.schedule.findElements(By.cssSelector(".plan-film, .plan-film-break"))
-
-		val scheduleMovies: List<WebElement>
-			get() = this.schedule.findElements(By.cssSelector(".plan-film"))
-
-		val scheduleMovieTitles: List<WebElement>
-			get() = this.scheduleMovies.map { it.findElement(By.className("film-title")) }
-
-		val scheduleBreaks: List<WebElement>
-			get() = this.schedule.findElements(By.cssSelector(".plan-film-break"))
-
-		val scheduleStart: WebElement
-			get() = root.findElement(By.cssSelector(".plan-header .film-start"))
-
-		val scheduleEnd: WebElement
-			get() = root.findElement(By.cssSelector(".plan-header .film-end"))
-
-		operator fun get(index: Int): WebElement =
-			this.scheduleItems[index]
-
-		fun getItemAsMovie(index: Int): ScheduleMovieItem {
-			val item = this[index]
-			assertThat(item).classes().contains("plan-film")
-			return ScheduleMovieItem(item)
-		}
-
-		fun getItemAsBreak(index: Int): ScheduleBreakItem {
-			val item = this[index]
-			assertThat(item).classes().contains("plan-film-break")
-			return ScheduleBreakItem(item)
-		}
-	}
-
-	class ScheduleMovieItem(
-		private val root: WebElement
-	) {
-
-		val startTime: WebElement
-			get() = root.findElement(By.className("film-start"))
-
-		val endTime: WebElement
-			get() = root.findElement(By.className("film-end"))
-
-		val title: WebElement
-			get() = root.findElement(By.className("film-title"))
-
-		val runtime: WebElement
-			get() = root.findElement(By.className("film-runtime"))
-
-		val filterByFilm: WebElement
-			get() = root.findElement(By.xpath("""button[i[contains(@class, "glyphicon-time")]]"""))
-
-		val filterByScreening: WebElement
-			get() = root.findElement(By.xpath("""button[i[contains(@class, "glyphicon-film")]]"""))
-	}
-
-	class ScheduleBreakItem(
-		private val root: WebElement
-	) {
-
-		val length: WebElement
-			get() = root.findElement(By.className("length"))
-	}
-
+	// STOPSHIP remove this and help inner classes be static.
 	fun element(by: By): WebElement = browser.findElement(by)
 
 	fun goToPlanner(url: String = "") {
@@ -324,6 +116,18 @@ class PlannerPage(
 		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
 		val favorites get() = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
 		val other get() = CinemaGroup("#cinemas-group-other", "#cinemas-list-other")
+
+		inner class CinemaGroup(
+			groupCSS: String,
+			listCSS: String,
+		) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema") {
+
+			operator fun get(index: Int): Cinema =
+				Cinema(this.items[index])
+
+			val cinemas: List<Cinema>
+				get() = this.items.map(::Cinema)
+		}
 	}
 
 	val films by lazy { Films() }
@@ -396,6 +200,18 @@ class PlannerPage(
 				val cancel: WebElement
 					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
 			}
+		}
+
+		inner class FilmGroup(
+			groupCSS: String,
+			listCSS: String,
+		) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film") {
+
+			operator fun get(index: Int): Film =
+				Film(this.items[index])
+
+			val films: List<Film>
+				get() = this.items.map(::Film)
 		}
 	}
 
@@ -513,6 +329,36 @@ class PlannerPage(
 			fun byCinemaName(group: WebElement): Boolean =
 				group.findElement(By.className("cinema-name")).text == cinemaName
 			return PlanGroup(this.groups.single(::byCinemaName))
+		}
+
+		inner class PlanGroup(
+			root: WebElement,
+		) : Group(root, ".plans", ".plan") {
+
+			val moreN: WebElement
+				get() = root.findElement(By.className("plans-footer"))
+					.findElement(ByAngular.partialButtonText("more ..."))
+
+			val moreAll: WebElement
+				get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("All"))
+
+			val scheduleExplorer: WebElement
+				get() = root.findElement(By.className("schedule-explorer"))
+
+			operator fun get(index: Int): Plan =
+				Plan(this.items[index])
+
+			val plans: List<Plan>
+				get() = this.items.map(::Plan)
+
+			fun listPlans() {
+				if (this.scheduleExplorer.isSelected) {
+					// selected means it's checked, so click to un-check
+					this.scheduleExplorer.click()
+				} else {
+					// not selected, so it's already un-checked
+				}
+			}
 		}
 	}
 
