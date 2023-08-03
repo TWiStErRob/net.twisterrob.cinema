@@ -15,6 +15,7 @@ import kotlin.reflect.KFunction1
 inline fun assertThat(element: WebElement): WebElementAssert =
 	WebElementAssert(element)
 
+@Suppress("TooManyFunctions") // This is how AssertJ works.
 class WebElementAssert(
 	element: WebElement
 ) : AbstractAssert<WebElementAssert, WebElement>(element, WebElementAssert::class.java) {

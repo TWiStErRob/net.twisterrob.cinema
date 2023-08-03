@@ -8,6 +8,7 @@ class LogPrinter {
 	fun print(entry: LogEntry) {
 		val color = LOG_COLORS[entry.level] ?: Color.Grey
 		val method = LOG_METHODS[entry.level] ?: entry.level.name
+		@Suppress("ForbiddenMethodCall") // Want it straight to console.
 		println("\u001b[${color.value}m${method} - ${entry.message}\u001b[39m")
 	}
 

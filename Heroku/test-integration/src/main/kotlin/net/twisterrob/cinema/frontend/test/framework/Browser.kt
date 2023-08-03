@@ -2,8 +2,6 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
-import org.openqa.selenium.Dimension
-import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.SearchContext
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -15,6 +13,7 @@ import org.openqa.selenium.logging.LogType
 import org.openqa.selenium.logging.LoggingPreferences
 import org.openqa.selenium.remote.Command
 import org.openqa.selenium.remote.CommandExecutor
+import org.openqa.selenium.remote.DriverCommand
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.remote.Response
 import java.util.logging.Level
@@ -23,7 +22,7 @@ class Browser(
 	driver: WebDriver? = null
 ) : SearchContext {
 
-	val driver: WebDriver by lazy { (driver ?: createDriver()).let { AngularDriver(it, it as JavascriptExecutor) } }
+	val driver: WebDriver by lazy { (driver ?: createDriver()).also { replaceCommandExecutor(it) } }
 
 	fun get(relativeUrl: String) {
 		navigateToAngularPage("${Options.baseUrl}${relativeUrl}")
@@ -75,60 +74,31 @@ class Browser(
 			driver.manage().apply {
 				//timeouts().implicitlyWait(Duration.ofSeconds(10))
 				// Ensure there's a fixed size, so tests behave the same, this is necessary in headless too.
-				window().size = Dimension(1920, 1080)
+				window().size = Options.windowSize
 				assertThat(logs().availableLogTypes).contains(LogType.BROWSER)
 			}
 			return driver
 		}
-	}
-}
 
-/**
- * Wrapper to call [waitForAngular] before data retrieval.
- * Based on `ProtractorBrowser` in node_modules\protractor\built\browser.js.
- * Other waits are handled by [AngularCommandExecutor].
- */
-private class AngularDriver(
-	private val driver: WebDriver,
-	private val executor: JavascriptExecutor,
-) : WebDriver by driver, JavascriptExecutor by executor {
+		/**
+		 * Wrapper to call [waitForAngular] before data retrieval. STOPSHIP revise
+		 * Based on `ProtractorBrowser` in node_modules\protractor\built\browser.js.
+		 * Other waits are handled by [AngularCommandExecutor].
+		 */
+		fun replaceCommandExecutor(driver: WebDriver) {
+			val executorField = RemoteWebDriver::class.java
+				.getDeclaredField("executor")
+				.apply { isAccessible = true }
+			val executor = executorField.get(driver) as CommandExecutor
+			executorField.set(driver, AngularCommandExecutor(executor) { driver.waitForAngular() })
+		}
 
-	init {
-		val executorField = RemoteWebDriver::class.java
-			.getDeclaredField("executor")
-			.apply { isAccessible = true }
-		val executor = executorField.get(driver) as CommandExecutor
-		executorField.set(driver, AngularCommandExecutor(executor) { waitForAngular() })
-	}
-
-	/**
-	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
-	 */
-	override fun getTitle(): String {
-		waitForAngular()
-		return driver.title
-	}
-
-	/**
-	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
-	 */
-	override fun getCurrentUrl(): String {
-		waitForAngular()
-		return driver.currentUrl
-	}
-
-	/**
-	 * ProtractorBrowser 7.0.0 explicitly listed this method to be synchronized.
-	 */
-	override fun getPageSource(): String {
-		waitForAngular()
-		return driver.pageSource
 	}
 }
 
 /**
  * Wrapper to call [waitForAngular] before actions.
- * Data retrieval is handled by [AngularDriver].
+ * Data retrieval is handled by [Browser.replaceCommandExecutor].
  * based on `sendRequestToStabilize` in `blocking-proxy\built\lib\angular_wait_barrier.js
  */
 private class AngularCommandExecutor(
@@ -148,34 +118,50 @@ private class AngularCommandExecutor(
 	}
 
 	/**
+	 * List of commands that might need special handling.
+	 *
+	 * Full list:
 	 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
 	 *
-	 * List from protractor: STOPSHIP
-	 * "executeScript", "screenshot", "source", "title", "element", "elements", "execute", "keys",
-	 * "moveto", "click", "buttondown", "buttonup", "doubleclick", "touch", "get"
+	 * @see DriverCommand
 	 */
 	companion object {
 
+		@Suppress("unused") // For documentation.
 		private val noStabilize: Set<String> = setOf(
-			"get",
-			"executeScript",
-			"executeAsyncScript",
-			"quit",
+			// Handled by [navigateToAngularPage].
+			DriverCommand.GET,
+			// Watch out for recursion.
+			DriverCommand.EXECUTE_SCRIPT,
+			// Watch out for recursion.
+			DriverCommand.EXECUTE_ASYNC_SCRIPT,
+			// Already stopping, no need to wait for the app.
+			DriverCommand.QUIT,
+			// These are queries, don't synchronize to improve performance.
+			DriverCommand.FIND_ELEMENT,
+			DriverCommand.FIND_CHILD_ELEMENT,
+			DriverCommand.FIND_CHILD_ELEMENTS,
+			DriverCommand.GET_ELEMENT_TEXT,
+			DriverCommand.GET_ELEMENT_ATTRIBUTE,
+			DriverCommand.IS_ELEMENT_SELECTED,
 		)
 		private val stabilizeBefore: Set<String> = setOf(
-			//"findElement",
-			//"findChildElement",
-			//"findChildElements",
-			//"getElementText",
-			//"getElementAttribute",
-			//"isElementSelected",
+			// ProtractorBrowser 7.0.0 explicitly listed WebDriver.getPageSource method to be synchronized.
+			DriverCommand.GET_PAGE_SOURCE,
+			// ProtractorBrowser 7.0.0 explicitly listed WebDriver.getTitle method to be synchronized.
+			DriverCommand.GET_TITLE,
+			// ProtractorBrowser 7.0.0 explicitly listed WebDriver.getCurrentUrl method to be synchronized.
+			DriverCommand.GET_CURRENT_URL,
+			DriverCommand.SCREENSHOT,
+			DriverCommand.ELEMENT_SCREENSHOT,
 		)
 
 		/**
 		 * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#command-reference
 		 */
 		private val stabilizeAfter: Set<String> = setOf(
-			"clickElement",
+			DriverCommand.CLICK_ELEMENT,
+			DriverCommand.SEND_KEYS_TO_ELEMENT,
 		)
 	}
 }

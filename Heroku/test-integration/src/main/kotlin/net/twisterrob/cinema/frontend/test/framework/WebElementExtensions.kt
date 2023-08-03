@@ -1,29 +1,25 @@
 package net.twisterrob.cinema.frontend.test.framework
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
-fun List<WebElement>.indexOf(filter: (WebElement) -> Boolean): Int {
-	val initial = -1
-	return this
-		.foldIndexed(initial) { acc, index, element ->
-			if (acc != initial) return@foldIndexed acc
-			return@foldIndexed if (filter(element)) index else acc
-		}
-		.let { index ->
-			Assertions.assertThat(index)
-				.overridingErrorMessage { "Cannot find index of ${filter} in ${this}" }
-				.isGreaterThanOrEqualTo(0)
-			return@let index
-		}
+fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
+	val index = this.indexOfFirst(filter)
+	assertThat(index)
+		.overridingErrorMessage { "Cannot find index of ${filter} in ${this}" }
+		.isGreaterThanOrEqualTo(0)
+	assertThat(this)
+		.overridingErrorMessage { "Found multiple matches for ${filter} in ${this}" }
+		.satisfiesOnlyOnce { assertThat(it).matches(filter) }
+	return index
 }
 
 fun WebElement.hasSelection(): Boolean =
 	this.findElement(By.cssSelector("""[type="checkbox"]""")).isSelected
 
 /**
- * Matches the element to have a Bootstrap glyphicon element inside with the given icon name
+ * Matches the element to have a Bootstrap glyphicon element inside with the given icon name.
  * @param iconName the end of `glyphicon-name`
  */
 fun WebElement.hasIcon(iconName: String): Boolean { // STOPSHIP use Condition API?

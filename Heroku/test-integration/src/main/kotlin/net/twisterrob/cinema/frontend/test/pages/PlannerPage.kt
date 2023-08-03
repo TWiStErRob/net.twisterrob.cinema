@@ -3,35 +3,25 @@ package net.twisterrob.cinema.frontend.test.pages
 import com.paulhammant.ngwebdriver.ByAngular
 import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
-import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
 import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
-import net.twisterrob.cinema.frontend.test.framework.indexOf
-import net.twisterrob.cinema.frontend.test.framework.initElements
 import net.twisterrob.cinema.frontend.test.framework.nonAngular
+import net.twisterrob.cinema.frontend.test.framework.safeIndexOf
 import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
-import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.FindBy
 import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
 import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class PlannerPage(
-	browser: Browser
+	browser: Browser,
 ) : BasePage(browser) {
-
-	@FindBy(id = "cineworldDate-display")
-	private lateinit var dateLabel: WebElement
-
-	@FindBy(className = "performances-loading")
-	private lateinit var performancesEmpty: WebElement
 
 	fun waitFor(css: String) {
 		val elemToWaitFor = browser.findElements(By.cssSelector(css)).single()
@@ -83,7 +73,7 @@ class PlannerPage(
 	 * @param content content element or CSS selector inside root
 	 * @param _items elements or CSS selector in content
 	 */
-	open inner class Group(
+	open class Group(
 		val root: WebElement,
 		private val content: String,
 		private val _items: String,
@@ -393,20 +383,20 @@ class PlannerPage(
 			val films: MutableList<WebElement>
 				get() = table.findElements(ByAngular.repeater("film in cineworld.films"))
 
-			fun performances(filmName: String, cinemaName: String): List<WebElement> {
-				return this
+			fun performances(filmName: String, cinemaName: String): List<WebElement> =
+				@Suppress("ReplaceGetOrSet")
+				this
 					.films
 					// find the row for the film
 					.single { it.findElement(By.className("film-title")).text == filmName }
 					// in all columns
 					.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
 					// pick the one that has the same index as the cinema
-					.get(this.cinemas.indexOf { it.findElement(By.className("cinema-name")).text == cinemaName })
+					.get(this.cinemas.safeIndexOf { it.findElement(By.className("cinema-name")).text == cinemaName })
 					// get the cell contents
 					.findElements(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
 					.findElements(By.cssSelector(".performance"))
-			}
 		}
 
 		val byCinema get() = ByCinema()
@@ -423,20 +413,20 @@ class PlannerPage(
 				get() = table.findElement(By.tagName("thead"))
 					.findElements(ByAngular.repeater("film in cineworld.films"))
 
-			fun performances(cinemaName: String, filmName: String): List<WebElement> {
-				return this
+			fun performances(cinemaName: String, filmName: String): List<WebElement> =
+				@Suppress("ReplaceGetOrSet")
+				this
 					.cinemas
 					// find the row for the cinema
 					.single { it.findElement(By.className("cinema-name")).text == cinemaName }
 					// in all columns
 					.findElements(ByAngular.repeater("film in cineworld.films"))
 					// pick the one that has the same index as the film
-					.get(this.films.indexOfFirst { it.findElement(By.className("film-title")).text == filmName })
+					.get(this.films.safeIndexOf { it.findElement(By.className("film-title")).text == filmName })
 					// get the cell contents (cannot use this because empty cells cannot be matched with repeater)
 					//.all(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
 					.findElements(By.cssSelector(".performance"))
-			}
 		}
 
 		val optionsDialog get() = OptionsDialog()
@@ -526,24 +516,6 @@ class PlannerPage(
 				.withMessage("Logout should redirect to home page")
 				.until(urlMatches("""/"""))
 		}
-	}
-
-	override fun open() {
-		check(!::dateLabel.isInitialized) { "Already initialized" }
-		browser.get("/planner")
-		browser.initElements(this)
-	}
-
-	override fun assertOpened() {
-		assertThat(browser.currentUrl).startsWith("${Options.baseUrl}/planner")
-		assertThat(browser.title).isEqualTo("Cineworld Cinemas Planner - Developer Beta")
-
-		// static content
-		assertThat(dateLabel.text).startsWith("Selected date is: ")
-
-		// dynamic content
-		assertThat(browser.currentUrl).contains("d=${LocalDate.now().year}")
-		assertThat(performancesEmpty).text().isEqualTo("Please select a film...")
 	}
 
 	companion object {

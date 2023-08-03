@@ -11,16 +11,15 @@ class CinemaIntegrationTestsRepresentation : Representation {
 
 	override fun toStringOf(obj: Any?): String? =
 		when (obj) {
-			is WebElement -> {
+			is WebElement ->
 				"WebElement(${obj})"
 					// See org.openqa.selenium.remote.RemoteWebDriver.toString.
 					.replace(
 						Regex("""\[ChromeDriver: chrome on .*? \((.*?)\)] ->"""),
 						"", // "[SessionId: $1]", but it's redundant because logs will contain that.
 					)
-			}
 
-			is Iterable<*> -> {
+			is Iterable<*> ->
 				if (obj.any() && obj.first() is WebElement) {
 					val type = "${obj::class.java.simpleName}<WebElement>"
 					obj.joinToString(
@@ -35,8 +34,8 @@ class CinemaIntegrationTestsRepresentation : Representation {
 				} else {
 					null
 				}
-			}
 
-			else -> null
+			else ->
+				null
 		}
 }

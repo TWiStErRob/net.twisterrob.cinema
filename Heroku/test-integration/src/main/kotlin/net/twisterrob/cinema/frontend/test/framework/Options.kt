@@ -1,10 +1,15 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.openqa.selenium.Dimension
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 object Options {
 
+	@Suppress("MagicNumber")
+	val windowSize: Dimension = Dimension(1920, 1080)
+
+	@Suppress("MagicNumber")
 	val defaultWaitTimeout: Duration = 30.seconds
 
 	val headless: Boolean

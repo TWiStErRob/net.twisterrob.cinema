@@ -37,10 +37,10 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 	companion object {
 
+		private val NAMESPACE = ExtensionContext.Namespace.create(BrowserExtension::class.qualifiedName)
+
 		private val ExtensionContext.store: ExtensionContext.Store
 			get() = this.getStore(NAMESPACE)
-
-		private val NAMESPACE = ExtensionContext.Namespace.create(BrowserExtension::class.qualifiedName)
 
 		private val BROWSER_KEY: Any = Browser::class
 		private val BROWSER_VALUE_TYPE: Class<Browser> = Browser::class.java
@@ -56,6 +56,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 			instance::class.java
 				.declaredFields
 				.filter { it.type == BROWSER_VALUE_TYPE }
+				.onEach { it.isAccessible = true }
 				.forEach { it.set(instance, browser) }
 		}
 
@@ -63,6 +64,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 			instance::class.java
 				.declaredFields
 				.filter { BasePage::class.java.isAssignableFrom(it.type) }
+				.onEach { it.isAccessible = true }
 				.forEach { it.set(instance, it.type.getConstructor(BROWSER_VALUE_TYPE).newInstance(browser)) }
 		}
 
@@ -77,7 +79,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 		 */
 		private fun WebDriver.verifyLogs() {
 			// JavaScript running in the browser: console.log("hello");
-			// Results in the following output to driver logs: 
+			// Results in the following output to driver logs:
 			// > [1690997212.256][DEBUG]: DevTools WebSocket Event: Runtime.consoleAPICalled (session_id=...) ... {
 			// >   "args": [ {
 			// >     "type": "string",
