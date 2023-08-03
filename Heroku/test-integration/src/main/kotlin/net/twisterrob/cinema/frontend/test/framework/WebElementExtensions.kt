@@ -18,7 +18,7 @@ val WebElement.isChecked: Boolean
  * @param iconName the end of `glyphicon-iconName`
  */
 fun WebElement.hasIcon(iconName: String): Boolean =
-	"glyphico-${iconName}" in this.classes
+	"glyphicon-${iconName}" in this.classes
 
 val WebElement.classes: List<String>
 	get() = this.getAttribute("class").split(Regex("""\s+"""))
