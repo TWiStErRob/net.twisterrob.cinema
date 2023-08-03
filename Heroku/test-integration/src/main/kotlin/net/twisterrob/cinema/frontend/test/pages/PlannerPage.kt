@@ -5,7 +5,6 @@ import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
-import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.framework.isChecked
 import net.twisterrob.cinema.frontend.test.framework.nonAngular
 import net.twisterrob.cinema.frontend.test.framework.safeIndexOf
@@ -31,12 +30,68 @@ class PlannerPage(
 	inner class CinemaGroup(
 		groupCSS: String,
 		listCSS: String,
-	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema")
+	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema") {
+
+		operator fun get(index: Int): Cinema =
+			Cinema(this.items[index])
+
+		val cinemas: List<Cinema>
+			get() = this.items.map(::Cinema)
+	}
+
+	class Cinema(
+		val root: WebElement,
+	) {
+
+		val name: WebElement
+			get() = root.findElement(By.className("cinema-name"))
+
+		val icon: WebElement
+			get() = root.findElement(By.className("glyphicon"))
+
+		fun favorite() {
+			assertThat(icon).hasIcon("star-empty")
+			icon.click()
+		}
+
+		fun unfavorite() {
+			assertThat(icon).hasIcon("heart")
+			icon.click()
+		}
+	}
 
 	inner class FilmGroup(
 		groupCSS: String,
 		listCSS: String,
-	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film")
+	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film") {
+
+		operator fun get(index: Int): Film =
+			Film(this.items[index])
+
+		val films: List<Film>
+			get() = this.items.map(::Film)
+	}
+
+	class Film(
+		val root: WebElement,
+	) {
+
+		val name: WebElement
+			get() = root.findElement(By.className("film-title"))
+
+		val icon: WebElement
+			get() = root.findElement(By.className("glyphicon"))
+
+		fun view() {
+			assertThat(icon).hasIcon("eye-open")
+			icon.click()
+		}
+
+		fun unview() {
+			assertThat(icon).hasIcon("eye-close")
+			icon.click()
+		}
+	}
 
 	inner class PlanGroup(
 		root: WebElement,
@@ -57,7 +112,6 @@ class PlannerPage(
 		val plans: List<Plan>
 			get() = this.items.map(::Plan)
 
-		// TODO This doesn't work yet, expects after this don't see this.list.
 		fun listPlans() {
 			if (this.scheduleExplorer.isSelected) {
 				// selected means it's checked, so click to un-check
@@ -126,6 +180,9 @@ class PlannerPage(
 
 		val scheduleMovies: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film"))
+
+		val scheduleMovieTitles: List<WebElement>
+			get() = this.scheduleMovies.map { it.findElement(By.className("film-title")) }
 
 		val scheduleBreaks: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film-break"))
@@ -389,7 +446,7 @@ class PlannerPage(
 					// get the cell contents
 					.findElements(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
-					.findElements(By.cssSelector(".performance"))
+					.flatMap { it.findElements(By.cssSelector(".performance")) }
 		}
 
 		val byCinema get() = ByCinema()

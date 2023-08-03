@@ -15,27 +15,13 @@ val WebElement.isChecked: Boolean
 
 /**
  * Matches the element to have a Bootstrap glyphicon element inside with the given icon name.
- * @param iconName the end of `glyphicon-name`
+ * @param iconName the end of `glyphicon-iconName`
  */
-fun WebElement.hasIcon(iconName: String): Boolean {
-	val iconElement = this.findElement(By.className("glyphicon"))
-	return "glyphicon-${iconName}" in iconElement.classes
-}
+fun WebElement.hasIcon(iconName: String): Boolean =
+	"glyphicon-${iconName}" in this.classes
 
 val WebElement.classes: List<String>
 	get() = this.getAttribute("class").split(Regex("""\s+"""))
-
-val WebElement.iconEl: WebElement
-	get() = this.findElement(By.className("glyphicon"))
-
-val WebElement.nameEl: WebElement
-	get() = this.findElement(By.className("cinema-name"))
-
-val WebElement.nameEl2: WebElement // STOPSHIP generalize
-	get() = this.findElement(By.className("film-title"))
-
-fun List<WebElement>.findElements(by: By): List<WebElement> =
-	this.flatMap { it.findElements(by) }
 
 fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
 	val index = this.indexOfFirst(filter)

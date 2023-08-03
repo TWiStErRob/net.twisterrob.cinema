@@ -2,10 +2,7 @@ package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.iconEl
-import net.twisterrob.cinema.frontend.test.framework.nameEl2
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,12 +38,12 @@ class DialogsUiTest {
 	@Test fun `can add non-watched film view`() {
 		app.films.new.expand()
 
-		val film = app.films.new.items[1]
-		film.iconEl.click()
+		val film = app.films.new[1]
+		film.view()
 
 		assertThat(app.films.addViewDialog.element).isDisplayed()
 		assertThat(app.films.addViewDialog.header).text().startsWith("View of ")
-		assertThat(app.films.addViewDialog.header.text).contains(film.nameEl2.text)
+		assertThat(app.films.addViewDialog.header).text().contains(film.name.text)
 		assertThat(app.films.addViewDialog.buttons.add).isDisplayed()
 		assertThat(app.films.addViewDialog.buttons.cancel).isDisplayed()
 	}
@@ -54,12 +51,12 @@ class DialogsUiTest {
 	@Test fun `can remove watched film view`() {
 		app.films.watched.expand()
 
-		val film = app.films.watched.items[0]
-		film.iconEl.click()
+		val film = app.films.watched[0]
+		film.unview()
 
 		assertThat(app.films.removeViewDialog.element).isDisplayed()
 		assertThat(app.films.removeViewDialog.header).text().isEqualTo("Deleting a View")
-		assertThat(app.films.removeViewDialog.element.text).contains(film.nameEl2.text)
+		assertThat(app.films.removeViewDialog.element).text().contains(film.name.text)
 		assertThat(app.films.removeViewDialog.buttons.ok).isDisplayed()
 		assertThat(app.films.removeViewDialog.buttons.cancel).isDisplayed()
 	}

@@ -3,13 +3,11 @@ package net.twisterrob.cinema.frontend.test
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.anyMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openqa.selenium.By
 
 @ExtendWith(BrowserExtension::class)
 class PlansUiTest {
@@ -146,8 +144,7 @@ class PlansUiTest {
 
 			val firstMovieTitle = firstMovieInPlan.title.text
 			assertThat(cinemaPlan.plans).allSatisfy { plan ->
-				val titles = plan.scheduleMovies.findElements(By.className("film-title"))
-				assertThat(titles).anyMeet { text().isEqualTo(firstMovieTitle) }
+				assertThat(plan.scheduleMovieTitles).anyMeet { text().isEqualTo(firstMovieTitle) }
 			}
 			assertThat(cinemaPlan.moreAll).isDisplayed()
 			assertThat(cinemaPlan.moreN).isDisplayed()

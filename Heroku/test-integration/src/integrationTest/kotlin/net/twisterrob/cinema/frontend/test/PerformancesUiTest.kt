@@ -23,13 +23,13 @@ class PerformancesUiTest {
 
 		@Test fun `shows film headers`() {
 			assertThat(app.performances.byFilm.films).hasSize(2)
-			assertThat(app.performances.byFilm.films[0].text).contains("Spider-Man")
-			assertThat(app.performances.byFilm.films[1].text).contains("Baby Driver")
+			assertThat(app.performances.byFilm.films[0]).text().contains("Spider-Man")
+			assertThat(app.performances.byFilm.films[1]).text().contains("Baby Driver")
 		}
 
 		@Test fun `shows cinema headers`() {
 			assertThat(app.performances.byFilm.cinemas).hasSize(1)
-			assertThat(app.performances.byFilm.cinemas[0].text).contains("Leicester Square")
+			assertThat(app.performances.byFilm.cinemas[0]).text().contains("Leicester Square")
 		}
 
 		@Test fun `shows performances (Baby Driver)`() {
@@ -60,14 +60,14 @@ class PerformancesUiTest {
 
 		@Test fun `shows cinema headers`() {
 			assertThat(app.performances.byCinema.cinemas).hasSize(2)
-			assertThat(app.performances.byCinema.cinemas[0].text).contains("Leicester Square")
-			assertThat(app.performances.byCinema.cinemas[1].text).contains("Wood Green")
+			assertThat(app.performances.byCinema.cinemas[0]).text().contains("Leicester Square")
+			assertThat(app.performances.byCinema.cinemas[1]).text().contains("Wood Green")
 		}
 
 		@Test fun `shows film headers`() {
 			assertThat(app.performances.byCinema.films).hasSize(2)
-			assertThat(app.performances.byCinema.films[0].text).contains("Spider-Man")
-			assertThat(app.performances.byCinema.films[1].text).contains("Baby Driver")
+			assertThat(app.performances.byCinema.films[0]).text().contains("Spider-Man")
+			assertThat(app.performances.byCinema.films[1]).text().contains("Baby Driver")
 		}
 
 		@Test fun `shows performances (1)`() {
