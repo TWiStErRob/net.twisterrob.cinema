@@ -18,6 +18,7 @@ import net.twisterrob.cinema.frontend.test.pages.planner.Group
 import net.twisterrob.cinema.frontend.test.pages.planner.PlanGroup
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.FindBy
 import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
 import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
@@ -31,21 +32,20 @@ class PlannerPage(
 	browser: Browser,
 ) : BasePage(browser) {
 
-	private fun waitFor(css: String) {
-		browser.waitForElementToDisappear(element(By.cssSelector(css)))
-	}
-
-	// STOPSHIP remove this and help inner classes be static.
-	fun element(by: By): WebElement = browser.findElement(by)
-
 	fun goToPlanner(url: String = "") {
 		browser.get("/planner$url")
+		browser.initElements(this)
 		waitToLoad()
 	}
 
-	val date by lazy { Date() }
+	@FindBy(css = "html[ng-app]")
+	private lateinit var app: WebElement
 
-	inner class Date {
+	val date by lazy { Date(app.findElement(By.id("date"))) }
+
+	class Date(
+		private val root: WebElement,
+	) {
 
 		val buttons = Buttons()
 
@@ -54,19 +54,19 @@ class PlannerPage(
 			val london: By = By.cssSelector("#cinemas-list-london li")
 
 			val change: WebElement
-				get() = element(By.id("date")).findElement(By.cssSelector("button"))
+				get() = root.findElement(By.cssSelector("button"))
 
 			val today: WebElement
-				get() = element(By.id("date")).findElement(ByAngular.buttonText("Today"))
+				get() = root.findElement(ByAngular.buttonText("Today"))
 
 			val clear: WebElement
-				get() = element(By.id("date")).findElement(ByAngular.buttonText("Clear"))
+				get() = root.findElement(ByAngular.buttonText("Clear"))
 
 			val done: WebElement
-				get() = element(By.id("date")).findElement(ByAngular.buttonText("Done"))
+				get() = root.findElement(ByAngular.buttonText("Done"))
 
 			fun day(day: String): WebElement =
-				element(By.id("date")).findElement(ByAngular.buttonText(day))
+				root.findElement(ByAngular.buttonText(day))
 		}
 
 		val editor = Editor()
@@ -74,7 +74,7 @@ class PlannerPage(
 		inner class Editor {
 
 			val element: WebElement
-				get() = element(By.id("cineworldDate"))
+				get() = root.findElement(By.id("cineworldDate"))
 
 			val date: LocalDate
 				get() = LocalDate.parse(element.textContent, DateTimeFormatter.ofPattern("M/d/yy"))
@@ -85,19 +85,21 @@ class PlannerPage(
 		inner class Label {
 
 			val element: WebElement
-				get() = element(By.id("date")).findElement(By.cssSelector("em.ng-binding"))
+				get() = root.findElement(By.cssSelector("em.ng-binding"))
 
 			val date: LocalDate
 				get() = LocalDate.parse(element.textContent, DateTimeFormatter.ofPattern("EEEE, LLLL d, yyyy"))
 		}
 	}
 
-	val cinemas get() = Cinemas()
+	val cinemas by lazy { Cinemas(app.findElement(By.id("cinemas"))) }
 
-	inner class Cinemas {
+	class Cinemas(
+		private val root: WebElement,
+	) {
 
-		fun waitToLoad() {
-			waitFor("#cinemas-group-favs .cinemas-loading")
+		fun waitToLoad(browser: Browser) {
+			browser.waitFor("#cinemas-group-favs .cinemas-loading")
 		}
 
 		val buttons get() = Buttons()
@@ -105,16 +107,16 @@ class PlannerPage(
 		inner class Buttons {
 
 			val all: WebElement
-				get() = element(By.id("cinemas-all"))
+				get() = root.findElement(By.id("cinemas-all"))
 
 			val favorites: WebElement
-				get() = element(By.id("cinemas-favs"))
+				get() = root.findElement(By.id("cinemas-favs"))
 
 			val london: WebElement
-				get() = element(By.id("cinemas-london"))
+				get() = root.findElement(By.id("cinemas-london"))
 
 			val none: WebElement
-				get() = element(By.id("cinemas-none"))
+				get() = root.findElement(By.id("cinemas-none"))
 		}
 
 		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
@@ -124,7 +126,7 @@ class PlannerPage(
 		inner class CinemaGroup(
 			groupCSS: String,
 			listCSS: String,
-		) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema") {
+		) : Group(root.findElement(By.cssSelector(groupCSS)), listCSS, ".cinema") {
 
 			operator fun get(index: Int): Cinema =
 				Cinema(this.items[index])
@@ -134,12 +136,15 @@ class PlannerPage(
 		}
 	}
 
-	val films by lazy { Films() }
+	val films by lazy { Films(app, app.findElement(By.id("films"))) }
 
-	inner class Films {
+	class Films(
+		private val app: WebElement,
+		private val root: WebElement,
+	) {
 
-		fun waitToLoad() {
-			waitFor("#films-group .films-loading")
+		fun waitToLoad(browser: Browser) {
+			browser.waitFor("#films-group .films-loading")
 		}
 
 		val buttons get() = Buttons()
@@ -147,69 +152,67 @@ class PlannerPage(
 		inner class Buttons {
 
 			val addView: WebElement
-				get() = element(By.id("films-addView"))
+				get() = root.findElement(By.id("films-addView"))
 
 			val all: WebElement
-				get() = element(By.id("films-all"))
+				get() = root.findElement(By.id("films-all"))
 
 			val new: WebElement
-				get() = element(By.id("films-new"))
+				get() = root.findElement(By.id("films-new"))
 
 			val none: WebElement
-				get() = element(By.id("films-none"))
+				get() = root.findElement(By.id("films-none"))
 		}
 
 		val new get() = FilmGroup("#films-group", "#films-list")
 		val watched get() = FilmGroup("#films-group-watched", "#films-list-watched")
 
-		val addViewDialog get() = AddViewDialog()
+		val addViewDialog get() = AddViewDialog(app.findElement(By.className("modal-dialog")))
 
-		inner class AddViewDialog {
-
-			val element: WebElement
-				get() = element(By.className("modal-dialog"))
+		class AddViewDialog(
+			val element: WebElement,
+		) {
 
 			val header: WebElement
-				get() = element(By.className("modal-dialog")).findElement(By.tagName("h3"))
+				get() = element.findElement(By.tagName("h3"))
 
 			val buttons get() = Buttons()
 
 			inner class Buttons {
 
 				val add: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Add"))
+					get() = element.findElement(ByAngular.buttonText("Add"))
 
 				val cancel: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
+					get() = element.findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 
-		val removeViewDialog get() = RemoveViewDialog()
+		val removeViewDialog get() = RemoveViewDialog(app.findElement(By.className("modal-dialog")))
 
-		inner class RemoveViewDialog {
-
-			val element: WebElement
-				get() = element(By.className("modal-dialog"))
+		class RemoveViewDialog(
+			val element: WebElement,
+		) {
 
 			val header: WebElement
-				get() = element(By.className("modal-dialog")).findElement(By.tagName("h1"))
+				get() = element.findElement(By.tagName("h1"))
 
 			val buttons get() = Buttons()
 
 			inner class Buttons {
 
 				val ok: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Yes"))
+					get() = element.findElement(ByAngular.buttonText("Yes"))
 
 				val cancel: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
+					get() = element.findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 
 		inner class FilmGroup(
 			groupCSS: String,
 			listCSS: String,
-		) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film") {
+		) : Group(root.findElement(By.cssSelector(groupCSS)), listCSS, ".film") {
 
 			operator fun get(index: Int): Film =
 				Film(this.items[index])
@@ -219,13 +222,16 @@ class PlannerPage(
 		}
 	}
 
-	val performances by lazy { Performances() }
+	val performances by lazy { Performances(app, app.findElement(By.id("performances"))) }
 
-	inner class Performances {
+	class Performances(
+		private val app: WebElement,
+		private val root: WebElement,
+	) {
 
-		fun waitToLoad() {
-			waitFor("#performances-waiting")
-			waitFor("#performances-loading")
+		fun waitToLoad(browser: Browser) {
+			browser.waitFor("#performances-waiting")
+			browser.waitFor("#performances-loading")
 		}
 
 		val buttons get() = Buttons()
@@ -233,10 +239,10 @@ class PlannerPage(
 		inner class Buttons {
 
 			val plan: WebElement
-				get() = element(By.id("plan-plan"))
+				get() = root.findElement(By.id("plan-plan"))
 
 			val options: WebElement
-				get() = element(By.id("plan-options"))
+				get() = root.findElement(By.id("plan-options"))
 		}
 
 		val byFilm get() = ByFilm()
@@ -244,7 +250,7 @@ class PlannerPage(
 		inner class ByFilm {
 
 			val table: WebElement
-				get() = element(By.id("performances-by-film"))
+				get() = root.findElement(By.id("performances-by-film"))
 
 			val cinemas: List<WebElement>
 				get() = table.findElement(By.tagName("thead"))
@@ -274,7 +280,7 @@ class PlannerPage(
 		inner class ByCinema {
 
 			val table: WebElement
-				get() = element(By.id("performances-by-cinema"))
+				get() = root.findElement(By.id("performances-by-cinema"))
 
 			val cinemas: List<WebElement>
 				get() = table.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
@@ -299,35 +305,36 @@ class PlannerPage(
 					.findElements(By.cssSelector(".performance"))
 		}
 
-		val optionsDialog get() = OptionsDialog()
+		val optionsDialog get() = OptionsDialog(app.findElement(By.className("modal-dialog")))
 
-		inner class OptionsDialog {
-
-			val element: WebElement
-				get() = element(By.className("modal-dialog"))
+		class OptionsDialog(
+			val element: WebElement,
+		) {
 
 			val header: WebElement
-				get() = element(By.className("modal-dialog")).findElement(By.tagName("h3"))
+				get() = element.findElement(By.tagName("h3"))
 
 			val buttons get() = Buttons()
 
 			inner class Buttons {
 
 				val plan: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Plan"))
+					get() = element.findElement(ByAngular.buttonText("Plan"))
 
 				val cancel: WebElement
-					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
+					get() = element.findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 	}
 
-	val plans by lazy { Plans() }
+	val plans by lazy { Plans(app.findElement(By.id("plan-results"))) }
 
-	inner class Plans {
+	class Plans(
+		private val root: WebElement,
+	) {
 
 		val groups: List<WebElement>
-			get() = element(By.id("plan-results")).findElements(ByAngular.repeater("cPlan in plans"))
+			get() = root.findElements(ByAngular.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
@@ -337,21 +344,24 @@ class PlannerPage(
 	}
 
 	fun waitToLoad() {
-		cinemas.waitToLoad()
-		element(By.id("cinemas"))
+		cinemas.waitToLoad(browser)
+		// CONSIDER using the DSL.
+		app
+			.findElement(By.id("cinemas"))
 			.findElements(By.className("cinema"))
 			.count(WebElement::isChecked)
 			.let { count ->
 				if (count > 0) {
-					films.waitToLoad()
+					films.waitToLoad(browser)
 				}
 			}
-		element(By.id("films"))
+		app
+			.findElement(By.id("films"))
 			.findElements(By.className("film"))
 			.count(WebElement::isChecked)
 			.let { count ->
 				if (count > 0) {
-					performances.waitToLoad()
+					performances.waitToLoad(browser)
 				}
 			}
 		browser.waitForAngular()
@@ -392,4 +402,8 @@ class PlannerPage(
 
 		val D_FORMAT: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 	}
+}
+
+private fun Browser.waitFor(css: String) {
+	this.waitForElementToDisappear(this.findElement(By.cssSelector(css)))
 }
