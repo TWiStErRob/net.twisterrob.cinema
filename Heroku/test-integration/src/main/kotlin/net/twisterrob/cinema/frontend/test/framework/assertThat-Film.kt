@@ -1,6 +1,6 @@
 package net.twisterrob.cinema.frontend.test.framework
 
-import net.twisterrob.cinema.frontend.test.pages.dsl.Film
+import net.twisterrob.cinema.frontend.test.pages.planner.Film
 import org.assertj.core.api.AbstractIterableAssert
 
 fun <A : AbstractIterableAssert<*, *, Film, *>> A.anyMeet(assertions: WebElementAssert.() -> Unit) {

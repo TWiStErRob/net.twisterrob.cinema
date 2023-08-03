@@ -1,27 +1,28 @@
-package net.twisterrob.cinema.frontend.test.pages.dsl
+package net.twisterrob.cinema.frontend.test.pages.planner
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
 /**
- * @param root root element or CSS selector
- * @param content content element or CSS selector inside root
- * @param _items elements or CSS selector in content
+ * @param root root element
+ * @param contentCss CSS selector inside root
+ * @param itemsCss CSS selector in content
  */
+@Suppress("OutdatedDocumentation") // TODEL https://github.com/detekt/detekt/issues/6362
 open class Group(
 	val root: WebElement,
-	private val content: String,
-	private val _items: String,
+	private val contentCss: String,
+	private val itemsCss: String,
 ) {
 
 	val header: WebElement
 		get() = root.findElement(By.className("accordion-toggle"))
 
 	val list: WebElement
-		get() = root.findElement(By.cssSelector(content))
+		get() = root.findElement(By.cssSelector(contentCss))
 
 	val items: List<WebElement>
-		get() = list.findElements(By.cssSelector(_items))
+		get() = list.findElements(By.cssSelector(itemsCss))
 
 	fun click() {
 		header.click()

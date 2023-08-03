@@ -29,7 +29,7 @@ fun <A : Assert<out Assert<A, T>, T>, T> A.check(
 ): A = verify {
 	if (!property(actual)) {
 		failWithMessage("Expected element to be ${propertyName}. But was not!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessageReturnsNothing()
 	}
 }
 
@@ -42,7 +42,7 @@ fun <A : Assert<out Assert<A, T>, T>, T> A.checkNot(
 ): A = verify {
 	if (property(actual)) {
 		failWithMessage("Expected element to not be ${propertyName}. But was!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessageReturnsNothing()
 	}
 }
 
@@ -55,7 +55,7 @@ fun <A : Assert<out Assert<A, T>, T>, T> A.check(
 ): A = verify {
 	if (!property(actual)) {
 		failWithMessage("Expected element to be ${propertyName}. But was not!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessageReturnsNothing()
 	}
 }
 
@@ -68,7 +68,7 @@ fun <A : Assert<out Assert<A, T>, T>, T> A.checkNot(
 ): A = verify {
 	if (property(actual)) {
 		failWithMessage("Expected element to not be ${propertyName}. But was!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessageReturnsNothing()
 	}
 }
 
@@ -81,8 +81,8 @@ fun <A : Assert<out Assert<A, T>, T>, T, P> A.checkHas(
 	failWithMessage: (String, Array<out Any?>) -> ActuallyNothing,
 ): A = verify {
 	if (!property(actual, arg)) {
-		failWithMessage("Expected element to have ${propertyName} ${arg}. But did not have!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessage("Expected element to have ${propertyName} ${arg ?: "null"}. But did not have!", emptyArray())
+		failWithMessageReturnsNothing()
 	}
 }
 
@@ -95,7 +95,11 @@ fun <A : Assert<out Assert<A, T>, T>, T, P> A.checkDoesNotHave(
 	failWithMessage: (String, Array<out Any?>) -> ActuallyNothing,
 ): A = verify {
 	if (property(actual, arg)) {
-		failWithMessage("Expected element to not have ${propertyName} ${arg}. But had!", emptyArray())
-		error("failWithMessage should have thrown")
+		failWithMessage("Expected element to not have ${propertyName} ${arg ?: "null"}. But had!", emptyArray())
+		failWithMessageReturnsNothing()
 	}
+}
+
+private fun failWithMessageReturnsNothing(): Nothing {
+	error("failWithMessage should have thrown")
 }

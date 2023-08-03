@@ -1,4 +1,6 @@
-@file:Suppress("ExplicitItLambdaParameter")
+@file:Suppress(
+	"FunctionMinLength", // They're meant to be short and/or/not are traditional names.
+)
 
 package net.twisterrob.cinema.frontend.test.framework
 
@@ -15,7 +17,7 @@ import kotlin.reflect.KFunction1
  * ```
  */
 operator fun <T> ((T) -> Boolean).not(): (T) -> Boolean =
-	{ it: T -> !this(it) }
+	{ !this(it) }
 
 /**
  * Kotlin version of [java.util.function.Predicate.negate] for method references.
@@ -27,28 +29,31 @@ operator fun <T> ((T) -> Boolean).not(): (T) -> Boolean =
  * ```
  */
 operator fun <T> KFunction1<T, Boolean>.not(): KFunction1<T, Boolean> =
+	@Suppress("ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> !this(it) }::invoke
 
 /**
  * Kotlin version of [java.util.function.Predicate.or] for functional types.
  */
 infix fun <T> ((T) -> Boolean).or(other: (T) -> Boolean): (T) -> Boolean =
-	{ it: T -> this(it) || other(it) }
+	{ this(it) || other(it) }
 
 /**
  * Kotlin version of [java.util.function.Predicate.or] for method references.
  */
 infix fun <T> KFunction1<T, Boolean>.or(other: KFunction1<T, Boolean>): KFunction1<T, Boolean> =
+	@Suppress("ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> this(it) || other(it) }::invoke
 
 /**
  * Kotlin version of [java.util.function.Predicate.and] for functional types.
  */
 infix fun <T> ((T) -> Boolean).and(other: (T) -> Boolean): (T) -> Boolean =
-	{ it: T -> this(it) && other(it) }
+	{ this(it) && other(it) }
 
 /**
  * Kotlin version of [java.util.function.Predicate.and] for method references.
  */
 infix fun <T> KFunction1<T, Boolean>.and(other: KFunction1<T, Boolean>): KFunction1<T, Boolean> =
+	@Suppress("ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> this(it) && other(it) }::invoke

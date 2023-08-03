@@ -4,7 +4,7 @@ import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.anyMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage.Plans.PlanGroup
+import net.twisterrob.cinema.frontend.test.pages.planner.PlanGroup
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

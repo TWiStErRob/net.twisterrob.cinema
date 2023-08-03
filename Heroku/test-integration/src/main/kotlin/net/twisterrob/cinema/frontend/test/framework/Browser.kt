@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.PageFactory
 import java.util.logging.Level
 
+@Suppress("ClassOrdering") // In logical order.
 class Browser : SearchContext {
 
 	val driver: WebDriver by lazy { createDriver().apply(::replaceCommandExecutor) }
@@ -38,28 +39,23 @@ class Browser : SearchContext {
 
 	companion object {
 
+		@Suppress("NestedScopeFunctions") // KISS the setup.
 		// Automatically will use https://www.selenium.dev/documentation/selenium_manager/.
 		private fun createDriver(): RemoteWebDriver {
 			val options = ChromeOptions().apply {
 				setCapability(ChromeOptions.LOGGING_PREFS, LoggingPreferences().apply {
 					enable(LogType.BROWSER, Level.ALL)
 				})
-				// Try to fix error on GitHub Actions CI (based on https://stackoverflow.com/a/50642913/253468)
-				// > org.openqa.selenium.SessionNotCreatedException:
-				// > Could not start a new session. Response code 500.
-				// > Message: unknown error: Chrome failed to start: exited abnormally.
-				// > (unknown error: DevToolsActivePort file doesn't exist)
-				addArguments("--disable-dev-shm-usage")
 				// TODO is this faster?
 				//addArguments("--disable-extensions")
 				// TODO what does this mean?
 				//addArguments("--no-sandbox")
-				if (Options.headless) {
+				// TODO Not sure if necessary (Windows only?), keep it for future reference.
+				//addArguments("--disable-gpu")
+				if (Options.isHeadless) {
 					addArguments("--headless=new")
 					// Implicit via driver.manage() below, it doesn't work with new headless mode.
-					//addArguments("--window-size=1920,1080")
-					// Not sure if necessary, keep it for future reference.
-					//addArguments("--disable-gpu")
+					//addArguments("--window-size=${Options.windowSize.width},${Options.windowSize.height)}")
 				}
 			}
 			val service = ChromeDriverService.Builder()

@@ -1,4 +1,4 @@
-package net.twisterrob.cinema.frontend.test.pages.dsl
+package net.twisterrob.cinema.frontend.test.pages.planner
 
 import com.paulhammant.ngwebdriver.ByAngular
 import net.twisterrob.cinema.frontend.test.framework.assertThat

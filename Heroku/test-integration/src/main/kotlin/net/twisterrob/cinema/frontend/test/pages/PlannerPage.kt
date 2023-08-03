@@ -12,10 +12,10 @@ import net.twisterrob.cinema.frontend.test.framework.textContent
 import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
-import net.twisterrob.cinema.frontend.test.pages.dsl.Cinema
-import net.twisterrob.cinema.frontend.test.pages.dsl.Film
-import net.twisterrob.cinema.frontend.test.pages.dsl.Group
-import net.twisterrob.cinema.frontend.test.pages.dsl.Plan
+import net.twisterrob.cinema.frontend.test.pages.planner.Cinema
+import net.twisterrob.cinema.frontend.test.pages.planner.Film
+import net.twisterrob.cinema.frontend.test.pages.planner.Group
+import net.twisterrob.cinema.frontend.test.pages.planner.PlanGroup
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
@@ -23,6 +23,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@Suppress(
+	"StringLiteralDuplication", // Lots of CSS and angular selectors which might be the same.
+	"ClassOrdering", // In logical order.
+)
 class PlannerPage(
 	browser: Browser,
 ) : BasePage(browser) {
@@ -250,7 +254,7 @@ class PlannerPage(
 				get() = table.findElements(ByAngular.repeater("film in cineworld.films"))
 
 			fun performances(filmName: String, cinemaName: String): List<WebElement> =
-				@Suppress("ReplaceGetOrSet")
+				@Suppress("ReplaceGetOrSet", "ExplicitCollectionElementAccessMethod")
 				this
 					.films
 					// find the row for the film
@@ -280,7 +284,7 @@ class PlannerPage(
 					.findElements(ByAngular.repeater("film in cineworld.films"))
 
 			fun performances(cinemaName: String, filmName: String): List<WebElement> =
-				@Suppress("ReplaceGetOrSet")
+				@Suppress("ReplaceGetOrSet", "ExplicitCollectionElementAccessMethod")
 				this
 					.cinemas
 					// find the row for the cinema
@@ -329,36 +333,6 @@ class PlannerPage(
 			fun byCinemaName(group: WebElement): Boolean =
 				group.findElement(By.className("cinema-name")).text == cinemaName
 			return PlanGroup(this.groups.single(::byCinemaName))
-		}
-
-		inner class PlanGroup(
-			root: WebElement,
-		) : Group(root, ".plans", ".plan") {
-
-			val moreN: WebElement
-				get() = root.findElement(By.className("plans-footer"))
-					.findElement(ByAngular.partialButtonText("more ..."))
-
-			val moreAll: WebElement
-				get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("All"))
-
-			val scheduleExplorer: WebElement
-				get() = root.findElement(By.className("schedule-explorer"))
-
-			operator fun get(index: Int): Plan =
-				Plan(this.items[index])
-
-			val plans: List<Plan>
-				get() = this.items.map(::Plan)
-
-			fun listPlans() {
-				if (this.scheduleExplorer.isSelected) {
-					// selected means it's checked, so click to un-check
-					this.scheduleExplorer.click()
-				} else {
-					// not selected, so it's already un-checked
-				}
-			}
 		}
 	}
 

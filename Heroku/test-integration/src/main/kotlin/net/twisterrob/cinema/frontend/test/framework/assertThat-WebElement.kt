@@ -1,4 +1,7 @@
-@file:Suppress("UnusedImport") // REPORT
+@file:Suppress(
+	"UnusedImport", // TODEL // https://youtrack.jetbrains.com/issue/KT-60939
+	"UnusedImports", // TODEL https://github.com/detekt/detekt/issues/6363
+)
 
 package net.twisterrob.cinema.frontend.test.framework
 

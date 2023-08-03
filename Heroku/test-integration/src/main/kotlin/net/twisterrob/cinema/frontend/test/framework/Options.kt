@@ -12,7 +12,7 @@ object Options {
 	@Suppress("MagicNumber")
 	val defaultWaitTimeout: Duration = 30.seconds
 
-	val headless: Boolean
+	val isHeadless: Boolean
 		get() = System.getProperty("net.twisterrob.test.selenium.headless", "false").toBooleanStrict()
 
 	val baseUrl: String
