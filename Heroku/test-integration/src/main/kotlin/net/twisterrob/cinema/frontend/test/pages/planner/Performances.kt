@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement
 @Suppress(
 	"UseDataClass", // TODEL https://github.com/detekt/detekt/issues/5339
 	"ClassOrdering", // Logical order.
+	"StringLiteralDuplication", // Keep selectors inline.
 )
 class Performances(
 	private val app: WebElement,

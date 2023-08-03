@@ -24,6 +24,7 @@ class PlannerPage(
 	browser: Browser,
 ) : BasePage(browser) {
 
+	@Suppress("LateinitUsage") // Initialized by PageFactory.
 	@FindBy(css = "html[ng-app]")
 	private lateinit var app: WebElement
 
