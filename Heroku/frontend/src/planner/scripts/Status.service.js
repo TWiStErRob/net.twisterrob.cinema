@@ -5,7 +5,7 @@ module.factory('Status', [
 	        '$timeout',
 	function($timeout) {
 		var stati = [];
-		var timeout = 0; // STOPSHIP Speed up testing
+		var timeout = 2000;
 		return {
 			showStatus: function addBottomMessage(message) {
 				stati.push(message); // ad new message to the queue
@@ -19,4 +19,3 @@ module.factory('Status', [
 		};
 	}
 ]);
-

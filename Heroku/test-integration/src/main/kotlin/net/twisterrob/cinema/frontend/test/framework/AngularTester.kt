@@ -9,6 +9,7 @@ fun Browser.navigateToAngularPage(url: String) {
 	driver.get(url)
 	driver.waitForAngularToExist()
 	driver.disableAngularAnimations()
+	driver.disableStatusToastBar()
 	driver.resumeAngular()
 	driver.waitForAngular()
 }
@@ -47,12 +48,25 @@ private fun WebDriver.disableAngularAnimations() {
 	//findElement(By.tagName("body")).allowAnimations(false);
 }
 
+private fun WebDriver.disableStatusToastBar() {
+	executeScript<Unit>(
+		"""
+			/* global angular: false // Comes from the opened page. */
+			angular.module('disableStatus', []).run(['Status', function (Status) {
+				Status.timeout = 0;
+			}]);
+		""".trimIndent()
+	)
+}
+
 private fun WebDriver.resumeAngular() {
 	executeScript<Unit>(
 		"""
 			/* global angular: false // Comes from the opened page. */
-			window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__ = angular.resumeBootstrap(["disableNgAnimate"]);
+			window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__ = angular.resumeBootstrap(arguments[0]);
 		""".trimIndent(),
+		// TODO make this list configurable and abstracted a'la protractor.
+		listOf("disableNgAnimate", "disableStatus"),
 	)
 }
 
