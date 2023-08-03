@@ -54,7 +54,8 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 		private fun injectBrowser(instance: Any, browser: Browser) {
 			instance::class.java
-				.declaredFields
+				.superHierarchy
+				.flatMap { it.declaredFields.toList() }
 				.filter { it.type == BROWSER_VALUE_TYPE }
 				.onEach { it.isAccessible = true }
 				.forEach { it.set(instance, browser) }
@@ -62,7 +63,8 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 		private fun injectPages(instance: Any, browser: Browser) {
 			instance::class.java
-				.declaredFields
+				.superHierarchy
+				.flatMap { it.declaredFields.toList() }
 				.filter { BasePage::class.java.isAssignableFrom(it.type) }
 				.onEach { it.isAccessible = true }
 				.forEach { it.set(instance, it.type.getConstructor(BROWSER_VALUE_TYPE).newInstance(browser)) }
@@ -93,3 +95,6 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 		}
 	}
 }
+
+private val Class<*>.superHierarchy: List<Class<*>>
+	get() = generateSequence(this) { it.superclass }.toList()

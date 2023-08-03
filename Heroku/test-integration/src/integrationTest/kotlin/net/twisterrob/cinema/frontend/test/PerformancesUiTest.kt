@@ -1,18 +1,13 @@
 package net.twisterrob.cinema.frontend.test
 
-import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
+import net.twisterrob.cinema.frontend.test.framework.BasePlannerUiTest
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BrowserExtension::class)
-class PerformancesUiTest {
-
-	private lateinit var app: PlannerPage
+class PerformancesUiTest : BasePlannerUiTest() {
 
 	@Nested
 	inner class TableByFilm {

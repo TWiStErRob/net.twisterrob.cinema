@@ -1,12 +1,11 @@
 package net.twisterrob.cinema.frontend.test
 
-import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
+import net.twisterrob.cinema.frontend.test.framework.BaseInteractivePlannerUiTest
 import net.twisterrob.cinema.frontend.test.framework.Options
 import net.twisterrob.cinema.frontend.test.framework.allMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.noneMeet
 import net.twisterrob.cinema.frontend.test.framework.not
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import net.twisterrob.cinema.frontend.test.pages.planner.Cinema
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -14,22 +13,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BrowserExtension::class)
-class CinemasUiTest {
-
-	private lateinit var app: PlannerPage
+class CinemasUiTest : BaseInteractivePlannerUiTest() {
 
 	private fun favoritedCinema(cinema: Cinema): Boolean =
 		app.cinemas.favorites.cinemas.any { it.name.text == cinema.name.text }
 
 	private fun londonCinema(cinema: Cinema): Boolean =
 		app.cinemas.london.cinemas.any { it.name.text == cinema.name.text }
-
-	@BeforeEach fun beforeEach() {
-		app.goToPlanner()
-	}
 
 	@Nested
 	inner class Initial {

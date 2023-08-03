@@ -1,20 +1,10 @@
 package net.twisterrob.cinema.frontend.test
 
-import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
+import net.twisterrob.cinema.frontend.test.framework.BaseInteractivePlannerUiTest
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.pages.PlannerPage
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BrowserExtension::class)
-class DialogsUiTest {
-
-	private lateinit var app: PlannerPage
-
-	@BeforeEach fun beforeEach() {
-		app.goToPlanner()
-	}
+class DialogsUiTest : BaseInteractivePlannerUiTest() {
 
 	@Test fun `opens calendar picker`() {
 		assertThat(app.date.buttons.change).isEnabled()
