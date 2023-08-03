@@ -4,17 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
-fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
-	val index = this.indexOfFirst(filter)
-	assertThat(index)
-		.overridingErrorMessage { "Cannot find index of ${filter} in ${this}" }
-		.isGreaterThanOrEqualTo(0)
-	assertThat(this)
-		.overridingErrorMessage { "Found multiple matches for ${filter} in ${this}" }
-		.satisfiesOnlyOnce { assertThat(it).matches(filter) }
-	return index
-}
-
 val WebElement.textContent: String?
 	get() = when (this.tagName) {
 		"input", "textarea" -> this.getAttribute("value")
@@ -44,3 +33,17 @@ val WebElement.nameEl: WebElement
 
 val WebElement.nameEl2: WebElement // STOPSHIP generalize
 	get() = this.findElement(By.className("film-title"))
+
+fun List<WebElement>.findElements(by: By): List<WebElement> =
+	this.flatMap { it.findElements(by) }
+
+fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
+	val index = this.indexOfFirst(filter)
+	assertThat(index)
+		.overridingErrorMessage { "Cannot find index of ${filter} in ${this}" }
+		.isGreaterThanOrEqualTo(0)
+	assertThat(this)
+		.overridingErrorMessage { "Found multiple matches for ${filter} in ${this}" }
+		.satisfiesOnlyOnce { assertThat(it).matches(filter) }
+	return index
+}

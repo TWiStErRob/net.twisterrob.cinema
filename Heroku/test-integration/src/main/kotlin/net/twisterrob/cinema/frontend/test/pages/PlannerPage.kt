@@ -24,9 +24,8 @@ class PlannerPage(
 	browser: Browser,
 ) : BasePage(browser) {
 
-	fun waitFor(css: String) {
-		val elemToWaitFor = browser.findElements(By.cssSelector(css)).single()
-		return browser.waitForElementToDisappear(elemToWaitFor)
+	private fun waitFor(css: String) {
+		browser.waitForElementToDisappear(element(By.cssSelector(css)))
 	}
 
 	inner class CinemaGroup(
@@ -120,7 +119,7 @@ class PlannerPage(
 			get() = root.findElement(ByAngular.buttonText("×"))
 
 		val schedule: WebElement
-			get() = root.findElement(By.className("plan-films")) // STOPSHIP was typed array
+			get() = root.findElement(By.className("plan-films"))
 
 		val scheduleItems: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film, .plan-film-break"))

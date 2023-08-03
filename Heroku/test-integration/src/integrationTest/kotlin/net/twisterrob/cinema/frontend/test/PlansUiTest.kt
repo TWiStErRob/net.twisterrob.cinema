@@ -98,29 +98,32 @@ class PlansUiTest {
 	@Nested
 	inner class Plan {
 
-		private fun gotoPlan(): PlannerPage.Plan {
+		private fun gotoSinglePlan(): PlannerPage.PlanGroup {
 			app.goToPlanner("?d=2017-07-14&c=103&f=184739&f=189108")
 
 			val cinemaPlan = app.plans.groupForCinema("London - Leicester Square")
 			cinemaPlan.listPlans()
 			assertThat(cinemaPlan.list).isDisplayed()
 			assertThat(cinemaPlan.items).hasSize(1)
-			// noinspection ES6RedundantAwait, this helps synchronize the await and assertThat mixture.
-			return cinemaPlan[0]
+			return cinemaPlan
 		}
 
 		@Test fun `should be removable`() {
-			val plan = gotoPlan()
+			val cinemaPlan = gotoSinglePlan()
+			val plan = cinemaPlan[0]
 			assertThat(plan.root).isDisplayed()
 			assertThat(plan.delete).isDisplayed()
 
 			plan.delete.click()
 
-			//assertThat(plan.root).not.toBePresent() // STOPSHIP how?
+			assertThat(cinemaPlan.items).isEmpty()
+			assertThat(cinemaPlan.list).isDisplayed()
+			assertThat(cinemaPlan.moreN).isDisplayed()
+			assertThat(cinemaPlan.moreAll).isDisplayed()
 		}
 
 		@Test fun `should contain films and breaks`() {
-			val plan = gotoPlan()
+			val plan = gotoSinglePlan()[0]
 			assertThat(plan.scheduleStart).text().isEqualTo("18:25")
 			assertThat(plan.scheduleEnd).text().isEqualTo("22:58")
 			assertThat(plan.scheduleItems).hasSize(3)

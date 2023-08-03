@@ -22,7 +22,6 @@ class CinemasUiTest {
 
 	private lateinit var app: PlannerPage
 
-	// STOPSHIP review none/empty behavior on empty lists; original anyWithText(empty) -> false, noneWithText(empty) -> true
 	private fun notFavoritedCinema(cinema: WebElement): Boolean =
 		app.cinemas.favorites.items.none { it.text == cinema.text }
 
