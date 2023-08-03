@@ -8,12 +8,14 @@ class PlanGroup(
 	root: WebElement,
 ) : Group(root, ".plans", ".plan") {
 
-	val moreN: WebElement
+	val footer: WebElement
 		get() = root.findElement(By.className("plans-footer"))
-			.findElement(ByAngular.partialButtonText("more ..."))
+
+	val moreN: WebElement
+		get() = footer.findElement(ByAngular.partialButtonText("more ..."))
 
 	val moreAll: WebElement
-		get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("All"))
+		get() = footer.findElement(ByAngular.partialButtonText("All"))
 
 	val scheduleExplorer: WebElement
 		get() = root.findElement(By.className("schedule-explorer"))
@@ -24,7 +26,7 @@ class PlanGroup(
 	operator fun get(index: Int): Plan =
 		Plan(this.items[index])
 
-	fun listPlans() {
+	fun tryListPlans() {
 		if (this.scheduleExplorer.isSelected) {
 			// selected means it's checked, so click to un-check
 			this.scheduleExplorer.click()

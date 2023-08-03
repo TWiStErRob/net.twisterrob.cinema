@@ -19,7 +19,7 @@ fun <T : Any> WebDriver.waitFor(
 	condition: Function<WebDriver, T>,
 	timeout: Duration = Options.defaultWaitTimeout,
 ): T =
-	wait().withTimeout(timeout.toJavaDuration()).until(condition)
+	this.wait().withTimeout(timeout.toJavaDuration()).until(condition)
 
 /**
  * To be used with Kotlin trailing lambdas.
@@ -28,14 +28,14 @@ fun <T : Any> WebDriver.waitFor(
 	timeout: Duration = Options.defaultWaitTimeout,
 	condition: WebDriver.() -> T,
 ): T =
-	wait().withTimeout(timeout.toJavaDuration()).until { condition(this) }
+	this.wait().withTimeout(timeout.toJavaDuration()).until { condition(this) }
 
-fun Browser.waitForElementToDisappear(element: WebElement) {
-	check(driver.waitFor(ExpectedConditions.invisibilityOf(element))) { "${element} did not disappear." }
+fun WebDriver.waitForElementToDisappear(element: WebElement) {
+	check(this.waitFor(ExpectedConditions.invisibilityOf(element))) { "${element} did not disappear." }
 }
 
 fun Browser.delayedExecute(locator: By, action: (WebElement) -> Unit) {
-	val element = driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator))
-	driver.wait().until(ExpectedConditions.visibilityOf(element))
+	val element = this.driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator))
+	this.driver.wait().until(ExpectedConditions.visibilityOf(element))
 	action(element)
 }

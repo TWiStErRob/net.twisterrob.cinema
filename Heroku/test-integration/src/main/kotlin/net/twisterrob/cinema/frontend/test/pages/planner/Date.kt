@@ -15,7 +15,7 @@ class Date(
 	private val root: WebElement,
 ) {
 
-	val buttons = Buttons()
+	val buttons get() = Buttons()
 
 	inner class Buttons {
 
@@ -35,7 +35,7 @@ class Date(
 			root.findElement(ByAngular.buttonText(day))
 	}
 
-	val editor = Editor()
+	val editor get() = Editor()
 
 	inner class Editor {
 
@@ -46,7 +46,7 @@ class Date(
 			get() = LocalDate.parse(element.textContent, DateTimeFormatter.ofPattern("M/d/yy"))
 	}
 
-	val label = Label()
+	val label get() = Label()
 
 	inner class Label {
 

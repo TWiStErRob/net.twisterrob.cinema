@@ -26,7 +26,7 @@ class DialogsUiTest : BaseInteractivePlannerUiTest() {
 	}
 
 	@Test fun `can add non-watched film view`() {
-		app.films.new.expand()
+		app.films.new.tryExpand()
 
 		val film = app.films.new[1]
 		film.view()
@@ -39,7 +39,7 @@ class DialogsUiTest : BaseInteractivePlannerUiTest() {
 	}
 
 	@Test fun `can remove watched film view`() {
-		app.films.watched.expand()
+		app.films.watched.tryExpand()
 
 		val film = app.films.watched[0]
 		film.unview()

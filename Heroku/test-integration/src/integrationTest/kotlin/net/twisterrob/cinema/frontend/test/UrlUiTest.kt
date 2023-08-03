@@ -46,8 +46,6 @@ class UrlUiTest : BasePlannerUiTest() {
 
 		@Test fun `should preselect favorites`(browser: Browser) {
 			app.goToPlanner()
-			// Not sure why, but this particular test was really flaky without this sleep, but only on GitHub Actions CI.
-			Thread.sleep(3000)
 
 			assertThat(browser).url().hasParameter("c", "103")
 		}

@@ -1,10 +1,7 @@
 package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.Assertions.assertThat
-import org.openqa.selenium.By
-import org.openqa.selenium.SearchContext
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.chrome.ChromeOptions
@@ -12,17 +9,12 @@ import org.openqa.selenium.chromium.ChromiumDriverLogLevel
 import org.openqa.selenium.logging.LogType
 import org.openqa.selenium.logging.LoggingPreferences
 import org.openqa.selenium.remote.RemoteWebDriver
-import org.openqa.selenium.support.PageFactory
 import java.util.logging.Level
 
 @Suppress("ClassOrdering") // In logical order.
-class Browser : SearchContext {
+class Browser {
 
 	val driver: WebDriver by lazy { createDriver().apply(::replaceCommandExecutor) }
-
-	fun initElements(page: Any) {
-		PageFactory.initElements(driver, page)
-	}
 
 	fun get(relativeUrl: String) {
 		navigateToAngularPage("${Options.baseUrl}${relativeUrl}")
@@ -36,9 +28,6 @@ class Browser : SearchContext {
 
 	val title: String
 		get() = driver.title
-
-	override fun findElements(by: By): List<WebElement> = driver.findElements(by)
-	override fun findElement(by: By): WebElement = driver.findElement(by)
 
 	companion object {
 

@@ -28,7 +28,7 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should show some watched films`() {
-			app.films.watched.expand()
+			app.films.watched.tryExpand()
 
 			assertThat(app.films.watched.films).isNotEmpty()
 			assertThat(app.films.watched.films).allSatisfy { assertThat(it.icon).hasIcon("eye-close") }
@@ -48,24 +48,24 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 			}
 
 			@Test fun `should expand`() {
-				app.films.new.expand()
+				app.films.new.tryExpand()
 
 				assertThat(app.films.new.films).isNotEmpty()
 				assertThat(app.films.new.films).allMeet { isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
-				app.films.new.collapse()
+				app.films.new.tryCollapse()
 
 				assertThat(app.films.new.films).noneMeet { isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
-				app.films.new.expand()
+				app.films.new.tryExpand()
 				assertThat(app.films.new.films).allMeet { isDisplayed() }
-				app.films.new.collapse()
+				app.films.new.tryCollapse()
 				assertThat(app.films.new.films).noneMeet { isDisplayed() }
-				app.films.new.expand()
+				app.films.new.tryExpand()
 				assertThat(app.films.new.films).allMeet { isDisplayed() }
 			}
 		}
@@ -80,24 +80,24 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 			}
 
 			@Test fun `should expand`() {
-				app.films.watched.expand()
+				app.films.watched.tryExpand()
 
 				assertThat(app.films.watched.films).isNotEmpty()
 				assertThat(app.films.watched.films).allMeet { isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
-				app.films.watched.collapse()
+				app.films.watched.tryCollapse()
 
 				assertThat(app.films.watched.films).noneMeet { isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
-				app.films.watched.expand()
+				app.films.watched.tryExpand()
 				assertThat(app.films.watched.films).allMeet { isDisplayed() }
-				app.films.watched.collapse()
+				app.films.watched.tryCollapse()
 				assertThat(app.films.watched.films).noneMeet { isDisplayed() }
-				app.films.watched.expand()
+				app.films.watched.tryExpand()
 				assertThat(app.films.watched.films).allMeet { isDisplayed() }
 			}
 		}
@@ -122,7 +122,7 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should select none`() {
-			app.films.watched.expand()
+			app.films.watched.tryExpand()
 
 			app.films.buttons.none.click()
 
@@ -131,7 +131,7 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should select new films only`() {
-			app.films.watched.expand()
+			app.films.watched.tryExpand()
 
 			app.films.buttons.new.click()
 
@@ -140,8 +140,8 @@ class FilmsUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should display new films`() {
-			app.films.new.collapse()
-			app.films.watched.collapse()
+			app.films.new.tryCollapse()
+			app.films.watched.tryCollapse()
 
 			app.films.buttons.new.click()
 

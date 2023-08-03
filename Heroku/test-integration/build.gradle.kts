@@ -21,6 +21,7 @@ dependencies {
 
 tasks.integrationTest.configure {
 	val propertyNamesToExposeToJUnitTests = listOf(
+		"net.twisterrob.test.selenium.baseUrl",
 		"net.twisterrob.test.selenium.headless",
 		"net.twisterrob.test.selenium.user.name",
 		"net.twisterrob.test.selenium.user.pass",

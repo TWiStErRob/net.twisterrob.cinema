@@ -20,6 +20,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf
 import org.openqa.selenium.support.ui.ExpectedConditions.urlMatches
 import java.time.format.DateTimeFormatter
 
+/**
+ * URL: `/planner`.
+ */
 class PlannerPage(
 	browser: Browser,
 ) : BasePage(browser) {
@@ -36,7 +39,7 @@ class PlannerPage(
 
 	fun goToPlanner(url: String = "") {
 		browser.get("/planner$url")
-		browser.initElements(this)
+		initElements()
 		waitToLoad()
 	}
 
@@ -99,6 +102,9 @@ class PlannerPage(
 
 	companion object {
 
+		/**
+		 * Format of the `?d=` (Date) URL query string parameter.
+		 */
 		val D_FORMAT: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 	}
 }

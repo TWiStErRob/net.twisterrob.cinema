@@ -57,24 +57,24 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 			}
 
 			@Test fun `should expand`() {
-				app.cinemas.favorites.expand()
+				app.cinemas.favorites.tryExpand()
 
 				assertThat(app.cinemas.favorites.cinemas).isNotEmpty
 				assertThat(app.cinemas.favorites.cinemas).allMeet { isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
-				app.cinemas.favorites.collapse()
+				app.cinemas.favorites.tryCollapse()
 
 				assertThat(app.cinemas.favorites.cinemas).noneMeet { isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
-				app.cinemas.favorites.expand()
+				app.cinemas.favorites.tryExpand()
 				assertThat(app.cinemas.favorites.cinemas).allMeet { isDisplayed() }
-				app.cinemas.favorites.collapse()
+				app.cinemas.favorites.tryCollapse()
 				assertThat(app.cinemas.favorites.cinemas).noneMeet { isDisplayed() }
-				app.cinemas.favorites.expand()
+				app.cinemas.favorites.tryExpand()
 				assertThat(app.cinemas.favorites.cinemas).allMeet { isDisplayed() }
 			}
 		}
@@ -89,24 +89,24 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 			}
 
 			@Test fun `should expand`() {
-				app.cinemas.london.expand()
+				app.cinemas.london.tryExpand()
 
 				assertThat(app.cinemas.london.cinemas).isNotEmpty
 				assertThat(app.cinemas.london.cinemas).allMeet { isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
-				app.cinemas.london.collapse()
+				app.cinemas.london.tryCollapse()
 
 				assertThat(app.cinemas.london.cinemas).noneMeet { isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
-				app.cinemas.london.expand()
+				app.cinemas.london.tryExpand()
 				assertThat(app.cinemas.london.cinemas).allMeet { isDisplayed() }
-				app.cinemas.london.collapse()
+				app.cinemas.london.tryCollapse()
 				assertThat(app.cinemas.london.cinemas).noneMeet { isDisplayed() }
-				app.cinemas.london.expand()
+				app.cinemas.london.tryExpand()
 				assertThat(app.cinemas.london.cinemas).allMeet { isDisplayed() }
 			}
 		}
@@ -121,23 +121,23 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 			}
 
 			@Test fun `should expand`() {
-				app.cinemas.other.expand()
+				app.cinemas.other.tryExpand()
 
 				assertThat(app.cinemas.other.cinemas).allMeet { isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
-				app.cinemas.other.collapse()
+				app.cinemas.other.tryCollapse()
 
 				assertThat(app.cinemas.other.cinemas).noneMeet { isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
-				app.cinemas.other.expand()
+				app.cinemas.other.tryExpand()
 				assertThat(app.cinemas.other.cinemas).allMeet { isDisplayed() }
-				app.cinemas.other.collapse()
+				app.cinemas.other.tryCollapse()
 				assertThat(app.cinemas.other.cinemas).noneMeet { isDisplayed() }
-				app.cinemas.other.expand()
+				app.cinemas.other.tryExpand()
 				assertThat(app.cinemas.other.cinemas).allMeet { isDisplayed() }
 			}
 		}
@@ -178,9 +178,9 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should display London cinemas`() {
-			app.cinemas.favorites.collapse()
-			app.cinemas.london.collapse()
-			app.cinemas.other.collapse()
+			app.cinemas.favorites.tryCollapse()
+			app.cinemas.london.tryCollapse()
+			app.cinemas.other.tryCollapse()
 
 			app.cinemas.buttons.london.click()
 
@@ -200,9 +200,9 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 		}
 
 		@Test fun `should display favorite cinemas`() {
-			app.cinemas.favorites.collapse()
-			app.cinemas.london.collapse()
-			app.cinemas.other.collapse()
+			app.cinemas.favorites.tryCollapse()
+			app.cinemas.london.tryCollapse()
+			app.cinemas.other.tryCollapse()
 
 			app.cinemas.buttons.favorites.click()
 
@@ -218,6 +218,9 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 		}
 	}
 
+	/**
+	 * TOFIX Tried these: https://stackoverflow.com/q/60117232 + https://www.protractortest.org/#/browser-setup#adding-chrome-specific-options, but no luck.
+	 */
 	@Nested
 	@Disabled("Login doesn't work: Access blocked: This app’s request is invalid Error 400: redirect_uri_mismatch")
 	inner class Authenticated {

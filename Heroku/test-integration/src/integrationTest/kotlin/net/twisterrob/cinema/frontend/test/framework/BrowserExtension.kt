@@ -26,7 +26,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 	override fun afterTestExecution(extensionContext: ExtensionContext) {
 		extensionContext.executionException.ifPresent {
 			extensionContext.store.browser?.apply {
-				val file = takeScreenshot(
+				val file = driver.takeScreenshot(
 					extensionContext.hierarchy
 						.drop(1) // EngineExecutionContext (i.e. junit-jupiter)
 						.map { it.displayName }
@@ -46,17 +46,6 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 				driver.quit()
 			}
 		}
-	}
-
-	private fun Browser.takeScreenshot(testHierarchy: List<String>): File {
-		val relativePath = testHierarchy
-			.joinToString(separator = File.separator, postfix = ".png") { it.toFileNameSafe() }
-		val file = Options.screenshotDir.resolve(relativePath)
-		file.parentFile.mkdirs()
-		println("Saving screenshot to ${file}")
-		val screenshot = (driver as TakesScreenshot).getScreenshotAs(OutputType.BYTES)
-		file.writeBytes(screenshot)
-		return file
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
@@ -122,6 +111,17 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 			val logs = manage().logs().get(LogType.BROWSER).all
 			logs.forEach(LogPrinter()::print)
 			assertThat(logs).isEmpty()
+		}
+
+		private fun WebDriver.takeScreenshot(testHierarchy: List<String>): File {
+			val relativePath = testHierarchy
+				.joinToString(separator = File.separator, postfix = ".png") { it.toFileNameSafe() }
+			val file = Options.screenshotDir.resolve(relativePath)
+			file.parentFile.mkdirs()
+			System.err.println("Saving screenshot to ${file}")
+			val screenshot = (this as TakesScreenshot).getScreenshotAs(OutputType.BYTES)
+			file.writeBytes(screenshot)
+			return file
 		}
 	}
 }

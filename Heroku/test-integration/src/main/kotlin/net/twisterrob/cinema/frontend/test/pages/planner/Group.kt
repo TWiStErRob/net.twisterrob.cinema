@@ -28,7 +28,7 @@ open class Group(
 		header.click()
 	}
 
-	fun collapse() {
+	fun tryCollapse() {
 		if (list.isDisplayed) {
 			// displayed means it's expanded, so click to collapse
 			click()
@@ -37,7 +37,7 @@ open class Group(
 		}
 	}
 
-	fun expand() {
+	fun tryExpand() {
 		if (list.isDisplayed) {
 			// displayed means it's already expanded
 		} else {
