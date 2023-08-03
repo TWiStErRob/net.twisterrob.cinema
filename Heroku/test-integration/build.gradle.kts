@@ -13,10 +13,10 @@ dependencies {
 	Deps.slf4jToLog4jForTest(project, testType = "integrationTest")
 	integrationTestImplementation(projects.testHelpers)
 
+	implementation(libs.test.assertj)
 	implementation(libs.test.selenium)
+	implementation(libs.test.selenium.angular)
 	integrationTestRuntimeOnly(libs.test.selenium.jdkHttp)
-	implementation("org.assertj:assertj-core:3.24.2") // STOPSHIP
-	implementation("com.paulhammant:ngwebdriver:1.2")
 }
 
 tasks.integrationTest.configure {
