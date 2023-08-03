@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
+import net.twisterrob.cinema.frontend.test.framework.anyMeet
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
@@ -143,7 +144,7 @@ class PlansUiTest {
 			val firstMovieTitle = firstMovieInPlan.title.text
 			assertThat(cinemaPlan.plans).allSatisfy { plan ->
 				val titles = plan.scheduleMovies.findElements(By.className("film-title"))
-				assertThat(titles).anySatisfy { assertThat(it).text().isEqualTo(firstMovieTitle) }
+				assertThat(titles).anyMeet { text().isEqualTo(firstMovieTitle) }
 			}
 			assertThat(cinemaPlan.moreAll).isDisplayed()
 			assertThat(cinemaPlan.moreN).isDisplayed()

@@ -4,6 +4,7 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import org.assertj.core.api.AbstractAssert
+import org.assertj.core.api.AbstractIterableAssert
 import org.assertj.core.api.AbstractStringAssert
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
@@ -16,6 +17,18 @@ import kotlin.reflect.KFunction1
 @CheckReturnValue
 inline fun assertThat(element: WebElement): WebElementAssert =
 	WebElementAssert(element)
+
+fun <A : AbstractIterableAssert<*, *, WebElement, *>> A.anyMeet(assertions: WebElementAssert.() -> Unit) {
+	this.anySatisfy { assertThat(it).assertions() }
+}
+
+fun <A : AbstractIterableAssert<*, *, WebElement, *>> A.allMeet(assertions: WebElementAssert.() -> Unit) {
+	this.allSatisfy { assertThat(it).assertions() }
+}
+
+fun <A : AbstractIterableAssert<*, *, WebElement, *>> A.noneMeet(assertions: WebElementAssert.() -> Unit) {
+	this.noneSatisfy { assertThat(it).assertions() }
+}
 
 @Suppress("TooManyFunctions") // This is how AssertJ works.
 class WebElementAssert(

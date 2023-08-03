@@ -6,19 +6,19 @@ import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2
 import kotlin.reflect.KProperty1
 
-/**
- * Has to use `(String, Array<out Any?>) -> Unit` instead of `(String, vararg Any?) -> Nothing` for `failWithMessage`.
- *  * vararg is not possible in function type
- *  * failWithMessage is defined in Java, so there's no Nothing type, and :: doesn't auto-convert it.
- */
-private typealias ActuallyNothing = Unit
-
 @CheckReturnValue
 fun <A : Assert<*, *>> A.verify(block: A.() -> Unit): A {
 	this.isNotNull
 	block(this)
 	return this
 }
+
+/**
+ * Has to use `(String, Array<out Any?>) -> Unit` instead of `(String, vararg Any?) -> Nothing` for `failWithMessage`.
+ *  * vararg is not possible in function type
+ *  * failWithMessage is defined in Java, so there's no Nothing type, and :: doesn't auto-convert it.
+ */
+private typealias ActuallyNothing = Unit
 
 @CheckReturnValue
 fun <A : Assert<out Assert<A, T>, T>, T> A.check(
