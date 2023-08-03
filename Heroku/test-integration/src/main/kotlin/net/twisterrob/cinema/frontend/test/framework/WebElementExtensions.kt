@@ -5,17 +5,15 @@ import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
 fun List<WebElement>.indexOf(filter: (WebElement) -> Boolean): Int {
-	val INITIAL_VALUE = -1
-	val stack = Throwable().stackTrace
-	//noinspection JSValidateTypes it will be a Promise<int>, but the generics don't resolve it on reduce/then
+	val initial = -1
 	return this
-		.foldIndexed(INITIAL_VALUE) { acc, index, element ->
-			if (acc != INITIAL_VALUE) return@foldIndexed acc
+		.foldIndexed(initial) { acc, index, element ->
+			if (acc != initial) return@foldIndexed acc
 			return@foldIndexed if (filter(element)) index else acc
 		}
 		.let { index ->
 			Assertions.assertThat(index)
-				.overridingErrorMessage { "Cannot find index of ${filter} in ${this}\n${stack}" }
+				.overridingErrorMessage { "Cannot find index of ${filter} in ${this}" }
 				.isGreaterThanOrEqualTo(0)
 			return@let index
 		}
@@ -29,7 +27,7 @@ fun WebElement.hasSelection(): Boolean =
  * @param iconName the end of `glyphicon-name`
  */
 fun WebElement.hasIcon(iconName: String): Boolean { // STOPSHIP use Condition API?
-	val iconElement = this.element(By.className("glyphicon"))
+	val iconElement = this.findElement(By.className("glyphicon"))
 	return iconElement.hasClass("glyphicon-${iconName}")
 }
 
@@ -47,6 +45,11 @@ val WebElement.classes: List<String>
 		return classes.split(Regex("""\s+"""))
 	}
 
-val WebElement.iconEl get() = this.element(By.className("glyphicon"))
-val WebElement.nameEl get() = this.element(By.className("cinema-name"))
-val WebElement.nameEl2 get() = this.element(By.className("film-title"))
+val WebElement.iconEl: WebElement
+	get() = this.findElement(By.className("glyphicon"))
+
+val WebElement.nameEl: WebElement
+	get() = this.findElement(By.className("cinema-name"))
+
+val WebElement.nameEl2: WebElement // STOPSHIP generalize
+	get() = this.findElement(By.className("film-title"))

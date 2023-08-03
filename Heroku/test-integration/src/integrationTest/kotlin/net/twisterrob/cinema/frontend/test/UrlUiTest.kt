@@ -3,7 +3,6 @@ package net.twisterrob.cinema.frontend.test
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.element
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
@@ -68,7 +67,7 @@ class UrlUiTest {
 
 			val titles = Regex("""All Eyez On Me|Baby Driver""")
 			fun filter(item: WebElement): Boolean = // STOPSHIP generalize
-				item.element(By.className("film-title")).text.matches(titles)
+				item.findElement(By.className("film-title")).text.matches(titles)
 			assertThat(app.films.new.items).filteredOn(::filter).allMatch { it.hasSelection() }
 			assertThat(app.films.new.items).filteredOn { !filter(it) }.noneMatch { it.hasSelection() }
 			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }
@@ -89,7 +88,7 @@ class UrlUiTest {
 			assertThat(app.cinemas.other.items).noneMatch { it.hasSelection() }
 			val titles = Regex("""All Eyez On Me|Baby Driver""")
 			fun filter(item: WebElement): Boolean = // STOPSHIP generalize
-				item.element(By.className("film-title")).text.matches(titles)
+				item.findElement(By.className("film-title")).text.matches(titles)
 			assertThat(app.films.new.items.filter(::filter)).allMatch { it.hasSelection() }
 			assertThat(app.films.new.items.filterNot(::filter)).noneMatch { it.hasSelection() }
 			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }

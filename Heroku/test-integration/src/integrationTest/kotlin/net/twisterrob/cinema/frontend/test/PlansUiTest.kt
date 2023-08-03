@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
-import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
+import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -142,7 +142,7 @@ class PlansUiTest {
 
 			val firstMovieTitle = firstMovieInPlan.title.text
 			cinemaPlan.plans.forEach { plan ->
-				val titles = plan.scheduleMovies.all(By.className("film-title"))
+				val titles = plan.scheduleMovies.findElements(By.className("film-title"))
 				assertThat(titles).anyMatch { it.text == firstMovieTitle }
 			}
 			assertThat(cinemaPlan.moreAll).isDisplayed()

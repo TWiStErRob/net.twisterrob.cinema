@@ -4,10 +4,9 @@ import com.paulhammant.ngwebdriver.ByAngular
 import net.twisterrob.cinema.frontend.test.framework.BasePage
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.Options
-import net.twisterrob.cinema.frontend.test.framework.all
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
-import net.twisterrob.cinema.frontend.test.framework.element
+import net.twisterrob.cinema.frontend.test.framework.findElements
 import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.framework.indexOf
 import net.twisterrob.cinema.frontend.test.framework.initElements
@@ -39,21 +38,38 @@ class PlannerPage(
 		return browser.waitForElementToDisappear(elemToWaitFor)
 	}
 
-	inner class CinemaGroup(groupCSS: String, listCSS: String) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema")
-	inner class FilmGroup(groupCSS: String, listCSS: String) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film")
-	inner class PlanGroup(root: WebElement) : Group(root, ".plans", ".plan") {
-		val moreN get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("more ..."))
-		val moreAll get() = root.element(By.className("plans-footer")).element(ByAngular.partialButtonText("All"))
-		val scheduleExplorer get() = root.element(By.className("schedule-explorer"))
+	inner class CinemaGroup(
+		groupCSS: String,
+		listCSS: String,
+	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".cinema")
+
+	inner class FilmGroup(
+		groupCSS: String,
+		listCSS: String,
+	) : Group(element(By.cssSelector(groupCSS)), listCSS, ".film")
+
+	inner class PlanGroup(
+		root: WebElement,
+	) : Group(root, ".plans", ".plan") {
+
+		val moreN: WebElement
+			get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("more ..."))
+
+		val moreAll: WebElement
+			get() = root.findElement(By.className("plans-footer")).findElement(ByAngular.partialButtonText("All"))
+
+		val scheduleExplorer: WebElement
+			get() = root.findElement(By.className("schedule-explorer"))
 
 		operator fun get(index: Int): Plan =
 			Plan(this.items[index])
 
-		val plans get() = this.items.map(::Plan)
+		val plans: List<Plan>
+			get() = this.items.map(::Plan)
 
 		// TODO This doesn't work yet, expects after this don't see this.list.
 		fun listPlans() {
-			if (this.scheduleExplorer.isSelected()) {
+			if (this.scheduleExplorer.isSelected) {
 				// selected means it's checked, so click to un-check
 				this.scheduleExplorer.click()
 			} else {
@@ -72,9 +88,15 @@ class PlannerPage(
 		private val content: String,
 		private val _items: String,
 	) {
-		val header get() = root.element(By.className("accordion-toggle"))
-		val list get() = root.element(By.cssSelector(content))
-		val items get() = list.all(By.cssSelector(_items))
+
+		val header: WebElement
+			get() = root.findElement(By.className("accordion-toggle"))
+
+		val list: WebElement
+			get() = root.findElement(By.cssSelector(content))
+
+		val items: MutableList<WebElement>
+			get() = list.findElements(By.cssSelector(_items))
 
 		fun click() {
 			header.click()
@@ -102,27 +124,40 @@ class PlannerPage(
 	class Plan(
 		val root: WebElement,
 	) {
-		val delete get() = root.element(ByAngular.buttonText("×"))
-		val schedule get() = root.element(By.className("plan-films")) // STOPSHIP was typed array
-		val scheduleItems get() = this.schedule.all(By.cssSelector(".plan-film, .plan-film-break"))
-		val scheduleMovies get() = this.schedule.all(By.cssSelector(".plan-film"))
-		val scheduleBreaks get() = this.schedule.all(By.cssSelector(".plan-film-break"))
+
+		val delete: WebElement
+			get() = root.findElement(ByAngular.buttonText("×"))
+
+		val schedule: WebElement
+			get() = root.findElement(By.className("plan-films")) // STOPSHIP was typed array
+
+		val scheduleItems: MutableList<WebElement>
+			get() = this.schedule.findElements(By.cssSelector(".plan-film, .plan-film-break"))
+
+		val scheduleMovies: MutableList<WebElement>
+			get() = this.schedule.findElements(By.cssSelector(".plan-film"))
+
+		val scheduleBreaks: MutableList<WebElement>
+			get() = this.schedule.findElements(By.cssSelector(".plan-film-break"))
 
 		// start and end are classed the same way in the global timings as in individual films
-		val scheduleStart get() = root.all(By.cssSelector(".film-start")).first()
-		val scheduleEnd get() = root.all(By.cssSelector(".film-end")).first() // STOPSHIP last?
+		val scheduleStart: WebElement
+			get() = root.findElements(By.cssSelector(".film-start")).first()
 
-		fun getItem(index: Int): WebElement =
+		val scheduleEnd: WebElement
+			get() = root.findElements(By.cssSelector(".film-end")).first() // STOPSHIP last?
+
+		operator fun get(index: Int): WebElement =
 			this.scheduleItems[index]
 
 		fun getItemAsMovie(index: Int): ScheduleMovieItem {
-			val item = this.getItem(index)
+			val item = this[index]
 			assertThat(item).classes().contains("plan-film")
 			return ScheduleMovieItem(item)
 		}
 
 		fun getItemAsBreak(index: Int): ScheduleBreakItem {
-			val item = this.getItem(index)
+			val item = this[index]
 			assertThat(item).classes().contains("plan-film-break")
 			return ScheduleBreakItem(item)
 		}
@@ -131,18 +166,32 @@ class PlannerPage(
 	class ScheduleMovieItem(
 		private val root: WebElement
 	) {
-		val startTime get() = root.element(By.className("film-start"))
-		val endTime get() = root.element(By.className("film-end"))
-		val title get() = root.element(By.className("film-title"))
-		val runtime get() = root.element(By.className("film-runtime"))
-		val filterByFilm get() = root.element(By.xpath("""button[i[contains(@class, "glyphicon-time")]]"""))
-		val filterByScreening get() = root.element(By.xpath("""button[i[contains(@class, "glyphicon-film")]]"""))
+
+		val startTime: WebElement
+			get() = root.findElement(By.className("film-start"))
+
+		val endTime: WebElement
+			get() = root.findElement(By.className("film-end"))
+
+		val title: WebElement
+			get() = root.findElement(By.className("film-title"))
+
+		val runtime: WebElement
+			get() = root.findElement(By.className("film-runtime"))
+
+		val filterByFilm: WebElement
+			get() = root.findElement(By.xpath("""button[i[contains(@class, "glyphicon-time")]]"""))
+
+		val filterByScreening: WebElement
+			get() = root.findElement(By.xpath("""button[i[contains(@class, "glyphicon-film")]]"""))
 	}
 
 	class ScheduleBreakItem(
 		private val root: WebElement
 	) {
-		val length get() = root.element(By.className("length"))
+
+		val length: WebElement
+			get() = root.findElement(By.className("length"))
 	}
 
 	fun element(by: By): WebElement = browser.findElement(by)
@@ -153,29 +202,51 @@ class PlannerPage(
 	}
 
 	val date by lazy { Date() }
+
 	inner class Date {
+
 		val buttons = Buttons()
+
 		inner class Buttons {
+
 			val london: By = By.cssSelector("#cinemas-list-london li")
 
-			val change get() = element(By.id("date")).element(By.cssSelector("button"))
-			val today get() = element(By.id("date")).element(ByAngular.buttonText("Today"))
-			val clear get() = element(By.id("date")).element(ByAngular.buttonText("Clear"))
-			val done get() = element(By.id("date")).element(ByAngular.buttonText("Done"))
-			fun day(day: String) = element(By.id("date")).element(ByAngular.buttonText(day))
+			val change: WebElement
+				get() = element(By.id("date")).findElement(By.cssSelector("button"))
+
+			val today: WebElement
+				get() = element(By.id("date")).findElement(ByAngular.buttonText("Today"))
+
+			val clear: WebElement
+				get() = element(By.id("date")).findElement(ByAngular.buttonText("Clear"))
+
+			val done: WebElement
+				get() = element(By.id("date")).findElement(ByAngular.buttonText("Done"))
+
+			fun day(day: String): WebElement =
+				element(By.id("date")).findElement(ByAngular.buttonText(day))
 		}
 
 		val editor = Editor()
+
 		inner class Editor {
-			val element get() = element(By.id("cineworldDate"))
-			fun getText(): String? = this.element.getAttribute("value")
+
+			val element: WebElement
+				get() = element(By.id("cineworldDate"))
+
+			fun getText(): String? =
+				this.element.getAttribute("value")
+
 			fun getTextAsMoment(): LocalDate =
 				LocalDate.parse(getText(), DateTimeFormatter.ofPattern("M/d/yy"))
 		}
 
 		val label = Label()
+
 		inner class Label {
-			val element get() = element(By.id("date")).element(By.cssSelector("em.ng-binding"))
+
+			val element: WebElement
+				get() = element(By.id("date")).findElement(By.cssSelector("em.ng-binding"))
 
 			fun getText(): String? =
 				this.element.text
@@ -186,17 +257,28 @@ class PlannerPage(
 	}
 
 	val cinemas get() = Cinemas()
+
 	inner class Cinemas {
+
 		fun waitToLoad() {
 			waitFor("#cinemas-group-favs .cinemas-loading")
 		}
 
 		val buttons get() = Buttons()
+
 		inner class Buttons {
-			val all get() = element(By.id("cinemas-all"))
-			val favorites get() = element(By.id("cinemas-favs"))
-			val london get() = element(By.id("cinemas-london"))
-			val none get() = element(By.id("cinemas-none"))
+
+			val all: WebElement
+				get() = element(By.id("cinemas-all"))
+
+			val favorites: WebElement
+				get() = element(By.id("cinemas-favs"))
+
+			val london: WebElement
+				get() = element(By.id("cinemas-london"))
+
+			val none: WebElement
+				get() = element(By.id("cinemas-none"))
 		}
 
 		val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
@@ -205,124 +287,191 @@ class PlannerPage(
 	}
 
 	val films by lazy { Films() }
+
 	inner class Films {
+
 		fun waitToLoad() {
 			waitFor("#films-group .films-loading")
 		}
 
 		val buttons get() = Buttons()
+
 		inner class Buttons {
-			val addView get() = element(By.id("films-addView"))
-			val all get() = element(By.id("films-all"))
-			val new get() = element(By.id("films-new"))
-			val none get() = element(By.id("films-none"))
+
+			val addView: WebElement
+				get() = element(By.id("films-addView"))
+
+			val all: WebElement
+				get() = element(By.id("films-all"))
+
+			val new: WebElement
+				get() = element(By.id("films-new"))
+
+			val none: WebElement
+				get() = element(By.id("films-none"))
 		}
 
-		val new = FilmGroup("#films-group", "#films-list")
-		val watched = FilmGroup("#films-group-watched", "#films-list-watched")
+		val new get() = FilmGroup("#films-group", "#films-list")
+		val watched get() = FilmGroup("#films-group-watched", "#films-list-watched")
 
 		val addViewDialog get() = AddViewDialog()
+
 		inner class AddViewDialog {
-			val element get() = element(By.className("modal-dialog"))
-			val header get() = element(By.className("modal-dialog")).element(By.tagName("h3"))
+
+			val element: WebElement
+				get() = element(By.className("modal-dialog"))
+
+			val header: WebElement
+				get() = element(By.className("modal-dialog")).findElement(By.tagName("h3"))
 
 			val buttons get() = Buttons()
+
 			inner class Buttons {
 
-				val add get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Add"))
-				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
+				val add: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Add"))
+
+				val cancel: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 
 		val removeViewDialog get() = RemoveViewDialog()
+
 		inner class RemoveViewDialog {
-			val element get() = element(By.className("modal-dialog"))
-			val header get() = element(By.className("modal-dialog")).element(By.tagName("h1"))
+
+			val element: WebElement
+				get() = element(By.className("modal-dialog"))
+
+			val header: WebElement
+				get() = element(By.className("modal-dialog")).findElement(By.tagName("h1"))
 
 			val buttons get() = Buttons()
+
 			inner class Buttons {
 
-				val ok get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Yes"))
-				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
+				val ok: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Yes"))
+
+				val cancel: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 	}
 
-	val byFilmRoot by lazy { element(By.id("performances-by-film")) }
-	val byCinemaRoot by lazy { element(By.id("performances-by-cinema")) }
-
 	val performances by lazy { Performances() }
+
 	inner class Performances {
+
 		fun waitToLoad() {
 			waitFor("#performances-waiting")
 			waitFor("#performances-loading")
 		}
+
 		val buttons get() = Buttons()
+
 		inner class Buttons {
-			val plan get() = element(By.id("plan-plan"))
-			val options get() = element(By.id("plan-options"))
+
+			val plan: WebElement
+				get() = element(By.id("plan-plan"))
+
+			val options: WebElement
+				get() = element(By.id("plan-options"))
 		}
+
 		val byFilm get() = ByFilm()
+
 		inner class ByFilm {
-			val table get() = byFilmRoot
-			val cinemas get() = byFilmRoot.element(By.tagName("thead")).all(ByAngular.repeater("cinema in cineworld.cinemas"))
-			val films get() = byFilmRoot.all(ByAngular.repeater("film in cineworld.films"))
+
+			val table: WebElement
+				get() = element(By.id("performances-by-film"))
+
+			val cinemas: MutableList<WebElement>
+				get() = table.findElement(By.tagName("thead"))
+					.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
+
+			val films: MutableList<WebElement>
+				get() = table.findElements(ByAngular.repeater("film in cineworld.films"))
+
 			fun performances(filmName: String, cinemaName: String): List<WebElement> {
 				return this
 					.films
 					// find the row for the film
-					.single { it.element(By.className("film-title")).text == filmName }
+					.single { it.findElement(By.className("film-title")).text == filmName }
 					// in all columns
-					.all(ByAngular.repeater("cinema in cineworld.cinemas"))
+					.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
 					// pick the one that has the same index as the cinema
-					.get(this.cinemas.indexOf { it.element(By.className("cinema-name")).text == cinemaName })
+					.get(this.cinemas.indexOf { it.findElement(By.className("cinema-name")).text == cinemaName })
 					// get the cell contents
-					.all(ByAngular.repeater("performance in performances"))
+					.findElements(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
-					.all(By.cssSelector(".performance"))
+					.findElements(By.cssSelector(".performance"))
 			}
 		}
+
 		val byCinema get() = ByCinema()
+
 		inner class ByCinema {
-			val table get() = byCinemaRoot
-			val cinemas get() = byCinemaRoot.all(ByAngular.repeater("cinema in cineworld.cinemas"))
-			val films get() = byCinemaRoot.element(By.tagName("thead")).all(ByAngular.repeater("film in cineworld.films"))
+
+			val table: WebElement
+				get() = element(By.id("performances-by-cinema"))
+
+			val cinemas: MutableList<WebElement>
+				get() = table.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
+
+			val films: MutableList<WebElement>
+				get() = table.findElement(By.tagName("thead"))
+					.findElements(ByAngular.repeater("film in cineworld.films"))
+
 			fun performances(cinemaName: String, filmName: String): List<WebElement> {
 				return this
 					.cinemas
 					// find the row for the cinema
-					.single { it.element(By.className("cinema-name")).text == cinemaName }
+					.single { it.findElement(By.className("cinema-name")).text == cinemaName }
 					// in all columns
-					.all(ByAngular.repeater("film in cineworld.films"))
+					.findElements(ByAngular.repeater("film in cineworld.films"))
 					// pick the one that has the same index as the film
-					.get(this.films.indexOfFirst { it.element(By.className("film-title")).text == filmName })
+					.get(this.films.indexOfFirst { it.findElement(By.className("film-title")).text == filmName })
 					// get the cell contents (cannot use this because empty cells cannot be matched with repeater)
 					//.all(ByAngular.repeater("performance in performances"))
 					// and drill down into the performance (the separating comma is just outside this)
-					.all(By.cssSelector(".performance"))
+					.findElements(By.cssSelector(".performance"))
 			}
 		}
+
 		val optionsDialog get() = OptionsDialog()
+
 		inner class OptionsDialog {
-			val element get() = element(By.className("modal-dialog"))
-			val header get() = element(By.className("modal-dialog")).element(By.tagName("h3"))
+
+			val element: WebElement
+				get() = element(By.className("modal-dialog"))
+
+			val header: WebElement
+				get() = element(By.className("modal-dialog")).findElement(By.tagName("h3"))
 
 			val buttons get() = Buttons()
+
 			inner class Buttons {
 
-				val plan get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Plan"))
-				val cancel get() = element(By.className("modal-dialog")).element(ByAngular.buttonText("Cancel"))
+				val plan: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Plan"))
+
+				val cancel: WebElement
+					get() = element(By.className("modal-dialog")).findElement(ByAngular.buttonText("Cancel"))
 			}
 		}
 	}
 
 	val plans by lazy { Plans() }
+
 	inner class Plans {
-		val groups get() = element(By.id("plan-results")).all(ByAngular.repeater("cPlan in plans"))
+
+		val groups: MutableList<WebElement>
+			get() = element(By.id("plan-results")).findElements(ByAngular.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
 			fun byCinemaName(group: WebElement): Boolean =
-				group.element(By.className("cinema-name")).text == cinemaName
+				group.findElement(By.className("cinema-name")).text == cinemaName
 			return PlanGroup(this.groups.single(::byCinemaName))
 		}
 	}
@@ -330,7 +479,7 @@ class PlannerPage(
 	fun waitToLoad() {
 		cinemas.waitToLoad()
 		element(By.id("cinemas"))
-			.all(By.className("cinema"))
+			.findElements(By.className("cinema"))
 			.count { it.hasSelection() }
 			.let { count ->
 				if (count > 0) {
@@ -338,7 +487,7 @@ class PlannerPage(
 				}
 			}
 		element(By.id("films"))
-			.all(By.className("film"))
+			.findElements(By.className("film"))
 			.count { it.hasSelection() }
 			.let { count ->
 				if (count > 0) {
@@ -396,8 +545,9 @@ class PlannerPage(
 		assertThat(browser.currentUrl).contains("d=${LocalDate.now().year}")
 		assertThat(performancesEmpty).text().isEqualTo("Please select a film...")
 	}
-	
+
 	companion object {
+
 		val D_FORMAT: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 	}
 }
