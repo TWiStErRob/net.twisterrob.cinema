@@ -2,18 +2,19 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.AfterEachCallback
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
-import org.junit.jupiter.api.extension.TestWatcher
 import org.openqa.selenium.OutputType
 import org.openqa.selenium.TakesScreenshot
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.logging.LogType
-import java.util.Optional
+import java.io.File
 
-class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver, TestWatcher {
+// TODO rewrite using https://bonigarcia.dev/selenium-jupiter/
+class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val browser = Browser()
@@ -22,47 +23,40 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 		extensionContext.requiredTestInstances.allInstances.forEach { injectPages(it, browser) }
 	}
 
+	override fun afterTestExecution(extensionContext: ExtensionContext) {
+		extensionContext.executionException.ifPresent {
+			extensionContext.store.browser?.apply {
+				val file = takeScreenshot(
+					extensionContext.hierarchy
+						.drop(1) // EngineExecutionContext (i.e. junit-jupiter)
+						.map { it.displayName }
+						.plus(sessionId)
+				)
+				extensionContext.publishReportEntry("Screenshot of failure", file.absolutePath)
+			}
+		}
+	}
+
 	override fun afterEach(extensionContext: ExtensionContext) {
-		extensionContext.store.browser?.apply {
-			driver.verifyLogs()
-			// Note: we're not clearing the browser yet, because TestWatcher still needs it.
-			// Therefore, we need to override each TestWatcher method to always make sure the browser is closed.
+		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
+		extensionContext.store.clearBrowser()?.apply {
+			try {
+				driver.verifyLogs()
+			} finally {
+				driver.quit()
+			}
 		}
 	}
 
-	override fun testFailed(extensionContext: ExtensionContext, cause: Throwable?) {
-		try {
-			extensionContext.takeScreenshot()
-		} finally {
-			extensionContext.tryQuitSession()
-		}
-	}
-
-	private fun ExtensionContext.takeScreenshot() {
-		val driver = this.store.browser!!.driver
-		val screenshot = (driver as TakesScreenshot).getScreenshotAs(OutputType.BYTES)
-		val relativePath = this.displayName.replace(Regex("""[^a-zA-Z0-9._-]"""), "_") + ".png"
+	private fun Browser.takeScreenshot(testHierarchy: List<String>): File {
+		val relativePath = testHierarchy
+			.joinToString(separator = File.separator, postfix = ".png") { it.toFileNameSafe() }
 		val file = Options.screenshotDir.resolve(relativePath)
 		file.parentFile.mkdirs()
+		println("Saving screenshot to ${file}")
+		val screenshot = (driver as TakesScreenshot).getScreenshotAs(OutputType.BYTES)
 		file.writeBytes(screenshot)
-		this.publishReportEntry("Screenshot of failure", file.absolutePath)
-	}
-
-	override fun testDisabled(extensionContext: ExtensionContext, reason: Optional<String>?) {
-		extensionContext.tryQuitSession()
-	}
-
-	override fun testSuccessful(extensionContext: ExtensionContext) {
-		extensionContext.tryQuitSession()
-	}
-
-	override fun testAborted(extensionContext: ExtensionContext, cause: Throwable?) {
-		extensionContext.tryQuitSession()
-	}
-
-	private fun ExtensionContext.tryQuitSession() {
-		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
-		this.store.clearBrowser()?.apply { driver.quit() }
+		return file
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
@@ -134,3 +128,9 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 
 private val Class<*>.superHierarchy: List<Class<*>>
 	get() = generateSequence(this) { it.superclass }.toList()
+
+private val ExtensionContext.hierarchy: List<ExtensionContext>
+	get() = generateSequence(this) { it.parent.orElse(null) }.toList().reversed()
+
+private fun String.toFileNameSafe(): String =
+	this.replace(Regex("""[\u0000-\u001f"*/:<>?\\|\u007f]"""), "_")

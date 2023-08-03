@@ -28,6 +28,9 @@ class Browser : SearchContext {
 		navigateToAngularPage("${Options.baseUrl}${relativeUrl}")
 	}
 
+	val sessionId: String
+		get() = (driver as RemoteWebDriver).sessionId.toString()
+
 	val currentUrl: String
 		get() = driver.currentUrl.removePrefix(Options.baseUrl)
 
