@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(BrowserExtension::class)
-class PlannerTest {
+class PlannerUiTest {
 
-	@BeforeEach fun setup(browser: Browser) {
-		val app = PlannerPage(browser)
+	private lateinit var app: PlannerPage
+
+	@BeforeEach fun setup() {
 		app.goToPlanner()
 	}
 

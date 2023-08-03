@@ -1,5 +1,3 @@
-@file:Suppress("RemoveRedundantBackticks", "ClassName")
-
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
@@ -20,9 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.openqa.selenium.WebElement
 
 @ExtendWith(BrowserExtension::class)
-class CinemasTest {
+class CinemasUiTest {
 
-	lateinit var app: PlannerPage
+	private lateinit var app: PlannerPage
 
 	// STOPSHIP review none/empty behavior on empty lists; original anyWithText(empty) -> false, noneWithText(empty) -> true
 	private fun notFavoritedCinema(cinema: WebElement): Boolean =
@@ -42,7 +40,7 @@ class CinemasTest {
 	}
 
 	@Nested
-	inner class `basics` {
+	inner class Initial {
 
 		@Test fun `should show some London cinemas`() {
 			assertThat(app.cinemas.london.items).isNotEmpty
@@ -66,10 +64,10 @@ class CinemasTest {
 	}
 
 	@Nested
-	inner class `accordions` {
+	inner class Accordions {
 
 		@Nested
-		inner class `favorites` {
+		inner class Favorites {
 
 			@Test fun `should have header`() {
 				assertThat(app.cinemas.favorites.header).text().matches("""^Favorite Cinemas \(\d+\)$""")
@@ -101,7 +99,7 @@ class CinemasTest {
 		}
 
 		@Nested
-		inner class `london` {
+		inner class London {
 
 			@Test fun `should have header`() {
 				assertThat(app.cinemas.london.header).text().matches("""^London Cinemas \(\d+\)$""")
@@ -133,7 +131,7 @@ class CinemasTest {
 		}
 
 		@Nested
-		inner class `other` {
+		inner class Other {
 
 			@Test fun `should have header`() {
 				assertThat(app.cinemas.other.header).text().matches("""^Other Cinemas \(\d+\)$""")
@@ -165,7 +163,7 @@ class CinemasTest {
 	}
 
 	@Nested
-	inner class `selection buttons` {
+	inner class SelectionButtons {
 
 		@BeforeEach fun beforeEach() {
 			cinemaListSanityCheck()
@@ -241,7 +239,7 @@ class CinemasTest {
 
 	@Nested
 	@Disabled("Login doesn't work: Access blocked: This app’s request is invalid Error 400: redirect_uri_mismatch")
-	inner class `Cinemas display as authenticated user` {
+	inner class Authenticated {
 
 		@BeforeEach fun beforeEach() {
 			app.login(Options.userName, Options.userPass)
