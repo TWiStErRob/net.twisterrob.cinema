@@ -3,7 +3,6 @@ package net.twisterrob.cinema.frontend.test
 import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -52,10 +51,10 @@ class UrlUiTest {
 			app.goToPlanner("?c=70")
 
 			assertThat(app.cinemas.london.items).filteredOn { it.text == "London - Wood Green" }
-				.allMatch { it.hasSelection() }
+				.allSatisfy { assertThat(it).isChecked() }
 			assertThat(app.cinemas.london.items).filteredOn { it.text != "London - Wood Green" }
-				.noneMatch { it.hasSelection() }
-			assertThat(app.cinemas.other.items).noneMatch { it.hasSelection() }
+				.noneSatisfy { assertThat(it).isChecked() }
+			assertThat(app.cinemas.other.items).noneSatisfy { assertThat(it).isChecked() }
 		}
 	}
 
@@ -68,9 +67,9 @@ class UrlUiTest {
 			val titles = Regex("""All Eyez On Me|Baby Driver""")
 			fun filter(item: WebElement): Boolean = // STOPSHIP generalize
 				item.findElement(By.className("film-title")).text.matches(titles)
-			assertThat(app.films.new.items).filteredOn(::filter).allMatch { it.hasSelection() }
-			assertThat(app.films.new.items).filteredOn { !filter(it) }.noneMatch { it.hasSelection() }
-			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }
+			assertThat(app.films.new.items).filteredOn(::filter).allSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.new.items).filteredOn { !filter(it) }.noneSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isChecked() }
 		}
 	}
 
@@ -82,16 +81,16 @@ class UrlUiTest {
 
 			assertThat(app.date.editor.element).text().isEqualTo("7/14/17")
 			assertThat(app.cinemas.london.items).filteredOn { it.text == "London - Wood Green" }
-				.allMatch { it.hasSelection() }
+				.allSatisfy { assertThat(it).isChecked() }
 			assertThat(app.cinemas.london.items).filteredOn { it.text != "London - Wood Green" }
-				.noneMatch { it.hasSelection() }
-			assertThat(app.cinemas.other.items).noneMatch { it.hasSelection() }
+				.noneSatisfy { assertThat(it).isChecked() }
+			assertThat(app.cinemas.other.items).noneSatisfy { assertThat(it).isChecked() }
 			val titles = Regex("""All Eyez On Me|Baby Driver""")
 			fun filter(item: WebElement): Boolean = // STOPSHIP generalize
 				item.findElement(By.className("film-title")).text.matches(titles)
-			assertThat(app.films.new.items.filter(::filter)).allMatch { it.hasSelection() }
-			assertThat(app.films.new.items.filterNot(::filter)).noneMatch { it.hasSelection() }
-			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }
+			assertThat(app.films.new.items).filteredOn(::filter).allSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.new.items).filteredOn { !filter(it) } .noneSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isChecked() }
 		}
 	}
 }

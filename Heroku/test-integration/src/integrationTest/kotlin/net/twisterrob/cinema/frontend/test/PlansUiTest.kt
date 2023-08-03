@@ -141,9 +141,9 @@ class PlansUiTest {
 			firstMovieInPlan.filterByFilm.click()
 
 			val firstMovieTitle = firstMovieInPlan.title.text
-			cinemaPlan.plans.forEach { plan ->
+			assertThat(cinemaPlan.plans).allSatisfy { plan ->
 				val titles = plan.scheduleMovies.findElements(By.className("film-title"))
-				assertThat(titles).anyMatch { it.text == firstMovieTitle }
+				assertThat(titles).anySatisfy { assertThat(it).text().isEqualTo(firstMovieTitle) }
 			}
 			assertThat(cinemaPlan.moreAll).isDisplayed()
 			assertThat(cinemaPlan.moreN).isDisplayed()

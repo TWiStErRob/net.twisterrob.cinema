@@ -24,11 +24,11 @@ class DateUiTest {
 	inner class Editor {
 
 		@Test fun `should not be empty`() {
-			assertThat(app.date.editor.getText()).isNotEmpty()
+			assertThat(app.date.editor.element).text().isNotEmpty()
 		}
 
 		@Test fun `should be today's date`() {
-			assertThat(app.date.editor.getTextAsMoment()).isToday()
+			assertThat(app.date.editor.date).isToday()
 		}
 	}
 
@@ -36,11 +36,11 @@ class DateUiTest {
 	inner class Label {
 
 		@Test fun `should not be empty`() {
-			assertThat(app.date.label.getText()).isNotEmpty()
+			assertThat(app.date.label.element).text().isNotEmpty()
 		}
 
 		@Test fun `should be today's date`() {
-			assertThat(app.date.label.getTextAsMoment()).isToday()
+			assertThat(app.date.label.date).isToday()
 		}
 	}
 
@@ -56,13 +56,13 @@ class DateUiTest {
 		}
 
 		@Test fun `should update the editor`() {
-			assertThat(app.date.editor.getText()).isNotEmpty()
-			assertThat(app.date.editor.getTextAsMoment()).isEqualTo(selectedDate)
+			assertThat(app.date.editor.element).text().isNotEmpty()
+			assertThat(app.date.editor.date).isEqualTo(selectedDate)
 		}
 
 		@Test fun `should update the label`() {
-			assertThat(app.date.label.getText()).isNotEmpty()
-			assertThat(app.date.label.getTextAsMoment()).isEqualTo(selectedDate)
+			assertThat(app.date.label.element).text().isNotEmpty()
+			assertThat(app.date.label.date).isEqualTo(selectedDate)
 		}
 
 		@Test fun `should update the url`(browser: Browser) {

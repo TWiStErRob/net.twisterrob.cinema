@@ -15,31 +15,26 @@ fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
 	return index
 }
 
-fun WebElement.hasSelection(): Boolean =
-	this.findElement(By.cssSelector("""[type="checkbox"]""")).isSelected
+val WebElement.textContent: String?
+	get() = when (this.tagName) {
+		"input", "textarea" -> this.getAttribute("value")
+		else -> this.text
+	}
+
+val WebElement.isChecked: Boolean
+	get() = this.findElement(By.cssSelector("""[type="checkbox"]""")).isSelected
 
 /**
  * Matches the element to have a Bootstrap glyphicon element inside with the given icon name.
  * @param iconName the end of `glyphicon-name`
  */
-fun WebElement.hasIcon(iconName: String): Boolean { // STOPSHIP use Condition API?
+fun WebElement.hasIcon(iconName: String): Boolean {
 	val iconElement = this.findElement(By.className("glyphicon"))
-	return iconElement.hasClass("glyphicon-${iconName}")
+	return "glyphicon-${iconName}" in iconElement.classes
 }
 
-/**
- * Matches the element to have a single class among others.
- * @param expectedClass single class to check for
- */
-fun WebElement.hasClass(expectedClass: String): Boolean = // STOPSHIP use Condition API?
-	// STOPSHIP val message = "Missing class '${expectedClass}' from '${classes}' on ${this}"
-	expectedClass in this.classes
-
 val WebElement.classes: List<String>
-	get() {
-		val classes = this.getAttribute("class")
-		return classes.split(Regex("""\s+"""))
-	}
+	get() = this.getAttribute("class").split(Regex("""\s+"""))
 
 val WebElement.iconEl: WebElement
 	get() = this.findElement(By.className("glyphicon"))

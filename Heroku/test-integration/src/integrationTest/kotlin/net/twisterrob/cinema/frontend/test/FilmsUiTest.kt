@@ -2,8 +2,6 @@ package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BrowserExtension
 import net.twisterrob.cinema.frontend.test.framework.assertThat
-import net.twisterrob.cinema.frontend.test.framework.hasIcon
-import net.twisterrob.cinema.frontend.test.framework.hasSelection
 import net.twisterrob.cinema.frontend.test.pages.PlannerPage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -33,14 +31,14 @@ class FilmsUiTest {
 
 		@Test fun `should show some new films`() {
 			assertThat(app.films.new.items).isNotEmpty()
-			assertThat(app.films.new.items).allMatch { it.hasIcon("eye-open") }
+			assertThat(app.films.new.items).allSatisfy { assertThat(it).hasIcon("eye-open") }
 		}
 
 		@Test fun `should show some watched films`() {
 			app.films.watched.expand()
 
 			assertThat(app.films.watched.items).isNotEmpty()
-			assertThat(app.films.watched.items).allMatch { it.hasIcon("eye-close") }
+			assertThat(app.films.watched.items).allSatisfy { assertThat(it).hasIcon("eye-close") }
 		}
 	}
 
@@ -60,22 +58,22 @@ class FilmsUiTest {
 				app.films.new.expand()
 
 				assertThat(app.films.new.items).isNotEmpty()
-				assertThat(app.films.new.items).allMatch { it.isDisplayed }
+				assertThat(app.films.new.items).allSatisfy { assertThat(it).isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
 				app.films.new.collapse()
 
-				assertThat(app.films.new.items).noneMatch { it.isDisplayed }
+				assertThat(app.films.new.items).noneSatisfy { assertThat(it).isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
 				app.films.new.expand()
-				assertThat(app.films.new.items).allMatch { it.isDisplayed }
+				assertThat(app.films.new.items).allSatisfy { assertThat(it).isDisplayed() }
 				app.films.new.collapse()
-				assertThat(app.films.new.items).noneMatch { it.isDisplayed }
+				assertThat(app.films.new.items).noneSatisfy { assertThat(it).isDisplayed() }
 				app.films.new.expand()
-				assertThat(app.films.new.items).allMatch { it.isDisplayed }
+				assertThat(app.films.new.items).allSatisfy { assertThat(it).isDisplayed() }
 			}
 		}
 
@@ -92,22 +90,22 @@ class FilmsUiTest {
 				app.films.watched.expand()
 
 				assertThat(app.films.watched.items).isNotEmpty()
-				assertThat(app.films.watched.items).allMatch { it.isDisplayed }
+				assertThat(app.films.watched.items).allSatisfy { assertThat(it).isDisplayed() }
 			}
 
 			@Test fun `should collapse`() {
 				app.films.watched.collapse()
 
-				assertThat(app.films.watched.items).noneMatch { it.isDisplayed }
+				assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isDisplayed() }
 			}
 
 			@Test fun `should toggle`() {
 				app.films.watched.expand()
-				assertThat(app.films.watched.items).allMatch { it.isDisplayed }
+				assertThat(app.films.watched.items).allSatisfy { assertThat(it).isDisplayed() }
 				app.films.watched.collapse()
-				assertThat(app.films.watched.items).noneMatch { it.isDisplayed }
+				assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isDisplayed() }
 				app.films.watched.expand()
-				assertThat(app.films.watched.items).allMatch { it.isDisplayed }
+				assertThat(app.films.watched.items).allSatisfy { assertThat(it).isDisplayed() }
 			}
 		}
 	}
@@ -126,8 +124,8 @@ class FilmsUiTest {
 		@Test fun `should select all`() {
 			app.films.buttons.all.click()
 
-			assertThat(app.films.watched.items).allMatch { it.hasSelection() }
-			assertThat(app.films.new.items).allMatch { it.hasSelection() }
+			assertThat(app.films.watched.items).allSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.new.items).allSatisfy { assertThat(it).isChecked() }
 		}
 
 		@Test fun `should select none`() {
@@ -135,8 +133,8 @@ class FilmsUiTest {
 
 			app.films.buttons.none.click()
 
-			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }
-			assertThat(app.films.new.items).noneMatch { it.hasSelection() }
+			assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.new.items).noneSatisfy { assertThat(it).isChecked() }
 		}
 
 		@Test fun `should select new films only`() {
@@ -144,8 +142,8 @@ class FilmsUiTest {
 
 			app.films.buttons.new.click()
 
-			assertThat(app.films.new.items).allMatch { it.hasSelection() }
-			assertThat(app.films.watched.items).noneMatch { it.hasSelection() }
+			assertThat(app.films.new.items).allSatisfy { assertThat(it).isChecked() }
+			assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isChecked() }
 		}
 
 		@Test fun `should display new films`() {
@@ -154,8 +152,8 @@ class FilmsUiTest {
 
 			app.films.buttons.new.click()
 
-			assertThat(app.films.new.items).allMatch { it.isDisplayed }
-			assertThat(app.films.watched.items).noneMatch { it.isDisplayed }
+			assertThat(app.films.new.items).allSatisfy { assertThat(it).isDisplayed() }
+			assertThat(app.films.watched.items).noneSatisfy { assertThat(it).isDisplayed() }
 		}
 
 		private fun filmListSanityCheck() {
@@ -169,8 +167,8 @@ class FilmsUiTest {
 			assertThat(app.films.watched.items).filteredOn(::newFilm).isEmpty()
 
 			// correct icons
-			assertThat(app.films.new.items).allMatch { it.hasIcon("eye-open") }
-			assertThat(app.films.watched.items).allMatch { it.hasIcon("eye-close") }
+			assertThat(app.films.new.items).allSatisfy { assertThat(it).hasIcon("eye-open") }
+			assertThat(app.films.watched.items).allSatisfy { assertThat(it).hasIcon("eye-close") }
 		}
 	}
 }

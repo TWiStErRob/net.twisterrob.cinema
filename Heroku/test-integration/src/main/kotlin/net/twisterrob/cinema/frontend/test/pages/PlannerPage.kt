@@ -6,9 +6,10 @@ import net.twisterrob.cinema.frontend.test.framework.Browser
 import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.delayedExecute
 import net.twisterrob.cinema.frontend.test.framework.findElements
-import net.twisterrob.cinema.frontend.test.framework.hasSelection
+import net.twisterrob.cinema.frontend.test.framework.isChecked
 import net.twisterrob.cinema.frontend.test.framework.nonAngular
 import net.twisterrob.cinema.frontend.test.framework.safeIndexOf
+import net.twisterrob.cinema.frontend.test.framework.textContent
 import net.twisterrob.cinema.frontend.test.framework.wait
 import net.twisterrob.cinema.frontend.test.framework.waitForAngular
 import net.twisterrob.cinema.frontend.test.framework.waitForElementToDisappear
@@ -85,7 +86,7 @@ class PlannerPage(
 		val list: WebElement
 			get() = root.findElement(By.cssSelector(content))
 
-		val items: MutableList<WebElement>
+		val items: List<WebElement>
 			get() = list.findElements(By.cssSelector(_items))
 
 		fun click() {
@@ -121,21 +122,20 @@ class PlannerPage(
 		val schedule: WebElement
 			get() = root.findElement(By.className("plan-films")) // STOPSHIP was typed array
 
-		val scheduleItems: MutableList<WebElement>
+		val scheduleItems: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film, .plan-film-break"))
 
-		val scheduleMovies: MutableList<WebElement>
+		val scheduleMovies: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film"))
 
-		val scheduleBreaks: MutableList<WebElement>
+		val scheduleBreaks: List<WebElement>
 			get() = this.schedule.findElements(By.cssSelector(".plan-film-break"))
 
-		// start and end are classed the same way in the global timings as in individual films
 		val scheduleStart: WebElement
-			get() = root.findElements(By.cssSelector(".film-start")).first()
+			get() = root.findElement(By.cssSelector(".plan-header .film-start"))
 
 		val scheduleEnd: WebElement
-			get() = root.findElements(By.cssSelector(".film-end")).first() // STOPSHIP last?
+			get() = root.findElement(By.cssSelector(".plan-header .film-end"))
 
 		operator fun get(index: Int): WebElement =
 			this.scheduleItems[index]
@@ -224,11 +224,8 @@ class PlannerPage(
 			val element: WebElement
 				get() = element(By.id("cineworldDate"))
 
-			fun getText(): String? =
-				this.element.getAttribute("value")
-
-			fun getTextAsMoment(): LocalDate =
-				LocalDate.parse(getText(), DateTimeFormatter.ofPattern("M/d/yy"))
+			val date: LocalDate
+				get() = LocalDate.parse(element.textContent, DateTimeFormatter.ofPattern("M/d/yy"))
 		}
 
 		val label = Label()
@@ -238,11 +235,8 @@ class PlannerPage(
 			val element: WebElement
 				get() = element(By.id("date")).findElement(By.cssSelector("em.ng-binding"))
 
-			fun getText(): String? =
-				this.element.text
-
-			fun getTextAsMoment(): LocalDate =
-				LocalDate.parse(getText(), DateTimeFormatter.ofPattern("EEEE, LLLL d, yyyy"))
+			val date: LocalDate
+				get() = LocalDate.parse(element.textContent, DateTimeFormatter.ofPattern("EEEE, LLLL d, yyyy"))
 		}
 	}
 
@@ -376,11 +370,11 @@ class PlannerPage(
 			val table: WebElement
 				get() = element(By.id("performances-by-film"))
 
-			val cinemas: MutableList<WebElement>
+			val cinemas: List<WebElement>
 				get() = table.findElement(By.tagName("thead"))
 					.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
 
-			val films: MutableList<WebElement>
+			val films: List<WebElement>
 				get() = table.findElements(ByAngular.repeater("film in cineworld.films"))
 
 			fun performances(filmName: String, cinemaName: String): List<WebElement> =
@@ -406,10 +400,10 @@ class PlannerPage(
 			val table: WebElement
 				get() = element(By.id("performances-by-cinema"))
 
-			val cinemas: MutableList<WebElement>
+			val cinemas: List<WebElement>
 				get() = table.findElements(ByAngular.repeater("cinema in cineworld.cinemas"))
 
-			val films: MutableList<WebElement>
+			val films: List<WebElement>
 				get() = table.findElement(By.tagName("thead"))
 					.findElements(ByAngular.repeater("film in cineworld.films"))
 
@@ -456,7 +450,7 @@ class PlannerPage(
 
 	inner class Plans {
 
-		val groups: MutableList<WebElement>
+		val groups: List<WebElement>
 			get() = element(By.id("plan-results")).findElements(ByAngular.repeater("cPlan in plans"))
 
 		fun groupForCinema(cinemaName: String): PlanGroup {
@@ -470,7 +464,7 @@ class PlannerPage(
 		cinemas.waitToLoad()
 		element(By.id("cinemas"))
 			.findElements(By.className("cinema"))
-			.count { it.hasSelection() }
+			.count(WebElement::isChecked)
 			.let { count ->
 				if (count > 0) {
 					films.waitToLoad()
@@ -478,7 +472,7 @@ class PlannerPage(
 			}
 		element(By.id("films"))
 			.findElements(By.className("film"))
-			.count { it.hasSelection() }
+			.count(WebElement::isChecked)
 			.let { count ->
 				if (count > 0) {
 					performances.waitToLoad()
