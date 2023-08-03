@@ -6,10 +6,14 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
+import org.junit.jupiter.api.extension.TestWatcher
+import org.openqa.selenium.OutputType
+import org.openqa.selenium.TakesScreenshot
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.logging.LogType
+import java.util.Optional
 
-class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
+class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver, TestWatcher {
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val browser = Browser()
@@ -19,14 +23,46 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, ParameterResolve
 	}
 
 	override fun afterEach(extensionContext: ExtensionContext) {
-		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
-		extensionContext.store.clearBrowser()?.apply {
-			try {
-				driver.verifyLogs()
-			} finally {
-				driver.quit()
-			}
+		extensionContext.store.browser?.apply {
+			driver.verifyLogs()
+			// Note: we're not clearing the browser yet, because TestWatcher still needs it.
+			// Therefore, we need to override each TestWatcher method to always make sure the browser is closed.
 		}
+	}
+
+	override fun testFailed(extensionContext: ExtensionContext, cause: Throwable?) {
+		try {
+			extensionContext.takeScreenshot()
+		} finally {
+			extensionContext.tryQuitSession()
+		}
+	}
+
+	private fun ExtensionContext.takeScreenshot() {
+		val driver = this.store.browser!!.driver
+		val screenshot = (driver as TakesScreenshot).getScreenshotAs(OutputType.BYTES)
+		val relativePath = this.displayName.replace(Regex("""[^a-zA-Z0-9._-]"""), "_") + ".png"
+		val file = Options.screenshotDir.resolve(relativePath)
+		file.parentFile.mkdirs()
+		file.writeBytes(screenshot)
+		this.publishReportEntry("Screenshot of failure", file.absolutePath)
+	}
+
+	override fun testDisabled(extensionContext: ExtensionContext, reason: Optional<String>?) {
+		extensionContext.tryQuitSession()
+	}
+
+	override fun testSuccessful(extensionContext: ExtensionContext) {
+		extensionContext.tryQuitSession()
+	}
+
+	override fun testAborted(extensionContext: ExtensionContext, cause: Throwable?) {
+		extensionContext.tryQuitSession()
+	}
+
+	private fun ExtensionContext.tryQuitSession() {
+		// In case Browser / Browser.createDriver() fails to initialize, there'll be no driver to quit.
+		this.store.clearBrowser()?.apply { driver.quit() }
 	}
 
 	override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =

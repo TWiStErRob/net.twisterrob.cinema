@@ -31,4 +31,10 @@ tasks.integrationTest.configure {
 	// TODEL https://github.com/gradle/gradle/issues/861
 	properties.forEach { (name, value) -> inputs.property(name, value) }
 	properties.forEach { (name, value) -> value?.let { systemProperty(name, value) } }
+
+	val screenshotsDir = layout.buildDirectory.dir("reports/tests/integrationTest-screenshots")
+	doFirst {
+		screenshotsDir.get().asFile.parentFile.mkdirs()
+	}
+	systemProperty("net.twisterrob.test.selenium.screenshot.dir", screenshotsDir.get().asFile.absolutePath)
 }

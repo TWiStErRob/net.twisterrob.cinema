@@ -5,11 +5,15 @@ import org.openqa.selenium.remote.CommandExecutor
 import org.openqa.selenium.remote.DriverCommand
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.remote.Response
+import org.openqa.selenium.support.decorators.WebDriverDecorator
+import org.openqa.selenium.support.events.WebDriverListener
 
 /**
  * Replaces the executor to call [waitForAngular] at points where things change in the web view,
  * so the test code doesn't have to know about it.
  * This mimics what Protractor/BlockingProxy does in JavaScript.
+ *
+ * TODO try to move to [WebDriverListener] and [WebDriverDecorator].
  */
 fun replaceCommandExecutor(driver: RemoteWebDriver) {
 	val executor = AngularCommandExecutor(driver.commandExecutor) {

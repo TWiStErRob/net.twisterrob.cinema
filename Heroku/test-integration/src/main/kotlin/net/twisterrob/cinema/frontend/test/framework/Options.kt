@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.frontend.test.framework
 
 import org.openqa.selenium.Dimension
+import java.io.File
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -23,4 +24,7 @@ object Options {
 
 	val userPass: String
 		get() = System.getProperty("net.twisterrob.test.selenium.user.pass")
+
+	val screenshotDir: File
+		get() = File(System.getProperty("net.twisterrob.test.selenium.screenshot.dir"))
 }
