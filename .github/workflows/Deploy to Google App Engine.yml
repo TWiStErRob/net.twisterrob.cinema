@@ -100,6 +100,7 @@ jobs:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
         run: >
           ./gradlew
+          --no-configuration-cache
           :deploy:appengine:appengineDeploy
           -Pnet.twisterrob.deploy.replaceLive=${{ env.RELEASE_TO_PRODUCTION }}
           -Pnet.twisterrob.deploy.versionName=${{ steps.name.outputs.result }}
