@@ -38,13 +38,13 @@ class Plan(
 
 	fun getItemAsMovie(index: Int): ScheduleMovieItem {
 		val item = this[index]
-		assertThat(item).classes().contains("plan-film")
+		assertThat(item).hasClass("plan-film")
 		return ScheduleMovieItem(item)
 	}
 
 	fun getItemAsBreak(index: Int): ScheduleBreakItem {
 		val item = this[index]
-		assertThat(item).classes().contains("plan-film-break")
+		assertThat(item).hasClass("plan-film-break")
 		return ScheduleBreakItem(item)
 	}
 }

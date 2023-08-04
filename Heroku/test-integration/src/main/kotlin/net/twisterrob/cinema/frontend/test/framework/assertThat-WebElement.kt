@@ -5,16 +5,18 @@
 
 package net.twisterrob.cinema.frontend.test.framework
 
-import net.twisterrob.cinema.frontend.test.framework.assertThat
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.AbstractIterableAssert
+import org.assertj.core.api.AbstractObjectAssert
 import org.assertj.core.api.AbstractStringAssert
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.AssertFactory
+import org.assertj.core.api.BooleanAssert
 import org.assertj.core.api.ListAssert
+import org.assertj.core.api.StringAssert
 import org.assertj.core.util.CheckReturnValue
+import org.checkerframework.checker.units.qual.A
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
-import kotlin.reflect.KFunction1
 
 @Suppress("NOTHING_TO_INLINE")
 @CheckReturnValue
@@ -33,59 +35,53 @@ fun <A : AbstractIterableAssert<*, *, WebElement, *>> A.noneMeet(assertions: Web
 	this.noneSatisfy { assertThat(it).assertions() }
 }
 
-@Suppress(
-	"TooManyFunctions", // This is how AssertJ works.
-	"NamedArguments", // Keep it simpler, types are very strong anyway.
-)
+@Suppress("TooManyFunctions") // This is how AssertJ works.
 class WebElementAssert(
 	element: WebElement
-) : AbstractAssert<WebElementAssert, WebElement>(element, WebElementAssert::class.java) {
-
-	fun isSelected(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		check("selected", actual, WebElement::isSelected as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isNotSelected(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		checkNot("selected", actual, WebElement::isSelected as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isDisplayed(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		check("displayed", actual, WebElement::isDisplayed as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isNotDisplayed(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		checkNot("displayed", actual, WebElement::isDisplayed as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isEnabled(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		check("enabled", actual, WebElement::isEnabled as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isNotEnabled(): WebElementAssert =
-		@Suppress("USELESS_CAST") // TODO Review in Kotlin 2.1
-		checkNot("enabled", actual, WebElement::isEnabled as KFunction1<WebElement, Boolean>, ::failWithMessage)
-
-	fun isChecked(): WebElementAssert =
-		check("checked", actual, WebElement::isChecked, ::failWithMessage)
-
-	fun isNotChecked(): WebElementAssert =
-		checkNot("checked", actual, WebElement::isChecked, ::failWithMessage)
-
-	fun hasIcon(iconName: String): WebElementAssert =
-		checkHas("icon", actual, WebElement::hasIcon, iconName, ::failWithMessage)
-
-	fun doesNotHaveIcon(iconName: String): WebElementAssert =
-		checkDoesNotHave("icon", actual, WebElement::hasIcon, iconName, ::failWithMessage)
+) : AbstractObjectAssert<WebElementAssert, WebElement>(element, WebElementAssert::class.java) {
 
 	@CheckReturnValue
-	fun text(): AbstractStringAssert<*> = assertThat(actual.textContent)
+	fun displayed(): BooleanAssert = extracting(WebElement::isDisplayed, ::BooleanAssert).asProp("isDisplayed")
+	fun isDisplayed(): WebElementAssert = apply { displayed().isTrue() }
+	fun isNotDisplayed(): WebElementAssert = apply { displayed().isTrue() }
 
 	@CheckReturnValue
-	fun classes(): ListAssert<String> = assertThat(actual.classes)
+	fun selected(): BooleanAssert = extracting(WebElement::isSelected, ::BooleanAssert).asProp("isSelected")
+	fun isSelected(): WebElementAssert = apply { selected().isTrue() }
+	fun isNotSelected(): WebElementAssert = apply { selected().isTrue() }
 
 	@CheckReturnValue
-	fun descendant(locator: By): WebElementAssert = assertThat(actual.findElement(locator))
+	fun enabled(): BooleanAssert = extracting(WebElement::isEnabled, ::BooleanAssert).asProp("isEnabled")
+	fun isEnabled(): WebElementAssert = apply { enabled().isTrue() }
+	fun isNotEnabled(): WebElementAssert = apply { enabled().isTrue() }
 
-	@CheckReturnValue // TODO WebElementListAssert if actually used.
-	fun descendants(locator: By): ListAssert<WebElement> = assertThat(actual.findElements(locator))
+	@CheckReturnValue
+	fun checked(): BooleanAssert = extracting(WebElement::isChecked, ::BooleanAssert).asProp("isChecked")
+	fun isChecked(): WebElementAssert = apply { checked().isTrue() }
+	fun isNotChecked(): WebElementAssert = apply { checked().isTrue() }
+
+	@CheckReturnValue
+	fun icon(): StringAssert = extracting(WebElement::glyphicon, ::StringAssert).asProp("icon")
+	fun hasIcon(name: String): WebElementAssert = apply { icon().isEqualTo(name) }
+
+	@CheckReturnValue
+	fun text(): AbstractStringAssert<*> = extracting(WebElement::textContent, ::StringAssert).asProp("text")
+	fun hasText(text: String): WebElementAssert = apply { text().isEqualTo(text) }
+
+	@CheckReturnValue
+	fun classes(): ListAssert<String> = extracting(WebElement::classes, ::ListAssert).asProp("classes")
+	fun hasClass(name: String): WebElementAssert = apply { classes().contains(name) }
+
+	@CheckReturnValue
+	fun descendant(locator: By): WebElementAssert =
+		@Suppress("UNCHECKED_CAST")
+		extracting({ it.findElement(locator) }, ::WebElementAssert as AssertFactory<WebElement, WebElementAssert>)
+
+	@CheckReturnValue // TODO WebElementListAssert? if actually used.
+	fun descendants(locator: By): ListAssert<WebElement> =
+		extracting({ it.findElements(locator) }, ::ListAssert)
+
+	private fun <A : AbstractAssert<A, *>> A.asProp(name: String): A = apply {
+		describedAs(info, "%s.${name}", this@WebElementAssert.actual)
+	}
 }
