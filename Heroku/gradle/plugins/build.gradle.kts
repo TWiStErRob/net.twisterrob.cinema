@@ -2,6 +2,7 @@ plugins {
 	`kotlin-dsl`
 	id("java-gradle-plugin")
 	alias(libs.plugins.detekt)
+	id("org.gradle.idea")
 }
 
 dependencies {
@@ -79,3 +80,16 @@ tasks.register("detektEach") {
 
 val isCI: Boolean
 	get() = System.getenv("GITHUB_ACTIONS") == "true"
+
+idea {
+	module {
+		// TODO/REPORT not working.
+		fun excludeGenerated(dir: String) {
+			val generated = layout.buildDirectory.dir("build/generated-sources")
+			excludeDirs.add(generated.map { it.dir(dir).dir("kotlin/gradle/kotlin/dsl") }.get().asFile)
+		}
+		excludeGenerated("kotlin-dsl-accessors")
+		excludeGenerated("kotlin-dsl-external-plugin-spec-builders")
+		excludeGenerated("kotlin-dsl-plugins")
+	}
+}

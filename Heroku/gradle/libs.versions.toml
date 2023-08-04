@@ -12,7 +12,7 @@ kotlinx-html = "0.7.3"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization = "1.5.1"
 # TODO review TODELs with detekt mentioned in them.
-detekt = "1.23.0"
+detekt = "1.23.1"
 
 dagger = "2.47"
 
@@ -50,11 +50,15 @@ test-junit-pioneer = "2.0.1"
 test-hamcrest = "2.2"
 test-shazamcrest = "0.11"
 test-jsonAssert = "1.5.1"
+test-assertj = "3.24.2"
 
 test-jfixture = "2.7.2"
 
 test-mockito = "5.4.0"
 test-mockito-kotlin = "5.0.0"
+
+test-selenium = "4.11.0"
+test-ngWebDriver = "1.2"
 
 [libraries]
 
@@ -136,6 +140,10 @@ log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4
 log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 log4j-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log4j" }
 
+test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
+test-selenium-jdkHttp = { module = "org.seleniumhq.selenium:selenium-http-jdk-client", version.ref = "test-selenium" }
+test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }
+
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
@@ -145,6 +153,7 @@ test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref =
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
 test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }
 test-jsonAssert = { module = "org.skyscreamer:jsonassert", version.ref = "test-jsonAssert" }
+test-assertj = { module = "org.assertj:assertj-core", version.ref = "test-assertj" }
 
 test-jfixture = { module = "com.flextrade.jfixture:jfixture", version.ref = "test-jfixture" }
 

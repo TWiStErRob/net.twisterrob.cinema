@@ -23,6 +23,9 @@ tasks.create<TestReport>("allTestsReport") {
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
+			// Do not report on UI tests, so that CI can run all other tests naturally.
+			if (this.path == ":test-integration:integrationTest") return@withType
+			// Report on known tests only.
 			if (this.name == "unitTest" || this.name == "functionalTest" || this.name == "integrationTest") {
 				ignoreFailures = true
 				reports.junitXml.required = true

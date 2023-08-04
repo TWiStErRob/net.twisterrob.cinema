@@ -18,6 +18,7 @@ include(":deploy:appengine")
 include(":shared")
 
 include(":test-helpers")
+include(":test-integration")
 
 pluginManagement {
 	includeBuild("gradle/plugins")

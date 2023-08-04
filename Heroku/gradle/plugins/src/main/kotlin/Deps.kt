@@ -28,10 +28,10 @@ object Deps {
 		}
 	}
 
-	fun slf4jToLog4jForTest(project: Project) {
+	fun slf4jToLog4jForTest(project: Project, testType: String = "test") {
 		project.dependencies {
-			add("testRuntimeOnly", project.libs.slf4j.core)
-			add("testRuntimeOnly", project.libs.bundles.log4j)
+			add("${testType}RuntimeOnly", project.libs.slf4j.core)
+			add("${testType}RuntimeOnly", project.libs.bundles.log4j)
 		}
 	}
 

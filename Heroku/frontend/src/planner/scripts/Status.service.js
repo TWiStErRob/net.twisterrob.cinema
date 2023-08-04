@@ -19,4 +19,3 @@ module.factory('Status', [
 		};
 	}
 ]);
-
