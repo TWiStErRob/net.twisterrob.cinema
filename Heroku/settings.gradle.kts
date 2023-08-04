@@ -4,6 +4,8 @@ import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
 
 rootProject.name = "Cinema-Heroku"
 
+// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/570
+enableFeaturePreviewQuietly("STABLE_CONFIGURATION_CACHE", "Kotlin DSL property assignment")
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
 include(":backend")
@@ -51,7 +53,8 @@ dependencyResolutionManagement {
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()
-		lockFile = file("gradle/dependency-locks/root-settings.lockfile")
+		// To prevent "Kotlin DSL property assignment", don't use it here.
+		lockFile.set(file("gradle/dependency-locks/root-settings.lockfile"))
 	}
 }
 

@@ -69,3 +69,21 @@ val Project.deployReplaceLive: Boolean
 
 val Project.deployName: String?
 	get() = property("net.twisterrob.deploy.versionName").toString().takeIf { it != "release" }
+
+// TODEL https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/454
+listOf(
+	// com.google.cloud.tools.gradle.appengine.core.CheckCloudSdkTask::class, // OK
+	com.google.cloud.tools.gradle.appengine.core.DownloadCloudSdkTask::class, // getProject()
+	com.google.cloud.tools.gradle.appengine.core.GcloudTask::class, // DeployExtension.gradleProject (except CloudSdkLoginTask)
+	com.google.cloud.tools.gradle.appengine.core.ShowConfigurationTask::class, // getProject()
+	com.google.cloud.tools.gradle.appengine.appyaml.StageAppYamlTask::class, // StageAppYamlExtension.project + getProject()
+	com.google.cloud.tools.gradle.appengine.standard.StageStandardTask::class, // StageStandardExtension.project + getProject()
+	com.google.cloud.tools.gradle.appengine.standard.DevAppServerRunTask::class, // RunExtension.project
+	com.google.cloud.tools.gradle.appengine.standard.DevAppServerStartTask::class, // RunExtension.project
+	com.google.cloud.tools.gradle.appengine.standard.DevAppServerStopTask::class, // RunExtension.project
+	com.google.cloud.tools.gradle.appengine.sourcecontext.GenRepoInfoFileTask::class, // GenRepoInfoFileExtension.project
+).forEach {
+	tasks.withType(it).configureEach {
+		notCompatibleWithConfigurationCache("https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/454")
+	}
+}
