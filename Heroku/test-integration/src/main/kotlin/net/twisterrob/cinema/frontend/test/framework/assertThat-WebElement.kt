@@ -43,22 +43,22 @@ class WebElementAssert(
 	@CheckReturnValue
 	fun displayed(): BooleanAssert = extracting(WebElement::isDisplayed, ::BooleanAssert).asProp("isDisplayed")
 	fun isDisplayed(): WebElementAssert = apply { displayed().isTrue() }
-	fun isNotDisplayed(): WebElementAssert = apply { displayed().isTrue() }
+	fun isNotDisplayed(): WebElementAssert = apply { displayed().isFalse() }
 
 	@CheckReturnValue
 	fun selected(): BooleanAssert = extracting(WebElement::isSelected, ::BooleanAssert).asProp("isSelected")
 	fun isSelected(): WebElementAssert = apply { selected().isTrue() }
-	fun isNotSelected(): WebElementAssert = apply { selected().isTrue() }
+	fun isNotSelected(): WebElementAssert = apply { selected().isFalse() }
 
 	@CheckReturnValue
 	fun enabled(): BooleanAssert = extracting(WebElement::isEnabled, ::BooleanAssert).asProp("isEnabled")
 	fun isEnabled(): WebElementAssert = apply { enabled().isTrue() }
-	fun isNotEnabled(): WebElementAssert = apply { enabled().isTrue() }
+	fun isNotEnabled(): WebElementAssert = apply { enabled().isFalse() }
 
 	@CheckReturnValue
 	fun checked(): BooleanAssert = extracting(WebElement::isChecked, ::BooleanAssert).asProp("isChecked")
 	fun isChecked(): WebElementAssert = apply { checked().isTrue() }
-	fun isNotChecked(): WebElementAssert = apply { checked().isTrue() }
+	fun isNotChecked(): WebElementAssert = apply { checked().isFalse() }
 
 	@CheckReturnValue
 	fun icon(): StringAssert = extracting(WebElement::glyphicon, ::StringAssert).asProp("icon")
