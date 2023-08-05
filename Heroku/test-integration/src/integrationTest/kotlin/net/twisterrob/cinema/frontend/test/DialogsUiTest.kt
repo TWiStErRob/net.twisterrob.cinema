@@ -20,7 +20,7 @@ class DialogsUiTest : BaseInteractivePlannerUiTest() {
 		app.films.buttons.addView.click()
 
 		assertThat(app.films.addViewDialog.element).isDisplayed()
-		assertThat(app.films.addViewDialog.header).text().isEqualTo("View of")
+		assertThat(app.films.addViewDialog.header).hasText("View of")
 		assertThat(app.films.addViewDialog.buttons.add).isDisplayed()
 		assertThat(app.films.addViewDialog.buttons.cancel).isDisplayed()
 	}
@@ -45,7 +45,7 @@ class DialogsUiTest : BaseInteractivePlannerUiTest() {
 		film.unview()
 
 		assertThat(app.films.removeViewDialog.element).isDisplayed()
-		assertThat(app.films.removeViewDialog.header).text().isEqualTo("Deleting a View")
+		assertThat(app.films.removeViewDialog.header).hasText("Deleting a View")
 		assertThat(app.films.removeViewDialog.element).text().contains(film.name.text)
 		assertThat(app.films.removeViewDialog.buttons.ok).isDisplayed()
 		assertThat(app.films.removeViewDialog.buttons.cancel).isDisplayed()
@@ -60,7 +60,7 @@ class DialogsUiTest : BaseInteractivePlannerUiTest() {
 		app.performances.buttons.options.click()
 
 		assertThat(app.performances.optionsDialog.element).isDisplayed()
-		assertThat(app.performances.optionsDialog.header).text().isEqualTo("Planner Options")
+		assertThat(app.performances.optionsDialog.header).hasText("Planner Options")
 		assertThat(app.performances.optionsDialog.buttons.plan).isDisplayed()
 		assertThat(app.performances.optionsDialog.buttons.cancel).isDisplayed()
 	}

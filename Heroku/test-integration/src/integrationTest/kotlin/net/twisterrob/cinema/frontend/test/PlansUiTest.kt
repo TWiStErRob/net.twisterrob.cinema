@@ -118,16 +118,16 @@ class PlansUiTest  : BasePlannerUiTest() {
 
 		@Test fun `should contain films and breaks`() {
 			val plan = gotoSinglePlan()[0]
-			assertThat(plan.scheduleStart).text().isEqualTo("18:25")
-			assertThat(plan.scheduleEnd).text().isEqualTo("22:58")
+			assertThat(plan.scheduleStart).hasText("18:25")
+			assertThat(plan.scheduleEnd).hasText("22:58")
 			assertThat(plan.scheduleItems).hasSize(3)
-			assertThat(plan.getItemAsMovie(0).startTime).text().isEqualTo("18:25")
-			assertThat(plan.getItemAsMovie(0).endTime).text().isEqualTo("20:18")
-			assertThat(plan.getItemAsMovie(0).title).text().isEqualTo("Baby Driver")
-			assertThat(plan.getItemAsBreak(1).length).text().isEqualTo("27 minutes")
-			assertThat(plan.getItemAsMovie(2).startTime).text().isEqualTo("20:45")
-			assertThat(plan.getItemAsMovie(2).endTime).text().isEqualTo("22:58")
-			assertThat(plan.getItemAsMovie(2).title).text().isEqualTo("(IMAX 3-D) Spider-Man : HOMECOMING")
+			assertThat(plan.getItemAsMovie(0).startTime).hasText("18:25")
+			assertThat(plan.getItemAsMovie(0).endTime).hasText("20:18")
+			assertThat(plan.getItemAsMovie(0).title).hasText("Baby Driver")
+			assertThat(plan.getItemAsBreak(1).length).hasText("27 minutes")
+			assertThat(plan.getItemAsMovie(2).startTime).hasText("20:45")
+			assertThat(plan.getItemAsMovie(2).endTime).hasText("22:58")
+			assertThat(plan.getItemAsMovie(2).title).hasText("(IMAX 3-D) Spider-Man : HOMECOMING")
 		}
 
 		@Test fun `should filter by film`() {

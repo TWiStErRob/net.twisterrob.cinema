@@ -13,12 +13,12 @@ val WebElement.textContent: String?
 val WebElement.isChecked: Boolean
 	get() = this.findElement(By.cssSelector("""[type="checkbox"]""")).isSelected
 
-/**
- * Matches the element to have a Bootstrap glyphicon element inside with the given icon name.
- * @param iconName the end of `glyphicon-iconName`
- */
-fun WebElement.hasIcon(iconName: String): Boolean =
-	"glyphicon-${iconName}" in this.classes
+val WebElement.glyphicon: String?
+	get() {
+		val icons = this.classes.filter { it.startsWith("glyphicon-") }
+		assertThat(icons).hasSizeLessThan(2)
+		return icons.singleOrNull()?.substringAfter("glyphicon-")
+	}
 
 val WebElement.classes: List<String>
 	get() = this.getAttribute("class").split(Regex("""\s+"""))

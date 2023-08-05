@@ -241,7 +241,7 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 			cinema.favorite()
 
 			assertThat(app.cinemas.favorites.cinemas).hasSize(2)
-			assertThat(app.cinemas.favorites.cinemas[1].name).text().isEqualTo(cinema.name.text)
+			assertThat(app.cinemas.favorites.cinemas[1].name).hasText(cinema.name.text)
 			assertThat(app.cinemas.favorites.cinemas[1].icon).hasIcon("heart")
 		}
 

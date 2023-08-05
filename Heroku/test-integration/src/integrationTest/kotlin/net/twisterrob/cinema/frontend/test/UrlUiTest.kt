@@ -36,8 +36,8 @@ class UrlUiTest : BasePlannerUiTest() {
 			app.goToPlanner("?d=2017-07-14")
 
 			assertThat(browser).url().hasParameter("d", "2017-07-14")
-			assertThat(app.date.editor.element).text().isEqualTo("7/14/17")
-			assertThat(app.date.label.element).text().isEqualTo("Friday, July 14, 2017")
+			assertThat(app.date.editor.element).hasText("7/14/17")
+			assertThat(app.date.label.element).hasText("Friday, July 14, 2017")
 		}
 	}
 
@@ -79,7 +79,7 @@ class UrlUiTest : BasePlannerUiTest() {
 		@Test fun `should preselect everything`() {
 			app.goToPlanner("?c=70&f=189108&f=223046&d=2017-07-14")
 
-			assertThat(app.date.editor.element).text().isEqualTo("7/14/17")
+			assertThat(app.date.editor.element).hasText("7/14/17")
 			val preselectedCinema = filterCinemaName("London - Wood Green")
 			assertThat(app.cinemas.london.cinemas).filteredOn(preselectedCinema).allMeet { isChecked() }
 			assertThat(app.cinemas.london.cinemas).filteredOn(!preselectedCinema).noneMeet { isChecked() }

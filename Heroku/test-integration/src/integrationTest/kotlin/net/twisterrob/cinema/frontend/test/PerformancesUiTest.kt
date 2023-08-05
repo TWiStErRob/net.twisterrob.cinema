@@ -30,19 +30,19 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		@Test fun `shows performances (Baby Driver)`() {
 			val times = app.performances.byFilm.performances("Baby Driver", "Leicester Square")
 			assertThat(times).hasSize(4)
-			assertThat(times[0]).text().isEqualTo("12:00")
-			assertThat(times[1]).text().isEqualTo("14:40")
-			assertThat(times[2]).text().isEqualTo("18:10")
-			assertThat(times[3]).text().isEqualTo("20:50")
+			assertThat(times[0]).hasText("12:00")
+			assertThat(times[1]).hasText("14:40")
+			assertThat(times[2]).hasText("18:10")
+			assertThat(times[3]).hasText("20:50")
 		}
 
 		@Test fun `shows performances (Spider-Man)`() {
 			val times = app.performances.byFilm.performances("(IMAX 3-D) Spider-Man : HOMECOMING", "Leicester Square")
 			assertThat(times).hasSize(4)
-			assertThat(times[0]).text().isEqualTo("11:00")
-			assertThat(times[1]).text().isEqualTo("14:10")
-			assertThat(times[2]).text().isEqualTo("17:20")
-			assertThat(times[3]).text().isEqualTo("20:30")
+			assertThat(times[0]).hasText("11:00")
+			assertThat(times[1]).hasText("14:10")
+			assertThat(times[2]).hasText("17:20")
+			assertThat(times[3]).hasText("20:30")
 		}
 	}
 
@@ -68,20 +68,20 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		@Test fun `shows performances (1)`() {
 			val times = app.performances.byCinema.performances("Leicester Square", "Baby Driver")
 			assertThat(times).hasSize(4)
-			assertThat(times[0]).text().isEqualTo("12:00")
-			assertThat(times[1]).text().isEqualTo("14:40")
-			assertThat(times[2]).text().isEqualTo("18:10")
-			assertThat(times[3]).text().isEqualTo("20:50")
+			assertThat(times[0]).hasText("12:00")
+			assertThat(times[1]).hasText("14:40")
+			assertThat(times[2]).hasText("18:10")
+			assertThat(times[3]).hasText("20:50")
 		}
 
 		@Test fun `shows performances (2)`() {
 			val times = app.performances.byCinema.performances("Wood Green", "Baby Driver")
 			assertThat(times).hasSize(5)
-			assertThat(times[0]).text().isEqualTo("11:50")
-			assertThat(times[1]).text().isEqualTo("14:00")
-			assertThat(times[2]).text().isEqualTo("17:40")
-			assertThat(times[3]).text().isEqualTo("20:50")
-			assertThat(times[4]).text().isEqualTo("23:30")
+			assertThat(times[0]).hasText("11:50")
+			assertThat(times[1]).hasText("14:00")
+			assertThat(times[2]).hasText("17:40")
+			assertThat(times[3]).hasText("20:50")
+			assertThat(times[4]).hasText("23:30")
 		}
 
 		@Test fun `shows performances (3)`() {
