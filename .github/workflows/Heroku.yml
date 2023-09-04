@@ -38,7 +38,7 @@ jobs:
           distribution: temurin
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate Gradle Wrapper JARs.
         uses: gradle/wrapper-validation-action@v1
@@ -217,7 +217,7 @@ jobs:
           du -h -d 2 ~
 
       - name: Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
@@ -274,7 +274,7 @@ jobs:
           du -h -d 2 ~
 
       - name: Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
 
@@ -628,7 +628,7 @@ jobs:
           distribution: temurin
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate Gradle Wrapper JARs.
         uses: gradle/wrapper-validation-action@v1
