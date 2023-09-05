@@ -21,10 +21,10 @@ jobs:
           distribution: temurin
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout default branch in ${{ env.HISTORY_REPO }} repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.HISTORY_REPO }}
           path: ${{ env.HISTORY_DIR }}
