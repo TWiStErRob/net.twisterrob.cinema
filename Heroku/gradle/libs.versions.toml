@@ -45,7 +45,7 @@ log4j = "2.20.0"
 
 test-junit-vintage = "4.13.2"
 test-junit-jupiter = "5.10.0"
-test-junit-pioneer = "2.0.1"
+test-junit-pioneer = "2.1.0"
 
 test-hamcrest = "2.2"
 test-shazamcrest = "0.11"
