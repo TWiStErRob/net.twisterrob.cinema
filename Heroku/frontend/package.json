@@ -3,6 +3,10 @@
 	"description": "AngularJS frontend for twisterrob-cinema",
 	"license": "UNLICENCED",
 	"repository": "local",
+	"engines": {
+		"node": "18.x",
+		"npm": "10.x"
+	},
 	"scripts": {
 		"preinstall": "echo Installing Frontend dependencies",
 		"postinstall": "echo Installed Frontend dependencies",
@@ -39,6 +43,6 @@
 		"url-loader": "4.1.1",
 		"file-loader": "6.2.0",
 		"jshint": "2.13.6",
-		"node-sass": "9.0.0"
+		"sass": "1.66.1"
 	}
 }
