@@ -40,6 +40,15 @@ jobs:
           java-version: 17
           distribution: temurin
 
+      - name: Set up Node 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Set up NPM 10.x
+        # https://github.com/actions/setup-node/issues/324
+        run: npm install --global npm@10
+
       - name: Determine Google App Engine version name.
         id: name
         uses: actions/github-script@v6
