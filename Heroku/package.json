@@ -14,7 +14,7 @@
 	"repository": "local",
 	"engines": {
 		"node": "18.x",
-		"npm": "9.x"
+		"npm": "10.x"
 	},
 	"scripts": {
 		"start:documentation": "Assumes: `cd frontend && npm run build:<env> && cd ..`",
