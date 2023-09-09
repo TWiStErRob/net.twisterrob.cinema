@@ -3,7 +3,7 @@ on:
   pull_request:
     paths-ignore:
       - 'Heroku/**'
-      - '.github/workflows/Heroku.yml'
+      - '.github/workflows/Heroku*.yml'
 concurrency:
   group: ${{ github.ref == 'refs/heads/main' && format('ci-heroku-standin-main-{0}', github.sha) || format('ci-heroku-standin-{0}', github.ref) }}
   cancel-in-progress: true
