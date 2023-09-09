@@ -17,6 +17,7 @@ jobs:
       - name: "Install IntelliJ IDEA"
         run: |
           snap info intellij-idea-community
+          # See https://snapcraft.io/intellij-idea-community top right corner for available versions.
           sudo snap install --classic intellij-idea-community --stable --channel=2023.2/stable
           snap refresh --hold intellij-idea-community
 
