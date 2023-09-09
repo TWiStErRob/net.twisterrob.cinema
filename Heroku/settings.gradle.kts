@@ -62,7 +62,7 @@ val gradleVersion: String = GradleVersion.current().version
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
 @Suppress("MaxLineLength", "StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.2") {
+if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 	// There are ton of warnings, ignoring them all by their class names in one suppression.
 	doNotNagAbout(
 		Regex(
@@ -97,7 +97,7 @@ if ((System.getProperty("idea.version") ?: "") < "2023.2") {
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
 @Suppress("MaxLineLength", "StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.2") {
+if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 	@Suppress("MaxLineLength", "StringLiteralDuplication")
 	doNotNagAbout(
 		"The BuildIdentifier.getName() method has been deprecated. " +
