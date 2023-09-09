@@ -1,0 +1,14 @@
+#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+version: "1.0"
+# Pre-load Gradle caches before syncing in IDEA.
+bootstrap: >
+  gradlew
+  --no-daemon
+projectJDK: 17
+plugins:
+  - id: com.neueda4j.intellij.plugin.cypher
+linter: jetbrains/qodana-jvm:latest
+failThreshold: 0
