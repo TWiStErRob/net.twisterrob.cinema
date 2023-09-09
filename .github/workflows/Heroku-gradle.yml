@@ -19,19 +19,19 @@ jobs:
 
     steps:
 
-      - name: Set up JDK 17.
+      - name: "Set up JDK 17."
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: temurin
 
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper JARs.
+      - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Download Gradle running the build.
+      - name: "Download Gradle running the build."
         working-directory: Heroku
         run: |
           # Run a no-op gradlew command in workspace.
@@ -41,7 +41,7 @@ jobs:
           grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-(?:milestone|rc)-\d+)?)$' gradle.version.log > gradle.version
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
-      - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
+      - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
         uses: actions/cache@v3
         with:
           path: |
@@ -60,7 +60,7 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
 
-      - name: Build Heroku.
+      - name: "Build Heroku."
         working-directory: Heroku
         run: >
           ./gradlew
@@ -76,7 +76,7 @@ jobs:
           integrationExternalTestClasses
 
 
-      - name: Check Heroku with Detekt.
+      - name: "Check Heroku with Detekt."
         working-directory: Heroku
         run: >
           ./gradlew
@@ -93,21 +93,21 @@ jobs:
           detektIntegrationExternalTest
           :detektReportMergeSarif
 
-      - name: Upload "Heroku Detekt Results".
+      - name: "Upload 'Heroku Detekt Results'."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Detekt Results
+          name: 'Heroku Detekt Results'
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
 
-      - name: Publish "Code scanning results / detekt".
+      - name: "Publish 'Code scanning results / detekt'."
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
 
 
-      - name: Test Heroku.
+      - name: "Test Heroku."
         working-directory: Heroku
         run: >
           ./gradlew
@@ -119,42 +119,41 @@ jobs:
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
-      - name: Upload "Heroku Test Results XMLs" artifact.
+      - name: "Upload 'Heroku Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Test Results XMLs
+          name: 'Heroku Test Results XMLs'
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
-      - name: Upload "Heroku Test Results HTML" artifact.
+      - name: "Upload 'Heroku Test Results HTML' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Test Results HTML
+          name: 'Heroku Test Results HTML'
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
-      - name: Upload "Heroku Test Results HTMLs" artifact.
+      - name: "Upload 'Heroku Test Results HTMLs' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Heroku Test Results HTMLs
+          name: 'Heroku Test Results HTMLs'
           path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
 
-      - name: Publish "🔔 Test Results" check run.
+      - name: "Publish '🔔 Test Results' check run."
         if: success() || failure()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: 🔔 Test Results
+          check_name: '🔔 Test Results'
           comment_mode: off
           report_individual_runs: true
           action_fail_on_inconclusive: true
           test_changes_limit: 0
           junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
-      - name: Cleanup Gradle files before caching.
+      - name: "Cleanup Gradle files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
           rm -f  ~/.gradle/caches/modules-2/modules-2.lock
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
-
