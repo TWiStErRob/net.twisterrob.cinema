@@ -15,7 +15,10 @@ jobs:
     steps:
 
       - name: "Install IntelliJ IDEA"
-        run: sudo snap install intellij-idea-community --classic
+        run: |
+          snap info intellij-idea-community
+          snap install --classic intellij-idea-community --stable
+          snap refresh --hold intellij-idea-community
 
       - name: "Set up JDK 17."
         uses: actions/setup-java@v3
@@ -29,7 +32,7 @@ jobs:
       - name: "Inspect project."
         working-directory: Heroku
         run: >
-          idea
+          intellij-idea-community
           inspect
           ${PWD}/gradle/plugins
           -e
