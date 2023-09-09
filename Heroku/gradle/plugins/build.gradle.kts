@@ -1,6 +1,6 @@
 plugins {
 	`kotlin-dsl`
-	id("java-gradle-plugin")
+	id("org.gradle.java-gradle-plugin")
 	alias(libs.plugins.detekt)
 	id("org.gradle.idea")
 }
@@ -91,5 +91,7 @@ idea {
 		excludeGenerated("kotlin-dsl-accessors")
 		excludeGenerated("kotlin-dsl-external-plugin-spec-builders")
 		excludeGenerated("kotlin-dsl-plugins")
+		isDownloadSources = !isCI
+		isDownloadJavadoc = !isCI
 	}
 }
