@@ -25,3 +25,4 @@ jobs:
   check-idea:
     name: "🔍 IntelliJ IDEA Inspections"
     uses: ./.github/workflows/Heroku-idea-inspect.yml
+    secrets: inherit
