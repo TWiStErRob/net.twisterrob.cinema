@@ -79,7 +79,7 @@ jobs:
         # https://www.jetbrains.com/help/qodana/github.html#Configuration
         with:
           # https://github.com/jetbrains/qodana-cli#scan
-          args: --project-dir,Heroku/gradle/plugins
+          args: --project-dir,Heroku
           pr-mode: false
           post-pr-comment: false
           upload-result: true
