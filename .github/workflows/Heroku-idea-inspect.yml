@@ -31,6 +31,12 @@ jobs:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
+      - name: "Pre-load Gradle caches before syncing in IDEA."
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+
       - name: "Inspect project."
         working-directory: Heroku
         run: >
