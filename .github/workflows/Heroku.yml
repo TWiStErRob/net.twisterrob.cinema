@@ -6,18 +6,22 @@ on:
     paths:
       - 'Heroku/**'
       - '.github/workflows/Heroku.yml'
+
 concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
   # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
   # More info: https://stackoverflow.com/a/68422069/253468:
   group: ${{ github.ref == 'refs/heads/main' && format('ci-heroku-main-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
   cancel-in-progress: true
+
 #env:
 #  # Choose Java 17 explicitly via setup-java.
 #  # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#java
 #  # Don't set it here or even on the jobs, because this doesn't run on a runner, variables not available.
 #  JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
+
 jobs:
+
   # Expected result: success() or failure().
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
@@ -760,3 +764,7 @@ jobs:
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test-integration/build/logs/
             ~/.npm/_logs/
+
+  check-idea:
+    name: "🔍 IntelliJ IDEA Inspections"
+    uses: ./.github/workflows/Heroku-idea-inspect.yml

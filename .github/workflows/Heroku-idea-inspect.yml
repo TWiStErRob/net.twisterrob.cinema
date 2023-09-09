@@ -1,0 +1,47 @@
+name: "🔍 IntelliJ IDEA Inspections"
+on:
+  workflow_call
+
+jobs:
+
+  inspect:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    steps:
+
+      - name: "Install IntelliJ IDEA"
+        run: sudo snap install intellij-idea-community --classic
+
+      - name: "Set up JDK 17."
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Inspect project."
+        working-directory: Heroku
+        run: >
+          idea
+          inspect
+          ${PWD}/gradle/plugins
+          -e
+          build/reports/inspect
+          -v2
+          -format json
+
+      - name: "Upload 'Inspection Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'Inspection Results'
+          path: |
+            ${{ github.workspace }}/Heroku/gradle/plugins/.idea/
+            ${{ github.workspace }}/Heroku/build/reports/inspect/
