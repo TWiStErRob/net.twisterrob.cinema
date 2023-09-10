@@ -79,7 +79,7 @@ jobs:
         # https://www.jetbrains.com/help/qodana/github.html#Configuration
         with:
           # https://github.com/jetbrains/qodana-cli#scan
-          args: --project-dir,Heroku
+          args: --project-dir,Heroku,--env,GITHUB_ACTIONS=${{ env.GITHUB_ACTIONS }},
           pr-mode: false
           post-pr-comment: false
           upload-result: true
