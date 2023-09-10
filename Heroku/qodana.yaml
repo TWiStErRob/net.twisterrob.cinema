@@ -3,10 +3,10 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-# Pre-load Gradle caches before syncing in IDEA.
-bootstrap: >
-  ./gradlew
-  --no-daemon
+bootstrap: |
+  echo "::group::Pre-load Gradle caches before syncing."
+  ./gradlew --no-daemon
+  echo "::endgroup::"
 projectJDK: 17
 plugins:
   - id: com.neueda4j.intellij.plugin.cypher
