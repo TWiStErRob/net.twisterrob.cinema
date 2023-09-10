@@ -5,7 +5,7 @@
 version: "1.0"
 # Pre-load Gradle caches before syncing in IDEA.
 bootstrap: >
-  gradlew
+  ./gradlew
   --no-daemon
 projectJDK: 17
 plugins:
