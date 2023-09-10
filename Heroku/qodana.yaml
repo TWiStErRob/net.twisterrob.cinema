@@ -5,7 +5,7 @@
 version: "1.0"
 bootstrap: |
   echo "::group::Pre-load Gradle caches before syncing."
-  ./gradlew --no-daemon
+  ./gradlew --no-daemon classes testClasses testFixturesClasses unitTestClasses functionalTestClasses integrationTestClasses integrationExternalTestClasses
   echo "::endgroup::"
 projectJDK: 17
 #plugins:
