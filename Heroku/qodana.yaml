@@ -8,7 +8,7 @@ bootstrap: |
   ./gradlew --no-daemon
   echo "::endgroup::"
 projectJDK: 17
-plugins:
-  - id: com.neueda4j.intellij.plugin.cypher
+#plugins:
+#  - id: com.neueda4j.intellij.plugin.cypher
 linter: jetbrains/qodana-jvm:latest
 failThreshold: 0
