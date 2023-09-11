@@ -8,6 +8,7 @@ plugins {
 	id("net.twisterrob.cinema.build.compilation")
 	id("net.twisterrob.cinema.build.testing")
 	id("net.twisterrob.cinema.build.publishing")
+	id("net.twisterrob.cinema.build.ide")
 }
 
 application {
