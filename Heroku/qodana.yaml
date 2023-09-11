@@ -3,12 +3,21 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
+
 bootstrap: |
   echo "::group::Pre-load Gradle caches before syncing."
   ./gradlew --no-daemon classes testClasses testFixturesClasses unitTestClasses functionalTestClasses integrationTestClasses integrationExternalTestClasses
   echo "::endgroup::"
+
 projectJDK: 17
 #plugins:
 #  - id: com.neueda4j.intellij.plugin.cypher
+
 linter: jetbrains/qodana-jvm:latest
 failThreshold: 0
+exclude:
+  - name: All
+    paths:
+      - gradle/plugins/build/generated-sources/kotlin-dsl-accessors/kotlin/gradle/kotlin/dsl
+      - gradle/plugins/build/generated-sources/kotlin-dsl-external-plugin-spec-builders/kotlin/gradle/kotlin/dsl
+      #- gradle/plugins/build/generated-sources/kotlin-dsl-plugins/kotlin/
