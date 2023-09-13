@@ -15,5 +15,5 @@ Heroku$ npm run devTest
 ```
 Then separately run the tests:
 ```shell
-test$ gradlew :test-integration:integrationTest
+test$ gradlew :test-integration:integrationExternalTest
 ```
