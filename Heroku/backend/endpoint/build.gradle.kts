@@ -27,7 +27,6 @@ dependencies {
 
 	implementation(libs.kotlin.stdlib8)
 	testImplementation(libs.kotlin.stdlib8)
-	implementation(libs.kotlinx.io)
 
 	implementation(libs.ktor.server)
 	implementation(libs.ktor.server.auth)

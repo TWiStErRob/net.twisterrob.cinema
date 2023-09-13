@@ -10,7 +10,6 @@ kotlin = "1.9.10"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.7.3"
-kotlinx-io = "0.2.1"
 kotlinx-serialization = "1.6.0"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.23.1"
@@ -73,7 +72,6 @@ kotlin-stdlib8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.r
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-serialization-gradle = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
