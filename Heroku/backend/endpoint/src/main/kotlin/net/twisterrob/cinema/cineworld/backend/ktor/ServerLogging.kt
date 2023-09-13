@@ -16,7 +16,6 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelinePhase
-import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.charsets.Charset
 import io.ktor.utils.io.core.readText
@@ -140,7 +139,7 @@ class ServerLogging(
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
-					val channel = ByteChannel(true)
+					val channel = io.ktor.utils.io.ByteChannel(true)
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
