@@ -696,7 +696,7 @@ jobs:
       - name: Run Selenium tests.
         working-directory: Heroku
         run: >
-          ./gradlew --no-daemon :test-integration:integrationTest
+          ./gradlew --no-daemon :test-integration:integrationExternalTest
           -Pnet.twisterrob.test.selenium.headless=true
           -Pnet.twisterrob.test.selenium.user.name=${{ secrets.UI_TEST_USERNAME }}
           -Pnet.twisterrob.test.selenium.user.pass=${{ secrets.UI_TEST_PASSWORD }}
@@ -723,21 +723,21 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Integration Test Results XMLs
-          path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationTest/TEST-*.xml
+          path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: Upload "Heroku Integration Test Results HTML" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Integration Test Results HTML
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationTest/
+          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: Upload "Heroku Integration Test Failure Screenshots" artifact.
         if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: Heroku Integration Test Failure Screenshots
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationTest-screenshots/
+          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
           if-no-files-found: error
 
       - name: Publish "🔔 Integration Test Results" check run.
@@ -749,7 +749,7 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
-          junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/integrationTest/TEST-*.xml
+          junit_files: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: Upload "Heroku Integration Test Logs" artifact.
         if: success() || failure()

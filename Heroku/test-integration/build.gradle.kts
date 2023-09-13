@@ -10,16 +10,16 @@ plugins {
 
 dependencies {
 	Deps.junit5(project)
-	Deps.slf4jToLog4jForTest(project, testType = "integrationTest")
-	integrationTestImplementation(projects.testHelpers)
+	Deps.slf4jToLog4jForTest(project, testType = "integrationExternalTest")
+	integrationExternalTestImplementation(projects.testHelpers)
 
 	implementation(libs.test.assertj)
 	implementation(libs.test.selenium)
 	implementation(libs.test.selenium.angular)
-	integrationTestRuntimeOnly(libs.test.selenium.jdkHttp)
+	integrationExternalTestRuntimeOnly(libs.test.selenium.jdkHttp)
 }
 
-tasks.integrationTest.configure {
+tasks.integrationExternalTest.configure {
 	val propertyNamesToExposeToJUnitTests = listOf(
 		"net.twisterrob.test.selenium.baseUrl",
 		"net.twisterrob.test.selenium.headless",
@@ -33,7 +33,7 @@ tasks.integrationTest.configure {
 	properties.forEach { (name, value) -> inputs.property(name, value) }
 	properties.forEach { (name, value) -> value?.let { systemProperty(name, value) } }
 
-	val screenshotsDir = layout.buildDirectory.dir("reports/tests/integrationTest-screenshots")
+	val screenshotsDir = layout.buildDirectory.dir("reports/tests/integrationExternalTest-screenshots")
 	doFirst {
 		screenshotsDir.get().asFile.parentFile.mkdirs()
 	}
