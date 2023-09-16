@@ -203,7 +203,6 @@ jobs:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
           branch: '${{ github.ref }}'
         with:
-          debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
             const fs = require("fs");
             const moduleData = {
