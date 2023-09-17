@@ -1,6 +1,13 @@
 name: "🔨 Build & Check (Gradle)"
 on:
-  workflow_call
+  workflow_call:
+    inputs:
+      if:
+        type: boolean
+        description: |
+          Pass the value from outside, so that nested jobs show up checks.
+          This is needed to satisfy (Required) checks in branch protection rules.
+        default: true
 
 jobs:
 
@@ -9,6 +16,7 @@ jobs:
   # If a test fails, this will fail. TODO move to reporting.
   check:
     name: "🔨 Gradle"
+    if: inputs.if
 
     runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.

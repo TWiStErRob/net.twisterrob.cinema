@@ -40,8 +40,9 @@ jobs:
   check:
     name: "🔨 Build & Check"
     needs: changes
-    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/Heroku-check.yml
+    with:
+      if: ${{ needs.changes.outputs.changed == 'true' }}
     secrets: inherit
 
   pull_request:
