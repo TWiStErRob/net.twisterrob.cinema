@@ -19,7 +19,7 @@ concurrency:
 jobs:
 
   changes:
-    name: "Determine changes"
+    name: "🝑 Determine changes"
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.Heroku }}
@@ -36,17 +36,11 @@ jobs:
               - 'Heroku/**'
               - '.github/workflows/Heroku*.yml'
 
-  check-gradle:
-    name: "🔨 Build & Check (Gradle)"
+  build:
+    name: "🔨 Build & Check"
     needs: changes
     if: needs.changes.outputs.changed == 'true'
-    uses: ./.github/workflows/Heroku-gradle.yml
-
-  check-npm:
-    name: "🔨 Build & Check (NPM)"
-    needs: changes
-    if: needs.changes.outputs.changed == 'true'
-    uses: ./.github/workflows/Heroku-npm.yml
+    uses: ./.github/workflows/Heroku-build.yml
 
   pull_request:
     name: "Find PR"

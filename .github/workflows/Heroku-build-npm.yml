@@ -5,6 +5,7 @@ on:
 jobs:
 
   check-npm:
+    name: "🔨 NPM"
 
     runs-on: ubuntu-22.04
     # Setup takes 1+3+1 minute, and protractor runs for 7 minutes

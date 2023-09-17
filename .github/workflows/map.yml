@@ -14,7 +14,7 @@ concurrency:
 jobs:
 
   changes:
-    name: "Determine changes"
+    name: "🝑 Determine changes"
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.map }}
