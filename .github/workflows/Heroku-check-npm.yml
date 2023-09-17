@@ -12,7 +12,8 @@ jobs:
     timeout-minutes: 15
 
     env:
-      NEO4J_URL: ${{ secrets.NEO4J_URL }}
+      # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
+      NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
       PORT: 8080
 
     steps:
@@ -73,7 +74,7 @@ jobs:
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
           sleep 30
 
-      - name: "Start Backend."
+      - name: "Start Backend (endpoint)."
         working-directory: Heroku
         run: |
           ./gradlew --no-daemon --stacktrace :backend:endpoint:run \

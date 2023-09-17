@@ -9,3 +9,4 @@ jobs:
 
   npm:
     uses: ./.github/workflows/Heroku-check-npm.yml
+    secrets: inherit

@@ -41,6 +41,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/Heroku-check.yml
+    secrets: inherit
 
   pull_request:
     name: "Find PR"
