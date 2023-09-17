@@ -11,7 +11,6 @@ jobs:
     name: "🔨 Gradle"
 
     runs-on: ubuntu-22.04
-    # A run took 5.5 minutes, give it a bit of a buffer and constrain.
     timeout-minutes: 30
 
     env:

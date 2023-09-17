@@ -6,8 +6,6 @@ on:
 jobs:
 
   pull_request:
-    # Don't execute on main, it'll never be PR'd.
-    if: github.ref != 'refs/heads/main' && (success() || failure())
     runs-on: ubuntu-22.04
     timeout-minutes: 1
 

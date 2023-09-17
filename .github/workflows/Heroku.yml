@@ -48,7 +48,8 @@ jobs:
   pull_request:
     name: "Find PR"
     needs: changes
-    if: needs.changes.outputs.changed == 'true'
+    # Don't execute on main, it'll never be PR'd.
+    if: needs.changes.outputs.changed == 'true' && github.ref != 'refs/heads/main'
     uses: ./.github/workflows/Heroku-pr.yml
 
   deps:

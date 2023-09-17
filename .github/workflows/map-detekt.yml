@@ -1,0 +1,52 @@
+name: "🔍 Static Checks (Map)"
+on:
+  workflow_call
+
+jobs:
+  detekt:
+    name: "🔍 Static Checks (Map)"
+
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up JDK 17."
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: "Run detekt."
+        working-directory: map
+        run: |
+          DETEKT_VERSION=1.23.1
+          curl --silent --show-error --location --remote-name \
+              https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
+          unzip detekt-cli-*.zip
+          ./detekt-cli-*/bin/detekt-cli --version
+          ./detekt-cli-*/bin/detekt-cli \
+              --all-rules \
+              --max-issues 0 \
+              --base-path ${{ github.workspace }} \
+              --report sarif:detekt.sarif \
+              --report txt:detekt.txt \
+              --report html:detekt.html \
+              --report xml:detekt.xml \
+              --report md:detekt.md \
+
+      - name: "Upload 'map Detekt Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'map Detekt Results'
+          path: ${{ github.workspace }}/map/detekt.*
+
+      - name: "Publish 'detekt' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/map/detekt.sarif
