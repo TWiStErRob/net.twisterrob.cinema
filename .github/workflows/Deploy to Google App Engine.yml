@@ -11,15 +11,18 @@ on:
       - release
   workflow_dispatch:
     inputs:
+
       reason:
         description: 'Reason for release'
         required: false
+        type: string
         default: 'Publish latest changes'
+
       production:
         description: 'Deploy to production?'
         required: true
-        default: false
         type: boolean
+        default: false
 
 jobs:
 

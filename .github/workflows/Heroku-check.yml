@@ -2,22 +2,23 @@ name: "🔨 Build & Check"
 on:
   workflow_call:
     inputs:
-      if:
-        type: boolean
+
+      skip:
         description: |
           Pass the value from outside, so that nested jobs show up checks.
           This is needed to satisfy (Required) checks in branch protection rules.
-        default: true
+        type: boolean
+        default: false
 
 jobs:
 
   gradle:
     uses: ./.github/workflows/Heroku-check-gradle.yml
     with:
-      if: ${{ inputs.if }}
+      skip: ${{ inputs.skip }}
 
   npm:
     uses: ./.github/workflows/Heroku-check-npm.yml
     with:
-      if: ${{ inputs.if }}
+      skip: ${{ inputs.skip }}
     secrets: inherit

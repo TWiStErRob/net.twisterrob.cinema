@@ -3,9 +3,11 @@ name: "Release from main"
 on:
   workflow_dispatch:
     inputs:
+
       reason:
         description: 'Reason for release'
         required: false
+        type: string
         default: 'Publish latest changes from main'
 
 jobs:

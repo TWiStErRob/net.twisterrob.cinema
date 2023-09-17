@@ -100,7 +100,7 @@ jobs:
           name: 'map Detekt Results'
           path: ${{ github.workspace }}/map/detekt.*
 
-      - name: "Publish 'Code scanning results / detekt'."
+      - name: "Publish 'detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:

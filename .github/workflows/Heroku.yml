@@ -42,7 +42,7 @@ jobs:
     needs: changes
     uses: ./.github/workflows/Heroku-check.yml
     with:
-      if: ${{ needs.changes.outputs.changed == 'true' }}
+      skip: ${{ needs.changes.outputs.changed != 'true' }}
     secrets: inherit
 
   pull_request:

@@ -3,7 +3,6 @@ name: "Dependency Review"
 on:
   # To work around https://github:com/github-community/community/discussions/19069, allow manual click.
   workflow_dispatch:
-
     inputs:
 
       resolution:
