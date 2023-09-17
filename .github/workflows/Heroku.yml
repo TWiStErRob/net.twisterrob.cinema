@@ -17,7 +17,7 @@ concurrency:
 #  JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
 jobs:
-  
+
   changes:
     name: "Determine changes"
     runs-on: ubuntu-latest

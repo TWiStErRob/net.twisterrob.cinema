@@ -269,7 +269,7 @@ jobs:
             			To approve/reject these dependency changes \
             			run the ["Dependency Review" workflow](${process.env.action_url}) \
             			with \`workflow_dispatch\` on \`${process.env.branch}\`.
-
+            
             			## Dependencies Changes
             			_See annotations for more details._
             			| Module | Added* | Removed* |
@@ -291,7 +291,7 @@ jobs:
             				})
             				.join("\n")
             			}
-
+            
             			**\\*** _added/removed in \`lockfile.diff (dependencies.diff)\`._
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Array.from(function* () {

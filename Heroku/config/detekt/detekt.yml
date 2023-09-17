@@ -63,7 +63,7 @@ complexity:
 
 
 exceptions:
-  
+
   InstanceOfCheckForException:
     excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 

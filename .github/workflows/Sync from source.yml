@@ -38,7 +38,7 @@ jobs:
           rm --verbose --force weekly_film_times.xml
           rm --verbose --force weekly_film_times_ie.xml
           rm --verbose --force weekly_film_times.log
-      
+
       - name: "Build and Run Sync."
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
