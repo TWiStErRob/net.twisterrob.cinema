@@ -4,8 +4,6 @@ on:
 
 jobs:
   detekt:
-    name: "🔍 Static Checks (Map)"
-
     runs-on: ubuntu-22.04
     timeout-minutes: 5
 

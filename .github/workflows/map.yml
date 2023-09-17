@@ -13,38 +13,10 @@ concurrency:
 
 jobs:
 
-  changes:
-    name: "🝑 Determine changes"
-    runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.filter.outputs.map }}
-    steps:
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
-
-      - name: "Filter related paths to this workflow."
-        uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            map:
-              - 'map/**'
-              - '.github/workflows/map*.yml'
-
   run:
     name: "🔨 Build & Execute (Map)"
-    needs: changes
-    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/map-run.yml
 
   detekt:
     name: "🔍 Static Checks (Map)"
-    needs: changes
-    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/map-detekt.yml
-
-  detekt-standin:
-    name: "🔍 Static Checks (Map) - standin"
-    needs: changes
-    if: needs.changes.outputs.changed != 'true'
-    uses: ./.github/workflows/map-detekt-standin.yml

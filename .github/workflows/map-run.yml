@@ -4,8 +4,6 @@ on:
 
 jobs:
   run:
-    name: "🔨 Build & Execute (Map)"
-
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
     runs-on: ubuntu-22.04
     timeout-minutes: 5

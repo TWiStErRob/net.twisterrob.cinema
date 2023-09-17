@@ -1,30 +1,12 @@
 name: "🔨 Build & Check"
 on:
-  workflow_call:
-    inputs:
-
-      skip:
-        description: |
-          Pass the value from outside, so that nested jobs show up checks.
-          This is needed to satisfy (Required) checks in branch protection rules.
-        type: boolean
-        default: false
+  workflow_call
 
 jobs:
 
   gradle:
     uses: ./.github/workflows/Heroku-check-gradle.yml
-    if: ${{ !inputs.skip }}
-
-  gradle-standin:
-    uses: ./.github/workflows/Heroku-check-gradle-standin.yml
-    if: inputs.skip
 
   npm:
     uses: ./.github/workflows/Heroku-check-npm.yml
-    if: ${{ !inputs.skip }}
     secrets: inherit
-
-  npm-standin:
-    uses: ./.github/workflows/Heroku-check-npm-standin.yml
-    if: inputs.skip
