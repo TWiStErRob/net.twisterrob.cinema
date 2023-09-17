@@ -1,86 +1,22 @@
-name: map
+name: "map"
+
 on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'map/**'
-      - '.github/workflows/map.yml'
   pull_request:
-    paths:
-      - 'map/**'
-      - '.github/workflows/map.yml'
+
 concurrency:
+  # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
   group: ${{ github.ref == 'refs/heads/main' && format('ci-map-main-{0}', github.sha) || format('ci-map-{0}', github.ref) }}
   cancel-in-progress: true
+
 jobs:
+
   run:
-    name: 🔨 Build & Execute (Map)
-    # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17.
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Run map.main.kts.
-        working-directory: map
-        run: kotlinc -script map.main.kts
-
-      - name: Upload "cinemas.kml" artifact.
-        if: success() || failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cinemas.kml
-          path: ${{ github.workspace }}/map/cinemas.kml
+    name: "🔨 Build & Execute (Map)"
+    uses: ./.github/workflows/map-run.yml
 
   detekt:
-    name: 🔍 Static Checks (Map)
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17.
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Run detekt.
-        working-directory: map
-        run: |
-          DETEKT_VERSION=1.23.1
-          curl --silent --show-error --location --remote-name \
-              https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/detekt-cli-${DETEKT_VERSION}.zip
-          unzip detekt-cli-*.zip
-          ./detekt-cli-*/bin/detekt-cli --version
-          ./detekt-cli-*/bin/detekt-cli \
-              --all-rules \
-              --max-issues 0 \
-              --base-path ${{ github.workspace }} \
-              --report sarif:detekt.sarif \
-              --report txt:detekt.txt \
-              --report html:detekt.html \
-              --report xml:detekt.xml \
-              --report md:detekt.md \
-
-      - name: Upload "map Detekt Results" artifact.
-        if: success() || failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: map Detekt Results
-          path: ${{ github.workspace }}/map/detekt.*
-
-      - name: Publish "Code scanning results / detekt".
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
-        with:
-          sarif_file: ${{ github.workspace }}/map/detekt.sarif
+    name: "🔍 Static Checks (Map)"
+    uses: ./.github/workflows/map-detekt.yml

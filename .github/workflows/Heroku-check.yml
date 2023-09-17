@@ -1,0 +1,12 @@
+name: "🔨 Build & Check"
+on:
+  workflow_call
+
+jobs:
+
+  gradle:
+    uses: ./.github/workflows/Heroku-check-gradle.yml
+
+  npm:
+    uses: ./.github/workflows/Heroku-check-npm.yml
+    secrets: inherit

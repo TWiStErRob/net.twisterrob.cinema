@@ -1,8 +1,10 @@
-name: Dependency Review
+name: "Dependency Review"
+
 on:
   # To work around https://github:com/github-community/community/discussions/19069, allow manual click.
   workflow_dispatch:
     inputs:
+
       resolution:
         description: 'Are the changes ok?'
         required: true
@@ -11,20 +13,21 @@ on:
         options:
           - approve
           - reject
+
 jobs:
+
   custom-check-run-action:
-    name: React to Dependency Change Summary action
+    name: "React to Dependency Change Summary action"
     runs-on: ubuntu-22.04
     steps:
 
-      - name: Update "Dependency Diff" check run.
+      - name: "Update 'Dependency Diff' check run."
         uses: actions/github-script@v6
         env:
           ref: ${{ github.ref }}
           resolution: ${{ inputs.resolution }}
           user: ${{ github.actor }}
         with:
-          debug: ${{ secrets.ACTIONS_STEP_DEBUG || false }}
           script: |
             // https://github.com/actions/toolkit/blob/main/packages/core/README.md
 

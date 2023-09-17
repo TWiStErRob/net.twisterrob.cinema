@@ -1,4 +1,5 @@
-name: Delete from Google App Engine
+name: "Delete from Google App Engine"
+
 on:
   pull_request:
     types: closed
@@ -6,26 +7,31 @@ on:
   # branches
   workflow_dispatch:
   # no inputs
+
 jobs:
+
   release:
-    name: Delete from Google App Engine
+
+    name: "Delete from Google App Engine"
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     # Only trigger when deleting branches, or any other event type.
     if: github.event_name != 'delete' || github.event.ref_type == 'branch'
+
     permissions:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+
     steps:
 
-      - name: Set up JDK 17.
+      - name: "Set up JDK 17."
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: temurin
 
-      - name: Determine Google App Engine version name.
+      - name: "Determine Google App Engine version name."
         id: name
         uses: actions/github-script@v6
         with:
@@ -52,19 +58,19 @@ jobs:
               // Must begin and end with a letter or digit. Must not exceed 63 characters.
               .replace(/[^a-z0-9-]/g, '-')
 
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud.
+      - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{ secrets.GAE_WIP }}
           service_account: ${{ secrets.GAE_SA }}
 
-      - name: Print tooling versions.
+      - name: "Print tooling versions."
         run: |
           gcloud --version
 
-      - name: Delete version ${{ steps.name.outputs.result }} from Google App Engine.
+      - name: "Delete version ${{ steps.name.outputs.result }} from Google App Engine."
         run: |
           gcloud app versions delete --quiet --project="twisterrob-cinema" ${{ steps.name.outputs.result }}

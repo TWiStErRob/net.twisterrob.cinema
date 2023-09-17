@@ -1,0 +1,159 @@
+name: "🔨 Build & Check (Gradle)"
+on:
+  workflow_call
+
+jobs:
+
+  # Expected result: success() or failure().
+  # If a static check fails, it'll be reported separately.
+  # If a test fails, this will fail. TODO move to reporting.
+  check:
+    name: "🔨 Gradle"
+
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    env:
+      # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
+      NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
+
+    steps:
+
+      - name: "Set up JDK 17."
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Validate Gradle Wrapper JARs."
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: "Download Gradle running the build."
+        working-directory: Heroku
+        run: |
+          # Run a no-op gradlew command in workspace.
+          ./gradlew --no-daemon --version | tee gradle.version.log
+          # Capture version for later usage.
+          # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
+          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-(?:milestone|rc)-\d+)?)$' gradle.version.log > gradle.version
+          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
+
+      - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
+        uses: actions/cache@v3
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${ gradle-dist-hash }/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during build
+            ~/.gradle/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
+            ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
+          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
+
+
+      - name: "Build Heroku."
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          assemble
+          testClasses
+          unitTestClasses
+          functionalTestClasses
+          integrationTestClasses
+          integrationExternalTestClasses
+
+
+      - name: "Check Heroku with Detekt."
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          :plugins:detektEach
+          detektMain
+          detektTestFixtures
+          detektUnitTest
+          detektFunctionalTest
+          detektIntegrationTest
+          detektIntegrationExternalTest
+          :detektReportMergeSarif
+
+      - name: "Upload 'Heroku Detekt Results'."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'Heroku Detekt Results'
+          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
+
+      - name: "Publish 'detekt' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
+
+
+      - name: "Test Heroku."
+        working-directory: Heroku
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          :allTestsReport
+          -Pnet.twisterrob.build.verboseReports=true
+          -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
+
+      - name: "Upload 'Heroku Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'Heroku Test Results XMLs'
+          path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
+
+      - name: "Upload 'Heroku Test Results HTML' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'Heroku Test Results HTML'
+          path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
+
+      - name: "Upload 'Heroku Test Results HTMLs' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'Heroku Test Results HTMLs'
+          path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
+
+      - name: "Publish '🔔 Test Results' check run."
+        if: success() || failure()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: '🔔 Test Results'
+          comment_mode: off
+          report_individual_runs: true
+          action_fail_on_inconclusive: true
+          test_changes_limit: 0
+          junit_files: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
+
+      - name: "Cleanup Gradle files before caching."
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f  ~/.gradle/caches/modules-2/gc.properties
+          rm -fr ~/.gradle/caches/*/plugin-resolution/
