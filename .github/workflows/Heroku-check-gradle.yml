@@ -7,7 +7,7 @@ jobs:
   # Expected result: success() or failure().
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
-  check-gradle:
+  check:
     name: "🔨 Gradle"
 
     runs-on: ubuntu-22.04

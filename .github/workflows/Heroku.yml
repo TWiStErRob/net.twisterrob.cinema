@@ -36,11 +36,11 @@ jobs:
               - 'Heroku/**'
               - '.github/workflows/Heroku*.yml'
 
-  build:
+  check:
     name: "🔨 Build & Check"
     needs: changes
     if: needs.changes.outputs.changed == 'true'
-    uses: ./.github/workflows/Heroku-build.yml
+    uses: ./.github/workflows/Heroku-check.yml
 
   pull_request:
     name: "Find PR"
