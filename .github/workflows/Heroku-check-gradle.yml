@@ -1,53 +1,14 @@
 name: "🔨 Build & Check (Gradle)"
 on:
-  workflow_call:
-    inputs:
-
-      skip:
-        description: |
-          Pass the value from outside, so that nested jobs show up checks.
-          This is needed to satisfy (Required) checks in branch protection rules.
-        type: boolean
-        default: false
+  workflow_call
 
 jobs:
-
-  standin:
-    name: "🔨 Gradle"
-    if: inputs.skip
-
-    runs-on: ubuntu-22.04
-    timeout-minutes: 1
-
-    steps:
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
-
-      - name: "Publish 'detekt' GitHub Code Scanning analysis."
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          category: '.github/workflows/Heroku-check-gradle.yml:check'
-          sarif_file: ${{ github.workspace }}/.github/workflows/empty-reports/detekt.sarif
-
-      - name: "Publish '🔔 Test Results' check run."
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: '🔔 Test Results'
-          comment_mode: off
-          ignore_runs: true
-          job_summary: false
-          compare_to_earlier_commit: false
-          check_run_annotations: false
-          fail_on: nothing
-          test_changes_limit: 0
-          junit_files: ${{ github.workspace }}/.github/workflows/empty-reports/junit.xml
 
   # Expected result: success() or failure().
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check:
     name: "🔨 Gradle"
-    if: ${{ !inputs.skip }}
 
     runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer and constrain.

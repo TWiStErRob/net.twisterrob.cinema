@@ -14,8 +14,11 @@ jobs:
 
   gradle:
     uses: ./.github/workflows/Heroku-check-gradle.yml
-    with:
-      skip: ${{ inputs.skip }}
+    if: ${{ !inputs.skip }}
+
+  gradle-standin:
+    uses: ./.github/workflows/Heroku-check-gradle-standin.yml
+    if: inputs.skip
 
   npm:
     uses: ./.github/workflows/Heroku-check-npm.yml
