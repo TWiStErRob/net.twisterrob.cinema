@@ -4,13 +4,7 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'map/**'
-      - '.github/workflows/map.yml'
   pull_request:
-    paths:
-      - 'map/**'
-      - '.github/workflows/map.yml'
 
 concurrency:
   # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
@@ -19,8 +13,28 @@ concurrency:
 
 jobs:
 
+  changes:
+    name: "Determine changes"
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.map }}
+    steps:
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Filter related paths to this workflow."
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            map:
+              - 'map/**'
+              - '.github/workflows/map*.yml'
+
   run:
     name: "🔨 Build & Execute (Map)"
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
     runs-on: ubuntu-22.04
     timeout-minutes: 5
@@ -47,6 +61,8 @@ jobs:
 
   detekt:
     name: "🔍 Static Checks (Map)"
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:

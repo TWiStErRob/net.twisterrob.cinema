@@ -4,9 +4,6 @@ on:
   push:
     branches-ignore:
       - 'release'
-    paths:
-      - 'Heroku/**'
-      - '.github/workflows/Heroku.yml'
 
 concurrency:
   # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
@@ -20,17 +17,41 @@ concurrency:
 #  JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
 jobs:
+  
+  changes:
+    name: "Determine changes"
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.Heroku }}
+    steps:
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Filter related paths to this workflow."
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            Heroku:
+              - 'Heroku/**'
+              - '.github/workflows/Heroku*.yml'
 
   check-gradle:
     name: "🔨 Build & Check (Gradle)"
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/Heroku-gradle.yml
 
   check-npm:
     name: "🔨 Build & Check (NPM)"
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/Heroku-npm.yml
 
   pull_request:
     name: "Find PR"
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/Heroku-pr.yml
 
   deps:
