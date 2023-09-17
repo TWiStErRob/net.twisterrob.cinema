@@ -22,6 +22,9 @@ jobs:
 
   npm:
     uses: ./.github/workflows/Heroku-check-npm.yml
-    with:
-      skip: ${{ inputs.skip }}
+    if: ${{ !inputs.skip }}
     secrets: inherit
+
+  npm-standin:
+    uses: ./.github/workflows/Heroku-check-npm-standin.yml
+    if: inputs.skip
