@@ -2,12 +2,11 @@ package net.twisterrob.cinema.build.logging
 
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestDescriptor
+import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestOutputEvent
 import org.gradle.api.tasks.testing.TestResult
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.kotlin.dsl.KotlinClosure1
-import org.gradle.kotlin.dsl.KotlinClosure2
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
@@ -29,19 +28,28 @@ fun Test.configureVerboseReportsForGithubActions() {
 	)
 
 	val lookup = mutableMapOf<TestDescriptor, TestInfo>()
-	beforeSuite(KotlinClosure1<TestDescriptor, Any>({
-		lookup[this] = TestInfo(this)
-	}))
-	beforeTest(KotlinClosure1<TestDescriptor, Any>({
-		lookup[this] = TestInfo(this)
-	}))
-	onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
+
+	addTestListener(object : TestListener {
+		override fun beforeSuite(suite: TestDescriptor) {
+			lookup[suite] = TestInfo(suite)
+		}
+
+		override fun beforeTest(testDescriptor: TestDescriptor) {
+			lookup[testDescriptor] = TestInfo(testDescriptor)
+		}
+
+		override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) = Unit
+
+		override fun afterSuite(suite: TestDescriptor, result: TestResult) = Unit
+	})
+
+	addTestOutputListener { descriptor, event ->
 		val info = lookup.getValue(descriptor)
 		when (event.destination!!) {
 			TestOutputEvent.Destination.StdOut -> info.stdOut.append(event.message)
 			TestOutputEvent.Destination.StdErr -> info.stdErr.append(event.message)
 		}
-	}))
+	}
 
 	@Suppress("ReturnCount")
 	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
@@ -97,10 +105,18 @@ fun Test.configureVerboseReportsForGithubActions() {
 			logger.quiet(info.stdErr.toString())
 		}
 	}
-	afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
-		logResults("test", descriptor, result)
-	}))
-	afterSuite(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
-		logResults("suite", descriptor, result)
-	}))
+
+	addTestListener(object : TestListener {
+		override fun beforeSuite(suite: TestDescriptor) = Unit
+
+		override fun beforeTest(testDescriptor: TestDescriptor) = Unit
+
+		override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+			logResults("test", testDescriptor, result)
+		}
+
+		override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+			logResults("suite", suite, result)
+		}
+	})
 }
