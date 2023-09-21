@@ -1,9 +1,11 @@
 package net.twisterrob.cinema.build.logging
 
+import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestOutputEvent
+import org.gradle.api.tasks.testing.TestOutputListener
 import org.gradle.api.tasks.testing.TestResult
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -21,38 +23,49 @@ fun Test.configureVerboseReportsForGithubActions() {
 		showCauses = true
 		showStackTraces = true
 	}
-	data class TestInfo(
+	val processor = ResultProcessor(logger)
+	addTestListener(processor)
+	addTestOutputListener(processor)
+}
+
+private class ResultProcessor(
+	private val logger: Logger,
+) : TestListener, TestOutputListener {
+
+	private data class TestInfo(
 		val descriptor: TestDescriptor,
 		val stdOut: StringBuilder = StringBuilder(),
 		val stdErr: StringBuilder = StringBuilder(),
 	)
 
-	val lookup = mutableMapOf<TestDescriptor, TestInfo>()
+	private val lookup = mutableMapOf<TestDescriptor, TestInfo>()
 
-	addTestListener(object : TestListener {
-		override fun beforeSuite(suite: TestDescriptor) {
-			lookup[suite] = TestInfo(suite)
-		}
+	override fun beforeSuite(suite: TestDescriptor) {
+		lookup[suite] = TestInfo(suite)
+	}
 
-		override fun beforeTest(testDescriptor: TestDescriptor) {
-			lookup[testDescriptor] = TestInfo(testDescriptor)
-		}
+	override fun beforeTest(testDescriptor: TestDescriptor) {
+		lookup[testDescriptor] = TestInfo(testDescriptor)
+	}
 
-		override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) = Unit
-
-		override fun afterSuite(suite: TestDescriptor, result: TestResult) = Unit
-	})
-
-	addTestOutputListener { descriptor, event ->
-		val info = lookup.getValue(descriptor)
-		when (event.destination!!) {
-			TestOutputEvent.Destination.StdOut -> info.stdOut.append(event.message)
-			TestOutputEvent.Destination.StdErr -> info.stdErr.append(event.message)
+	override fun onOutput(testDescriptor: TestDescriptor, outputEvent: TestOutputEvent) {
+		val info = lookup.getValue(testDescriptor)
+		when (outputEvent.destination!!) {
+			TestOutputEvent.Destination.StdOut -> info.stdOut.append(outputEvent.message)
+			TestOutputEvent.Destination.StdErr -> info.stdErr.append(outputEvent.message)
 		}
 	}
 
+	override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+		logResults("test", testDescriptor, result)
+	}
+
+	override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+		logResults("suite", suite, result)
+	}
+
 	@Suppress("ReturnCount")
-	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
+	private fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
 
 		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
 			val id = descriptor.toString().hashCode().absoluteValue
@@ -105,18 +118,4 @@ fun Test.configureVerboseReportsForGithubActions() {
 			logger.quiet(info.stdErr.toString())
 		}
 	}
-
-	addTestListener(object : TestListener {
-		override fun beforeSuite(suite: TestDescriptor) = Unit
-
-		override fun beforeTest(testDescriptor: TestDescriptor) = Unit
-
-		override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
-			logResults("test", testDescriptor, result)
-		}
-
-		override fun afterSuite(suite: TestDescriptor, result: TestResult) {
-			logResults("suite", suite, result)
-		}
-	})
 }
