@@ -1,7 +1,4 @@
-import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
-
-// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/570
-enableFeaturePreviewQuietly("STABLE_CONFIGURATION_CACHE", "Kotlin DSL property assignment")
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 dependencyResolutionManagement {
 	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
@@ -18,8 +15,7 @@ dependencyResolutionManagement {
 buildscript {
 	dependencyLocking {
 		lockAllConfigurations()
-		// To prevent "Kotlin DSL property assignment", don't use it here.
-		lockFile.set(file("../../gradle/dependency-locks/plugins-settings.lockfile"))
+		lockFile = file("../../gradle/dependency-locks/plugins-settings.lockfile")
 	}
 }
 
