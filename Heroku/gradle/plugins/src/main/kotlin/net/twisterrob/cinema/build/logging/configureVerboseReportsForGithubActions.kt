@@ -66,16 +66,6 @@ private class ResultProcessor(
 
 	@Suppress("ReturnCount")
 	private fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
-
-		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
-			val id = descriptor.toString().hashCode().absoluteValue
-			if (condition) {
-				logger.quiet("::group::${testType}_${outputType}_${id}")
-				output()
-				logger.quiet("::endgroup:: ")
-			}
-		}
-
 		val info = lookup.remove(descriptor) ?: error("Descriptor ${descriptor} was not in ${lookup}")
 		val hasStdOut = info.stdOut.isNotEmpty()
 		val hasStdErr = info.stdErr.isNotEmpty()
@@ -102,20 +92,30 @@ private class ResultProcessor(
 			return
 		}
 
-		logger.quiet("${fullName} ${result.resultType}")
+		fun id(outputType: String): String =
+			"${testType}_${outputType}_${descriptor.toString().hashCode().absoluteValue}"
 
-		fold("ex", hasError) {
-			logger.quiet("EXCEPTION ${fullName}")
+		logger.quiet("${fullName} ${result.resultType}")
+		logger.fold(id("ex"), hasError) {
+			quiet("EXCEPTION ${fullName}")
 			@Suppress("UnsafeCallOnNullableType") // guarded by hasError, but not provable by contract {}.
-			result.exception!!.printStackTrace()
+			quiet(result.exception!!.stackTraceToString())
 		}
-		fold("out", hasStdOut) {
-			logger.quiet("STANDARD_OUT ${fullName}")
-			logger.quiet(info.stdOut.toString())
+		logger.fold(id("out"), hasStdOut) {
+			quiet("STANDARD_OUT ${fullName}")
+			quiet(info.stdOut.toString())
 		}
-		fold("err", hasStdErr) {
-			logger.quiet("STANDARD_ERR ${fullName}")
-			logger.quiet(info.stdErr.toString())
+		logger.fold(id("err"), hasStdErr) {
+			quiet("STANDARD_ERR ${fullName}")
+			quiet(info.stdErr.toString())
 		}
+	}
+}
+
+private fun Logger.fold(id: String, condition: Boolean = true, output: Logger.() -> Unit) {
+	if (condition) {
+		this.quiet("::group::${id}")
+		this.output()
+		this.quiet("::endgroup:: ")
 	}
 }
