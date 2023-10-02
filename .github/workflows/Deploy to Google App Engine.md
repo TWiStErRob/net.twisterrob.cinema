@@ -1,0 +1,6 @@
+This might generate high traffic and unused storage even with `Delete from Google App Engine.yml` in place.
+ * This is actually [documented here](https://cloud.google.com/appengine/docs/standard/testing-and-deploying-your-app?tab=java#managing_build_images)...
+ * See [Build History on Cloud Build](https://console.cloud.google.com/cloud-build/builds;region=us-central1?project=twisterrob-cinema)
+ * These build and publish Docker images at [`app-engine-tmp/build-cache`](https://console.cloud.google.com/gcr/images/twisterrob-cinema/us/app-engine-tmp/build-cache/default/ttl-7d?project=twisterrob-cinema) and [`app-engine-tmp/app`](https://console.cloud.google.com/gcr/images/twisterrob-cinema/us/app-engine-tmp/app/default/ttl-18h?project=twisterrob-cinema).
+ * The actual files are stored in [`us.artifacts.twisterrob-cinema.appspot.com/containers/images` bucket](https://console.cloud.google.com/storage/browser/us.artifacts.twisterrob-cinema.appspot.com/containers/images;tab=objects&project=twisterrob-cinema)
+ * Sadly these images are stored in a multi-region bucket, which is [billed higher](https://cloud.google.com/storage/pricing#multi-regions), and [their location cannot be changed](https://cloud.google.com/storage/docs/locations#:~:text=You%20cannot%20change%20a%20bucket's,bucket%20in%20a%20different%20location.).
