@@ -54,7 +54,7 @@ test-assertj = "3.24.2"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "5.5.0"
+test-mockito = "5.6.0"
 test-mockito-kotlin = "5.1.0"
 
 test-selenium = "4.13.0"
