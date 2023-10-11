@@ -55,8 +55,6 @@ class Browser {
 				.withLogOutput(System.out)
 				.withReadableTimestamp(true)
 				.build()
-			// https://www.selenium.dev/blog/2022/using-java11-httpclient/
-			System.setProperty("webdriver.http.factory", "jdk-http-client")
 			val driver = ChromeDriver(service, options)
 			driver.manage().apply {
 				//timeouts().implicitlyWait(Duration.ofSeconds(10))

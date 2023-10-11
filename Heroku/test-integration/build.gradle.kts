@@ -16,7 +16,6 @@ dependencies {
 	implementation(libs.test.assertj)
 	implementation(libs.test.selenium)
 	implementation(libs.test.selenium.angular)
-	integrationExternalTestRuntimeOnly(libs.test.selenium.jdkHttp)
 }
 
 tasks.integrationExternalTest.configure {
