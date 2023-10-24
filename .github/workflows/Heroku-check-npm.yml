@@ -23,6 +23,9 @@ jobs:
           java-version: 17
           distribution: temurin
 
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
       - name: "Set up Node."
         uses: actions/setup-node@v4
         with:
@@ -31,9 +34,6 @@ jobs:
       - name: "Set up NPM 10.x."
         # https://github.com/actions/setup-node/issues/324
         run: npm install --global npm@10
-
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
 
       - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
