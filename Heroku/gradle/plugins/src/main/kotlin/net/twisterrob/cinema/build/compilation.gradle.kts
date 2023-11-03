@@ -3,6 +3,7 @@ package net.twisterrob.cinema.build
 import net.twisterrob.cinema.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import java.lang.reflect.Method
 
 plugins {
 	id("org.gradle.java")
@@ -26,4 +27,23 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		// > Language version 2.0 is experimental, there are no backwards compatibility guarantees for new language and library features
 		freeCompilerArgs.add("-Xsuppress-version-warnings")
 	}
+}
+
+// TODEL Workaround for https://youtrack.jetbrains.com/issue/KT-63165
+// Everything involved is internal, so we need to use reflection.
+
+@Suppress("UNCHECKED_CAST")
+val kotlinCKGPCEClass: Class<DefaultTask> = Class
+	.forName("org.jetbrains.kotlin.gradle.plugin.diagnostics.CheckKotlinGradlePluginConfigurationErrors")
+		as Class<DefaultTask>
+
+val getBuildServiceProvider: Method = Class
+	.forName("org.jetbrains.kotlin.gradle.plugin.diagnostics.KotlinToolingDiagnosticsCollectorKt")
+	.getDeclaredMethod("getKotlinToolingDiagnosticsCollectorProvider", Project::class.java)
+
+tasks.withType(kotlinCKGPCEClass).configureEach {
+	@Suppress("UNCHECKED_CAST")
+	val buildServiceProvider = getBuildServiceProvider.invoke(null, project)
+			as Provider<BuildService<*>>
+	usesService(buildServiceProvider)
 }
