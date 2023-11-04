@@ -29,8 +29,15 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	}
 }
 
-// TODEL Workaround for https://youtrack.jetbrains.com/issue/KT-63165
-// Everything involved is internal, so we need to use reflection.
+// region TODEL Workaround for https://youtrack.jetbrains.com/issue/KT-63165
+// Everything involved is internal, so we need to use reflection, otherwise the code is:
+// ```
+// import org.jetbrains.kotlin.gradle.plugin.diagnostics.CheckKotlinGradlePluginConfigurationErrors
+// import org.jetbrains.kotlin.gradle.plugin.diagnostics.kotlinToolingDiagnosticsCollectorProvider
+// tasks.withType<CheckKotlinGradlePluginConfigurationErrors>().configureEach {
+//     usesService(project.kotlinToolingDiagnosticsCollectorProvider)
+// }
+// ```
 
 @Suppress("UNCHECKED_CAST")
 val kotlinCKGPCEClass: Class<DefaultTask> = Class
@@ -47,3 +54,5 @@ tasks.withType(kotlinCKGPCEClass).configureEach {
 			as Provider<BuildService<*>>
 	usesService(buildServiceProvider)
 }
+
+// endregion TODEL KT-63165
