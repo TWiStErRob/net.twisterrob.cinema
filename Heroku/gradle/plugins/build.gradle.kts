@@ -93,3 +93,17 @@ idea {
 		excludeGenerated("kotlin-dsl-plugins")
 	}
 }
+
+// TODEL Workaround for https://github.com/gradle/gradle/issues/26981
+@Suppress("UNCHECKED_CAST")
+tasks.withType(
+	Class.forName("org.jetbrains.kotlin.gradle.plugin.diagnostics.CheckKotlinGradlePluginConfigurationErrors")
+			as Class<Task>
+).configureEach {
+	usesService(
+		Class
+			.forName("org.jetbrains.kotlin.gradle.plugin.diagnostics.KotlinToolingDiagnosticsCollectorKt")
+			.getDeclaredMethod("getKotlinToolingDiagnosticsCollectorProvider", Project::class.java)
+			.invoke(null, project) as Provider<BuildService<*>>
+	)
+}
