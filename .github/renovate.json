@@ -9,9 +9,10 @@
 		"Database/",
 		"Models/"
 	],
-	"regexManagers": [
+	"customManagers": [
 		{
 			"description": "Update Detekt CLI in map.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/map\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://repo1.maven.org/maven2",
