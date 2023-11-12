@@ -9,10 +9,13 @@
 		"Database/",
 		"Models/"
 	],
-	"regexManagers": [
+	"customManagers": [
 		{
+			"customType": "regex",
 			"description": "Update Detekt CLI in map.",
-			"fileMatch": ["^\\.github/workflows/map\\.yml$"],
+			"fileMatch": [
+				"^\\.github/workflows/map\\.yml$"
+			],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://repo1.maven.org/maven2",
 			"depNameTemplate": "io.gitlab.arturbosch.detekt:detekt-cli",
@@ -31,7 +34,9 @@
 			"matchFileNames": [
 				"Heroku/frontend/package.json"
 			],
-			"matchUpdateTypes": ["major"],
+			"matchUpdateTypes": [
+				"major"
+			],
 			"enabled": false
 		},
 		{
