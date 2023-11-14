@@ -22,7 +22,7 @@ jobs:
     steps:
 
       - name: "Update 'Dependency Diff' check run."
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           ref: ${{ github.ref }}
           resolution: ${{ inputs.resolution }}

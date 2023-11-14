@@ -198,7 +198,7 @@ jobs:
 
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
           branch: '${{ github.ref }}'

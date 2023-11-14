@@ -51,7 +51,7 @@ jobs:
 
       - name: "Determine Google App Engine version name."
         id: name
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
         with:
