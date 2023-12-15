@@ -116,21 +116,21 @@ jobs:
 
       - name: "Upload 'Heroku Integration Test Results XMLs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results XMLs'
           path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Integration Test Results HTML' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results HTML'
           path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Failure Screenshots'
           path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
@@ -149,7 +149,7 @@ jobs:
 
       - name: "Upload 'Heroku Test Logs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Logs'
           path: |

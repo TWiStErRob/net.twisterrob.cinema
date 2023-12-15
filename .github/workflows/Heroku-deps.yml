@@ -34,7 +34,7 @@ jobs:
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 1/2 - dependencies)."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
@@ -42,7 +42,7 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
           # Cannot error on this yet, because `main` has no dependencyLocking set up.
@@ -62,7 +62,7 @@ jobs:
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies' artifact (part 1/2 - dependencies)."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
@@ -70,7 +70,7 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
@@ -188,7 +188,7 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies - Diffs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Diffs'
           path: |
