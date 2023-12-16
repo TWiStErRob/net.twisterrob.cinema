@@ -39,7 +39,7 @@ jobs:
           --args="test/weekly_film_times.xml"
 
       - name: "Upload 'weekly_film_times.xml'."
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'weekly_film_times.xml'
           path: ${{ github.workspace }}/Heroku/backend/sync/test/weekly_film_times.xml

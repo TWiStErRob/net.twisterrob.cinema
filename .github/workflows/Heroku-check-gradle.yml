@@ -95,7 +95,7 @@ jobs:
 
       - name: "Upload 'Heroku Detekt Results'."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Detekt Results'
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
@@ -121,21 +121,21 @@ jobs:
 
       - name: "Upload 'Heroku Test Results XMLs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results XMLs'
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: "Upload 'Heroku Test Results HTML' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTML'
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
       - name: "Upload 'Heroku Test Results HTMLs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTMLs'
           path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
