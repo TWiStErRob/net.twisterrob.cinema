@@ -34,6 +34,10 @@ detekt {
 	}
 }
 
+tasks.register("detektEach") {
+	dependsOn(tasks.withType<Detekt>().named { it != "detekt" })
+}
+
 configureSarifMerging()
 
 fun Project.configureSarifMerging() {

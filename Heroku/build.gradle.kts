@@ -4,6 +4,10 @@ tasks.register<Delete>("clean") {
 	delete(rootProject.layout.buildDirectory)
 }
 
+tasks.register<Task>("detektEach") {
+	dependsOn(gradle.includedBuild("plugins").task(":detektEach"))
+}
+
 tasks.register<Task>("allDependencies") {
 	val projects = project.allprojects.sortedBy { it.name }
 	doFirst {

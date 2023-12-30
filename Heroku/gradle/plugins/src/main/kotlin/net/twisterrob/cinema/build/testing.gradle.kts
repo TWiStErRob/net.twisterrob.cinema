@@ -27,7 +27,7 @@ kotlin.target.compilations.named("testFixtures") {
 @Suppress("UnstableApiUsage")
 testing {
 	suites {
-		withType<JvmTestSuite>().matching { it.name != "test" }.configureEach {
+		withType<JvmTestSuite>().named { it != JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
 			centralizedSetup(configurations)
