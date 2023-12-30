@@ -11,6 +11,7 @@ plugins {
 	id("org.jetbrains.kotlin.jvm")
 	id("org.jetbrains.kotlin.kapt")
 	id("org.gradle.java-test-fixtures")
+	id("net.twisterrob.cinema.build.test-suite-kapt")
 }
 
 tasks.withType<Test> {

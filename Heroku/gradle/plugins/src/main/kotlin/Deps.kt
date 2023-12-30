@@ -3,8 +3,8 @@ import net.twisterrob.cinema.build.testing.kapt
 import org.gradle.api.Project
 import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.base.TestingExtension
 
