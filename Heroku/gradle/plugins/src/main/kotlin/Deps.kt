@@ -1,6 +1,5 @@
 import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.kapt
-import net.twisterrob.cinema.build.testing.wireKapt
 import org.gradle.api.Project
 import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.kotlin.dsl.dependencies
@@ -41,7 +40,6 @@ object Deps {
 			add("implementation", project.libs.dagger)
 			add("kapt", project.libs.dagger.apt)
 		}
-		wireKapt(project)
 		// `add("kaptTest", project.libs.dagger.apt)` is not enough, because there are multiple test configurations.
 		project.the<TestingExtension>().suites.withType<JvmTestSuite>().configureEach {
 			dependencies { kapt(project.libs.dagger.apt) }

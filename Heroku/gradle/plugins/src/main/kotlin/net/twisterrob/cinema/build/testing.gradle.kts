@@ -5,6 +5,7 @@ import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.testing.Concurrency
 import net.twisterrob.cinema.build.testing.allowUnsafe
 import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
+import net.twisterrob.cinema.build.testing.wireKaptDependencies
 
 plugins {
 	id("org.gradle.jvm-test-suite")
@@ -30,6 +31,7 @@ testing {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
 			centralizedSetup(configurations)
+			wireKaptDependencies(configurations, objects)
 		}
 
 		/**
