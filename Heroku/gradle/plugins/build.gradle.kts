@@ -34,12 +34,13 @@ detekt {
 	config.setFrom(rootProject.file("../../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
 	basePath = rootProject.projectDir.parentFile.parentFile.parentFile.absolutePath
-	// REPORT doesn't work, "detektMain" is disabled below.
+	// TODO doesn't work, "detektMain" is disabled because https://github.com/detekt/detekt/issues/5501.
 	// > Execution failed for task ':plugins:detektMain'.
-	// > > Front-end Internal error: Failed to analyze declaration P__projects_workspace_net_twisterrob_cinema_Heroku_gradle_plugins_src_main_kotlin_net_twisterrob_cinema_build_compilation_gradle
-	// > File being compiled: (4,49) in /P:\projects\workspace\net.twisterrob.cinema\Heroku\gradle\plugins\src\main\kotlin\net\twisterrob\cinema\build\compilation.gradle.kts
-	// > The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at: org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
-	//source = files(source.asFileTree.filter { !it.name.endsWith(".gradle.kts") })
+	// > > Front-end Internal error: Failed to analyze declaration gradle_plugins_src_main_kotlin_net_twisterrob_cinema_build_compilation_gradle
+	// > File being compiled: (4,49) in gradle\plugins\src\main\kotlin\net\twisterrob\cinema\build\compilation.gradle.kts
+	// > The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at:
+	// > org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
+	//source.update { it.asFileTree.filter { file -> !file.name.endsWith(".gradle.kts") } }
 
 	parallel = true
 
@@ -73,8 +74,8 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
-	// TODO see why detektMain is disabled at detekt.source.
-	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
+	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
+	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
 	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().named { it != "detektMain" })
 }
 
