@@ -75,7 +75,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 tasks.register("detektEach") {
 	// TODO see why detektMain is disabled at detekt.source.
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit for simplicity.
-	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().matching { it.name != "detektMain" })
+	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().named { it != "detektMain" })
 }
 
 val isCI: Boolean
