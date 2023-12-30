@@ -84,13 +84,7 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          :plugins:detektEach
-          detektMain
-          detektTestFixtures
-          detektUnitTest
-          detektFunctionalTest
-          detektIntegrationTest
-          detektIntegrationExternalTest
+          detektEach
           :detektReportMergeSarif
 
       - name: "Upload 'Heroku Detekt Results'."
