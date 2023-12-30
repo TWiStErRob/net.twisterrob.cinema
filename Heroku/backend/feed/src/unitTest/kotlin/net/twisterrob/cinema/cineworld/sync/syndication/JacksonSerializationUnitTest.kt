@@ -427,6 +427,7 @@ private fun jackson(
 	}
 
 private fun Any?.short(): String =
+	@Suppress("detekt.NullableToStringCall")
 	this.toString().replace("[\r\n]".toRegex(), "")
 
 @OptIn(InternalAPI::class)

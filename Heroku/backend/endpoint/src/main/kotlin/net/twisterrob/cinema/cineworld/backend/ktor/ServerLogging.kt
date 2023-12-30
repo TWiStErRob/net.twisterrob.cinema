@@ -75,7 +75,7 @@ class ServerLogging(
 		logger.info(buildString {
 			if (level.showInfo) {
 				appendLine("RESPONSE")
-				appendLine("${call.request.httpVersion} ${call.response.status()}")
+				appendLine("${call.request.httpVersion} ${call.response.status() ?: "<no status>"}")
 			}
 			if (level.showHeaders) {
 				appendLine("RESPONSE HEADERS")

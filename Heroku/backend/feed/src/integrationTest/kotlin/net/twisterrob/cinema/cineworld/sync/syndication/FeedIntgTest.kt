@@ -40,7 +40,7 @@ class FeedIntgTest {
 		feed.verifyHasAllAttributes(SCREENING_TYPES)
 	}
 
-	@Suppress("LongMethod") // THe constant shouldn't matter, but it needs all the local variables.
+	@Suppress("LongMethod") // The constant shouldn't matter, but it needs all the local variables.
 	@Test fun `write feed XML`() {
 		val fixture = JFixture()
 		val fixtCinema = fixture.build<Feed.Cinema>()
@@ -71,7 +71,7 @@ class FeedIntgTest {
 			      <name>${fixtCinema.name}</name>
 			      <address>${fixtCinema.address}</address>
 			      <postcode>${fixtCinema.postcode}</postcode>
-			      <phone>${fixtCinema.phone}</phone>
+			      <phone>${fixtCinema.phone!!}</phone>
 			      <services>${fixtCinema.services}</services>
 			    </cinema>
 			  </cinemas>
@@ -86,9 +86,9 @@ class FeedIntgTest {
 			      <cast>${fixtFilm.cast}</cast>
 			      <synopsis>${fixtFilm.synopsis}</synopsis>
 			      <posterUrl>${fixtFilm.posterUrl}</posterUrl>
-			      <reasonToSee>${fixtFilm.reasonToSee}</reasonToSee>
+			      <reasonToSee>${fixtFilm.reasonToSee!!}</reasonToSee>
 			      <attributes>${fixtFilm.attributes}</attributes>
-			      <trailerUrl>${fixtFilm.trailerUrl}</trailerUrl>
+			      <trailerUrl>${fixtFilm.trailerUrl!!}</trailerUrl>
 			    </film>
 			  </films>
 			  <performances>

@@ -79,7 +79,7 @@ private fun <T> KFunction<T>.toConstructorString(returnType: Boolean = false) =
 
 private fun Map<KParameter, Any?>.toCallString(): String =
 	entries.joinToString(separator = "\n") { (k, v) ->
-		"\t\t${k.toParamString()} => $v as ${v?.javaClass}"
+		"\t\t${k.toParamString()} => ${v ?: "null"} as ${v?.javaClass ?: "<null>"}"
 	}
 
 private fun KParameter.toParamString(): String {
