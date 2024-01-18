@@ -42,7 +42,7 @@ jobs:
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
       - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
