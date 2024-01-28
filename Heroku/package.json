@@ -34,6 +34,6 @@
 		"devTest:backend": "gradlew :backend:endpoint:run --args=\"-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../config/fake-data\""
 	},
 	"devDependencies": {
-		"npm-run-all2": "5.0.0"
+		"npm-run-all2": "^6.1.1"
 	}
 }
