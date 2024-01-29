@@ -28,9 +28,6 @@ jobs:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
-      - name: "Validate Gradle Wrapper JARs."
-        uses: gradle/wrapper-validation-action@v1
-
       - name: "Download Gradle running the build."
         working-directory: Heroku
         run: |

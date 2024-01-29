@@ -4,9 +4,17 @@ on:
 
 jobs:
 
+  validate:
+    name: "🦺 Validation"
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+
   gradle:
+    needs:
+      - validate
     uses: ./.github/workflows/Heroku-check-gradle.yml
 
   npm:
+    needs:
+      - validate
     uses: ./.github/workflows/Heroku-check-npm.yml
     secrets: inherit
