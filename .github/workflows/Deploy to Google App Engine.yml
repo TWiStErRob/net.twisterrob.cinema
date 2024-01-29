@@ -26,8 +26,15 @@ on:
 
 jobs:
 
+  validate:
+    name: "🦺 Validation"
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+
   release:
     name: "Release to Google App Engine (${{ inputs.reason || '<automatic>' }})"
+    needs:
+      - validate
+
     runs-on: ubuntu-22.04
     timeout-minutes: 10
 
@@ -80,9 +87,6 @@ jobs:
       - name: "Set up NPM 10.x."
         # https://github.com/actions/setup-node/issues/324
         run: npm install --global npm@10
-
-      - name: "Validate Gradle Wrapper JARs."
-        uses: gradle/wrapper-validation-action@v1
 
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v2
