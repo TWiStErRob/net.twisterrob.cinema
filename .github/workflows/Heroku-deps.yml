@@ -51,7 +51,7 @@ jobs:
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 1/2 - dependencies)."
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
@@ -59,7 +59,7 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: 'Heroku Dependencies - Base'
           # Cannot error on this yet, because `main` has no dependencyLocking set up.
@@ -79,7 +79,7 @@ jobs:
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies' artifact (part 1/2 - dependencies)."
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
@@ -87,20 +87,20 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Download 'Heroku Dependencies - Base' artifact."
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: 'Heroku Dependencies - Base'
           path: diff/prev
 
       - name: "Download 'Heroku Dependencies' artifact."
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: 'Heroku Dependencies'
           path: diff/curr
@@ -205,7 +205,7 @@ jobs:
 
       - name: "Upload 'Heroku Dependencies - Diffs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: 'Heroku Dependencies - Diffs'
           path: |
