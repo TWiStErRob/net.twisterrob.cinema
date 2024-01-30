@@ -31,3 +31,8 @@ jobs:
     name: "Calculate Dependency Diff"
     needs: pull_request
     uses: ./.github/workflows/Heroku-deps.yml
+    with:
+      base_ref: ${{ needs.pull_request.outputs.base_ref }}
+      base_sha: ${{ needs.pull_request.outputs.base_sha }}
+      head_ref: ${{ needs.pull_request.outputs.head_ref }}
+      head_sha: ${{ needs.pull_request.outputs.head_sha }}
