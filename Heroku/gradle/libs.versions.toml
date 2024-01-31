@@ -18,7 +18,7 @@ dagger = "2.50"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "2.3.7"
+ktor = "2.3.8"
 
 appengine = "2.8.0"
 
