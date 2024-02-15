@@ -9,7 +9,7 @@ java = "17"
 kotlin = "1.9.22"
 kotlinx-html = "0.7.3"
 # @see kotlin
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.2"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.23.5"
