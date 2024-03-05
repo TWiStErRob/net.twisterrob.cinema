@@ -14,7 +14,7 @@
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 @file:DependsOn("io.ktor:ktor-client-java-jvm:2.3.9")
-@file:DependsOn("io.ktor:ktor-client-content-negotiation-jvm:2.3.8")
+@file:DependsOn("io.ktor:ktor-client-content-negotiation-jvm:2.3.9")
 @file:DependsOn("io.ktor:ktor-serialization-jackson-jvm:2.3.9")
 // Override transitively included jaxb-impl:2.2 to avoid warning when marshalling Kml.
 // > Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector$1 (jaxb-impl-2.2.jar)
