@@ -29,7 +29,7 @@ dependencies {
 		exclude(group = libs.test.junit.vintage.get().module.group, module = libs.test.junit.vintage.get().module.name)
 	}
 	// TODEL https://github.com/shazam/shazamcrest/pull/39
-	testImplementation(enforcedPlatform("com.google.code.gson:gson:2.8.9"))
+	testImplementation(enforcedPlatform("com.google.code.gson:gson:2.10.1"))
 	testImplementation(projects.testHelpers)
 
 	testImplementation(libs.neo4j)
