@@ -46,6 +46,17 @@
 				"Heroku/gradle/libs.versions.toml"
 			],
 			"enabled": false
+		},
+		{
+			"description": "Disable updating GSON, see https://github.com/shazam/shazamcrest/pull/39.",
+			"matchPackageNames": [
+				"com.google.code.gson:gson"
+			],
+			"matchFileNames": [
+				"Heroku/backend/database/build.gradle.kts"
+			],
+			"matchCurrentVersion": "2.8.9",
+			"enabled": false
 		}
 	]
 }
