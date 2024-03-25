@@ -12,7 +12,7 @@ kotlinx-html = "0.7.3"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
 # TODO review TODELs with detekt mentioned in them.
-detekt = "1.23.5"
+detekt = "1.23.6"
 
 dagger = "2.51"
 
