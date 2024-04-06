@@ -34,15 +34,15 @@ jobs:
 
       - name: "Merge ${{ env.TRIGGER_BRANCH }} into ${{ env.RELEASE_BRANCH }}."
         run: |
-          git fetch origin ${{ env.TRIGGER_BRANCH }}
-          git merge --ff-only origin/${{ env.TRIGGER_BRANCH }}
+          git fetch origin "${TRIGGER_BRANCH}"
+          git merge --ff-only "origin/${TRIGGER_BRANCH}"
 
       - name: "Publish ${{ env.RELEASE_BRANCH }} to GitHub."
-        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+        run: git push origin "${RELEASE_BRANCH}:${RELEASE_BRANCH}"
 
       - name: "Trigger Deployment."
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         # https://stackoverflow.com/a/71955944/253468
         run: >
           gh
