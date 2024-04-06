@@ -51,7 +51,7 @@ jobs:
         with:
           name: 'weekly_film_times.xml'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/backend/sync/test/weekly_film_times.xml
+          path: Heroku/backend/sync/test/weekly_film_times.xml
 
       - name: "Import generated data."
         env:

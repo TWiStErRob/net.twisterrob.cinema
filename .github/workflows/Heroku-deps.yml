@@ -53,7 +53,7 @@ jobs:
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/*.dependencies
+          path: Heroku/*.dependencies
 
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
         if: ${{ success() || failure() }}
@@ -61,7 +61,7 @@ jobs:
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          path: Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/*.dependencies
+          path: Heroku/*.dependencies
 
       - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
         if: ${{ success() || failure() }}
@@ -88,7 +88,7 @@ jobs:
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          path: Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Download 'Heroku Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
@@ -207,9 +207,9 @@ jobs:
           name: 'Heroku Dependencies - Diffs'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/diff/*.dependencies.diff
-            ${{ github.workspace }}/diff/*.dependencies.patch
-            ${{ github.workspace }}/diff/*.lockfile.diff
+            diff/*.dependencies.diff
+            diff/*.dependencies.patch
+            diff/*.lockfile.diff
 
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."

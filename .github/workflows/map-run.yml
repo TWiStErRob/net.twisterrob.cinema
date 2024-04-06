@@ -35,4 +35,4 @@ jobs:
         with:
           name: 'cinemas.kml'
           if-no-files-found: error
-          path: ${{ github.workspace }}/map/cinemas.kml
+          path: map/cinemas.kml

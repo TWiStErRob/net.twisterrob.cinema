@@ -136,7 +136,7 @@ jobs:
         with:
           name: 'Heroku Integration Test Results XMLs'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+          path: Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Integration Test Results HTML' artifact."
         if: ${{ success() || failure() }}
@@ -144,7 +144,7 @@ jobs:
         with:
           name: 'Heroku Integration Test Results HTML'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
+          path: Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
         if: ${{ failure() }}
@@ -152,7 +152,7 @@ jobs:
         with:
           name: 'Heroku Integration Test Failure Screenshots'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
+          path: Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
 
       - name: "Publish '🔔 Integration Test Results' check run."
         if: ${{ success() || failure() }}
@@ -172,6 +172,6 @@ jobs:
           name: 'Heroku Test Logs'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/Heroku/*.log
-            ${{ github.workspace }}/Heroku/test-integration/build/logs/
+            Heroku/*.log
+            Heroku/test-integration/build/logs/
             ~/.npm/_logs/
