@@ -1,6 +1,6 @@
 name: "🔍 Static Checks (Map)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
   detekt:
@@ -26,6 +26,9 @@ jobs:
 
       - name: "Run detekt."
         working-directory: map
+        env:
+          BASE: ${{ github.workspace }}
+        shell: bash
         run: |
           DETEKT_VERSION=1.23.1
           curl --silent --show-error --location --remote-name \
@@ -35,7 +38,7 @@ jobs:
           ./detekt-cli-*/bin/detekt-cli \
               --all-rules \
               --max-issues 0 \
-              --base-path ${{ github.workspace }} \
+              --base-path "${BASE}" \
               --report sarif:detekt.sarif \
               --report txt:detekt.txt \
               --report html:detekt.html \
@@ -48,7 +51,7 @@ jobs:
         with:
           name: 'map Detekt Results'
           if-no-files-found: error
-          path: ${{ github.workspace }}/map/detekt.*
+          path: map/detekt.*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
