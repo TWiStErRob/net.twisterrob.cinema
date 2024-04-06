@@ -21,6 +21,7 @@ jobs:
 
       - name: "Run map.main.kts."
         working-directory: map
+        shell: bash
         run: kotlinc -script map.main.kts
 
       - name: "Upload 'cinemas.kml' artifact."
