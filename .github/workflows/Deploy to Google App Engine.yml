@@ -128,5 +128,5 @@ jobs:
         run: >
           ./gradlew
           :deploy:appengine:appengineDeploy
-          -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
-          -Pnet.twisterrob.deploy.versionName="${VERSION}"
+          "-Pnet.twisterrob.deploy.replaceLive=${RELEASE_TO_PRODUCTION}"
+          "-Pnet.twisterrob.deploy.versionName=${VERSION}"

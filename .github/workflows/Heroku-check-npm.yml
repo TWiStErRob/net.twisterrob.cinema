@@ -103,9 +103,9 @@ jobs:
         working-directory: Heroku
         run: >
           ./gradlew --no-daemon :test-integration:integrationExternalTest
-          -Pnet.twisterrob.test.selenium.headless=true
-          -Pnet.twisterrob.test.selenium.user.name="${SELENIUM_USER}"
-          -Pnet.twisterrob.test.selenium.user.pass="${SELENIUM_PASS}"
+          "-Pnet.twisterrob.test.selenium.headless=true"
+          "-Pnet.twisterrob.test.selenium.user.name=${SELENIUM_USER}"
+          "-Pnet.twisterrob.test.selenium.user.pass=${SELENIUM_PASS}"
 
       # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
