@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 1
 
+    permissions:
+      # 8BitJonny/gh-get-current-pr
+      pull-requests: read
+
     outputs:
       found: ${{ steps.current_pr.outputs.number != null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
