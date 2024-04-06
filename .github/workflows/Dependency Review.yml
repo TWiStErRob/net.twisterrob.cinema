@@ -18,6 +18,14 @@ jobs:
 
   custom-check-run-action:
     name: "React to Dependency Change Summary action"
+
+    permissions:
+      # read: rest.checks.listForRef
+      # write: rest.checks.update
+      checks: read
+      # rest.repos.createCommitStatus
+      statuses: write
+
     runs-on: ubuntu-22.04
     steps:
 

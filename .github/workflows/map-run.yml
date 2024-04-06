@@ -5,9 +5,13 @@ on:
 jobs:
   run:
     # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
-    runs-on: ubuntu-22.04
     timeout-minutes: 5
 
+    permissions:
+      # actions/checkout
+      contents: read
+
+    runs-on: ubuntu-22.04
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."

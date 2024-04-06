@@ -7,6 +7,14 @@ jobs:
   deps:
     timeout-minutes: 10
 
+    permissions:
+      # actions/checkout
+      contents: read
+      # rest.checks.create
+      checks: write
+      # rest.repos.createCommitStatus
+      statuses: write
+
     runs-on: ubuntu-22.04
     defaults:
       run:

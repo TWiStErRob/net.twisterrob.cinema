@@ -17,6 +17,11 @@ jobs:
     # Simple fast-forward merge, shouldn't take long.
     timeout-minutes: 1
 
+    permissions:
+      # actions/checkout
+      # gh workflow run
+      contents: write
+
     env:
       RELEASE_BRANCH: 'release'
       TRIGGER_BRANCH: 'main'
@@ -43,10 +48,11 @@ jobs:
       - name: "Trigger Deployment."
         env:
           GH_TOKEN: ${{ github.token }}
+          REASON: ${{ github.event.inputs.reason }}
         # https://stackoverflow.com/a/71955944/253468
         run: >
           gh
           workflow run
           'Deploy to Google App Engine.yml'
           -f production=true
-          -f reason='${{ github.event.inputs.reason }}'
+          -f reason="${REASON}"

@@ -11,6 +11,14 @@ jobs:
     name: "🔨 Gradle"
     timeout-minutes: 30
 
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action -> https://github.com/EnricoMi/publish-unit-test-result-action#permissions
+      checks: write
+      # github/codeql-action/upload-sarif
+      security-events: write
+
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host

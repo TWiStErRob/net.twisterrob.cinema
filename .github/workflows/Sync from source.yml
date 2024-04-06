@@ -11,6 +11,10 @@ jobs:
     name: "Sync from source with history"
     timeout-minutes: 15
 
+    permissions:
+      # actions/checkout
+      contents: read
+
     env:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
       HISTORY_DIR: Heroku/backend/sync/build/sync
