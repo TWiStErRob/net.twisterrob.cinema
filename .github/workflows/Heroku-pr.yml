@@ -29,4 +29,5 @@ jobs:
         uses: 8BitJonny/gh-get-current-pr@v2.2.0
 
       - name: "Pull Request #${{ steps.current_pr.outputs.number }}"
-        run: true
+        shell: bash
+        run: 'true'

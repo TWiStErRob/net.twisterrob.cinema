@@ -2,11 +2,10 @@ name: "Delete from Google App Engine"
 
 on:
   pull_request:
-    types: closed
-  delete:
-  # branches
+    types:
+      - closed
+  delete: # branches
   workflow_dispatch:
-  # no inputs
 
 jobs:
 
