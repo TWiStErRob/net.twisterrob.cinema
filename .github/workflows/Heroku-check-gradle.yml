@@ -72,28 +72,28 @@ jobs:
         working-directory: Heroku
         run: >
           ./gradlew
-            --no-daemon
-            --no-build-cache
-            --stacktrace
-            --continue
-            assemble
-            testClasses
-            unitTestClasses
-            functionalTestClasses
-            integrationTestClasses
-            integrationExternalTestClasses
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          assemble
+          testClasses
+          unitTestClasses
+          functionalTestClasses
+          integrationTestClasses
+          integrationExternalTestClasses
 
 
       - name: "Check Heroku with Detekt."
         working-directory: Heroku
         run: >
           ./gradlew
-            --no-daemon
-            --no-build-cache
-            --stacktrace
-            --continue
-            detektEach
-            :detektReportMergeSarif
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          detektEach
+          :detektReportMergeSarif
 
       - name: "Upload 'Heroku Detekt Results'."
         if: ${{ success() || failure() }}
@@ -114,13 +114,13 @@ jobs:
         working-directory: Heroku
         run: >
           ./gradlew
-            --no-daemon
-            --no-build-cache
-            --stacktrace
-            --continue
-            :allTestsReport
-            -Pnet.twisterrob.build.verboseReports=true
-            -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          :allTestsReport
+          -Pnet.twisterrob.build.verboseReports=true
+          -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
       - name: "Upload 'Heroku Test Results XMLs' artifact."
         if: ${{ success() || failure() }}

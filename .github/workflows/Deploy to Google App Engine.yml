@@ -115,7 +115,7 @@ jobs:
         working-directory: Heroku
         run: >
           ./gradlew
-            :backend:endpoint:jar
+          :backend:endpoint:jar
 
       - name: "Publish ${{ env.VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
         working-directory: Heroku
@@ -127,6 +127,6 @@ jobs:
           VERSION: ${{ steps.name.outputs.result }}
         run: >
           ./gradlew
-            :deploy:appengine:appengineDeploy
-            -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
-            -Pnet.twisterrob.deploy.versionName="${VERSION}"
+          :deploy:appengine:appengineDeploy
+          -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
+          -Pnet.twisterrob.deploy.versionName="${VERSION}"
