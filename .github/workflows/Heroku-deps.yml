@@ -33,10 +33,12 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
-      - name: "Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command)."
+      - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
+        env:
+          HEAD_REF: ${{ needs.pull_request.outputs.head_ref }}
         run: |
           git fetch
-          git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
+          git restore --source "refs/remotes/origin/${HEAD_REF}" -- Heroku/scripts/dependencies.sh
 
       - name: "Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}."
         working-directory: Heroku

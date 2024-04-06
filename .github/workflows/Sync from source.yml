@@ -56,10 +56,10 @@ jobs:
         # HISTORY_DIR is relative to work tree, `tee` needs a relative path to Heroku. actions/checkout created the folder.
         run: >
           ./gradlew
-          :backend:sync:run
-          --args "cinemas films performances"
-          -Pnet.twisterrob.run.verboseSync=true
-          2>&1 | tee backend/sync/build/sync/weekly_film_times.log
+            :backend:sync:run
+            --args "cinemas films performances"
+            -Pnet.twisterrob.run.verboseSync=true
+            2>&1 | tee backend/sync/build/sync/weekly_film_times.log
 
       - name: "Save changes to history."
         working-directory: ${{ env.HISTORY_DIR }}

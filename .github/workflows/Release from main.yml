@@ -51,8 +51,7 @@ jobs:
           REASON: ${{ github.event.inputs.reason }}
         # https://stackoverflow.com/a/71955944/253468
         run: >
-          gh
-          workflow run
-          'Deploy to Google App Engine.yml'
-          -f production=true
-          -f reason="${REASON}"
+          gh workflow run
+            'Deploy to Google App Engine.yml'
+            -f production=true
+            -f reason="${REASON}"

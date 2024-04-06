@@ -18,6 +18,7 @@ jobs:
 
   custom-check-run-action:
     name: "React to Dependency Change Summary action"
+    timeout-minutes: 1
 
     permissions:
       # read: rest.checks.listForRef

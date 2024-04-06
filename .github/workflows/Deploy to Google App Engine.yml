@@ -115,17 +115,18 @@ jobs:
         working-directory: Heroku
         run: >
           ./gradlew
-          :backend:endpoint:jar
+            :backend:endpoint:jar
 
-      - name: "Publish ${{ steps.name.outputs.result }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
+      - name: "Publish ${{ env.VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
         working-directory: Heroku
         env:
           # Use pre-existing SDK, don't download a new one.
           GCLOUD_HOME: /usr/lib/google-cloud-sdk
           # Will be propagated to app.yml
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
+          VERSION: ${{ steps.name.outputs.result }}
         run: >
           ./gradlew
-          :deploy:appengine:appengineDeploy
-          -Pnet.twisterrob.deploy.replaceLive=${{ env.RELEASE_TO_PRODUCTION }}
-          -Pnet.twisterrob.deploy.versionName=${{ steps.name.outputs.result }}
+            :deploy:appengine:appengineDeploy
+            -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
+            -Pnet.twisterrob.deploy.versionName="${VERSION}"
