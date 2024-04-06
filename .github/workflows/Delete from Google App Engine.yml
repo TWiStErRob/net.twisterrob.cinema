@@ -74,6 +74,8 @@ jobs:
         run: |
           gcloud --version
 
-      - name: "Delete version ${{ steps.name.outputs.result }} from Google App Engine."
+      - name: "Delete version ${{ env.VERSION }} from Google App Engine."
+        env:
+          VERSION: ${{ steps.name.outputs.result }}
         run: |
-          gcloud app versions delete --quiet --project="twisterrob-cinema" ${{ steps.name.outputs.result }}
+          gcloud app versions delete --quiet --project="twisterrob-cinema" "${VERSION}"
