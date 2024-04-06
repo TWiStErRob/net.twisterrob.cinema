@@ -125,6 +125,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results XMLs'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Integration Test Results HTML' artifact."
@@ -132,6 +133,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results HTML'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
@@ -139,8 +141,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Failure Screenshots'
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
           if-no-files-found: error
+          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
 
       - name: "Publish '🔔 Integration Test Results' check run."
         if: ${{ success() || failure() }}
@@ -158,6 +160,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Logs'
+          if-no-files-found: error
           path: |
             ${{ github.workspace }}/Heroku/*.log
             ${{ github.workspace }}/Heroku/test-integration/build/logs/

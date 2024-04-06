@@ -92,6 +92,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Detekt Results'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
@@ -118,6 +119,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results XMLs'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: "Upload 'Heroku Test Results HTML' artifact."
@@ -125,6 +127,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTML'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
 
       - name: "Upload 'Heroku Test Results HTMLs' artifact."
@@ -132,6 +135,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTMLs'
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
 
       - name: "Publish '🔔 Test Results' check run."

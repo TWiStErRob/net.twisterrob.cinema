@@ -49,8 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
-          # Cannot error on this yet, because `main` has no dependencyLocking set up.
-          if-no-files-found: warn
+          if-no-files-found: error
           path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository."
@@ -195,6 +194,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Diffs'
+          if-no-files-found: error
           path: |
             ${{ github.workspace }}/diff/*.dependencies.diff
             ${{ github.workspace }}/diff/*.dependencies.patch
