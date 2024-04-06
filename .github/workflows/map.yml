@@ -16,7 +16,12 @@ jobs:
   run:
     name: "🔨 Build & Execute (Map)"
     uses: ./.github/workflows/map-run.yml
+    permissions:
+      contents: read
 
   detekt:
     name: "🔍 Static Checks (Map)"
     uses: ./.github/workflows/map-detekt.yml
+    permissions:
+      contents: read
+      security-events: write
