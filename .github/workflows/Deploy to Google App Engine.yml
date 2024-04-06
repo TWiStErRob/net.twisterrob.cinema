@@ -69,6 +69,7 @@ jobs:
         env:
           INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
         with:
+          result-encoding: string
           script: |
             return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
@@ -132,5 +133,5 @@ jobs:
         run: >
           ./gradlew
           :deploy:appengine:appengineDeploy
-          "-Pnet.twisterrob.deploy.replaceLive=${RELEASE_TO_PRODUCTION}"
-          "-Pnet.twisterrob.deploy.versionName=${VERSION}"
+          -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
+          -Pnet.twisterrob.deploy.versionName="${VERSION}"

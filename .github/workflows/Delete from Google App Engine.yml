@@ -38,6 +38,7 @@ jobs:
         id: name
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const branch = {
               // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
