@@ -101,18 +101,24 @@ jobs:
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
 
-      - name: "Stop Sync (at ${{ env.PID_SYNC }})."
+      - name: "Stop Sync (at ${{ env.PID }})."
         if: ${{ success() || failure() || cancelled() }}
-        run: kill ${{ env.PID_SYNC }} || true
-        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
+        env:
+          PID: ${{ env.PID_SYNC }}
+        run: kill "${PID}" || true
+        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${PID} didn't exist."
 
-      - name: "Stop Backend (at ${{ env.PID_ENDPOINT }})."
+      - name: "Stop Backend (at ${{ env.PID }})."
         if: ${{ success() || failure() || cancelled() }}
-        run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
+        env:
+          PID: ${{ env.PID_ENDPOINT }}
+        run: kill "${PID}" || echo "::warning file=backend.log::Backend process ${PID} didn't exist."
 
-      - name: "Stop Frontend (at ${{ env.PID_FRONTEND }})."
+      - name: "Stop Frontend (at ${{ env.PID }})."
         if: ${{ success() || failure() || cancelled() }}
-        run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
+        env:
+          PID: ${{ env.PID_FRONTEND }}
+        run: kill "${PID}" || echo "::warning file=frontend.log::Frontend process ${PID} didn't exist."
 
       - name: "Upload 'Heroku Integration Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
