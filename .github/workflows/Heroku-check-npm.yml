@@ -1,11 +1,11 @@
 name: "🔨 Build & Check (NPM)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
   check:
-    name: "🔨 NPM"
+    name: "🧧 NPM"
     timeout-minutes: 15
 
     permissions:

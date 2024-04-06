@@ -1,10 +1,11 @@
 name: "Calculate Dependency Diff"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
   deps:
+    name: "deps"
     timeout-minutes: 10
 
     permissions:

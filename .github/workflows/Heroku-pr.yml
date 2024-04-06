@@ -1,11 +1,12 @@
 name: "Find PR"
 
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
-  pull_request:
+  find-pr:
+    name: "pull_request"
     runs-on: ubuntu-22.04
     timeout-minutes: 1
 

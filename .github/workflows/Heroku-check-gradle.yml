@@ -1,6 +1,6 @@
 name: "🔨 Build & Check (Gradle)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
@@ -8,7 +8,7 @@ jobs:
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check:
-    name: "🔨 Gradle"
+    name: "🐘 Gradle"
     timeout-minutes: 30
 
     permissions:

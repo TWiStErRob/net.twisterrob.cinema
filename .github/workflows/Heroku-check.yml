@@ -1,6 +1,6 @@
 name: "🔨 Build & Check"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
@@ -9,11 +9,13 @@ jobs:
     uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@5f662c65d1300162033c61e269cb2e63a26a990e # v3
 
   gradle:
+    name: "gradle"
     needs:
       - validate
     uses: ./.github/workflows/Heroku-check-gradle.yml
 
   npm:
+    name: "npm"
     needs:
       - validate
     uses: ./.github/workflows/Heroku-check-npm.yml

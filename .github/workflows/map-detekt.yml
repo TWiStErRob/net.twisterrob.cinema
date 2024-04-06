@@ -4,6 +4,7 @@ on:
 
 jobs:
   detekt:
+    name: "detekt"
     timeout-minutes: 5
 
     permissions:
