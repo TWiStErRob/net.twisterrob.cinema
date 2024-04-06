@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     # Only trigger when deleting branches, or any other event type.
-    if: github.event_name != 'delete' || github.event.ref_type == 'branch'
+    if: ${{ github.event_name != 'delete' || github.event.ref_type == 'branch' }}
 
     permissions:
       contents: read  # This is required for actions/checkout.

@@ -53,7 +53,7 @@ jobs:
 
       - name: "Save changes to history."
         working-directory: ${{ env.HISTORY_DIR }}
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         run: |
           git add .
           git status

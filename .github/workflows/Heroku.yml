@@ -27,11 +27,11 @@ jobs:
   pull_request:
     name: "Find PR"
     # Don't execute on main, it'll never be PR'd.
-    if: github.ref != 'refs/heads/main'
+    if: ${{ github.ref != 'refs/heads/main' }}
     uses: ./.github/workflows/Heroku-pr.yml
 
   deps:
     name: "Calculate Dependency Diff"
     needs: pull_request
-    if: needs.pull_request.outputs.found == 'true'
+    if: ${{ needs.pull_request.outputs.found == 'true' }}
     uses: ./.github/workflows/Heroku-deps.yml

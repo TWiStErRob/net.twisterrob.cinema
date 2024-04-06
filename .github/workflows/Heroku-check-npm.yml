@@ -99,34 +99,34 @@ jobs:
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
 
       - name: "Stop Sync (at ${{ env.PID_SYNC }})."
-        if: always()
+        if: ${{ success() || failure() || cancelled() }}
         run: kill ${{ env.PID_SYNC }} || true
         # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
 
       - name: "Stop Backend (at ${{ env.PID_ENDPOINT }})."
-        if: always()
+        if: ${{ success() || failure() || cancelled() }}
         run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
 
       - name: "Stop Frontend (at ${{ env.PID_FRONTEND }})."
-        if: always()
+        if: ${{ success() || failure() || cancelled() }}
         run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
 
       - name: "Upload 'Heroku Integration Test Results XMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results XMLs'
           path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Integration Test Results HTML' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results HTML'
           path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Failure Screenshots'
@@ -134,7 +134,7 @@ jobs:
           if-no-files-found: error
 
       - name: "Publish '🔔 Integration Test Results' check run."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: '🔔 Integration Test Results'
@@ -145,7 +145,7 @@ jobs:
           junit_files: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Test Logs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Logs'
