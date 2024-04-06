@@ -1,6 +1,6 @@
 name: "🔨 Build & Check (Gradle)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
@@ -8,14 +8,25 @@ jobs:
   # If a static check fails, it'll be reported separately.
   # If a test fails, this will fail. TODO move to reporting.
   check:
-    name: "🔨 Gradle"
-
-    runs-on: ubuntu-22.04
+    name: "🐘 Gradle"
     timeout-minutes: 30
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action -> https://github.com/EnricoMi/publish-unit-test-result-action#permissions
+      checks: write
+      # github/codeql-action/upload-sarif
+      security-events: write
 
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 
@@ -85,15 +96,16 @@ jobs:
           :detektReportMergeSarif
 
       - name: "Upload 'Heroku Detekt Results'."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Detekt Results'
-          path: ${{ github.workspace }}/Heroku/**/build/reports/detekt/*
+          if-no-files-found: error
+          path: Heroku/**/build/reports/detekt/*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/Heroku/build/reports/detekt/merge.sarif
 
@@ -111,28 +123,31 @@ jobs:
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
       - name: "Upload 'Heroku Test Results XMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results XMLs'
-          path: ${{ github.workspace }}/Heroku/**/build/test-results/*/TEST-*.xml
+          if-no-files-found: error
+          path: Heroku/**/build/test-results/*/TEST-*.xml
 
       - name: "Upload 'Heroku Test Results HTML' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTML'
-          path: ${{ github.workspace }}/Heroku/build/reports/tests/all/
+          if-no-files-found: error
+          path: Heroku/build/reports/tests/all/
 
       - name: "Upload 'Heroku Test Results HTMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Results HTMLs'
-          path: ${{ github.workspace }}/Heroku/**/build/reports/tests/*/
+          if-no-files-found: error
+          path: Heroku/**/build/reports/tests/*/
 
       - name: "Publish '🔔 Test Results' check run."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: '🔔 Test Results'

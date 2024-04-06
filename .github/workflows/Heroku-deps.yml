@@ -1,12 +1,25 @@
 name: "Calculate Dependency Diff"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
   deps:
-    runs-on: ubuntu-22.04
+    name: "deps"
     timeout-minutes: 10
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # rest.checks.create
+      checks: write
+      # rest.repos.createCommitStatus
+      statuses: write
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 
@@ -21,10 +34,12 @@ jobs:
         with:
           ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
 
-      - name: "Get the script from ${{ needs.pull_request.outputs.head_ref }} branch (so both head and base run the same command)."
+      - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
+        env:
+          HEAD_REF: ${{ needs.pull_request.outputs.head_ref }}
         run: |
           git fetch
-          git restore --source refs/remotes/origin/${{ needs.pull_request.outputs.head_ref }} -- Heroku/scripts/dependencies.sh
+          git restore --source "refs/remotes/origin/${HEAD_REF}" -- Heroku/scripts/dependencies.sh
 
       - name: "Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}."
         working-directory: Heroku
@@ -33,21 +48,20 @@ jobs:
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 1/2 - dependencies)."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/*.dependencies
+          path: Heroku/*.dependencies
 
       - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
-          # Cannot error on this yet, because `main` has no dependencyLocking set up.
-          if-no-files-found: warn
-          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          if-no-files-found: error
+          path: Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -61,20 +75,20 @@ jobs:
       # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
       # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - name: "Upload 'Heroku Dependencies' artifact (part 1/2 - dependencies)."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/*.dependencies
+          path: Heroku/*.dependencies
 
       - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: ${{ github.workspace }}/Heroku/gradle/dependency-locks/*.lockfile
+          path: Heroku/gradle/dependency-locks/*.lockfile
 
       - name: "Download 'Heroku Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
@@ -187,14 +201,15 @@ jobs:
           ls --format=single-column --time=ctime --reverse *.dependencies.diff | xargs tail --lines=+1 > all.dependencies.diff
 
       - name: "Upload 'Heroku Dependencies - Diffs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Diffs'
+          if-no-files-found: error
           path: |
-            ${{ github.workspace }}/diff/*.dependencies.diff
-            ${{ github.workspace }}/diff/*.dependencies.patch
-            ${{ github.workspace }}/diff/*.lockfile.diff
+            diff/*.dependencies.diff
+            diff/*.dependencies.patch
+            diff/*.lockfile.diff
 
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."

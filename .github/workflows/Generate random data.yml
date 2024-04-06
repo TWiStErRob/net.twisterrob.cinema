@@ -9,10 +9,18 @@ on:
 jobs:
 
   generate:
-
     name: "Generate and import random data."
-    runs-on: ubuntu-22.04
     timeout-minutes: 10
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
 
       - name: "Set up JDK 17."
@@ -42,7 +50,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'weekly_film_times.xml'
-          path: ${{ github.workspace }}/Heroku/backend/sync/test/weekly_film_times.xml
+          if-no-files-found: error
+          path: Heroku/backend/sync/test/weekly_film_times.xml
 
       - name: "Import generated data."
         env:

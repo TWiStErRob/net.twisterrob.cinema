@@ -14,12 +14,23 @@ jobs:
 
   release:
     name: "Release to release branch (${{ github.event.inputs.reason }})"
-    runs-on: ubuntu-22.04
     # Simple fast-forward merge, shouldn't take long.
     timeout-minutes: 1
+
+    permissions:
+      # actions/checkout
+      # gh workflow run
+      contents: write
+
     env:
       RELEASE_BRANCH: 'release'
       TRIGGER_BRANCH: 'main'
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: "Checkout ${{ env.RELEASE_BRANCH }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -28,19 +39,19 @@ jobs:
 
       - name: "Merge ${{ env.TRIGGER_BRANCH }} into ${{ env.RELEASE_BRANCH }}."
         run: |
-          git fetch origin ${{ env.TRIGGER_BRANCH }}
-          git merge --ff-only origin/${{ env.TRIGGER_BRANCH }}
+          git fetch origin "${TRIGGER_BRANCH}"
+          git merge --ff-only "origin/${TRIGGER_BRANCH}"
 
       - name: "Publish ${{ env.RELEASE_BRANCH }} to GitHub."
-        run: git push origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+        run: git push origin "${RELEASE_BRANCH}:${RELEASE_BRANCH}"
 
       - name: "Trigger Deployment."
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          REASON: ${{ github.event.inputs.reason }}
         # https://stackoverflow.com/a/71955944/253468
         run: >
-          gh
-          workflow run
+          gh workflow run
           'Deploy to Google App Engine.yml'
           -f production=true
-          -f reason='${{ github.event.inputs.reason }}'
+          -f reason="${REASON}"

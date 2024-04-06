@@ -1,12 +1,19 @@
 name: "🔍 Static Checks (Map)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
   detekt:
-    runs-on: ubuntu-22.04
+    name: "detekt"
     timeout-minutes: 5
 
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    runs-on: ubuntu-22.04
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
@@ -20,6 +27,9 @@ jobs:
 
       - name: "Run detekt."
         working-directory: map
+        env:
+          BASE: ${{ github.workspace }}
+        shell: bash
         run: |
           DETEKT_VERSION=1.23.1
           curl --silent --show-error --location --remote-name \
@@ -29,7 +39,7 @@ jobs:
           ./detekt-cli-*/bin/detekt-cli \
               --all-rules \
               --max-issues 0 \
-              --base-path ${{ github.workspace }} \
+              --base-path "${BASE}" \
               --report sarif:detekt.sarif \
               --report txt:detekt.txt \
               --report html:detekt.html \
@@ -37,14 +47,15 @@ jobs:
               --report md:detekt.md \
 
       - name: "Upload 'map Detekt Results' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'map Detekt Results'
-          path: ${{ github.workspace }}/map/detekt.*
+          if-no-files-found: error
+          path: map/detekt.*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/map/detekt.sarif
