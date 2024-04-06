@@ -1,19 +1,28 @@
 name: "🔨 Build & Check (NPM)"
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
 
   check:
-    name: "🔨 NPM"
-
-    runs-on: ubuntu-22.04
+    name: "🧧 NPM"
     timeout-minutes: 15
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action -> https://github.com/EnricoMi/publish-unit-test-result-action#permissions
+      checks: write
 
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
       PORT: 8080
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 
@@ -37,7 +46,8 @@ jobs:
 
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
-      - uses: szenius/set-timezone@v1.2
+      - name: "Set time zone to UK."
+        uses: szenius/set-timezone@v1.2
         with:
           timezoneLinux: "Europe/London"
 
@@ -87,54 +97,65 @@ jobs:
           sleep 10
 
       - name: "Run Selenium tests."
+        env:
+          SELENIUM_USER: ${{ secrets.UI_TEST_USERNAME }}
+          SELENIUM_PASS: ${{ secrets.UI_TEST_PASSWORD }}
         working-directory: Heroku
         run: >
           ./gradlew --no-daemon :test-integration:integrationExternalTest
           -Pnet.twisterrob.test.selenium.headless=true
-          -Pnet.twisterrob.test.selenium.user.name=${{ secrets.UI_TEST_USERNAME }}
-          -Pnet.twisterrob.test.selenium.user.pass=${{ secrets.UI_TEST_PASSWORD }}
+          -Pnet.twisterrob.test.selenium.user.name="${SELENIUM_USER}"
+          -Pnet.twisterrob.test.selenium.user.pass="${SELENIUM_PASS}"
 
       # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
       # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
 
-      - name: "Stop Sync (at ${{ env.PID_SYNC }})."
-        if: always()
-        run: kill ${{ env.PID_SYNC }} || true
-        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${{ env.PID_SYNC }} didn't exist."
+      - name: "Stop Sync (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_SYNC }}
+        run: kill "${PID}" || true
+        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${PID} didn't exist."
 
-      - name: "Stop Backend (at ${{ env.PID_ENDPOINT }})."
-        if: always()
-        run: kill ${{ env.PID_ENDPOINT }} || echo "::warning file=backend.log::Backend process ${{ env.PID_SYNC }} didn't exist."
+      - name: "Stop Backend (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_ENDPOINT }}
+        run: kill "${PID}" || echo "::warning file=backend.log::Backend process ${PID} didn't exist."
 
-      - name: "Stop Frontend (at ${{ env.PID_FRONTEND }})."
-        if: always()
-        run: kill ${{ env.PID_FRONTEND }} || echo "::warning file=frontend.log::Frontend process ${{ env.PID_SYNC }} didn't exist."
+      - name: "Stop Frontend (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_FRONTEND }}
+        run: kill "${PID}" || echo "::warning file=frontend.log::Frontend process ${PID} didn't exist."
 
       - name: "Upload 'Heroku Integration Test Results XMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results XMLs'
-          path: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+          if-no-files-found: error
+          path: Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Integration Test Results HTML' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Results HTML'
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest/
+          if-no-files-found: error
+          path: Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Integration Test Failure Screenshots'
-          path: ${{ github.workspace }}/Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
           if-no-files-found: error
+          path: Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
 
       - name: "Publish '🔔 Integration Test Results' check run."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: '🔔 Integration Test Results'
@@ -145,11 +166,12 @@ jobs:
           junit_files: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Heroku Test Logs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Test Logs'
+          if-no-files-found: error
           path: |
-            ${{ github.workspace }}/Heroku/*.log
-            ${{ github.workspace }}/Heroku/test-integration/build/logs/
+            Heroku/*.log
+            Heroku/test-integration/build/logs/
             ~/.npm/_logs/

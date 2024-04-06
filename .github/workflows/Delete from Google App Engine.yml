@@ -2,26 +2,29 @@ name: "Delete from Google App Engine"
 
 on:
   pull_request:
-    types: closed
-  delete:
-  # branches
+    types:
+      - closed
+  delete: # branches
   workflow_dispatch:
-  # no inputs
 
 jobs:
 
   release:
-
     name: "Delete from Google App Engine"
-    runs-on: ubuntu-22.04
     timeout-minutes: 5
+
     # Only trigger when deleting branches, or any other event type.
-    if: github.event_name != 'delete' || github.event.ref_type == 'branch'
+    if: ${{ github.event_name != 'delete' || github.event.ref_type == 'branch' }}
 
     permissions:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 
@@ -35,6 +38,7 @@ jobs:
         id: name
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const branch = {
               // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
@@ -71,6 +75,8 @@ jobs:
         run: |
           gcloud --version
 
-      - name: "Delete version ${{ steps.name.outputs.result }} from Google App Engine."
+      - name: "Delete version ${{ env.VERSION }} from Google App Engine."
+        env:
+          VERSION: ${{ steps.name.outputs.result }}
         run: |
-          gcloud app versions delete --quiet --project="twisterrob-cinema" ${{ steps.name.outputs.result }}
+          gcloud app versions delete --quiet --project="twisterrob-cinema" "${VERSION}"

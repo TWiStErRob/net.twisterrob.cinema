@@ -20,22 +20,35 @@ jobs:
     name: "🔨 Build & Check"
     uses: ./.github/workflows/Heroku-check.yml
     secrets: inherit
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+      checks: write
 
-  pull_request:
+  pull-request:
     name: "Find PR"
     # Don't execute on main, it'll never be PR'd.
-    if: github.ref != 'refs/heads/main'
+    if: ${{ github.ref != 'refs/heads/main' }}
     uses: ./.github/workflows/Heroku-pr.yml
+    permissions:
+      pull-requests: read
 
   deps:
     name: "Calculate Dependency Diff"
-    needs: pull_request
+    needs: pull-request
+    if: ${{ needs.pull-request.outputs.found == 'true' }}
     uses: ./.github/workflows/Heroku-deps.yml
     with:
       base_ref: ${{ needs.pull_request.outputs.base_ref }}
       base_sha: ${{ needs.pull_request.outputs.base_sha }}
       head_ref: ${{ needs.pull_request.outputs.head_ref }}
       head_sha: ${{ needs.pull_request.outputs.head_sha }}
+    permissions:
+      contents: read
+      checks: write
+      statuses: write
+
 
   job1:
     runs-on: ubuntu-latest

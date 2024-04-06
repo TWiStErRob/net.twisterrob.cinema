@@ -28,14 +28,16 @@ jobs:
 
   validate:
     name: "🦺 Validation"
-    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@5f662c65d1300162033c61e269cb2e63a26a990e # v3
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
   release:
     name: "Release to Google App Engine (${{ inputs.reason || '<automatic>' }})"
     needs:
       - validate
-
-    runs-on: ubuntu-22.04
     timeout-minutes: 10
 
     env:
@@ -47,6 +49,11 @@ jobs:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 
@@ -62,6 +69,7 @@ jobs:
         env:
           INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
         with:
+          result-encoding: string
           script: |
             return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
@@ -114,15 +122,16 @@ jobs:
           ./gradlew
           :backend:endpoint:jar
 
-      - name: "Publish ${{ steps.name.outputs.result }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
+      - name: "Publish ${{ env.VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
         working-directory: Heroku
         env:
           # Use pre-existing SDK, don't download a new one.
           GCLOUD_HOME: /usr/lib/google-cloud-sdk
           # Will be propagated to app.yml
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
+          VERSION: ${{ steps.name.outputs.result }}
         run: >
           ./gradlew
           :deploy:appengine:appengineDeploy
-          -Pnet.twisterrob.deploy.replaceLive=${{ env.RELEASE_TO_PRODUCTION }}
-          -Pnet.twisterrob.deploy.versionName=${{ steps.name.outputs.result }}
+          -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
+          -Pnet.twisterrob.deploy.versionName="${VERSION}"
