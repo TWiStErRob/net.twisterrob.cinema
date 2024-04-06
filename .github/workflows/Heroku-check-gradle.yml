@@ -9,13 +9,16 @@ jobs:
   # If a test fails, this will fail. TODO move to reporting.
   check:
     name: "🔨 Gradle"
-
-    runs-on: ubuntu-22.04
     timeout-minutes: 30
 
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 

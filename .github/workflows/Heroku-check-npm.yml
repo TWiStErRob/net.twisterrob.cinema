@@ -6,14 +6,17 @@ jobs:
 
   check:
     name: "🔨 NPM"
-
-    runs-on: ubuntu-22.04
     timeout-minutes: 15
 
     env:
       # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
       NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
       PORT: 8080
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 

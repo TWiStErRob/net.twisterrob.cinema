@@ -34,8 +34,6 @@ jobs:
     name: "Release to Google App Engine (${{ inputs.reason || '<automatic>' }})"
     needs:
       - validate
-
-    runs-on: ubuntu-22.04
     timeout-minutes: 10
 
     env:
@@ -47,6 +45,11 @@ jobs:
       contents: read  # This is required for actions/checkout.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
 
     steps:
 

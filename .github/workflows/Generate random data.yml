@@ -9,10 +9,14 @@ on:
 jobs:
 
   generate:
-
     name: "Generate and import random data."
-    runs-on: ubuntu-22.04
     timeout-minutes: 10
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
 
       - name: "Set up JDK 17."
