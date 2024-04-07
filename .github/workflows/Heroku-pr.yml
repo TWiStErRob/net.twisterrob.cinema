@@ -2,6 +2,37 @@ name: "Find PR"
 
 on:
   workflow_call:
+    outputs:
+
+      found:
+        value: ${{ jobs.find-pr.outputs.found }}
+        description: |
+          Whether the PR was found for the SHA that triggered this call.
+          'true' or 'false' (string, not boolean).
+
+      base-ref:
+        value: ${{ jobs.find-pr.outputs.base-ref }}
+        description: |
+          The base branch of the PR that was found for the SHA that triggered this call.
+          'main' or 'some-branch' (string).
+
+      base-sha:
+        value: ${{ jobs.find-pr.outputs.base-sha }}
+        description: |
+          The base branch's SHA where PR is targeting.
+          '1234567890abcdef1234567890abcdef12345678' (string).
+
+      head-ref:
+        value: ${{ jobs.find-pr.outputs.head-ref }}
+        description: |
+          The head branch of the PR that was found for the SHA that triggered this call.
+          'some-branch' (string).
+
+      head-sha:
+        value: ${{ jobs.find-pr.outputs.head-sha }}
+        description: |
+          The PR's head SHA.
+          '1234567890abcdef1234567890abcdef12345678' (string).
 
 jobs:
 
@@ -9,6 +40,7 @@ jobs:
     name: "pull_request"
     runs-on: ubuntu-22.04
     timeout-minutes: 1
+    if: ${{ github.event_name == 'pull_request' }}
 
     permissions:
       # 8BitJonny/gh-get-current-pr
@@ -17,17 +49,19 @@ jobs:
     outputs:
       found: ${{ steps.current-pr.outputs.number != null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
-      base_ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.ref }}
-      base_sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.sha }}
+      base-ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.ref }}
+      base-sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.sha }}
       # Simulate github.event.pull_request.head.ref on push trigger.
-      head_ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.ref }}
-      head_sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.sha }}
+      head-ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.ref }}
+      head-sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.sha }}
 
     steps:
 
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current-pr
-        uses: 8BitJonny/gh-get-current-pr@v2.2.0
+        uses: 8BitJonny/gh-get-current-pr@3.0.0
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: "Pull Request #${{ steps.current-pr.outputs.number }}"
         shell: bash

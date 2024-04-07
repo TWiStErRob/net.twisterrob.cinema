@@ -1,11 +1,32 @@
 name: "Calculate Dependency Diff"
 on:
   workflow_call:
+    inputs:
+
+      base-ref:
+        type: string
+        description: 'The name of the base branch to compare against.'
+        required: true
+
+      head-ref:
+        type: string
+        description: 'The name of the head branch to compare.'
+        required: true
+
+      base-sha:
+        type: string
+        description: 'The SHA of the base branch to compare against.'
+        required: true
+
+      head-sha:
+        type: string
+        description: 'The SHA of the head branch to compare.'
+        required: true
 
 jobs:
 
-  deps:
-    name: "deps"
+  diff:
+    name: "Calculate Diff"
     timeout-minutes: 10
 
     permissions:
@@ -29,66 +50,66 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: "Checkout ${{ needs.pull_request.outputs.base_ref }} branch in ${{ github.repository }} repository."
+      - name: "Checkout ${{ inputs.base-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
         with:
-          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.base_ref) }}
+          ref: ${{ format('refs/heads/{0}', inputs.base-ref) }}
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
         env:
-          HEAD_REF: ${{ needs.pull_request.outputs.head_ref }}
+          HEAD_REF: ${{ inputs.head-ref }}
         run: |
           git fetch
           git restore --source "refs/remotes/origin/${HEAD_REF}" -- Heroku/scripts/dependencies.sh
 
-      - name: "Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.base_ref }}."
+      - name: "Dump Heroku Dependencies on branch ${{ inputs.base-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
-      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: "Upload 'Heroku Dependencies - Base' artifact (part 1/2 - dependencies)."
+      # Work around "least common ancestor" upload feature moving the files into a shared folder.
+      - name: "Merge dependencies and lockfiles into one folder for upload."
+        if: ${{ success() || failure() }}
+        run: |
+          mkdir -p diff/prev/
+          mv Heroku/*.dependencies diff/prev/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/prev/
+
+      - name: "Upload 'Heroku Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: Heroku/*.dependencies
+          path: diff/prev/
 
-      - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
-        if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'Heroku Dependencies - Base'
-          if-no-files-found: error
-          path: Heroku/gradle/dependency-locks/*.lockfile
-
-      - name: "Checkout ${{ needs.pull_request.outputs.head_ref }} branch in ${{ github.repository }} repository."
+      - name: "Checkout ${{ inputs.head-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
         with:
-          ref: ${{ format('refs/heads/{0}', needs.pull_request.outputs.head_ref) }}
+          ref: ${{ format('refs/heads/{0}', inputs.head-ref) }}
 
-      - name: "Dump Heroku Dependencies on branch ${{ needs.pull_request.outputs.head_ref }}."
+      - name: "Dump Heroku Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
-      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: "Upload 'Heroku Dependencies' artifact (part 1/2 - dependencies)."
+      # Work around "least common ancestor" upload feature moving the files into a shared folder.
+      - name: "Merge dependencies and lockfiles into one folder for upload."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'Heroku Dependencies'
-          if-no-files-found: error
-          path: Heroku/*.dependencies
+        run: |
+          mkdir -p diff/curr/
+          mv Heroku/*.dependencies diff/curr/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/curr/
 
-      - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
+      - name: "Upload 'Heroku Dependencies' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: Heroku/gradle/dependency-locks/*.lockfile
+          path: diff/curr/
+
+      # Checkout with head-ref wipes the diff/prev folder, so wipe everything, then download the artifacts.
+      - name: "Clean up diff folder before usage."
+        run: rm -rf diff
 
       - name: "Download 'Heroku Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
@@ -105,8 +126,8 @@ jobs:
       - name: "Diff lockfiles using unix diff."
         working-directory: diff
         env:
-          BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
-          HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           diff --version
           diff-lockfile() {
@@ -129,24 +150,25 @@ jobs:
           	fi
           }
           
-          diff-lockfile "backend"
           diff-lockfile "backend-database"
           diff-lockfile "backend-endpoint"
           diff-lockfile "backend-feed"
           diff-lockfile "backend-network"
           diff-lockfile "backend-quickbook"
           diff-lockfile "backend-sync"
+          diff-lockfile "deploy-appengine"
           diff-lockfile "plugins"
           diff-lockfile "plugins-settings"
-          diff-lockfile "root"
           diff-lockfile "root-settings"
+          diff-lockfile "shared"
           diff-lockfile "test-helpers"
+          diff-lockfile "test-integration"
 
       - name: "Diff dependencies using dependency-tree-diff from Jake Wharton."
         working-directory: diff
         env:
-          BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
-          HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           # TODEL use Jake's version when https://github.com/JakeWharton/dependency-tree-diff/pull/13 gets merged.
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
@@ -163,15 +185,19 @@ jobs:
           diff-dependency-tree "backend-network"
           diff-dependency-tree "backend-quickbook"
           diff-dependency-tree "backend-sync"
+          diff-dependency-tree "deploy"
+          diff-dependency-tree "deploy-appengine"
           diff-dependency-tree "plugins"
           diff-dependency-tree "root"
+          diff-dependency-tree "shared"
           diff-dependency-tree "test-helpers"
+          diff-dependency-tree "test-integration"
 
       - name: "Generate .patch files from dependency-tree-diff."
         working-directory: diff
         env:
-          BASE: ${{ needs.pull_request.outputs.base_ref }} - ${{ needs.pull_request.outputs.base_sha }}
-          HEAD: ${{ needs.pull_request.outputs.head_ref }} - ${{ needs.pull_request.outputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           cp ../Heroku/scripts/dependency-tree-diff-to-patch.sh .
           patch-dependency-tree() {
@@ -185,13 +211,18 @@ jobs:
           patch-dependency-tree "backend-network"
           patch-dependency-tree "backend-quickbook"
           patch-dependency-tree "backend-sync"
+          patch-dependency-tree "deploy"
+          patch-dependency-tree "deploy-appengine"
           patch-dependency-tree "plugins"
           patch-dependency-tree "root"
+          patch-dependency-tree "shared"
           patch-dependency-tree "test-helpers"
+          patch-dependency-tree "test-integration"
 
       - name: "List diff dir"
+        if: ${{ success() || failure() }}
         working-directory: diff
-        run: ls -la
+        run: ls -laR
 
       - name: "Merge diffs into a single file (all.dependencies.diff)."
         working-directory: diff
@@ -215,24 +246,30 @@ jobs:
       - name: "Create 'Dependency Diff' check run (if any diffs)."
         uses: actions/github-script@v7
         env:
-          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
-          branch: '${{ github.ref }}'
+          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ inputs.head-ref }}'
+          branch: ${{ inputs.head-ref }}
+          sha: ${{ inputs.head-sha }}
+          review: false
         with:
           script: |
             const fs = require("fs");
             const moduleData = {
-            	":": {diffName: "root", path: ""},
+            	":": {diffName: "root", path: "", noLock: true},
             	": (settings)": {diffName: "root-settings", path: "", type: "settings"},
-            	":backend": {diffName: "backend", path: "backend"},
+            	":backend": {diffName: "backend", path: "backend", noLock: true},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
             	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
             	":backend:network": {diffName: "backend-network", path: "backend/network"},
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":deploy": {diffName: "deploy", path: "deploy", noLock: true},
+            	":deploy:appengine": {diffName: "deploy-appengine", path: "deploy/appengine"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
             	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", type: "settings"},
+            	":shared": {diffName: "shared", path: "shared"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
+            	":test-integration": {diffName: "test-integration", path: "test-integration"},
             };
             Object.keys(moduleData).forEach((module) => {
             	const diffPath = `diff/${moduleData[module].diffName}.dependencies.diff`;
@@ -249,34 +286,39 @@ jobs:
             		return "Heroku" + path + "/" + name;
             	};
             });
-            const hasAnyChanges = Object
-            	.keys(moduleData)
-            	// "": no diff, null: missing diff, "...": dependency changes
-            	.some((moduleName) => {
-            		const module = moduleData[moduleName];
-            		return module.type !== "settings" && (module.depDiff !== "" || module.lockDiff !== "");
-            	});
+            if (process.env.review === 'true') {
+            	const hasAnyChanges = Object
+            		.keys(moduleData)
+            		// "": no diff, null: missing diff, "...": dependency changes
+            		.some((moduleName) => {
+            			const module = moduleData[moduleName];
+            			return module.type !== "settings" && (module.depDiff !== "" || module.lockDiff !== "");
+            		});
             
-            if (!hasAnyChanges) {
-            	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
-            	await github.rest.repos.createCommitStatus({
-            		owner: context.repo.owner,
-            		repo: context.repo.repo,
-            		sha: context.sha,
-            		context: "Heroku / Dependency Review",
-            		description: "No dependency changes.",
-            		state: "success",
-            	});
-            	return;
+            	if (!hasAnyChanges) {
+            		console.log("No changes found.");
+            		// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            		await github.rest.repos.createCommitStatus({
+            			owner: context.repo.owner,
+            			repo: context.repo.repo,
+            			sha: process.env.sha,
+            			context: "Heroku / Dependency Review",
+            			description: "No dependency changes.",
+            			state: "success",
+            		});
+            		return;
+            	} else {
+            		console.log("Changes found, creating check.");
+            	}
             }
             // https://octokit.github.io/rest.js/v18#checks-create
             const check = await github.rest.checks.create({
             	owner: context.repo.owner,
             	repo: context.repo.repo,
-            	head_sha: context.sha,
+            	head_sha: process.env.sha,
             	name: "Dependency Diff",
             	status: "completed",
-              // Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
+            	// Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
             	conclusion: "neutral",
             	output: {
             		title: "Dependency Change Report",
@@ -311,7 +353,7 @@ jobs:
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Array.from(function* () {
             			for (const [moduleName, module] of Object.entries(moduleData)) {
-            				if (module.lockDiff !== "") {
+            				if (module.lockDiff !== "" && !(module.noLock && module.lockDiff === null)) {
             					const fileName = `${module.diffName}.lockfile`;
             					yield {
             						path: module.fullPath(),
@@ -340,14 +382,16 @@ jobs:
             		}())
             	},
             });
-            // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
-            await github.rest.repos.createCommitStatus({
-            	owner: context.repo.owner,
-            	repo: context.repo.repo,
-            	sha: context.sha,
-            	context: "Heroku / Dependency Review",
-            	description: "Review dependency changes!",
-              // Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
-            	state: "success",
-            	target_url: check.data.html_url,
-            });
+            if (process.env.review === 'true') {
+            	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
+            	await github.rest.repos.createCommitStatus({
+            		owner: context.repo.owner,
+            		repo: context.repo.repo,
+            		sha: process.env.sha,
+            		context: "Heroku / Dependency Review",
+            		description: "Review dependency changes!",
+            		// Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
+            		state: "success",
+            		target_url: check.data.html_url,
+            	});
+            }

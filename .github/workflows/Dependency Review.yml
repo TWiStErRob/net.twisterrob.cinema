@@ -23,7 +23,7 @@ jobs:
     permissions:
       # read: rest.checks.listForRef
       # write: rest.checks.update
-      checks: read
+      checks: write
       # rest.repos.createCommitStatus
       statuses: write
 
@@ -54,7 +54,7 @@ jobs:
             }
             const check = checks.data.check_runs[0];
             console.log(`Found check run: ${check.url}`);
-            if (check.conclusion !== "action_required") {
+            if (check.conclusion !== "action_required" && check.conclusion !== "neutral") {
               console.log(checks);
               core.warning(`Status was already resolved as ${check.conclusion}.`);
             }
