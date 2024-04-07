@@ -146,18 +146,19 @@ jobs:
           	fi
           }
           
-          diff-lockfile "backend"
           diff-lockfile "backend-database"
           diff-lockfile "backend-endpoint"
           diff-lockfile "backend-feed"
           diff-lockfile "backend-network"
           diff-lockfile "backend-quickbook"
           diff-lockfile "backend-sync"
+          diff-lockfile "deploy-appengine"
           diff-lockfile "plugins"
           diff-lockfile "plugins-settings"
-          diff-lockfile "root"
           diff-lockfile "root-settings"
+          diff-lockfile "shared"
           diff-lockfile "test-helpers"
+          diff-lockfile "test-integration"
 
       - name: "Diff dependencies using dependency-tree-diff from Jake Wharton."
         working-directory: diff
@@ -180,9 +181,12 @@ jobs:
           diff-dependency-tree "backend-network"
           diff-dependency-tree "backend-quickbook"
           diff-dependency-tree "backend-sync"
+          diff-dependency-tree "deploy"
+          diff-dependency-tree "deploy-appengine"
           diff-dependency-tree "plugins"
-          diff-dependency-tree "root"
+          diff-dependency-tree "shared"
           diff-dependency-tree "test-helpers"
+          diff-dependency-tree "test-integration"
 
       - name: "Generate .patch files from dependency-tree-diff."
         working-directory: diff
@@ -202,9 +206,12 @@ jobs:
           patch-dependency-tree "backend-network"
           patch-dependency-tree "backend-quickbook"
           patch-dependency-tree "backend-sync"
+          patch-dependency-tree "deploy"
+          patch-dependency-tree "deploy-appengine"
           patch-dependency-tree "plugins"
-          patch-dependency-tree "root"
+          patch-dependency-tree "shared"
           patch-dependency-tree "test-helpers"
+          patch-dependency-tree "test-integration"
 
       - name: "List diff dir"
         working-directory: diff
@@ -247,9 +254,13 @@ jobs:
             	":backend:network": {diffName: "backend-network", path: "backend/network"},
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
+            	":deploy": {diffName: "deploy", path: "deploy"},
+            	":deploy:appengine": {diffName: "deploy-appengine", path: "deploy/appengine"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
             	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", type: "settings"},
+            	":shared": {diffName: "shared", path: "shared"},
             	":test-helpers": {diffName: "test-helpers", path: "test-helpers"},
+            	":test-integration": {diffName: "test-integration", path: "test-integration"},
             };
             Object.keys(moduleData).forEach((module) => {
             	const diffPath = `diff/${moduleData[module].diffName}.dependencies.diff`;

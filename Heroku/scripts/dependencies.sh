@@ -30,8 +30,20 @@ echo ':backend:network:dependencies'
 echo ':backend:endpoint:dependencies'
 ./gradlew --stacktrace :backend:endpoint:dependencies >backend-endpoint.dependencies 2>&1
 
+echo ':deploy:dependencies'
+./gradlew --stacktrace :deploy:dependencies >deploy.dependencies 2>&1
+
+echo ':deploy:appengine:dependencies'
+./gradlew --stacktrace :deploy:appengine:dependencies >deploy-appengine.dependencies 2>&1
+
+echo ':shared:dependencies'
+./gradlew --stacktrace :shared:dependencies >shared.dependencies 2>&1
+
 echo ':test-helpers:dependencies'
 ./gradlew --stacktrace :test-helpers:dependencies >test-helpers.dependencies 2>&1
+
+echo ':test-integration:dependencies'
+./gradlew --stacktrace :test-integration:dependencies >test-integration.dependencies 2>&1
 
 echo ':plugins:dependencies'
 ./gradlew -p gradle/plugins --stacktrace :dependencies >plugins.dependencies 2>&1
