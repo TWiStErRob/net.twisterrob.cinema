@@ -2,21 +2,25 @@ name: "Calculate Dependency Diff"
 on:
   workflow_call:
     inputs:
+
       base-ref:
         type: string
-        description: 'TODO'
+        description: 'The name of the base branch to compare against.'
         required: true
+
       head-ref:
         type: string
-        description: 'TODO'
+        description: 'The name of the head branch to compare.'
         required: true
+
       base-sha:
         type: string
-        description: 'TODO'
+        description: 'The SHA of the base branch to compare against.'
         required: true
+
       head-sha:
         type: string
-        description: 'TODO'
+        description: 'The SHA of the head branch to compare.'
         required: true
 
 jobs:

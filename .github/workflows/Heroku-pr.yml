@@ -3,21 +3,36 @@ name: "Find PR"
 on:
   workflow_call:
     outputs:
+
       found:
-        description: TODO
         value: ${{ jobs.find-pr.outputs.found }}
+        description: |
+          Whether the PR was found for the SHA that triggered this call.
+          'true' or 'false' (string, not boolean).
+
       base-ref:
-        description: TODO
         value: ${{ jobs.find-pr.outputs.base-ref }}
+        description: |
+          The base branch of the PR that was found for the SHA that triggered this call.
+          'main' or 'some-branch' (string).
+
       base-sha:
-        description: TODO
         value: ${{ jobs.find-pr.outputs.base-sha }}
+        description: |
+          The base branch's SHA where PR is targeting.
+          '1234567890abcdef1234567890abcdef12345678' (string).
+
       head-ref:
-        description: TODO
         value: ${{ jobs.find-pr.outputs.head-ref }}
+        description: |
+          The head branch of the PR that was found for the SHA that triggered this call.
+          'some-branch' (string).
+
       head-sha:
-        description: TODO
         value: ${{ jobs.find-pr.outputs.head-sha }}
+        description: |
+          The PR's head SHA.
+          '1234567890abcdef1234567890abcdef12345678' (string).
 
 jobs:
 
@@ -25,6 +40,7 @@ jobs:
     name: "pull_request"
     runs-on: ubuntu-22.04
     timeout-minutes: 1
+    if: ${{ github.event_name == 'pull_request' }}
 
     permissions:
       # 8BitJonny/gh-get-current-pr
