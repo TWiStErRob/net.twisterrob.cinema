@@ -379,6 +379,7 @@ jobs:
             		}())
             	},
             });
+            return; // Stop here for now, I won't be reviewing it for every PR.
             // https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
             await github.rest.repos.createCommitStatus({
             	owner: context.repo.owner,
