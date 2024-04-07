@@ -2,19 +2,19 @@ name: "Calculate Dependency Diff"
 on:
   workflow_call:
     inputs:
-      base_ref:
+      base-ref:
         type: string
         description: 'TODO'
         required: true
-      head_ref:
+      head-ref:
         type: string
         description: 'TODO'
         required: true
-      base_sha:
+      base-sha:
         type: string
         description: 'TODO'
         required: true
-      head_sha:
+      head-sha:
         type: string
         description: 'TODO'
         required: true
@@ -46,19 +46,19 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: "Checkout ${{ inputs.base_ref }} branch in ${{ github.repository }} repository."
+      - name: "Checkout ${{ inputs.base-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
         with:
-          ref: ${{ format('refs/heads/{0}', inputs.base_ref) }}
+          ref: ${{ format('refs/heads/{0}', inputs.base-ref) }}
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
         env:
-          HEAD_REF: ${{ inputs.head_ref }}
+          HEAD_REF: ${{ inputs.head-ref }}
         run: |
           git fetch
           git restore --source "refs/remotes/origin/${HEAD_REF}" -- Heroku/scripts/dependencies.sh
 
-      - name: "Dump Heroku Dependencies on branch ${{ inputs.base_ref }}."
+      - name: "Dump Heroku Dependencies on branch ${{ inputs.base-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -80,12 +80,12 @@ jobs:
           if-no-files-found: error
           path: Heroku/gradle/dependency-locks/*.lockfile
 
-      - name: "Checkout ${{ inputs.head_ref }} branch in ${{ github.repository }} repository."
+      - name: "Checkout ${{ inputs.head-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
         with:
-          ref: ${{ format('refs/heads/{0}', inputs.head_ref) }}
+          ref: ${{ format('refs/heads/{0}', inputs.head-ref) }}
 
-      - name: "Dump Heroku Dependencies on branch ${{ inputs.head_ref }}."
+      - name: "Dump Heroku Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -122,8 +122,8 @@ jobs:
       - name: "Diff lockfiles using unix diff."
         working-directory: diff
         env:
-          BASE: ${{ inputs.base_ref }} - ${{ inputs.base_sha }}
-          HEAD: ${{ inputs.head_ref }} - ${{ inputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           diff --version
           diff-lockfile() {
@@ -162,8 +162,8 @@ jobs:
       - name: "Diff dependencies using dependency-tree-diff from Jake Wharton."
         working-directory: diff
         env:
-          BASE: ${{ inputs.base_ref }} - ${{ inputs.base_sha }}
-          HEAD: ${{ inputs.head_ref }} - ${{ inputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           # TODEL use Jake's version when https://github.com/JakeWharton/dependency-tree-diff/pull/13 gets merged.
           wget https://github.com/TWiStErRob/dependency-tree-diff/releases/download/1.3.0/dependency-tree-diff.jar
@@ -187,8 +187,8 @@ jobs:
       - name: "Generate .patch files from dependency-tree-diff."
         working-directory: diff
         env:
-          BASE: ${{ inputs.base_ref }} - ${{ inputs.base_sha }}
-          HEAD: ${{ inputs.head_ref }} - ${{ inputs.head_sha }}
+          BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
+          HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
           cp ../Heroku/scripts/dependency-tree-diff-to-patch.sh .
           patch-dependency-tree() {

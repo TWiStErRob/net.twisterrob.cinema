@@ -5,19 +5,19 @@ on:
     outputs:
       found:
         description: TODO
-        value: ${{ jobs.pull_request.outputs.found }}
-      base_ref:
+        value: ${{ jobs.find-pr.outputs.found }}
+      base-ref:
         description: TODO
-        value: ${{ jobs.pull_request.outputs.base_ref }}
-      base_sha:
+        value: ${{ jobs.find-pr.outputs.base-ref }}
+      base-sha:
         description: TODO
-        value: ${{ jobs.pull_request.outputs.base_sha }}
-      head_ref:
+        value: ${{ jobs.find-pr.outputs.base-sha }}
+      head-ref:
         description: TODO
-        value: ${{ jobs.pull_request.outputs.head_ref }}
-      head_sha:
+        value: ${{ jobs.find-pr.outputs.head-ref }}
+      head-sha:
         description: TODO
-        value: ${{ jobs.pull_request.outputs.head_sha }}
+        value: ${{ jobs.find-pr.outputs.head-sha }}
 
 jobs:
 
@@ -33,11 +33,11 @@ jobs:
     outputs:
       found: ${{ steps.current-pr.outputs.number != null }}
       # Simulate github.event.pull_request.base.ref on push trigger.
-      base_ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.ref }}
-      base_sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.sha }}
+      base-ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.ref }}
+      base-sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).base.sha }}
       # Simulate github.event.pull_request.head.ref on push trigger.
-      head_ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.ref }}
-      head_sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.sha }}
+      head-ref: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.ref }}
+      head-sha: ${{ steps.current-pr.outputs.number != null && fromJSON(steps.current-pr.outputs.pr).head.sha }}
 
     steps:
 
