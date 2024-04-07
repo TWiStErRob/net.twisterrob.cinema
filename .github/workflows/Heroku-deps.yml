@@ -1,4 +1,4 @@
-name: "Dependencies"
+name: "Calculate Dependency Diff"
 on:
   workflow_call:
     inputs:
