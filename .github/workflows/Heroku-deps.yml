@@ -285,7 +285,6 @@ jobs:
             		return "Heroku" + path + "/" + name;
             	};
             });
-            console.debug(moduleData);
             const hasAnyChanges = Object
             	.keys(moduleData)
             	// "": no diff, null: missing diff, "...": dependency changes
