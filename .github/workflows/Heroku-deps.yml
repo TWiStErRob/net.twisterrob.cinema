@@ -242,8 +242,8 @@ jobs:
       - name: "Create 'Dependency Diff' check run (if any diffs)."
         uses: actions/github-script@v7
         env:
-          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref }}'
-          branch: '${{ github.ref }}'
+          action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ github.ref_name }}'
+          branch: '${{ github.ref_name }}'
         with:
           script: |
             const fs = require("fs");
@@ -307,7 +307,7 @@ jobs:
             	head_sha: context.sha,
             	name: "Dependency Diff",
             	status: "completed",
-              // Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
+            	// Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
             	conclusion: "neutral",
             	output: {
             		title: "Dependency Change Report",
