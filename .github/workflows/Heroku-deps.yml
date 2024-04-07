@@ -103,6 +103,22 @@ jobs:
           if-no-files-found: error
           path: diff/curr/
 
+      # Checkout with head-ref wipes the diff/prev folder, so wipe everything, then download the artifacts.
+      - name: "Clean up diff folder before usage."
+        run: rm -rf diff
+
+      - name: "Download 'Heroku Dependencies - Base' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'Heroku Dependencies - Base'
+          path: diff/prev
+
+      - name: "Download 'Heroku Dependencies' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'Heroku Dependencies'
+          path: diff/curr
+
       - name: "Diff lockfiles using unix diff."
         working-directory: diff
         env:

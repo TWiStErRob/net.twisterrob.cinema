@@ -1,5 +1,6 @@
 # Start with a clean slate.
 rm ./gradle/dependency-locks/*.lockfile
+rm ./*.dependencies
 
 # Warmup
 ./gradlew --stacktrace --version
