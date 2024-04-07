@@ -284,6 +284,7 @@ jobs:
             		return "Heroku" + path + "/" + name;
             	};
             });
+            console.debug(moduleData);
             const hasAnyChanges = Object
             	.keys(moduleData)
             	// "": no diff, null: missing diff, "...": dependency changes
@@ -293,6 +294,7 @@ jobs:
             	});
             
             if (!hasAnyChanges) {
+            	console.log("No changes found.");
             	// https://docs.github.com/en/rest/commits/statuses#create-a-commit-status
             	await github.rest.repos.createCommitStatus({
             		owner: context.repo.owner,
@@ -303,6 +305,8 @@ jobs:
             		state: "success",
             	});
             	return;
+            } else {
+            	console.log("Changes found, creating check.");
             }
             // https://octokit.github.io/rest.js/v18#checks-create
             const check = await github.rest.checks.create({
@@ -382,7 +386,7 @@ jobs:
             	sha: context.sha,
             	context: "Heroku / Dependency Review",
             	description: "Review dependency changes!",
-              // Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
+            	// Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
             	state: "success",
             	target_url: check.data.html_url,
             });
