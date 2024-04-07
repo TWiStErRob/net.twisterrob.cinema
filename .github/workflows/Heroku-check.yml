@@ -14,7 +14,6 @@ jobs:
 
   gradle:
     name: "gradle"
-    if: ${{ false }}
     needs:
       - validate
     uses: ./.github/workflows/Heroku-check-gradle.yml
@@ -25,7 +24,6 @@ jobs:
 
   npm:
     name: "npm"
-    if: ${{ false }}
     needs:
       - validate
     uses: ./.github/workflows/Heroku-check-npm.yml
