@@ -35,7 +35,7 @@ jobs:
       pull-requests: read
 
   deps:
-    name: "Calculate Dependency Diff"
+    name: "Dependencies"
     needs: pull-request
     if: ${{ needs.pull-request.outputs.found == 'true' }}
     uses: ./.github/workflows/Heroku-deps.yml
