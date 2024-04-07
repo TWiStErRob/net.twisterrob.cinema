@@ -184,6 +184,7 @@ jobs:
           diff-dependency-tree "deploy"
           diff-dependency-tree "deploy-appengine"
           diff-dependency-tree "plugins"
+          diff-dependency-tree "root"
           diff-dependency-tree "shared"
           diff-dependency-tree "test-helpers"
           diff-dependency-tree "test-integration"
@@ -209,6 +210,7 @@ jobs:
           patch-dependency-tree "deploy"
           patch-dependency-tree "deploy-appengine"
           patch-dependency-tree "plugins"
+          patch-dependency-tree "root"
           patch-dependency-tree "shared"
           patch-dependency-tree "test-helpers"
           patch-dependency-tree "test-integration"
@@ -245,16 +247,16 @@ jobs:
           script: |
             const fs = require("fs");
             const moduleData = {
-            	":": {diffName: "root", path: ""},
+            	":": {diffName: "root", path: "", noLock: true},
             	": (settings)": {diffName: "root-settings", path: "", type: "settings"},
-            	":backend": {diffName: "backend", path: "backend"},
+            	":backend": {diffName: "backend", path: "backend", noLock: true},
             	":backend:database": {diffName: "backend-database", path: "backend/database"},
             	":backend:endpoint": {diffName: "backend-endpoint", path: "backend/endpoint"},
             	":backend:feed": {diffName: "backend-feed", path: "backend/feed"},
             	":backend:network": {diffName: "backend-network", path: "backend/network"},
             	":backend:quickbook": {diffName: "backend-quickbook", path: "backend/quickbook"},
             	":backend:sync": {diffName: "backend-sync", path: "backend/sync"},
-            	":deploy": {diffName: "deploy", path: "deploy"},
+            	":deploy": {diffName: "deploy", path: "deploy", noLock: true},
             	":deploy:appengine": {diffName: "deploy-appengine", path: "deploy/appengine"},
             	":plugins": {diffName: "plugins", path: "gradle/plugins"},
             	":plugins (settings)": {diffName: "plugins-settings", path: "gradle/plugins", type: "settings"},
@@ -339,7 +341,7 @@ jobs:
             		`.replaceAll(/^[ \t]+/mg, ""),
             		annotations: Array.from(function* () {
             			for (const [moduleName, module] of Object.entries(moduleData)) {
-            				if (module.lockDiff !== "") {
+            				if (module.lockDiff !== "" && !(module.noLock && module.lockDiff === null)) {
             					const fileName = `${module.diffName}.lockfile`;
             					yield {
             						path: module.fullPath(),
