@@ -62,23 +62,21 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
-      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: "Upload 'Heroku Dependencies - Base' artifact (part 1/2 - dependencies)."
+      # Work around "least common ancestor" upload feature moving the files into a shared folder.
+      - name: "Merge dependencies and lockfiles into one folder for upload."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'Heroku Dependencies - Base'
-          if-no-files-found: error
-          path: Heroku/*.dependencies
+        run: |
+          mkdir -p diff/prev/
+          mv Heroku/*.dependencies diff/prev/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/prev/
 
-      - name: "Upload 'Heroku Dependencies - Base' artifact (part 2/2 - lockfiles)."
+      - name: "Upload 'Heroku Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: Heroku/gradle/dependency-locks/*.lockfile
+          path: diff/prev/
 
       - name: "Checkout ${{ inputs.head-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -89,35 +87,21 @@ jobs:
         working-directory: Heroku
         run: scripts/dependencies.sh
 
-      # Work around "least common ancestor" upload feature by uploading twice to the same artifact.
-      # https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - name: "Upload 'Heroku Dependencies' artifact (part 1/2 - dependencies)."
+      # Work around "least common ancestor" upload feature moving the files into a shared folder.
+      - name: "Merge dependencies and lockfiles into one folder for upload."
+        if: ${{ success() || failure() }}
+        run: |
+          mkdir -p diff/curr/
+          mv Heroku/*.dependencies diff/curr/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/curr/
+
+      - name: "Upload 'Heroku Dependencies' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Heroku Dependencies'
           if-no-files-found: error
-          path: Heroku/*.dependencies
-
-      - name: "Upload 'Heroku Dependencies' artifact (part 2/2 - lockfiles)."
-        if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'Heroku Dependencies'
-          if-no-files-found: error
-          path: Heroku/gradle/dependency-locks/*.lockfile
-
-      - name: "Download 'Heroku Dependencies - Base' artifact."
-        uses: actions/download-artifact@v4
-        with:
-          name: 'Heroku Dependencies - Base'
-          path: diff/prev
-
-      - name: "Download 'Heroku Dependencies' artifact."
-        uses: actions/download-artifact@v4
-        with:
-          name: 'Heroku Dependencies'
-          path: diff/curr
+          path: diff/curr/
 
       - name: "Diff lockfiles using unix diff."
         working-directory: diff
