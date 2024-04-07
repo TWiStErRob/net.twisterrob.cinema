@@ -40,10 +40,10 @@ jobs:
     if: ${{ needs.pull-request.outputs.found == 'true' }}
     uses: ./.github/workflows/Heroku-deps.yml
     with:
-      base-ref: ${{ needs.pull_request.outputs.base-ref }}
-      base-sha: ${{ needs.pull_request.outputs.base-sha }}
-      head-ref: ${{ needs.pull_request.outputs.head-ref }}
-      head-sha: ${{ needs.pull_request.outputs.head-sha }}
+      base-ref: ${{ needs.pull-request.outputs.base-ref }}
+      base-sha: ${{ needs.pull-request.outputs.base-sha }}
+      head-ref: ${{ needs.pull-request.outputs.head-ref }}
+      head-sha: ${{ needs.pull-request.outputs.head-sha }}
     permissions:
       contents: read
       checks: write
