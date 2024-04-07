@@ -247,7 +247,8 @@ jobs:
         uses: actions/github-script@v7
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/Dependency%20Review.yml?query=branch%3A${{ inputs.head-ref }}'
-          branch: '${{ inputs.head-ref }}'
+          branch: ${{ inputs.head-ref }}
+          sha: ${{ inputs.head-sha }}
         with:
           script: |
             const fs = require("fs");
@@ -299,7 +300,7 @@ jobs:
             	await github.rest.repos.createCommitStatus({
             		owner: context.repo.owner,
             		repo: context.repo.repo,
-            		sha: context.sha,
+            		sha: process.env.sha,
             		context: "Heroku / Dependency Review",
             		description: "No dependency changes.",
             		state: "success",
@@ -312,7 +313,7 @@ jobs:
             const check = await github.rest.checks.create({
             	owner: context.repo.owner,
             	repo: context.repo.repo,
-            	head_sha: context.sha,
+            	head_sha: process.env.sha,
             	name: "Dependency Diff",
             	status: "completed",
             	// Use `action_required` if you want to make it mandatory; `action_required` will show as a "failure" on GitHub PRs.
@@ -383,7 +384,7 @@ jobs:
             await github.rest.repos.createCommitStatus({
             	owner: context.repo.owner,
             	repo: context.repo.repo,
-            	sha: context.sha,
+            	sha: process.env.sha,
             	context: "Heroku / Dependency Review",
             	description: "Review dependency changes!",
             	// Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
