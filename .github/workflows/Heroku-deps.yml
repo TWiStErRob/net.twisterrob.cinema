@@ -200,8 +200,9 @@ jobs:
           patch-dependency-tree "test-integration"
 
       - name: "List diff dir"
+        if: ${{ success() || failure() }}
         working-directory: diff
-        run: ls -la
+        run: ls -laR
 
       - name: "Merge diffs into a single file (all.dependencies.diff)."
         working-directory: diff
