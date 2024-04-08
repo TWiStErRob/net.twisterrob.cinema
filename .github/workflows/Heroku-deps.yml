@@ -44,16 +44,16 @@ jobs:
 
     steps:
 
+      - name: "Checkout ${{ inputs.base-ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ format('refs/heads/{0}', inputs.base-ref) }}
+
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
         with:
           java-version-file: Heroku/.java-version
           distribution: temurin
-
-      - name: "Checkout ${{ inputs.base-ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ format('refs/heads/{0}', inputs.base-ref) }}
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
         env:
