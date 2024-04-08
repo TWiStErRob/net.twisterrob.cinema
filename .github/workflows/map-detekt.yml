@@ -22,7 +22,7 @@ jobs:
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version-file: map/.java-version
           distribution: temurin
 
       - name: "Run detekt."
