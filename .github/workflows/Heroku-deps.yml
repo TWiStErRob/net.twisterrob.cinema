@@ -236,7 +236,18 @@ jobs:
           BASE: ${{ inputs.base-ref }} - ${{ inputs.base-sha }}
           HEAD: ${{ inputs.head-ref }} - ${{ inputs.head-sha }}
         run: |
-          cp ../Heroku/scripts/dependency-tree-diff-to-patch.sh .
+          cat > dependency-tree-diff-to-patch.sh <<- 'EOF'
+          	#!/usr/bin/env bash
+          	# ./dependency-tree-diff-to-patch.sh foo.dependencies.diff sha-before sha-after > foo.dependencies.patch
+          	echo "Index: Dependencies"
+          	echo "==================================================================="
+          	echo "./dependency-tree-diff.jar prev/$1 curr/$1"
+          	echo "--- a/prev/$1	(revision $2)"
+          	echo "+++ b/curr/$1	(revision $3)"
+          	echo "@@ -1,$(cat "$1" | wc -l) +1,$(cat "$1" | wc -l) @@"
+          	sed -re 's/^$|^([^+-])/ \0/g' "$1"
+          EOF
+          chmod +x dependency-tree-diff-to-patch.sh
           patch-dependency-tree() {
           	./dependency-tree-diff-to-patch.sh "$1.dependencies.diff" "${BASE}" "${HEAD}" > "$1.dependencies.patch";
           }
