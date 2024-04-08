@@ -27,7 +27,7 @@ jobs:
 
 
   base:
-    name: "Base Dependencies"
+    name: "Base"
     timeout-minutes: 4
 
     permissions:
@@ -83,7 +83,7 @@ jobs:
           path: diff/
   
   head:
-    name: "Head Dependencies"
+    name: "Head"
     timeout-minutes: 4
 
     permissions:
