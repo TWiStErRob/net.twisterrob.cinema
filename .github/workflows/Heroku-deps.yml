@@ -25,7 +25,6 @@ on:
 
 jobs:
 
-
   base:
     name: "Base"
     timeout-minutes: 4
@@ -81,7 +80,8 @@ jobs:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
           path: diff/
-  
+
+
   head:
     name: "Head"
     timeout-minutes: 4
