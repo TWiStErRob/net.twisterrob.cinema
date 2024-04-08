@@ -25,17 +25,14 @@ on:
 
 jobs:
 
-  diff:
-    name: "Calculate Diff"
-    timeout-minutes: 10
+
+  base:
+    name: "Base Dependencies"
+    timeout-minutes: 4
 
     permissions:
       # actions/checkout
       contents: read
-      # rest.checks.create
-      checks: write
-      # rest.repos.createCommitStatus
-      statuses: write
 
     runs-on: ubuntu-22.04
     defaults:
@@ -52,7 +49,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version-file: Heroku/.java-version
           distribution: temurin
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
@@ -70,9 +67,9 @@ jobs:
       - name: "Merge dependencies and lockfiles into one folder for upload."
         if: ${{ success() || failure() }}
         run: |
-          mkdir -p diff/prev/
-          mv Heroku/*.dependencies diff/prev/
-          mv Heroku/gradle/dependency-locks/*.lockfile diff/prev/
+          mkdir diff/
+          mv Heroku/*.dependencies diff/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/
 
       - name: "Upload 'Heroku Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
@@ -80,7 +77,22 @@ jobs:
         with:
           name: 'Heroku Dependencies - Base'
           if-no-files-found: error
-          path: diff/prev/
+          path: diff/
+  
+  head:
+    name: "Head Dependencies"
+    timeout-minutes: 4
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
 
       - name: "Checkout ${{ inputs.head-ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -101,21 +113,34 @@ jobs:
       - name: "Merge dependencies and lockfiles into one folder for upload."
         if: ${{ success() || failure() }}
         run: |
-          mkdir -p diff/curr/
-          mv Heroku/*.dependencies diff/curr/
-          mv Heroku/gradle/dependency-locks/*.lockfile diff/curr/
+          mkdir diff/
+          mv Heroku/*.dependencies diff/
+          mv Heroku/gradle/dependency-locks/*.lockfile diff/
 
-      - name: "Upload 'Heroku Dependencies' artifact."
+      - name: "Upload 'Heroku Dependencies - Head' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Dependencies'
+          name: 'Heroku Dependencies - Head'
           if-no-files-found: error
-          path: diff/curr/
+          path: diff/
 
-      # Checkout with head-ref wipes the diff/prev folder, so wipe everything, then download the artifacts.
-      - name: "Clean up diff folder before usage."
-        run: rm -rf diff
+
+  diff:
+    name: "Calculate Diff"
+    needs:
+      - base
+      - head
+    timeout-minutes: 1
+
+    permissions: {} # Not interacting with GitHub other than artifacts.
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
 
       - name: "Download 'Heroku Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
@@ -123,10 +148,10 @@ jobs:
           name: 'Heroku Dependencies - Base'
           path: diff/prev
 
-      - name: "Download 'Heroku Dependencies' artifact."
+      - name: "Download 'Heroku Dependencies - Head' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies'
+          name: 'Heroku Dependencies - Head'
           path: diff/curr
 
       - name: "Diff lockfiles using unix diff."
@@ -248,6 +273,43 @@ jobs:
             diff/*.dependencies.patch
             diff/*.lockfile.diff
 
+
+  check:
+    name: "Publish Check"
+    needs:
+      - diff
+    timeout-minutes: 1
+
+    permissions:
+      # rest.checks.create
+      checks: write
+      # rest.repos.createCommitStatus
+      statuses: write
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Download 'Heroku Dependencies - Diffs' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'Heroku Dependencies - Diffs'
+          path: diff
+
+      - name: "Download 'Heroku Dependencies - Base' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'Heroku Dependencies - Base'
+          path: diff/prev
+
+      - name: "Download 'Heroku Dependencies - Head' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'Heroku Dependencies - Head'
+          path: diff/curr
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."
         uses: actions/github-script@v7
