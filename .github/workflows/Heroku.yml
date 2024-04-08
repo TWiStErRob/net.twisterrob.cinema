@@ -11,12 +11,6 @@ concurrency:
   group: ${{ github.ref == 'refs/heads/main' && format('ci-heroku-main-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
   cancel-in-progress: true
 
-#env:
-#  # Choose Java 17 explicitly via setup-java.
-#  # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#java
-#  # Don't set it here or even on the jobs, because this doesn't run on a runner, variables not available.
-#  JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
-
 jobs:
 
   check:
