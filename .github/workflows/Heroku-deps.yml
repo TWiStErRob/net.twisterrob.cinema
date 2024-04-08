@@ -52,7 +52,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version: 17
           distribution: temurin
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
@@ -86,6 +86,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ format('refs/heads/{0}', inputs.head-ref) }}
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: Heroku/.java-version
+          distribution: temurin
 
       - name: "Dump Heroku Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: Heroku
