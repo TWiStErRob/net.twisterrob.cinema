@@ -52,6 +52,9 @@ jobs:
           java-version-file: Heroku/.java-version
           distribution: temurin
 
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
         env:
           HEAD_REF: ${{ inputs.head-ref }}
@@ -104,6 +107,9 @@ jobs:
         with:
           java-version-file: Heroku/.java-version
           distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
 
       - name: "Dump Heroku Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: Heroku
