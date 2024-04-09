@@ -35,6 +35,9 @@ jobs:
           java-version-file: Heroku/.java-version
           distribution: temurin
 
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+
       - name: "Set up Node."
         uses: actions/setup-node@v4
         with:
