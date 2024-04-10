@@ -50,7 +50,7 @@ jobs:
       # Set the time zone, otherwise 5 Performances display > shows performances tests fail
       # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
       - name: "Set time zone to UK."
-        uses: szenius/set-timezone@v1.2
+        uses: szenius/set-timezone@v2.0
         with:
           timezoneLinux: "Europe/London"
 
