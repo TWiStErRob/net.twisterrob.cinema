@@ -12,19 +12,19 @@ First try from way back, before my occupation was Android Engineer. It was just 
 ## AppEngine + Models/Cineworld
 Round two, a year later, a DAO layer in Java with direct Quickbook JSON calls + a web UI rendering a table with JQuery, never really worked out.
 
-## Heroku (Node)
+## Node (on Heroku)
 Started out as a backend migration from AppEngine (Java) to Heroku (Node.js) wrapping a Neo4J graph database.
 Later evolved into a scheduled synchronization from Cineworld Quickbook into the Neo4J database and a middleware BFF to save favourites.
 
-## Heroku (planner)
+## planner (on Heroku)
 Building on the previous migration, I rewrote the frontend from JQuery to Angular JS (the v1 and only at the time).
 Additionally added the capability to select multiple films and cinemas and get a plan to watch as many movies as possible in a row in one cinema.
 
-## Heroku (OGM)
+## OGM (on Heroku)
 Having an unmaintained ORM library in NodeJS and the lack of strong typing prompted me to migrate the Neo4J DAO layer from Node.js to Neo4J Java ORM in a Kotlin ktor app keeping the same JSON contract as before.
 Also, the synchronization mechanism of the Cineworld API was broken, so I rewrote the sync to work on the Cineworld Syndication Feed (XML).
 
-## Current state
+## Current state: ktor and OGM (on AppEngine)
 Sadly the Syndication feed of Cineworld is as good as dead since their recent redesign of the website and mobile app.
 The Quickbook API with access key is also not available anymore. At this point this app is pretty much defunct unless I find a data source for it.
 At this point (2022 November), even [Google](https://www.google.com/search?q=cineworld+wood+green) struggles with the show times showing "No showings" for most days.
