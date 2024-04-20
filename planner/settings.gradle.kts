@@ -2,7 +2,7 @@ import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.gradle.doNotNagAbout
 import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
 
-rootProject.name = "Cinema-Heroku"
+rootProject.name = "net-twisterrob-cinema-planner"
 
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
