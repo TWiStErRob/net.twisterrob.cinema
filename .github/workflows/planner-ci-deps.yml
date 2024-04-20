@@ -48,7 +48,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Set up Gradle."
@@ -62,7 +62,7 @@ jobs:
           git restore --source "refs/remotes/origin/${HEAD_REF}" -- planner/scripts/dependencies.sh
 
       - name: "Dump Dependencies on branch ${{ inputs.base-ref }}."
-        working-directory: Heroku
+        working-directory: planner
         run: scripts/dependencies.sh
 
       # Work around "least common ancestor" upload feature moving the files into a shared folder.
@@ -70,8 +70,8 @@ jobs:
         if: ${{ success() || failure() }}
         run: |
           mkdir diff/
-          mv Heroku/*.dependencies diff/
-          mv Heroku/gradle/dependency-locks/*.lockfile diff/
+          mv planner/*.dependencies diff/
+          mv planner/gradle/dependency-locks/*.lockfile diff/
 
       - name: "Upload 'Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
