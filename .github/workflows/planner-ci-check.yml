@@ -16,7 +16,7 @@ jobs:
     name: "gradle"
     needs:
       - validate
-    uses: ./.github/workflows/Heroku-check-gradle.yml
+    uses: ./.github/workflows/planner-ci-check-gradle.yml
     permissions:
       contents: read
       checks: write
@@ -26,7 +26,7 @@ jobs:
     name: "npm"
     needs:
       - validate
-    uses: ./.github/workflows/Heroku-check-npm.yml
+    uses: ./.github/workflows/planner-ci-check-npm.yml
     permissions:
       contents: read
       checks: write

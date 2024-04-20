@@ -8,14 +8,14 @@ on:
 
 concurrency:
   # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
-  group: ${{ github.ref == 'refs/heads/main' && format('ci-heroku-main-{0}', github.sha) || format('ci-heroku-{0}', github.ref) }}
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-planner-main-{0}', github.sha) || format('ci-planner-{0}', github.ref) }}
   cancel-in-progress: true
 
 jobs:
 
   check:
     name: "🔨 Build & Check"
-    uses: ./.github/workflows/Heroku-check.yml
+    uses: ./.github/workflows/planner-ci-check.yml
     secrets: inherit
     permissions:
       contents: read
@@ -27,7 +27,7 @@ jobs:
     name: "Find PR"
     # Don't execute on main, it'll never be PR'd.
     if: ${{ github.ref != 'refs/heads/main' }}
-    uses: ./.github/workflows/Heroku-pr.yml
+    uses: ./.github/workflows/planner-ci-findpr.yml
     permissions:
       pull-requests: read
 
@@ -35,7 +35,7 @@ jobs:
     name: "Dependencies"
     needs: pull-request
     if: ${{ needs.pull-request.outputs.found == 'true' }}
-    uses: ./.github/workflows/Heroku-deps.yml
+    uses: ./.github/workflows/planner-ci-deps.yml
     with:
       base-ref: ${{ needs.pull-request.outputs.base-ref }}
       base-sha: ${{ needs.pull-request.outputs.base-sha }}
