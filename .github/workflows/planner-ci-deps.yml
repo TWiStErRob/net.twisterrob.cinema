@@ -387,7 +387,7 @@ jobs:
             			owner: context.repo.owner,
             			repo: context.repo.repo,
             			sha: process.env.sha,
-            			context: "Heroku / Dependency Review",
+            			context: "Planner CI / Dependency Review",
             			description: "No dependency changes.",
             			state: "success",
             		});
@@ -473,7 +473,7 @@ jobs:
             		owner: context.repo.owner,
             		repo: context.repo.repo,
             		sha: process.env.sha,
-            		context: "Heroku / Dependency Review",
+            		context: "Planner CI / Dependency Review",
             		description: "Review dependency changes!",
             		// Use `pending` if you want to make it mandatory; `pending` will block Renovate from merging as the checks are inconclusive.
             		state: "success",

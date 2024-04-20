@@ -72,7 +72,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               sha: context.sha,
-              context: 'Heroku / Dependency Review',
+              context: 'Planner CI / Dependency Review',
               description: process.env.resolution === "approve"
                 ? `${process.env.user} approved.`
                 : `${process.env.user} rejected.`,
