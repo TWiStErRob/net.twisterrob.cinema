@@ -30,7 +30,7 @@
 				"bootstrap"
 			],
 			"matchFileNames": [
-				"Heroku/frontend/package.json"
+				"planner/frontend/package.json"
 			],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
@@ -43,7 +43,7 @@
 				"com.google.cloud.tools.appengine-appenginewebxml:com.google.cloud.tools.appengine-appenginewebxml.gradle.plugin"
 			],
 			"matchFileNames": [
-				"Heroku/gradle/libs.versions.toml"
+				"planner/gradle/libs.versions.toml"
 			],
 			"enabled": false
 		},
@@ -53,7 +53,7 @@
 				"com.google.code.gson:gson"
 			],
 			"matchFileNames": [
-				"Heroku/backend/database/build.gradle.kts"
+				"planner/backend/database/build.gradle.kts"
 			],
 			"matchCurrentVersion": "2.8.9",
 			"enabled": false

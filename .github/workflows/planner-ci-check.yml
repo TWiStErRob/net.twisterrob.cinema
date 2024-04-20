@@ -1,0 +1,33 @@
+name: "🔨 Build & Check"
+on:
+  workflow_call:
+
+jobs:
+
+  validate:
+    name: "🦺 Validation"
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@943fa2f540b5a8cc631ac443c265a3aa59ebcb7c # v3
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+  gradle:
+    name: "gradle"
+    needs:
+      - validate
+    uses: ./.github/workflows/planner-ci-check-gradle.yml
+    permissions:
+      contents: read
+      checks: write
+      security-events: write
+
+  npm:
+    name: "npm"
+    needs:
+      - validate
+    uses: ./.github/workflows/planner-ci-check-npm.yml
+    permissions:
+      contents: read
+      checks: write
+    secrets: inherit

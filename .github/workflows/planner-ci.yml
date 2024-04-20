@@ -1,0 +1,47 @@
+name: "Planner CI"
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+
+concurrency:
+  # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-planner-main-{0}', github.sha) || format('ci-planner-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+
+  check:
+    name: "🔨 Build & Check"
+    uses: ./.github/workflows/planner-ci-check.yml
+    secrets: inherit
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+      checks: write
+
+  pull-request:
+    name: "Find PR"
+    # Don't execute on main, it'll never be PR'd.
+    if: ${{ github.ref != 'refs/heads/main' }}
+    uses: ./.github/workflows/planner-ci-findpr.yml
+    permissions:
+      pull-requests: read
+
+  deps:
+    name: "Dependencies"
+    needs: pull-request
+    if: ${{ needs.pull-request.outputs.found == 'true' }}
+    uses: ./.github/workflows/planner-ci-deps.yml
+    with:
+      base-ref: ${{ needs.pull-request.outputs.base-ref }}
+      base-sha: ${{ needs.pull-request.outputs.base-sha }}
+      head-ref: ${{ needs.pull-request.outputs.head-ref }}
+      head-sha: ${{ needs.pull-request.outputs.head-sha }}
+    permissions:
+      contents: read
+      checks: write
+      statuses: write

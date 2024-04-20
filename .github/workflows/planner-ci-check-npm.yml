@@ -1,0 +1,180 @@
+name: "🔨 Build & Check (NPM)"
+on:
+  workflow_call:
+
+jobs:
+
+  check:
+    name: "🧧 NPM"
+    timeout-minutes: 15
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action -> https://github.com/EnricoMi/publish-unit-test-result-action#permissions
+      checks: write
+
+    env:
+      # Set up URL so that Dagger can create the default component. It shouldn't be used in tests anyway.
+      NEO4J_URL: neo4j+s://neo4j-fake-user:neo4j-fake-password@neo4j-fake-host
+      PORT: 8080
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: planner/.java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: "Set up Node."
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: planner/package.json
+
+      - name: "Set up NPM 10.x."
+        # https://github.com/actions/setup-node/issues/324
+        run: npm install --global npm@10
+
+      # Set the time zone, otherwise 5 Performances display > shows performances tests fail
+      # > - Expected By(css selector, .performance) to have text 12:00 but was 11:00
+      - name: "Set time zone to UK."
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Europe/London"
+
+      - name: "Install Dependencies"
+        working-directory: planner
+        run: |
+          node -v
+          npm -v
+          npm install
+
+      - name: "Test"
+        working-directory: planner
+        run: |
+          npm run test
+          cd frontend && npm run build:prod
+
+      # Pre-build artifacts for more immediate and deterministic startup.
+      - name: "Build Frontend."
+        working-directory: planner/frontend
+        run: npm run build:dev
+
+      - name: "Build Sync & Backend."
+        working-directory: planner
+        run: ./gradlew --no-daemon --stacktrace :backend:sync:jar :backend:endpoint:jar
+
+      - name: "Start Sync."
+        working-directory: planner
+        run: |
+          ./gradlew --no-daemon --stacktrace :backend:sync:run >sync.log 2>&1 &
+          echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
+          sleep 30
+
+      - name: "Start Backend (endpoint)."
+        working-directory: planner
+        run: |
+          ./gradlew --no-daemon --stacktrace :backend:endpoint:run \
+            --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../config/fake-data" \
+            >backend.log 2>&1 &
+          echo "PID_ENDPOINT=$!" | tee --append $GITHUB_ENV
+          sleep 10
+
+      - name: "Start Frontend."
+        working-directory: planner/frontend
+        run: |
+          npm run start >../frontend.log 2>&1 &
+          echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
+          sleep 10
+
+      - name: "Run Selenium tests."
+        env:
+          SELENIUM_USER: ${{ secrets.UI_TEST_USERNAME }}
+          SELENIUM_PASS: ${{ secrets.UI_TEST_PASSWORD }}
+        working-directory: planner
+        run: >
+          ./gradlew --no-daemon :test-integration:integrationExternalTest
+          -Pnet.twisterrob.test.selenium.headless=true
+          -Pnet.twisterrob.test.selenium.user.name="${SELENIUM_USER}"
+          -Pnet.twisterrob.test.selenium.user.pass="${SELENIUM_PASS}"
+
+      # Note: we always want to kill these processes, and we never care if they actually existed or stopped.
+      # `||` at the end ignores the return value, so the step doesn't error but emits a warning instead using:
+      # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
+
+      - name: "Stop Sync (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_SYNC }}
+        run: kill "${PID}" || true
+        # This will always be true as sync terminates: echo "::warning file=sync.log::Sync process ${PID} didn't exist."
+
+      - name: "Stop Backend (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_ENDPOINT }}
+        run: kill "${PID}" || echo "::warning file=backend.log::Backend process ${PID} didn't exist."
+
+      - name: "Stop Frontend (at ${{ env.PID }})."
+        if: ${{ success() || failure() || cancelled() }}
+        env:
+          PID: ${{ env.PID_FRONTEND }}
+        run: kill "${PID}" || echo "::warning file=frontend.log::Frontend process ${PID} didn't exist."
+
+      - name: "Upload 'Integration Test Results XMLs' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Integration Test Results XMLs'
+          if-no-files-found: error
+          path: planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+
+      - name: "Upload 'Integration Test Results HTML' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Integration Test Results HTML'
+          if-no-files-found: error
+          path: planner/test-integration/build/reports/tests/integrationExternalTest/
+
+      - name: "Upload 'Integration Test Failure Screenshots' artifact."
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Integration Test Failure Screenshots'
+          if-no-files-found: error
+          path: planner/test-integration/build/reports/tests/integrationExternalTest-screenshots/
+
+      - name: "Publish '🔔 Integration Test Results' check run."
+        if: ${{ success() || failure() }}
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: '🔔 Integration Test Results'
+          comment_mode: off
+          report_individual_runs: true
+          test_changes_limit: 0
+          action_fail_on_inconclusive: true
+          junit_files: ${{ github.workspace }}/planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+
+      - name: "Upload 'Integration Test Logs' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Integration Test Logs'
+          if-no-files-found: error
+          path: |
+            planner/*.log
+            planner/test-integration/build/logs/
+            ~/.npm/_logs/

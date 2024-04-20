@@ -1,0 +1,82 @@
+name: "Delete from Google App Engine"
+
+on:
+  pull_request:
+    types:
+      - closed
+  delete: # branches
+  workflow_dispatch:
+
+jobs:
+
+  release:
+    name: "Delete from Google App Engine"
+    timeout-minutes: 5
+
+    # Only trigger when deleting branches, or any other event type.
+    if: ${{ github.event_name != 'delete' || github.event.ref_type == 'branch' }}
+
+    permissions:
+      contents: read  # This is required for actions/checkout.
+      # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
+      id-token: write # This is required for requesting the JWT via google-github-actions/auth.
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Determine Google App Engine version name."
+        id: name
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const branch = {
+              // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
+              // on:pull_request:closed[!pull_request.merged]'s ref is the merge branch.
+              // So reconstruct the merge branch name in both cases.
+              pull_request: `refs/pull/${context.payload.number}/merge`,
+              // on:delete's context.ref is always `refs/heads/main`
+              // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
+              // See https://stackoverflow.com/a/62293570/253468
+              delete: `refs/heads/${context.payload.ref}`,
+              // on:workflow_dispatch's ref is the full ref selected in the UI, so use it as-is.
+              workflow_dispatch: context.ref,
+            }[context.eventName]
+            return branch
+              // refs/heads/main from workflow_dispatch and delete events.
+              .replace('refs/heads/', 'br-')
+              // refs/pull/123/merge from pull_request.closed event.
+              .replace('refs/pull/', 'pr-')
+              // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
+              // May only contain lowercase letters, digits, and hyphens.
+              // Must begin and end with a letter or digit. Must not exceed 63 characters.
+              .replace(/[^a-z0-9-]/g, '-')
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: planner/.java-version
+          distribution: temurin
+
+      - name: "Authenticate to Google Cloud."
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GAE_WIP }}
+          service_account: ${{ secrets.GAE_SA }}
+
+      - name: "Print tooling versions."
+        run: |
+          gcloud --version
+
+      - name: "Delete version ${{ env.VERSION }} from Google App Engine."
+        env:
+          VERSION: ${{ steps.name.outputs.result }}
+        run: |
+          gcloud app versions delete --quiet --project="twisterrob-cinema" "${VERSION}"
