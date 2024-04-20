@@ -30,7 +30,7 @@ Deployment is done via `:deploy:appengine` Gradle module.
  * `gradlew :deploy:appengine:appengineDeploy` will upload the staged files to Google App Engine.
 
 On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` workflow:
- * Every branch is deployable with [manual dispatch](https://github.com/TWiStErRob/net.twisterrob.cinema/actions/workflows/Deploy%20to%20Google%20App%20Engine.yml).
+ * Every branch is deployable with [manual dispatch](https://github.com/TWiStErRob/net.twisterrob.cinema/actions/workflows/planner-appengine-deploy.yml).
  * Every PR is automatically deployed to a unique URL.
  * Every push to `release` branch is automatically deployed to production.
 

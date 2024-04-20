@@ -85,8 +85,8 @@ jobs:
 ## Invalid permission `id-token: read`
 https://github.com/TWiStErRob/net.twisterrob.cinema/actions/runs/3536103159
 
-Invalid workflow file: `.github/workflows/Release to Google App Engine.yml`
-> The workflow is not valid. .github/workflows/Release to Google App Engine.yml (Line: 18, Col: 17): Unexpected value 'read'
+Invalid workflow file: `.github/workflows/planner-appengine-deploy.yml`
+> The workflow is not valid. .github/workflows/planner-appengine-deploy.yml (Line: 18, Col: 17): Unexpected value 'read'
 
 ### Solution
 https://github.com/google-github-actions/auth#configuring-gcloud
