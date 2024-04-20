@@ -62,7 +62,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Authenticate to Google Cloud."

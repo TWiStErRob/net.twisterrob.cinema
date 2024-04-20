@@ -32,7 +32,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Set up Gradle."
@@ -41,7 +41,7 @@ jobs:
       - name: "Set up Node."
         uses: actions/setup-node@v4
         with:
-          node-version-file: Heroku/package.json
+          node-version-file: planner/package.json
 
       - name: "Set up NPM 10.x."
         # https://github.com/actions/setup-node/issues/324
@@ -55,36 +55,36 @@ jobs:
           timezoneLinux: "Europe/London"
 
       - name: "Install Dependencies"
-        working-directory: Heroku
+        working-directory: planner
         run: |
           node -v
           npm -v
           npm install
 
       - name: "Test"
-        working-directory: Heroku
+        working-directory: planner
         run: |
           npm run test
           cd frontend && npm run build:prod
 
       # Pre-build artifacts for more immediate and deterministic startup.
       - name: "Build Frontend."
-        working-directory: Heroku/frontend
+        working-directory: planner/frontend
         run: npm run build:dev
 
       - name: "Build Sync & Backend."
-        working-directory: Heroku
+        working-directory: planner
         run: ./gradlew --no-daemon --stacktrace :backend:sync:jar :backend:endpoint:jar
 
       - name: "Start Sync."
-        working-directory: Heroku
+        working-directory: planner
         run: |
           ./gradlew --no-daemon --stacktrace :backend:sync:run >sync.log 2>&1 &
           echo "PID_SYNC=$!" | tee --append $GITHUB_ENV
           sleep 30
 
       - name: "Start Backend (endpoint)."
-        working-directory: Heroku
+        working-directory: planner
         run: |
           ./gradlew --no-daemon --stacktrace :backend:endpoint:run \
             --args="-P:twisterrob.cinema.staticRootFolder=../../deploy/frontend/static -P:twisterrob.cinema.fakeRootFolder=../../config/fake-data" \
@@ -93,7 +93,7 @@ jobs:
           sleep 10
 
       - name: "Start Frontend."
-        working-directory: Heroku/frontend
+        working-directory: planner/frontend
         run: |
           npm run start >../frontend.log 2>&1 &
           echo "PID_FRONTEND=$!" | tee --append $GITHUB_ENV
@@ -103,7 +103,7 @@ jobs:
         env:
           SELENIUM_USER: ${{ secrets.UI_TEST_USERNAME }}
           SELENIUM_PASS: ${{ secrets.UI_TEST_PASSWORD }}
-        working-directory: Heroku
+        working-directory: planner
         run: >
           ./gradlew --no-daemon :test-integration:integrationExternalTest
           -Pnet.twisterrob.test.selenium.headless=true
@@ -139,7 +139,7 @@ jobs:
         with:
           name: 'Integration Test Results XMLs'
           if-no-files-found: error
-          path: Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+          path: planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Integration Test Results HTML' artifact."
         if: ${{ success() || failure() }}
@@ -147,7 +147,7 @@ jobs:
         with:
           name: 'Integration Test Results HTML'
           if-no-files-found: error
-          path: Heroku/test-integration/build/reports/tests/integrationExternalTest/
+          path: planner/test-integration/build/reports/tests/integrationExternalTest/
 
       - name: "Upload 'Integration Test Failure Screenshots' artifact."
         if: ${{ failure() }}
@@ -155,7 +155,7 @@ jobs:
         with:
           name: 'Integration Test Failure Screenshots'
           if-no-files-found: error
-          path: Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
+          path: planner/test-integration/build/reports/tests/integrationExternalTest-screenshots/
 
       - name: "Publish '🔔 Integration Test Results' check run."
         if: ${{ success() || failure() }}
@@ -166,7 +166,7 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
-          junit_files: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+          junit_files: ${{ github.workspace }}/planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Integration Test Logs' artifact."
         if: ${{ success() || failure() }}
@@ -175,6 +175,6 @@ jobs:
           name: 'Integration Test Logs'
           if-no-files-found: error
           path: |
-            Heroku/*.log
-            Heroku/test-integration/build/logs/
+            planner/*.log
+            planner/test-integration/build/logs/
             ~/.npm/_logs/

@@ -17,7 +17,7 @@ jobs:
 
     env:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
-      HISTORY_DIR: Heroku/backend/sync/build/sync
+      HISTORY_DIR: planner/backend/sync/build/sync
 
     runs-on: ubuntu-22.04
     defaults:
@@ -32,7 +32,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Checkout default branch in ${{ env.HISTORY_REPO }} repository."
@@ -52,8 +52,8 @@ jobs:
       - name: "Build and Run Sync."
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
-        working-directory: Heroku
-        # HISTORY_DIR is relative to work tree, `tee` needs a relative path to Heroku. actions/checkout created the folder.
+        working-directory: planner
+        # HISTORY_DIR is relative to work tree, `tee` needs a relative path to planner. actions/checkout created the folder.
         run: >
           ./gradlew
           :backend:sync:run

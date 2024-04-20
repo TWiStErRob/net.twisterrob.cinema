@@ -225,8 +225,8 @@ Next step is started.
 ```
 Services to deploy:
 
-descriptor:                  [/home/runner/work/net.twisterrob.cinema/net.twisterrob.cinema/Heroku/deploy/appengine/build/staged-app/app.yaml]
-source:                      [/home/runner/work/net.twisterrob.cinema/net.twisterrob.cinema/Heroku/deploy/appengine/build/staged-app]
+descriptor:                  [/home/runner/work/net.twisterrob.cinema/net.twisterrob.cinema/planner/deploy/appengine/build/staged-app/app.yaml]
+source:                      [/home/runner/work/net.twisterrob.cinema/net.twisterrob.cinema/planner/deploy/appengine/build/staged-app]
 target project:              [twisterrob-cinema]
 target service:              [default]
 target version:              [2]

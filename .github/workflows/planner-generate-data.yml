@@ -29,7 +29,7 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Clean up workspace."
@@ -40,7 +40,7 @@ jobs:
       - name: "Generate random data."
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
-        working-directory: Heroku
+        working-directory: planner
         run: >
           ./gradlew
           :backend:sync:generate
@@ -51,12 +51,12 @@ jobs:
         with:
           name: 'weekly_film_times.xml'
           if-no-files-found: error
-          path: Heroku/backend/sync/test/weekly_film_times.xml
+          path: planner/backend/sync/test/weekly_film_times.xml
 
       - name: "Import generated data."
         env:
           NEO4J_URL: ${{ secrets.NEO4J_URL }}
-        working-directory: Heroku
+        working-directory: planner
         run: >
           ./gradlew
           :backend:sync:run

@@ -3,7 +3,7 @@ name: "Deploy to Google App Engine"
 on:
   pull_request:
     paths:
-      - 'Heroku/**'
+      - 'planner/**'
       - '.github/workflows/Deploy to Google App Engine.yml'
       - '.github/workflows/Delete from Google App Engine.yml'
   push:
@@ -84,13 +84,13 @@ jobs:
       - name: "Set up Java."
         uses: actions/setup-java@v4
         with:
-          java-version-file: Heroku/.java-version
+          java-version-file: planner/.java-version
           distribution: temurin
 
       - name: "Set up Node."
         uses: actions/setup-node@v4
         with:
-          node-version-file: Heroku/package.json
+          node-version-file: planner/package.json
 
       - name: "Set up NPM 10.x."
         # https://github.com/actions/setup-node/issues/324
@@ -110,20 +110,20 @@ jobs:
           gcloud --version
 
       - name: "Build Frontend."
-        working-directory: Heroku
+        working-directory: planner
         run: |
           npm install
           cd frontend
           npm run build:prod
 
       - name: "Build Backend."
-        working-directory: Heroku
+        working-directory: planner
         run: >
           ./gradlew
           :backend:endpoint:jar
 
       - name: "Publish ${{ env.VERSION }} to Google App Engine (production=${{ env.RELEASE_TO_PRODUCTION }})."
-        working-directory: Heroku
+        working-directory: planner
         env:
           # Use pre-existing SDK, don't download a new one.
           GCLOUD_HOME: /usr/lib/google-cloud-sdk

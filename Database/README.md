@@ -12,7 +12,7 @@
     > Not all return nodes are being displayed due to Initial Node Display setting. Only 300 of 300 nodes are being displayed
 1. Click Export icon and select "Export CSV"
 1. Verify downloaded file has rows
-1. Save downloaded CSV as `Cineworld Cinema\Database\YYYYMMDD unconnected Films.csv`
+1. Save downloaded CSV as `net.twisterrob.cinema\Database\YYYYMMDD unconnected Films.csv`
 1. `match (f:Film) where not (f)--() delete f`
 1. `match (f:Film) where not (f)--() return f` to verify empty
 1. Favorites > Data Profiling > What kind of nodes exist  
@@ -39,7 +39,7 @@
 We have switched your database to read-only mode.
 
 Folders:
- * Backups: `projects/workspace/Cineworld Cinema/Database`
+ * Backups: `projects/workspace/net.twisterrob.cinema/Database`
  * Local database: `tools/data/neo4j/data/databases/graph.db`
 
 1. Do a Backup (see above)
@@ -57,4 +57,4 @@ Folders:
 1. Go to "Admin" tab
 1. Restore database
 1. Go to the Overview tab of the database in GraphebeDB to verify it's not read-only any more.
-1. Run `Cineworld Cinema\Heroku\scripts\update-all.remote.bat`
+1. Run `planner\scripts\update-all.remote.bat`
