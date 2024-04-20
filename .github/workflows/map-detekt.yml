@@ -46,11 +46,11 @@ jobs:
               --report xml:detekt.xml \
               --report md:detekt.md \
 
-      - name: "Upload 'map Detekt Results' artifact."
+      - name: "Upload 'Detekt Results' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'map Detekt Results'
+          name: 'Detekt Results'
           if-no-files-found: error
           path: map/detekt.*
 
