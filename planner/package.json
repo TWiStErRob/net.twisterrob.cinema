@@ -8,7 +8,7 @@
 			"email": "papp.robert.s@gmail.com"
 		}
 	],
-	"description": "Heroku deployment for twisterrob-cinema",
+	"description": "Planner deployment for twisterrob-cinema",
 	"readmeFilename": "README.md",
 	"license": "UNLICENCED",
 	"repository": "local",

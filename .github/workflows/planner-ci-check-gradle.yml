@@ -42,7 +42,7 @@ jobs:
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v3
 
-      - name: "Build Heroku."
+      - name: "Build Planner."
         working-directory: planner
         run: >
           ./gradlew
@@ -57,7 +57,7 @@ jobs:
           integrationTestClasses
           integrationExternalTestClasses
 
-      - name: "Check Heroku with Detekt."
+      - name: "Check Planner with Detekt."
         working-directory: planner
         run: >
           ./gradlew
@@ -83,7 +83,7 @@ jobs:
           sarif_file: ${{ github.workspace }}/planner/build/reports/detekt/merge.sarif
 
 
-      - name: "Test Heroku."
+      - name: "Test Planner."
         working-directory: planner
         run: >
           ./gradlew
