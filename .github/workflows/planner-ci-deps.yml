@@ -61,7 +61,7 @@ jobs:
           git fetch
           git restore --source "refs/remotes/origin/${HEAD_REF}" -- Heroku/scripts/dependencies.sh
 
-      - name: "Dump Heroku Dependencies on branch ${{ inputs.base-ref }}."
+      - name: "Dump Dependencies on branch ${{ inputs.base-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -73,11 +73,11 @@ jobs:
           mv Heroku/*.dependencies diff/
           mv Heroku/gradle/dependency-locks/*.lockfile diff/
 
-      - name: "Upload 'Heroku Dependencies - Base' artifact."
+      - name: "Upload 'Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Dependencies - Base'
+          name: 'Dependencies - Base'
           if-no-files-found: error
           path: diff/
 
@@ -111,7 +111,7 @@ jobs:
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v3
 
-      - name: "Dump Heroku Dependencies on branch ${{ inputs.head-ref }}."
+      - name: "Dump Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: Heroku
         run: scripts/dependencies.sh
 
@@ -123,11 +123,11 @@ jobs:
           mv Heroku/*.dependencies diff/
           mv Heroku/gradle/dependency-locks/*.lockfile diff/
 
-      - name: "Upload 'Heroku Dependencies - Head' artifact."
+      - name: "Upload 'Dependencies - Head' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Dependencies - Head'
+          name: 'Dependencies - Head'
           if-no-files-found: error
           path: diff/
 
@@ -148,16 +148,16 @@ jobs:
 
     steps:
 
-      - name: "Download 'Heroku Dependencies - Base' artifact."
+      - name: "Download 'Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies - Base'
+          name: 'Dependencies - Base'
           path: diff/prev
 
-      - name: "Download 'Heroku Dependencies - Head' artifact."
+      - name: "Download 'Dependencies - Head' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies - Head'
+          name: 'Dependencies - Head'
           path: diff/curr
 
       - name: "Diff lockfiles using unix diff."
@@ -279,11 +279,11 @@ jobs:
           # https://stackoverflow.com/a/2817024 + https://stackoverflow.com/a/7816490 + expansion of flags with `man ls` and `man tail`.
           ls --format=single-column --time=ctime --reverse *.dependencies.diff | xargs tail --lines=+1 > all.dependencies.diff
 
-      - name: "Upload 'Heroku Dependencies - Diffs' artifact."
+      - name: "Upload 'Dependencies - Diffs' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Dependencies - Diffs'
+          name: 'Dependencies - Diffs'
           if-no-files-found: error
           path: |
             diff/*.dependencies.diff
@@ -310,22 +310,22 @@ jobs:
 
     steps:
 
-      - name: "Download 'Heroku Dependencies - Diffs' artifact."
+      - name: "Download 'Dependencies - Diffs' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies - Diffs'
+          name: 'Dependencies - Diffs'
           path: diff
 
-      - name: "Download 'Heroku Dependencies - Base' artifact."
+      - name: "Download 'Dependencies - Base' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies - Base'
+          name: 'Dependencies - Base'
           path: diff/prev
 
-      - name: "Download 'Heroku Dependencies - Head' artifact."
+      - name: "Download 'Dependencies - Head' artifact."
         uses: actions/download-artifact@v4
         with:
-          name: 'Heroku Dependencies - Head'
+          name: 'Dependencies - Head'
           path: diff/curr
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."

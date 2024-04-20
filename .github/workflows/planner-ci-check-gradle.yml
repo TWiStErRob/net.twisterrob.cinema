@@ -68,11 +68,11 @@ jobs:
           detektEach
           :detektReportMergeSarif
 
-      - name: "Upload 'Heroku Detekt Results'."
+      - name: "Upload 'Detekt Results'."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Detekt Results'
+          name: 'Detekt Results'
           if-no-files-found: error
           path: Heroku/**/build/reports/detekt/*
 
@@ -95,27 +95,27 @@ jobs:
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
-      - name: "Upload 'Heroku Test Results XMLs' artifact."
+      - name: "Upload 'Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Test Results XMLs'
+          name: 'Test Results XMLs'
           if-no-files-found: error
           path: Heroku/**/build/test-results/*/TEST-*.xml
 
-      - name: "Upload 'Heroku Test Results HTML' artifact."
+      - name: "Upload 'Test Results HTML' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Test Results HTML'
+          name: 'Test Results HTML'
           if-no-files-found: error
           path: Heroku/build/reports/tests/all/
 
-      - name: "Upload 'Heroku Test Results HTMLs' artifact."
+      - name: "Upload 'Test Results HTMLs' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Test Results HTMLs'
+          name: 'Test Results HTMLs'
           if-no-files-found: error
           path: Heroku/**/build/reports/tests/*/
 

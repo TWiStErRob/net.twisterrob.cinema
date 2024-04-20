@@ -133,27 +133,27 @@ jobs:
           PID: ${{ env.PID_FRONTEND }}
         run: kill "${PID}" || echo "::warning file=frontend.log::Frontend process ${PID} didn't exist."
 
-      - name: "Upload 'Heroku Integration Test Results XMLs' artifact."
+      - name: "Upload 'Integration Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Integration Test Results XMLs'
+          name: 'Integration Test Results XMLs'
           if-no-files-found: error
           path: Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
-      - name: "Upload 'Heroku Integration Test Results HTML' artifact."
+      - name: "Upload 'Integration Test Results HTML' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Integration Test Results HTML'
+          name: 'Integration Test Results HTML'
           if-no-files-found: error
           path: Heroku/test-integration/build/reports/tests/integrationExternalTest/
 
-      - name: "Upload 'Heroku Integration Test Failure Screenshots' artifact."
+      - name: "Upload 'Integration Test Failure Screenshots' artifact."
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Integration Test Failure Screenshots'
+          name: 'Integration Test Failure Screenshots'
           if-no-files-found: error
           path: Heroku/test-integration/build/reports/tests/integrationExternalTest-screenshots/
 
@@ -168,11 +168,11 @@ jobs:
           action_fail_on_inconclusive: true
           junit_files: ${{ github.workspace }}/Heroku/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
-      - name: "Upload 'Heroku Test Logs' artifact."
+      - name: "Upload 'Integration Test Logs' artifact."
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Heroku Test Logs'
+          name: 'Integration Test Logs'
           if-no-files-found: error
           path: |
             Heroku/*.log
