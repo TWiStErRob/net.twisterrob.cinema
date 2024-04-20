@@ -1,4 +1,4 @@
-name: "map"
+name: "map CI"
 
 on:
   push:
