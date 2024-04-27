@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
 	api(libs.kotlin.gradle)
+	api(libs.kotlin.gradle.ksp)
 	implementation(libs.kotlin.serialization.gradle)
 	api(libs.detekt.gradle)
 
