@@ -38,11 +38,11 @@ object Deps {
 	fun dagger(project: Project) {
 		project.dependencies {
 			add("implementation", project.libs.dagger)
-			add("kapt", project.libs.dagger.apt)
+			add("kapt", project.libs.dagger.compiler)
 		}
-		// `add("kaptTest", project.libs.dagger.apt)` is not enough, because there are multiple test configurations.
+		// `add("kaptTest", project.libs.dagger.compiler)` is not enough, because there are multiple test configurations.
 		project.the<TestingExtension>().suites.withType<JvmTestSuite>().configureEach {
-			dependencies { kapt(project.libs.dagger.apt) }
+			dependencies { kapt(project.libs.dagger.compiler) }
 		}
 	}
 }
