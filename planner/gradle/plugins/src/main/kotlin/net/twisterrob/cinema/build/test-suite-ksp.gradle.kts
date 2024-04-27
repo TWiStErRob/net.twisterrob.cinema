@@ -7,20 +7,20 @@ import org.gradle.kotlin.dsl.withType
 
 plugins {
 	id("org.gradle.jvm-test-suite")
-	id("org.jetbrains.kotlin.kapt")
+	id("com.google.devtools.ksp")
 }
 
 @Suppress("UnstableApiUsage")
 testing.suites.withType<JvmTestSuite>().configureEach {
 	// Target
-	val kaptName = "kapt${this.name.replaceFirstChar(Char::titlecase)}"
-	val kaptConfiguration = configurations.getByName(kaptName)
+	val kspName = "ksp${this.name.replaceFirstChar(Char::titlecase)}"
+	val kspConfiguration = configurations.getByName(kspName)
 
 	// Source
 	val collector: DependencyCollector = objects.dependencyCollector()
-	// For use later by JvmComponentDependencies.kapt extension function.
-	(this.dependencies as ExtensionAware).extensions.add("kapt", collector)
+	// For use later by JvmComponentDependencies.ksp extension function.
+	(this.dependencies as ExtensionAware).extensions.add("ksp", collector)
 
 	// Link
-	kaptConfiguration.dependencies.addAllLater(collector.dependencies)
+	kspConfiguration.dependencies.addAllLater(collector.dependencies)
 }

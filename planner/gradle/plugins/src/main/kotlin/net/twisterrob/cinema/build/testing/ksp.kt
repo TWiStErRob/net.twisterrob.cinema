@@ -6,8 +6,8 @@ import org.gradle.api.plugins.jvm.JvmComponentDependencies
 import org.gradle.kotlin.dsl.getByName
 
 /**
- * @see `test-suite-kapt.gradle.kts`
+ * @see `test-suite-ksp.gradle.kts`
  */
 @Suppress("UnstableApiUsage")
-val JvmComponentDependencies.kapt: DependencyCollector
-	get() = (this as ExtensionAware).extensions.getByName<DependencyCollector>("kapt")
+val JvmComponentDependencies.ksp: DependencyCollector
+	get() = (this as ExtensionAware).extensions.getByName<DependencyCollector>("ksp")

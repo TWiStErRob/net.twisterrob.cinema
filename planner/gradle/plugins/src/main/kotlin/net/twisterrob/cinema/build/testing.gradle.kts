@@ -9,9 +9,9 @@ import net.twisterrob.cinema.build.testing.parallelJUnit5Execution
 plugins {
 	id("org.gradle.jvm-test-suite")
 	id("org.jetbrains.kotlin.jvm")
-	id("org.jetbrains.kotlin.kapt")
+	id("com.google.devtools.ksp")
 	id("org.gradle.java-test-fixtures")
-	id("net.twisterrob.cinema.build.test-suite-kapt")
+	id("net.twisterrob.cinema.build.test-suite-ksp")
 }
 
 tasks.withType<Test> {
@@ -166,5 +166,5 @@ fun JvmTestSuite.centralizedSetup(configurations: ConfigurationContainer) {
 	// Doesn't work for some reason, probably some internal Kotlin magic.
 	//val baseName = sources.annotationProcessorConfigurationName
 	//	.removeSuffix(JvmConstants.ANNOTATION_PROCESSOR_CONFIGURATION_NAME.replaceFirstChar(Char::titlecase))
-	//configurations.named("kapt${baseName.replaceFirstChar(Char::titlecase)}").extendsFrom(configurations.kaptTest)
+	//configurations.named("ksp${baseName.replaceFirstChar(Char::titlecase)}").extendsFrom(configurations.kspTest)
 }
