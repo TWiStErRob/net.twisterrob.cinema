@@ -32,7 +32,7 @@ jobs:
 
 
   filter:
-    name: "Ignore changes to unrelated paths"
+    name: "Detect changes"
     if: ${{ github.event_name == 'pull_request' }}
     timeout-minutes: 2
     permissions:
@@ -42,7 +42,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: "Detect changes."
+      - name: "Find changes to unrelated paths."
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
