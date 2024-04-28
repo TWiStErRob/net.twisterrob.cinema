@@ -8,12 +8,6 @@ on:
   workflow_dispatch:
     inputs:
 
-      reason:
-        description: 'Reason for release'
-        required: false
-        type: string
-        default: 'Publish latest changes'
-
       production:
         description: 'Deploy to production?'
         required: true
@@ -55,7 +49,7 @@ jobs:
 
 
   release:
-    name: "Release to Google App Engine (${{ inputs.reason || '<automatic>' }})"
+    name: "Release to Google App Engine"
     needs:
       - validate
       - filter
