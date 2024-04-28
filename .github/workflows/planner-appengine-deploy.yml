@@ -2,21 +2,11 @@ name: "Deploy to Google App Engine"
 
 on:
   pull_request:
-    paths:
-      - 'planner/**'
-      - '.github/workflows/planner-appengine-deploy.yml'
-      - '.github/workflows/planner-appengine-delete.yml'
   push:
     branches:
       - release
   workflow_dispatch:
     inputs:
-
-      reason:
-        description: 'Reason for release'
-        required: false
-        type: string
-        default: 'Publish latest changes'
 
       production:
         description: 'Deploy to production?'
@@ -34,10 +24,43 @@ jobs:
       security-events: write
       actions: read
 
+
+  filter:
+    name: "Detect changes"
+    if: ${{ github.event_name == 'pull_request' }}
+    timeout-minutes: 2
+    permissions:
+      # actions/checkout
+      contents: read
+      # tj-actions/changed-files
+      pull-requests: read
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Find changes to unrelated paths."
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            - 'planner/**'
+            - '.github/workflows/planner-appengine-deploy.yml'
+            - '.github/workflows/planner-appengine-delete.yml'
+
+    outputs:
+      relevant-changes-exist: ${{ steps.changed-files.outputs.any_modified == 'true'}}
+
+
   release:
-    name: "Release to Google App Engine (${{ inputs.reason || '<automatic>' }})"
+    name: "Release to Google App Engine"
     needs:
       - validate
+      - filter
+    if: ${{ always() && needs.validation.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
     timeout-minutes: 10
 
     env:
