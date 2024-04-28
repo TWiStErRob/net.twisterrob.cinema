@@ -38,8 +38,6 @@ jobs:
     steps:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: "Find changes to unrelated paths."
         id: changed-files
