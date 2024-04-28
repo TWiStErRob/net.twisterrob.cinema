@@ -4,8 +4,8 @@ on:
   pull_request:
     paths:
       - 'planner/**'
-      - '.github/workflows/Deploy to Google App Engine.yml'
-      - '.github/workflows/Delete from Google App Engine.yml'
+      - '.github/workflows/planner-appengine-deploy.yml'
+      - '.github/workflows/planner-appengine-delete.yml'
   push:
     branches:
       - release
