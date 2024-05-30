@@ -24,6 +24,11 @@ jobs:
           java-version-file: map/.java-version
           distribution: temurin
 
+      - uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true # Continue execution, set to false to block exactly at this step.
+          limit-access-to-actor: false # otherwise SSH public key error would show.
+
       - name: "Run map.main.kts."
         working-directory: map
         shell: bash
