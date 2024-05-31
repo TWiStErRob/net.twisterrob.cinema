@@ -48,23 +48,21 @@ import java.time.format.FormatStyle
 
 data class CinemasResponse(
 	val body: CinemasBody,
-) {
+)
 
-	data class CinemasBody(
-		val cinemas: List<Cinema>,
-	) {
+data class CinemasBody(
+	val cinemas: List<Cinema>,
+)
 
-		data class Cinema(
-			val id: String,
-			val groupId: String,
-			val displayName: String,
-			val link: URI,
-			val address: String,
-			val latitude: Double,
-			val longitude: Double,
-		)
-	}
-}
+data class Cinema(
+	val id: String,
+	val groupId: String,
+	val displayName: String,
+	val link: URI,
+	val address: String,
+	val latitude: Double,
+	val longitude: Double,
+)
 
 fun ObjectMapper.cineworldConfig() {
 	configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -91,12 +89,12 @@ fun initJAXB() {
 }
 //</editor-fold>
 
-fun loadFile(): List<CinemasResponse.CinemasBody.Cinema> {
+fun loadFile(): List<Cinema> {
 	val client = jacksonObjectMapper().apply { cineworldConfig() }.reader()
 	return client.readValue(File("cinemas.json"), CinemasResponse::class.java).body.cinemas
 }
 
-fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
+fun loadNetwork(now: LocalDate): List<Cinema> {
 	val client = HttpClient {
 		install(ContentNegotiation) {
 			jackson {
@@ -106,7 +104,7 @@ fun loadNetwork(now: LocalDate): List<CinemasResponse.CinemasBody.Cinema> {
 		expectSuccess = true
 	}
 
-	fun cinemas(url: String): List<CinemasResponse.CinemasBody.Cinema> {
+	fun cinemas(url: String): List<Cinema> {
 		println("Loading... ${url}")
 		return runBlocking { client.get(url).body<CinemasResponse>().body.cinemas }
 	}
