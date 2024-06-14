@@ -4,6 +4,7 @@
 /*/*/build/
 /gradle/*/build/
 .gradle/
+.kotlin/
 
 # Logging configurations
 /*/src/main/resources/log4j2.xml
