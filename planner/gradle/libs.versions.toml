@@ -30,7 +30,7 @@ appengine = "2.8.0"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "5.20.0"
+neo4j = "5.21.0"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
 neo4j-java = "5.22.0"
