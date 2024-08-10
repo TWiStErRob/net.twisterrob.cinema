@@ -41,7 +41,7 @@ neo4j-ogm = "4.0.10"
 jackson = "2.17.2"
 jackson-databind = "2.17.2"
 
-slf4j = "2.0.15"
+slf4j = "2.0.16"
 log4j = "2.23.1"
 
 test-junit-vintage = "4.13.2"
