@@ -1,8 +1,3 @@
-@file:Suppress(
-	"UnusedImport", // TODEL // https://youtrack.jetbrains.com/issue/KT-60939
-	"UnusedImports", // TODEL https://github.com/detekt/detekt/issues/6363
-)
-
 package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.AbstractAssert
@@ -14,7 +9,6 @@ import org.assertj.core.api.BooleanAssert
 import org.assertj.core.api.ListAssert
 import org.assertj.core.api.StringAssert
 import org.assertj.core.util.CheckReturnValue
-import org.checkerframework.checker.units.qual.A
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
@@ -78,8 +72,11 @@ class WebElementAssert(
 		extracting({ it.findElement(locator) }, ::WebElementAssert as AssertFactory<WebElement, WebElementAssert>)
 
 	@CheckReturnValue // TODO WebElementListAssert? if actually used.
-	fun descendants(locator: By): ListAssert<WebElement> =
-		extracting({ it.findElements(locator) }, ::ListAssert)
+	fun descendants(locator: By): ListAssert<WebElement> {
+		// TODEL Inline variable when https://youtrack.jetbrains.com/issue/KT-71228 is fixed.
+		val function = { e: WebElement -> e.findElements(locator) }
+		return extracting(function, ::ListAssert)
+	}
 
 	private fun <A : AbstractAssert<A, *>> A.asProp(name: String): A = apply {
 		describedAs(info, "%s.${name}", this@WebElementAssert.actual)

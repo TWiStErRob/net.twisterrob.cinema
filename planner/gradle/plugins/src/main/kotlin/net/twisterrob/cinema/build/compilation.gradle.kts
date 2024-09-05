@@ -26,5 +26,3 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		freeCompilerArgs.add("-Xsuppress-version-warnings")
 	}
 }
-
-net.twisterrob.cinema.build.compilation.workaroundKT63165(project)
