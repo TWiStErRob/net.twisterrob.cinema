@@ -78,8 +78,11 @@ class WebElementAssert(
 		extracting({ it.findElement(locator) }, ::WebElementAssert as AssertFactory<WebElement, WebElementAssert>)
 
 	@CheckReturnValue // TODO WebElementListAssert? if actually used.
-	fun descendants(locator: By): ListAssert<WebElement> =
-		extracting({ it.findElements(locator) }, ::ListAssert)
+	fun descendants(locator: By): ListAssert<WebElement> {
+		// TODEL Inline variable when https://youtrack.jetbrains.com/issue/KT-71228 is fixed.
+		val function = { e: WebElement -> e.findElements(locator) }
+		return extracting(function, ::ListAssert)
+	}
 
 	private fun <A : AbstractAssert<A, *>> A.asProp(name: String): A = apply {
 		describedAs(info, "%s.${name}", this@WebElementAssert.actual)
