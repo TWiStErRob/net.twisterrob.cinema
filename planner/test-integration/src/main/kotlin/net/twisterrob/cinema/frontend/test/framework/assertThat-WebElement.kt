@@ -1,8 +1,3 @@
-@file:Suppress(
-	"UnusedImport", // TODEL // https://youtrack.jetbrains.com/issue/KT-60939
-	"UnusedImports", // TODEL https://github.com/detekt/detekt/issues/6363
-)
-
 package net.twisterrob.cinema.frontend.test.framework
 
 import org.assertj.core.api.AbstractAssert
@@ -14,7 +9,6 @@ import org.assertj.core.api.BooleanAssert
 import org.assertj.core.api.ListAssert
 import org.assertj.core.api.StringAssert
 import org.assertj.core.util.CheckReturnValue
-import org.checkerframework.checker.units.qual.A
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
