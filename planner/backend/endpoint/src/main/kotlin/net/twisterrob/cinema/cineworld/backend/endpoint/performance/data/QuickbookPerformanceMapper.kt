@@ -13,15 +13,15 @@ import javax.inject.Inject
 class QuickbookPerformanceMapper @Inject constructor() {
 
 	fun map(date: LocalDate, cinema: Long, film: Long, qbPerformances: List<QuickbookPerformance>): Performances {
-		val performances: List<Performances.Performance> = qbPerformances.map {
+		val performances: List<Performances.Performance> = qbPerformances.map { performance ->
 			Performances.Performance(
-				time = getOffsetTime(date, it.time),
-				isAvailable = it.isAvailable,
-				bookingUrl = it.bookingUrl,
-				type = it.type,
-				isAudioDescribed = it.isAudioDescribed,
-				isSuperScreen = it.isSuperScreen,
-				isSubtitled = it.isSubtitled
+				time = getOffsetTime(date, performance.time),
+				isAvailable = performance.isAvailable,
+				bookingUrl = performance.bookingUrl,
+				type = performance.type,
+				isAudioDescribed = performance.isAudioDescribed,
+				isSuperScreen = performance.isSuperScreen,
+				isSubtitled = performance.isSubtitled
 			)
 		}
 		val utcMidnight = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC))

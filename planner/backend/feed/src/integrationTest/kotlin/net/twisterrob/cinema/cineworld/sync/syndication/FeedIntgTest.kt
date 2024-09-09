@@ -59,6 +59,7 @@ class FeedIntgTest {
 			performances = listOf(fixtPerformance),
 		)
 		val serialized = feedMapper().writeValueAsString(fixtFeed)
+
 		@Language("xml")
 		val expected = """
 			<feed>
@@ -122,10 +123,10 @@ class FeedIntgTest {
 		val serialized = feedMapper().writeValueAsString(fixtFeed)
 		val feed = feedMapper().readValue<Feed>(serialized)
 		val expected = fixtFeed.copy(
-			_performances = fixtFeed.performances.map {
-				it.copy(
+			_performances = fixtFeed.performances.map { performance ->
+				performance.copy(
 					// If test is executed in a different timezone or during DST, it fails.
-					date = it.date.withOffsetSameInstant(ZoneOffset.UTC)
+					date = performance.date.withOffsetSameInstant(ZoneOffset.UTC)
 				)
 			}
 		)

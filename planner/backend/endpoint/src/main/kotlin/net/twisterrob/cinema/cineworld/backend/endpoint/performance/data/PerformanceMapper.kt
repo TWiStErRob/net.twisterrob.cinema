@@ -24,11 +24,11 @@ class PerformanceMapper @Inject constructor() {
 			date = date.atTime(OffsetTime.of(LocalTime.MIDNIGHT, ZoneOffset.UTC)),
 			cinema = cinema.cineworldID,
 			film = film.edi,
-			performances = performances.map {
+			performances = performances.map { performance ->
 				Performances.Performance(
-					time = it.time.toOffsetDateTime(),
+					time = performance.time.toOffsetDateTime(),
 					isAvailable = true,
-					bookingUrl = it.booking_url,
+					bookingUrl = performance.booking_url,
 					type = "reg",
 					isAudioDescribed = false,
 					isSuperScreen = false,

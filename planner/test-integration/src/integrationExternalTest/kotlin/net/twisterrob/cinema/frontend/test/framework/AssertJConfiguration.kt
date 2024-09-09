@@ -8,8 +8,8 @@ class AssertJConfiguration : Configuration() {
 	init {
 		setPreferredAssumptionException(PreferredAssumptionException.JUNIT5)
 		setPrintAssertionsDescriptionEnabled(true)
-		registerFormatterForType<org.openqa.selenium.WebElement> {
-			"selenium.WebElement(${it})"
+		registerFormatterForType<org.openqa.selenium.WebElement> { element ->
+			"selenium.WebElement(${element})"
 				// See org.openqa.selenium.remote.RemoteWebDriver.toString.
 				.replace(
 					Regex("""\[ChromeDriver: chrome on .*? \((.*?)\)] ->"""),
