@@ -45,12 +45,12 @@ private class LevelLogger(
 			log.debug("Network call: $url", NetworkCall(url).apply {
 				stackTrace = stackTrace
 					.drop(1)
-					.filterNot {
-						it.className.startsWith("io.ktor.")
-								|| it.className.startsWith("kotlinx.coroutines.")
-								|| it.className.startsWith("io.netty.")
-								|| it.className.startsWith("kotlin.coroutines.")
-								|| it.className.startsWith("java.")
+					.filterNot { element ->
+						element.className.startsWith("io.ktor.")
+								|| element.className.startsWith("kotlinx.coroutines.")
+								|| element.className.startsWith("io.netty.")
+								|| element.className.startsWith("kotlin.coroutines.")
+								|| element.className.startsWith("java.")
 					}
 					.toTypedArray()
 			})
