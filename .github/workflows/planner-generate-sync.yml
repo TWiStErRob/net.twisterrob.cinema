@@ -19,7 +19,7 @@ jobs:
       HISTORY_REPO: TWiStErRob/net.twisterrob.cinema.history
       HISTORY_DIR: planner/backend/sync/build/sync
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
