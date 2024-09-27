@@ -33,7 +33,7 @@ jobs:
       # actions/checkout
       contents: read
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -90,7 +90,7 @@ jobs:
       # actions/checkout
       contents: read
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -141,7 +141,7 @@ jobs:
 
     permissions: {} # Not interacting with GitHub other than artifacts.
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -303,7 +303,7 @@ jobs:
       # rest.repos.createCommitStatus
       statuses: write
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
