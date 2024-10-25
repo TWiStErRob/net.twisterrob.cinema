@@ -99,7 +99,7 @@ class AuthIntgTest {
 	fun `login redirects to google`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val response = client.get("/login")
+		val response = noRedirectClient.get("/login")
 
 		response.assertRedirect("/auth/google")
 	}
@@ -113,7 +113,7 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 
-		val response = client.get("/logout") { sendTestAuth() }
+		val response = noRedirectClient.get("/logout") { sendTestAuth() }
 
 		assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
 		response.assertRedirect("/")
@@ -129,7 +129,7 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 
-		val response = client.get("/auth/google") { sendTestAuth() }
+		val response = noRedirectClient.get("/auth/google") { sendTestAuth() }
 
 		response.assertRedirect("/")
 		verify(mockRepository).findUser(realisticUserId)
@@ -198,7 +198,7 @@ class AuthIntgTest {
 	fun `authorizing new session with Google redirects to google-return`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val response = client.get("/auth/google")
+		val response = noRedirectClient.get("/auth/google")
 
 		response.assertRedirect("/auth/google/return")
 	}
@@ -241,6 +241,11 @@ private interface AuthIntgTestComponent : ApplicationComponent {
 	}
 }
 
+private val ClientProvider.noRedirectClient: HttpClient
+	get() = this.createClient {
+		followRedirects = false
+	}
+
 private fun fakeClient(
 	stubClient: HttpClient,
 	@Suppress("SameParameterValue") fakeClientId: String,
@@ -281,7 +286,7 @@ private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	host: String,
 	relativeUri: String
 ): String {
-	val response = client.get {
+	val response = noRedirectClient.get {
 		url("${relativeUri}?state=${state}&code=fake_code")
 		header(HttpHeaders.Host, host)
 	}
