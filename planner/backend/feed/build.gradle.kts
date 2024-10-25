@@ -44,6 +44,7 @@ dependencies {
 	testRuntimeOnly(libs.ktor.client.engine.okhttp)
 
 	testFixturesImplementation(libs.test.junit.jupiter)
+	integrationTestImplementation(testFixtures(projects.backend.endpoint))
 
 	Deps.slf4jToLog4jForTest(project)
 }
