@@ -4,13 +4,15 @@ import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
-import io.ktor.http.HttpMethod
+import io.ktor.client.request.get
+import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.handleRequestAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.sendTestAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.Film
@@ -55,15 +57,14 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilms(any(), any())).thenReturn(fixtFilms)
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/film?cinemaIDs=123&cinemaIDs=456&date=20190530"
+		val response = client.get {
+			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
 		}
 
 		verify(mockRepository).getFilms(queryDate, queryCinemaIDs)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -71,7 +72,7 @@ class FilmsIntgTest {
 					${serialized(fixtFilms[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
@@ -85,15 +86,15 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilmsAuth(any(), any(), any())).thenReturn(fixtFilms)
 
-		val call = handleRequestAuth {
-			method = HttpMethod.Get
-			uri = "/film?cinemaIDs=123&cinemaIDs=456&date=20190530"
+		val response = client.get {
+			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
+			sendTestAuth()
 		}
 
 		verify(mockRepository).getFilmsAuth(fixtUser.id, queryDate, queryCinemaIDs)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -101,7 +102,7 @@ class FilmsIntgTest {
 					${serialized(fixtFilms[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
@@ -113,13 +114,15 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(fixtFilm)
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/film/${fixtEdi}" }
+		val response =  client.get {
+			url("/film/${fixtEdi}")
+		}
 
 		verify(mockRepository).getFilm(fixtEdi)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		JSONAssert.assertEquals(serialized(fixtFilm), call.response.content, JSONCompareMode.STRICT)
+		assertEquals(HttpStatusCode.OK, response.status)
+		JSONAssert.assertEquals(serialized(fixtFilm), response.bodyAsText(), JSONCompareMode.STRICT)
 	}
 
 	/** @see Films.Routes.GetFilm */
@@ -127,16 +130,18 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(null)
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/film/${fixtEdi}" }
+		val response = client.get {
+			url("/film/${fixtEdi}")
+		}
 
 		verify(mockRepository).getFilm(fixtEdi)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
-		assertEquals("Film with EDI #${fixtEdi} is not found.", call.response.content)
+		assertEquals(HttpStatusCode.NotFound, response.status)
+		assertEquals("Film with EDI #${fixtEdi} is not found.", response.bodyAsText())
 	}
 
-	private fun filmsEndpointTest(test: TestApplicationEngine.() -> Unit) {
+	private fun filmsEndpointTest(test: suspend ClientProvider.() -> Unit) {
 		endpointTest(
 			test = test,
 			daggerApp = {

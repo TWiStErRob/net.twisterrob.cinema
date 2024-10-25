@@ -4,9 +4,11 @@ import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
-import io.ktor.http.HttpMethod
+import io.ktor.client.request.get
+import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
@@ -52,15 +54,14 @@ class PerformancesIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.list(any(), any(), any())).thenReturn(fixtPerformances)
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/performance?cinemaIDs=123&cinemaIDs=456&date=20190530&filmEDIs=234&filmEDIs=789"
+		val response = client.get {
+			url("/performance?cinemaIDs=123&cinemaIDs=456&date=20190530&filmEDIs=234&filmEDIs=789")
 		}
 
 		verify(mockRepository).list(queryDate, queryFilmIDs, queryCinemaIDs)
 		verifyNoMoreInteractions(mockRepository)
 
-		Assertions.assertEquals(HttpStatusCode.OK, call.response.status())
+		Assertions.assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -68,12 +69,12 @@ class PerformancesIntgTest {
 					${serialized(fixtPerformances[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
 
-	private fun performancesEndpointTest(test: TestApplicationEngine.() -> Unit) {
+	private fun performancesEndpointTest(test: suspend ClientProvider.() -> Unit) {
 		endpointTest(
 			test = test,
 			daggerApp = {

@@ -1,7 +1,8 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,10 +20,10 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/" }
+		val response = client.get("/")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("fake index", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("fake index", response.bodyAsText())
 	}
 
 	@Test fun `index is directly accessible`(@TempDir tempDir: File) = endpointTest(
@@ -30,10 +31,10 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/index.html" }
+		val response = client.get("/index.html")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("fake index", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("fake index", response.bodyAsText())
 	}
 
 	@Test fun `other files are directly accessible`(@TempDir tempDir: File) = endpointTest(
@@ -41,10 +42,10 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("other.file").writeText("fake content")
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/other.file" }
+		val response = client.get("/other.file")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("fake content", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("fake content", response.bodyAsText())
 	}
 
 	@Test fun `other files in subfolders are directly accessible`(@TempDir tempDir: File) = endpointTest(
@@ -52,10 +53,10 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("sub/folder/other.file").ensureParent().writeText("fake content")
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/sub/folder/other.file" }
+		val response = client.get("/sub/folder/other.file")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("fake content", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("fake content", response.bodyAsText())
 	}
 
 	@Test fun `planner serves index html`(@TempDir tempDir: File) = endpointTest(
@@ -63,19 +64,19 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("planner/index.html").ensureParent().writeText("fake index")
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/planner" }
+		val response = client.get("/planner")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("fake index", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("fake index", response.bodyAsText())
 	}
 
 	@Test fun `favicon is served from Cineworld`() = endpointTest {
-		val call = handleRequest { method = HttpMethod.Get; uri = "/favicon.ico" }
+		val response = client.get("/favicon.ico")
 
-		assertEquals(HttpStatusCode.Found, call.response.status())
+		assertEquals(HttpStatusCode.Found, response.status)
 		assertEquals(
 			"https://www.google.com/s2/favicons?domain=www.cineworld.co.uk",
-			call.response.headers[HttpHeaders.Location]
+			response.headers[HttpHeaders.Location]
 		)
 	}
 }

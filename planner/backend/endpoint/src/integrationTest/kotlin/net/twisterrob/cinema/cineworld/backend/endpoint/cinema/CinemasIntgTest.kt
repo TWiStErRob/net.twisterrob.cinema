@@ -4,13 +4,17 @@ import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
-import io.ktor.http.HttpMethod
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.handleRequestAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.sendTestAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.Cinema
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
@@ -49,12 +53,14 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getActiveCinemas()).thenReturn(fixtCinemas)
 
-		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema" }
+		val response = client.get {
+			url("/cinema")
+		}
 
 		verify(mockRepository).getActiveCinemas()
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -62,7 +68,7 @@ class CinemasIntgTest {
 					${serialized(fixtCinemas[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
@@ -73,12 +79,15 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getCinemasAuth(fixtUser.id)).thenReturn(fixtCinemas)
 
-		val call = handleRequestAuth { method = HttpMethod.Get; uri = "/cinema" }
+		val response = client.get {
+			url("/cinema")
+			sendTestAuth()
+		}
 
 		verify(mockRepository).getCinemasAuth(fixtUser.id)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -86,17 +95,19 @@ class CinemasIntgTest {
 					${serialized(fixtCinemas[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
 
 	/** @see Cinemas.Routes.ListFavoriteCinemas */
 	@Test fun `list all favorite cinemas (unauthenticated)`() = cinemasEndpointTest {
-		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema/favs" }
+		val response = client.get {
+			url("/cinema/favs")
+		}
 
 		verifyNoInteractions(mockRepository)
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
+		assertEquals(HttpStatusCode.NotFound, response.status)
 	}
 
 	/** @see Cinemas.Routes.ListFavoriteCinemas */
@@ -105,12 +116,15 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getFavoriteCinemas(fixtUser.id)).thenReturn(fixtCinemas)
 
-		val call = handleRequestAuth { method = HttpMethod.Get; uri = "/cinema/favs" }
+		val response = client.get {
+			url("/cinema/favs")
+			sendTestAuth()
+		}
 
 		verify(mockRepository).getFavoriteCinemas(fixtUser.id)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				[
@@ -118,17 +132,19 @@ class CinemasIntgTest {
 					${serialized(fixtCinemas[1])}
 				]
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
 
 	/** @see Cinemas.Routes.AddFavorite */
 	@Test fun `add cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
-		val call = handleRequest { method = HttpMethod.Put; uri = "/cinema/123/favorite" }
+		val response = client.put {
+			url("/cinema/123/favorite")
+		}
 
 		verifyNoInteractions(mockRepository)
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
+		assertEquals(HttpStatusCode.NotFound, response.status)
 	}
 
 	/** @see Cinemas.Routes.AddFavorite */
@@ -137,21 +153,26 @@ class CinemasIntgTest {
 		val fixtCinema: Cinema = fixture.build()
 		whenever(mockRepository.addFavorite(fixtUser.id, 123)).thenReturn(fixtCinema)
 
-		val call = handleRequestAuth { method = HttpMethod.Put; uri = "/cinema/123/favorite" }
+		val response = client.put {
+			url("/cinema/123/favorite")
+			sendTestAuth()
+		}
 
 		verify(mockRepository).addFavorite(fixtUser.id, 123)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		JSONAssert.assertEquals(serialized(fixtCinema), call.response.content, JSONCompareMode.STRICT)
+		assertEquals(HttpStatusCode.OK, response.status)
+		JSONAssert.assertEquals(serialized(fixtCinema), response.bodyAsText(), JSONCompareMode.STRICT)
 	}
 
 	/** @see Cinemas.Routes.RemoveFavorite */
 	@Test fun `remove cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
-		val call = handleRequest { method = HttpMethod.Delete; uri = "/cinema/123/favorite" }
+		val response = client.delete {
+			url("/cinema/123/favorite")
+		}
 
 		verifyNoInteractions(mockRepository)
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
+		assertEquals(HttpStatusCode.NotFound, response.status)
 	}
 
 	/** @see Cinemas.Routes.RemoveFavorite */
@@ -160,16 +181,19 @@ class CinemasIntgTest {
 		val fixtCinema: Cinema = fixture.build()
 		whenever(mockRepository.removeFavorite(fixtUser.id, 123)).thenReturn(fixtCinema)
 
-		val call = handleRequestAuth { method = HttpMethod.Delete; uri = "/cinema/123/favorite" }
+		val response = client.delete {
+			url("/cinema/123/favorite")
+			sendTestAuth()
+		}
 
 		verify(mockRepository).removeFavorite(fixtUser.id, 123)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		JSONAssert.assertEquals(serialized(fixtCinema), call.response.content, JSONCompareMode.STRICT)
+		assertEquals(HttpStatusCode.OK, response.status)
+		JSONAssert.assertEquals(serialized(fixtCinema), response.bodyAsText(), JSONCompareMode.STRICT)
 	}
 
-	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
+	private fun cinemasEndpointTest(test: suspend ClientProvider.() -> Unit) {
 		endpointTest(
 			test = test,
 			daggerApp = {

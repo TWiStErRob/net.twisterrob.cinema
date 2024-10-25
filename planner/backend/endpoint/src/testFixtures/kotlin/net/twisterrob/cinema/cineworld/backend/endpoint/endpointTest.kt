@@ -4,9 +4,10 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.config.MapApplicationConfig
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.createTestEnvironment
-import io.ktor.server.testing.withApplication
+import io.ktor.server.testing.ClientProvider
+import io.ktor.server.testing.TestApplication
+import io.ktor.util.logging.KtorSimpleLogger
+import kotlinx.coroutines.runBlocking
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
@@ -25,18 +26,18 @@ fun endpointTest(
 	daggerApp: Application.() -> Unit = { daggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
 	testConfig: Map<String, String> = emptyMap(),
-	test: TestApplicationEngine.() -> Unit
+	test: suspend ClientProvider.() -> Unit
 ) {
-	@Suppress("DEPRECATION") // TODO https://github.com/TWiStErRob/net.twisterrob.cinema/issues/167
-	withApplication(
-		environment = createTestEnvironment {
+	var log: Logger? = null // TODO how to access this?
+	val application = TestApplication {
+		environment {
 			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
 				putIfAbsent("twisterrob.cinema.environment", "test")
 				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
 			}
 			developmentMode = true
-			val originalLog = log
+			val originalLog = KtorSimpleLogger("ktor.test")
 			log = object : Logger by originalLog {
 
 				override fun debug(msg: String?) {
@@ -57,20 +58,24 @@ fun endpointTest(
 				}
 			}
 		}
-	) {
-		application.install(ServerLogging) {
-			logger = application.log
-			level = logLevel
-		}
-		application.apply {
+		application {
+			install(ServerLogging) {
+				logger = this@application.log
+				log = this@application.log
+				level = logLevel
+			}
 			configure()
 			daggerApp()
-			try {
-				log.trace("Endpoint test starting {}", test::class)
-				test()
-			} finally {
-				log.trace("Endpoint test finished {}", test::class)
-			}
+		}
+	}
+	runBlocking { // TODO doesn't seem right
+		application.start()
+		try {
+			log?.trace("Endpoint test starting {}", test::class)
+			application.test()
+		} finally {
+			log?.trace("Endpoint test finished {}", test::class)
+			application.stop()
 		}
 	}
 }
