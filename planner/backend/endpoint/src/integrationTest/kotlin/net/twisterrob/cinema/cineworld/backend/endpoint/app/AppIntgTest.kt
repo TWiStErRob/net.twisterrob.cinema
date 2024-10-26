@@ -4,6 +4,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.noRedirectClient
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -20,7 +21,7 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
-		val response = client.get("/")
+		val response = noRedirectClient.get("/")
 
 		assertEquals(HttpStatusCode.OK, response.status)
 		assertEquals("fake index", response.bodyAsText())
@@ -31,7 +32,7 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("index.html").writeText("fake index")
 
-		val response = client.get("/index.html")
+		val response = noRedirectClient.get("/index.html")
 
 		assertEquals(HttpStatusCode.OK, response.status)
 		assertEquals("fake index", response.bodyAsText())
@@ -42,7 +43,7 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("other.file").writeText("fake content")
 
-		val response = client.get("/other.file")
+		val response = noRedirectClient.get("/other.file")
 
 		assertEquals(HttpStatusCode.OK, response.status)
 		assertEquals("fake content", response.bodyAsText())
@@ -53,7 +54,7 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("sub/folder/other.file").ensureParent().writeText("fake content")
 
-		val response = client.get("/sub/folder/other.file")
+		val response = noRedirectClient.get("/sub/folder/other.file")
 
 		assertEquals(HttpStatusCode.OK, response.status)
 		assertEquals("fake content", response.bodyAsText())
@@ -64,14 +65,14 @@ class AppIntgTest {
 	) {
 		tempDir.resolve("planner/index.html").ensureParent().writeText("fake index")
 
-		val response = client.get("/planner")
+		val response = noRedirectClient.get("/planner")
 
 		assertEquals(HttpStatusCode.OK, response.status)
 		assertEquals("fake index", response.bodyAsText())
 	}
 
 	@Test fun `favicon is served from Cineworld`() = endpointTest {
-		val response = client.get("/favicon.ico")
+		val response = noRedirectClient.get("/favicon.ico")
 
 		assertEquals(HttpStatusCode.Found, response.status)
 		assertEquals(

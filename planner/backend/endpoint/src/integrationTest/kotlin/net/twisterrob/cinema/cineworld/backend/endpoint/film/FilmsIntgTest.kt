@@ -12,6 +12,7 @@ import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.noRedirectClient
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.sendTestAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
@@ -57,7 +58,7 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilms(any(), any())).thenReturn(fixtFilms)
 
-		val response = client.get {
+		val response = noRedirectClient.get {
 			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
 		}
 
@@ -86,7 +87,7 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilmsAuth(any(), any(), any())).thenReturn(fixtFilms)
 
-		val response = client.get {
+		val response = noRedirectClient.get {
 			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
 			sendTestAuth()
 		}
@@ -114,7 +115,7 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(fixtFilm)
 
-		val response =  client.get {
+		val response =  noRedirectClient.get {
 			url("/film/${fixtEdi}")
 		}
 
@@ -130,7 +131,7 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(null)
 
-		val response = client.get {
+		val response = noRedirectClient.get {
 			url("/film/${fixtEdi}")
 		}
 

@@ -19,6 +19,7 @@ import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.noRedirectClient
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.sendTestAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.serialized
@@ -71,7 +72,7 @@ class ViewsIntgTest {
 
 	/** @see Views.Routes.AddView */
 	@Test fun `add a view (unauthenticated)`() = viewEndpointTest(posts = true) {
-		val response = client.post {
+		val response = noRedirectClient.post {
 			url("/film/123/view")
 		}
 
@@ -88,7 +89,7 @@ class ViewsIntgTest {
 		whenever(mockRepository.addView(any(), any(), any(), any())).thenReturn(fixtView)
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val response = client.post {
+		val response = noRedirectClient.post {
 			url("/film/123/view")
 			sendTestAuth()
 			header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -120,7 +121,7 @@ class ViewsIntgTest {
 	@Test fun `remove a view (unauthenticated)`() = viewEndpointTest {
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val response = client.delete {
+		val response = noRedirectClient.delete {
 			url("/film/123/view?cinema=789&date=${fixtDate.toInstant().toEpochMilli()}")
 		}
 
@@ -135,7 +136,7 @@ class ViewsIntgTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val response = client.delete {
+		val response = noRedirectClient.delete {
 			url("/film/123/view?cinema=456&date=${fixtDate.toInstant().toEpochMilli()}")
 			sendTestAuth()
 		}
@@ -149,7 +150,7 @@ class ViewsIntgTest {
 
 	/** @see Views.Routes.IgnoreView */
 	@Test fun `ignore a view (unauthenticated)`() = viewEndpointTest {
-		val response = client.put {
+		val response = noRedirectClient.put {
 			url("/film/123/ignore?reason=${fixture.build<String>()}")
 		}
 
@@ -166,7 +167,7 @@ class ViewsIntgTest {
 		val fixtIgnore: IgnoreResponse = fixture.build()
 		whenever(mockRepository.ignoreView(any(), any(), any())).thenReturn(fixtIgnore)
 
-		val response = client.put {
+		val response = noRedirectClient.put {
 			url("/film/123/ignore?reason=${fixtReason}")
 			sendTestAuth()
 		}

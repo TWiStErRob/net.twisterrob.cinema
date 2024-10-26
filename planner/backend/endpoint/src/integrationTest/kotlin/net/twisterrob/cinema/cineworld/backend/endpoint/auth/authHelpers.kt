@@ -3,9 +3,11 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
 import com.flextrade.jfixture.JFixture
+import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
@@ -50,3 +52,8 @@ fun AuthRepository.setupAuth(): User {
 fun HttpRequestBuilder.sendTestAuth() {
 	header(HttpHeaders.Cookie, AuthTestConstants.realisticCookie)
 }
+
+val ClientProvider.noRedirectClient: HttpClient
+	get() = this.createClient {
+		followRedirects = false
+	}

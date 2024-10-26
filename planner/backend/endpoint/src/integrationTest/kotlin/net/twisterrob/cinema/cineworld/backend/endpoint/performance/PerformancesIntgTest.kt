@@ -12,6 +12,7 @@ import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.noRedirectClient
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.PerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.Performances.Performance
@@ -54,7 +55,7 @@ class PerformancesIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.list(any(), any(), any())).thenReturn(fixtPerformances)
 
-		val response = client.get {
+		val response = noRedirectClient.get {
 			url("/performance?cinemaIDs=123&cinemaIDs=456&date=20190530&filmEDIs=234&filmEDIs=789")
 		}
 

@@ -245,11 +245,6 @@ private interface AuthIntgTestComponent : ApplicationComponent {
 	}
 }
 
-private val ClientProvider.noRedirectClient: HttpClient
-	get() = this.createClient {
-		followRedirects = false
-	}
-
 private fun fakeClient(
 	stubClient: HttpClient,
 	@Suppress("SameParameterValue") fakeClientId: String,
