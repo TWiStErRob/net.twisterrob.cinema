@@ -5,7 +5,6 @@ import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ClientProvider
-import io.ktor.server.testing.ExternalServicesBuilder
 import io.ktor.server.testing.TestApplication
 import io.ktor.util.logging.KtorSimpleLogger
 import kotlinx.coroutines.runBlocking
@@ -26,13 +25,11 @@ fun endpointTest(
 	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { daggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
-	externalServices: ExternalServicesBuilder.() -> Unit = {},
 	testConfig: Map<String, String> = emptyMap(),
 	test: suspend ClientProvider.() -> Unit
 ) {
 	var log: Logger? = null // TODO how to access this?
 	val application = TestApplication {
-		externalServices(externalServices)
 		environment {
 			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
 				putIfAbsent("twisterrob.cinema.environment", "test")

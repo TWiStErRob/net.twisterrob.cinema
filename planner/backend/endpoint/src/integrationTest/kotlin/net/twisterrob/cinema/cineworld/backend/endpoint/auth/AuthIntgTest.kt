@@ -15,13 +15,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
+import io.ktor.http.Url
 import io.ktor.http.headersOf
 import io.ktor.http.setCookie
 import io.ktor.server.application.Application
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthTestConstants.realisticUserId
@@ -74,21 +71,10 @@ class AuthIntgTest {
 		val fakeEmail = "fake@google.email"
 		val fakeName = "Fake Google Name"
 
-		val stubClient = HttpClient(mockEngine()) {
-			followRedirects = false
-		}
+		val stubClient = HttpClient(mockEngine())
 		endpointTest(
 			configure = fakeClient(stubClient, fakeClientId, fakeClientSecret),
 			daggerApp = createAppForAuthIntgTest(stubClient),
-			externalServices = {
-				hosts("https://accounts.google.com") {
-					routing {
-						get("/o/oauth2/auth") {
-							call.respond(HttpStatusCode.OK, "")
-						}
-					}
-				}
-			}
 		) {
 			// Start the authorization flow.
 			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeClientId)
@@ -160,7 +146,7 @@ class AuthIntgTest {
 	fun `account page shows no user without session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val response = client.get("/account")
+		val response = noRedirectClient.get("/account")
 
 		assertEquals("no user", response.bodyAsText())
 	}
@@ -174,7 +160,7 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenThrow(UnknownUserException("fake error"))
 
-		val response = client.get("/account") {
+		val response = noRedirectClient.get("/account") {
 			sendTestAuth()
 		}
 
@@ -193,7 +179,7 @@ class AuthIntgTest {
 		val user: User = JFixture().build()
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(user)
 
-		val response = client.get("/account") { sendTestAuth() }
+		val response = noRedirectClient.get("/account") { sendTestAuth() }
 
 		JSONAssert.assertEquals(
 			"""
@@ -279,12 +265,11 @@ private fun fakeClient(
 }
 
 private suspend fun ClientProvider.authorizeWithGoogle(host: String, relativeUri: String, clientId: String): String {
-	val response = client.get(relativeUri) {
+	val response = noRedirectClient.get(relativeUri) {
 		header(HttpHeaders.Host, host)
 	}
 
-	val location = response.call.request.url
-	val cleanLocation = URLBuilder(location).apply { parameters["state"] = "____" }.build()
+	val location = Url(response.headers[HttpHeaders.Location].orEmpty())
 	assertEquals(
 		"https://accounts.google.com/o/oauth2/auth" +
 				"?client_id=${clientId}" +
@@ -292,9 +277,9 @@ private suspend fun ClientProvider.authorizeWithGoogle(host: String, relativeUri
 				"&scope=openid+email+profile" +
 				"&state=____" +
 				"&response_type=code",
-		cleanLocation.toString()
+		URLBuilder(location).apply { parameters["state"] = "____" }.build().toString()
 	)
-	response.assertStatus(HttpStatusCode.OK)
+	response.assertStatus(HttpStatusCode.Found)
 	return location.parameters["state"]!!
 }
 
@@ -310,7 +295,9 @@ private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	}
 
 	response.assertRedirect("/")
-	return response.setCookie().single().value
+	val setCookie = response.setCookie().singleOrNull { it.name == "auth" }
+		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${response.headers[HttpHeaders.SetCookie]}'.")
+	return setCookie.value
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
