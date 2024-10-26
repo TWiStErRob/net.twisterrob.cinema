@@ -15,13 +15,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
-import io.ktor.http.decodeURLPart
 import io.ktor.http.headersOf
+import io.ktor.http.setCookie
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.request.uri
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.ClientProvider
@@ -67,7 +65,6 @@ class AuthIntgTest {
 	@Test
 	fun `successful Google OAuth 2 login`() {
 		val fakeHost = "fake.host.name"
-		val fakeCode = "fake_code"
 		val fakeAccessToken = "fake_access_token"
 		val fakeRefreshToken = "fake_refresh_token"
 		val fakeClientId = "fake_google_client_id"
@@ -87,40 +84,20 @@ class AuthIntgTest {
 				hosts("https://accounts.google.com") {
 					routing {
 						get("/o/oauth2/auth") {
-							val location = call.request.uri
-							assertEquals(
-								/*"https://accounts.google.com" + */ "/o/oauth2/auth" +
-										"?client_id=${fakeClientId}" +
-										"&redirect_uri=http%3A%2F%2F${fakeHost}${fakeRelativeUri.replace("/", "%2F")}" +
-										"&scope=openid+email+profile" +
-										"&state=****" +
-										"&response_type=code",
-								Regex("state=(\\w+)").replace(location, "state=****")
-							)
-							val redirectUri = call.request.queryParameters["redirect_uri"].orEmpty()
-							val state = call.request.queryParameters["state"].orEmpty()
-							call.respondRedirect(URLBuilder(redirectUri).apply {
-								parameters.append("state", state)
-								parameters.append("code", fakeCode)
-							}.build())
-						}
-					}
-				}
-				hosts("http://${fakeHost}") {
-					routing {
-						get(fakeRelativeUri) {
 							call.respond(HttpStatusCode.OK, "")
 						}
 					}
 				}
 			}
 		) {
-			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeCode)
+			// Start the authorization flow.
+			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeClientId)
 			stubClient.verifyNoInteractions()
 			verifyNoInteractions(mockRepository)
 			stubClient.stubGoogleToken(fakeAccessToken, fakeRefreshToken)
 			stubClient.stubGoogleOpenIdUserInfo(fakeUserId, fakeEmail, fakeName)
 
+			// Simulate the client receiving the authorization via redirect_uri from user interaction.
 			val cookie = receiveAuthorizationFromGoogle(state, fakeHost, fakeRelativeUri)
 
 			stubClient.verifyGoogleTokenRequest(fakeHost, fakeRelativeUri, state, fakeClientId, fakeClientSecret)
@@ -301,14 +278,22 @@ private fun fakeClient(
 	)
 }
 
-private suspend fun ClientProvider.authorizeWithGoogle(host: String, relativeUri: String, code: String): String {
-	val response = client.get("/auth/google") {
+private suspend fun ClientProvider.authorizeWithGoogle(host: String, relativeUri: String, clientId: String): String {
+	val response = client.get(relativeUri) {
 		header(HttpHeaders.Host, host)
 	}
 
 	val location = response.call.request.url
 	val cleanLocation = URLBuilder(location).apply { parameters["state"] = "____" }.build()
-	assertEquals("http://${host}${relativeUri}?state=____&code=${code}", cleanLocation.toString())
+	assertEquals(
+		"https://accounts.google.com/o/oauth2/auth" +
+				"?client_id=${clientId}" +
+				"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
+				"&scope=openid+email+profile" +
+				"&state=____" +
+				"&response_type=code",
+		cleanLocation.toString()
+	)
 	response.assertStatus(HttpStatusCode.OK)
 	return location.parameters["state"]!!
 }
@@ -325,10 +310,7 @@ private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	}
 
 	response.assertRedirect("/")
-	val setCookie = response.headers[HttpHeaders.SetCookie]!!
-	val cookieDetails = Regex("auth=(?<value>[^;]+)(;.+)?").find(setCookie)
-		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${setCookie}'.")
-	return cookieDetails.groups["value"]!!.value.decodeURLPart()
+	return response.setCookie().single().value
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
