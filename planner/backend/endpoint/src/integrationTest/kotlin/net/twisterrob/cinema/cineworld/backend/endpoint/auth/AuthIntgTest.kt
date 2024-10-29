@@ -7,7 +7,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.content.TextContent
@@ -160,9 +159,7 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenThrow(UnknownUserException("fake error"))
 
-		val response = noRedirectClient.get("/account") {
-			sendTestAuth()
-		}
+		val response = noRedirectClient.get("/account") { sendTestAuth() }
 
 		assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
 		assertEquals("no user", response.bodyAsText())
@@ -284,8 +281,7 @@ private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	host: String,
 	relativeUri: String
 ): String {
-	val response = noRedirectClient.get {
-		url("${relativeUri}?state=${state}&code=fake_code")
+	val response = noRedirectClient.get("${relativeUri}?state=${state}&code=fake_code") {
 		header(HttpHeaders.Host, host)
 	}
 

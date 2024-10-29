@@ -5,7 +5,6 @@ import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.ClientProvider
@@ -58,9 +57,7 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilms(any(), any())).thenReturn(fixtFilms)
 
-		val response = noRedirectClient.get {
-			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
-		}
+		val response = noRedirectClient.get("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
 
 		verify(mockRepository).getFilms(queryDate, queryCinemaIDs)
 		verifyNoMoreInteractions(mockRepository)
@@ -87,8 +84,7 @@ class FilmsIntgTest {
 		val queryDate = LocalDate.of(2019, Month.MAY, 30)
 		whenever(mockRepository.getFilmsAuth(any(), any(), any())).thenReturn(fixtFilms)
 
-		val response = noRedirectClient.get {
-			url("/film?cinemaIDs=123&cinemaIDs=456&date=20190530")
+		val response = noRedirectClient.get("/film?cinemaIDs=123&cinemaIDs=456&date=20190530") {
 			sendTestAuth()
 		}
 
@@ -115,9 +111,7 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(fixtFilm)
 
-		val response =  noRedirectClient.get {
-			url("/film/${fixtEdi}")
-		}
+		val response = noRedirectClient.get("/film/${fixtEdi}")
 
 		verify(mockRepository).getFilm(fixtEdi)
 		verifyNoMoreInteractions(mockRepository)
@@ -131,9 +125,7 @@ class FilmsIntgTest {
 		val fixtEdi: Long = fixture.build()
 		whenever(mockRepository.getFilm(fixtEdi)).thenReturn(null)
 
-		val response = noRedirectClient.get {
-			url("/film/${fixtEdi}")
-		}
+		val response = noRedirectClient.get("/film/${fixtEdi}")
 
 		verify(mockRepository).getFilm(fixtEdi)
 		verifyNoMoreInteractions(mockRepository)

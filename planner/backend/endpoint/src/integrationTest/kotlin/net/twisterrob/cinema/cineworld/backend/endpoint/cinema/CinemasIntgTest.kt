@@ -7,7 +7,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.put
-import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.ClientProvider
@@ -54,9 +53,7 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getActiveCinemas()).thenReturn(fixtCinemas)
 
-		val response = noRedirectClient.get {
-			url("/cinema")
-		}
+		val response = noRedirectClient.get("/cinema")
 
 		verify(mockRepository).getActiveCinemas()
 		verifyNoMoreInteractions(mockRepository)
@@ -80,10 +77,7 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getCinemasAuth(fixtUser.id)).thenReturn(fixtCinemas)
 
-		val response = noRedirectClient.get {
-			url("/cinema")
-			sendTestAuth()
-		}
+		val response = noRedirectClient.get("/cinema") { sendTestAuth() }
 
 		verify(mockRepository).getCinemasAuth(fixtUser.id)
 		verifyNoMoreInteractions(mockRepository)
@@ -103,9 +97,7 @@ class CinemasIntgTest {
 
 	/** @see Cinemas.Routes.ListFavoriteCinemas */
 	@Test fun `list all favorite cinemas (unauthenticated)`() = cinemasEndpointTest {
-		val response = noRedirectClient.get {
-			url("/cinema/favs")
-		}
+		val response = noRedirectClient.get("/cinema/favs")
 
 		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, response.status)
@@ -117,10 +109,7 @@ class CinemasIntgTest {
 		val fixtCinemas: List<Cinema> = fixture.buildList(size = 2)
 		whenever(mockRepository.getFavoriteCinemas(fixtUser.id)).thenReturn(fixtCinemas)
 
-		val response = noRedirectClient.get {
-			url("/cinema/favs")
-			sendTestAuth()
-		}
+		val response = noRedirectClient.get("/cinema/favs") { sendTestAuth() }
 
 		verify(mockRepository).getFavoriteCinemas(fixtUser.id)
 		verifyNoMoreInteractions(mockRepository)
@@ -140,9 +129,7 @@ class CinemasIntgTest {
 
 	/** @see Cinemas.Routes.AddFavorite */
 	@Test fun `add cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
-		val response = noRedirectClient.put {
-			url("/cinema/123/favorite")
-		}
+		val response = noRedirectClient.put("/cinema/123/favorite")
 
 		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, response.status)
@@ -154,10 +141,7 @@ class CinemasIntgTest {
 		val fixtCinema: Cinema = fixture.build()
 		whenever(mockRepository.addFavorite(fixtUser.id, 123)).thenReturn(fixtCinema)
 
-		val response = noRedirectClient.put {
-			url("/cinema/123/favorite")
-			sendTestAuth()
-		}
+		val response = noRedirectClient.put("/cinema/123/favorite") { sendTestAuth() }
 
 		verify(mockRepository).addFavorite(fixtUser.id, 123)
 		verifyNoMoreInteractions(mockRepository)
@@ -168,9 +152,7 @@ class CinemasIntgTest {
 
 	/** @see Cinemas.Routes.RemoveFavorite */
 	@Test fun `remove cinema as favorite for a user (unauthenticated)`() = cinemasEndpointTest {
-		val response = noRedirectClient.delete {
-			url("/cinema/123/favorite")
-		}
+		val response = noRedirectClient.delete("/cinema/123/favorite")
 
 		verifyNoInteractions(mockRepository)
 		assertEquals(HttpStatusCode.NotFound, response.status)
@@ -182,10 +164,7 @@ class CinemasIntgTest {
 		val fixtCinema: Cinema = fixture.build()
 		whenever(mockRepository.removeFavorite(fixtUser.id, 123)).thenReturn(fixtCinema)
 
-		val response = noRedirectClient.delete {
-			url("/cinema/123/favorite")
-			sendTestAuth()
-		}
+		val response = noRedirectClient.delete("/cinema/123/favorite") { sendTestAuth() }
 
 		verify(mockRepository).removeFavorite(fixtUser.id, 123)
 		verifyNoMoreInteractions(mockRepository)
