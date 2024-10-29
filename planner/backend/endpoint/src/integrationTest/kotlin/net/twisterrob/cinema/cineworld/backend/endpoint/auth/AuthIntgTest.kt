@@ -303,8 +303,9 @@ private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	}
 
 	response.assertRedirect("/")
-	val setCookie = response.setCookie().singleOrNull { it.name == "auth" }
-		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${response.headers[HttpHeaders.SetCookie]}'.")
+	val setCookie = checkNotNull(response.setCookie().singleOrNull { it.name == "auth" }) {
+		"Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${response.headers[HttpHeaders.SetCookie]}'."
+	}
 	return setCookie.value
 }
 
