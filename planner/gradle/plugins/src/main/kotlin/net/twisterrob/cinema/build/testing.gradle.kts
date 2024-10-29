@@ -27,6 +27,17 @@ kotlin.target.compilations.named("testFixtures") {
 @Suppress("UnstableApiUsage")
 testing {
 	suites {
+		withType<JvmTestSuite>().configureEach {
+			targets.configureEach {
+				testTask.configure {
+					jvmArgs(
+						// Reduce occurrences of warning:
+						// > Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+						"-Xshare:off",
+					)
+				}
+			}
+		}
 		withType<JvmTestSuite>().named { it != JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
