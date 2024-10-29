@@ -89,6 +89,15 @@ testing {
 					shouldRunAfter(unitTest, functionalTest)
 				}
 			}
+			configurations.named(sources.runtimeClasspathConfigurationName).configure {
+				// Prevent Neo4J stealing log output:
+				// > SLF4J(W): Class path contains multiple SLF4J providers.
+				// > SLF4J(W): Found provider [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				// > SLF4J(W): Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@541f03d7]
+				// > SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+				// > SLF4J(I): Actual provider is of type [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				exclude("org.neo4j", "neo4j-slf4j-provider")
+			}
 		}
 
 		/**
