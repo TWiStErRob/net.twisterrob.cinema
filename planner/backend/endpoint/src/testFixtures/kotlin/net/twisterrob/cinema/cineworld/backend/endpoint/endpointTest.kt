@@ -12,7 +12,6 @@ import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
-import org.slf4j.Logger
 
 /**
  * @param configure A call to [configuration], but some tests will need to pass in an optional argument.
@@ -28,7 +27,7 @@ fun endpointTest(
 	testConfig: Map<String, String> = emptyMap(),
 	test: suspend ClientProvider.() -> Unit
 ) {
-	var log: Logger? = null // TODO how to access this?
+	val testLog = KtorSimpleLogger("ktor.test")
 	val application = TestApplication {
 		environment {
 			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
@@ -37,31 +36,11 @@ fun endpointTest(
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
 			}
 			developmentMode = true
-			val originalLog = KtorSimpleLogger("ktor.test")
-			log = object : Logger by originalLog {
-
-				override fun debug(msg: String?) {
-					@Suppress("UseIfInsteadOfWhen")
-					when {
-						// Don't show very long classpath on test startup.
-						msg?.startsWith("Class Loader: ") == true -> Unit
-						else -> originalLog.debug(msg)
-					}
-				}
-
-				override fun info(msg: String?) {
-					@Suppress("UseIfInsteadOfWhen")
-					when (msg) {
-						"No ktor.deployment.watch patterns specified, automatic reload is not active" -> Unit
-						else -> originalLog.info(msg)
-					}
-				}
-			}
+			log = testLog
 		}
 		application {
 			install(ServerLogging) {
 				logger = this@application.log
-				log = this@application.log
 				level = logLevel
 			}
 			configure()
@@ -71,10 +50,10 @@ fun endpointTest(
 	runBlocking(application.client.engine.coroutineContext) {
 		application.start()
 		try {
-			log?.trace("Endpoint test starting {}", test::class)
+			testLog.trace("Endpoint test starting {}", test::class)
 			application.test()
 		} finally {
-			log?.trace("Endpoint test finished {}", test::class)
+			testLog.trace("Endpoint test finished {}", test::class)
 			application.stop()
 		}
 	}
