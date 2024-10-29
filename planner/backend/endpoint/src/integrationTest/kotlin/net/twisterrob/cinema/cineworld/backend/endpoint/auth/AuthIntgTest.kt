@@ -34,6 +34,10 @@ import net.twisterrob.test.verify
 import net.twisterrob.test.verifyNoInteractions
 import net.twisterrob.test.verifyNoMoreInteractions
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -118,7 +122,15 @@ class AuthIntgTest {
 
 		val response = noRedirectClient.get("/logout") { sendTestAuth() }
 
-		assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
+		assertThat(
+			response.setCookie(),
+			contains(
+				allOf(
+					hasProperty("name", equalTo("auth")),
+					hasProperty("value", equalTo("")),
+				),
+			)
+		)
 		response.assertRedirect("/")
 		verify(mockRepository).findUser(realisticUserId)
 	}
@@ -161,7 +173,12 @@ class AuthIntgTest {
 
 		val response = noRedirectClient.get("/account") { sendTestAuth() }
 
-		assertThat(response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
+		assertThat(
+			response.setCookie(),
+			contains(
+				hasProperty("name", equalTo("auth")),
+			)
+		)
 		assertEquals("no user", response.bodyAsText())
 		verify(mockRepository).findUser(realisticUserId)
 	}
