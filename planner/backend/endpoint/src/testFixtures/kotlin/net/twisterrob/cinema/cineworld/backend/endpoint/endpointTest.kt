@@ -68,7 +68,7 @@ fun endpointTest(
 			daggerApp()
 		}
 	}
-	runBlocking { // TODO doesn't seem right
+	runBlocking(application.client.engine.coroutineContext) {
 		application.start()
 		try {
 			log?.trace("Endpoint test starting {}", test::class)
