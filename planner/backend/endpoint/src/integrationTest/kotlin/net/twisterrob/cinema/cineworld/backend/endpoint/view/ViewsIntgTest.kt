@@ -4,18 +4,24 @@ import com.flextrade.jfixture.JFixture
 import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.setBody
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.Auth
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.handleRequestAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.noRedirectClient
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.setupAuth
+import net.twisterrob.cinema.cineworld.backend.endpoint.auth.sendTestAuth
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.serialized
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.serialized
@@ -66,15 +72,14 @@ class ViewsIntgTest {
 
 	/** @see Views.Routes.AddView */
 	@Test fun `add a view (unauthenticated)`() = viewEndpointTest(posts = true) {
-		val call = handleRequest {
-			method = HttpMethod.Post
-			uri = "/film/123/view"
+		val response = noRedirectClient.post {
+			url("/film/123/view")
 		}
 
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
-		assertEquals("Can't find user.", call.response.content)
+		assertEquals(HttpStatusCode.NotFound, response.status)
+		assertEquals("Can't find user.", response.bodyAsText())
 	}
 
 	/** @see Views.Routes.AddView */
@@ -84,10 +89,10 @@ class ViewsIntgTest {
 		whenever(mockRepository.addView(any(), any(), any(), any())).thenReturn(fixtView)
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val call = handleRequestAuth {
-			method = HttpMethod.Post
-			addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-			uri = "/film/123/view"
+		val response = noRedirectClient.post {
+			url("/film/123/view")
+			sendTestAuth()
+			header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
 			@Language("json")
 			val body = """
 				{
@@ -102,12 +107,12 @@ class ViewsIntgTest {
 		verify(mockRepository).addView(fixtUser.id, 456, 789, fixtDate.withOffsetSameInstant(ZoneOffset.UTC))
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				${serialized(fixtView)}
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
@@ -116,15 +121,14 @@ class ViewsIntgTest {
 	@Test fun `remove a view (unauthenticated)`() = viewEndpointTest {
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val call = handleRequest {
-			method = HttpMethod.Delete
-			uri = "/film/123/view?cinema=789&date=${fixtDate.toInstant().toEpochMilli()}"
+		val response = noRedirectClient.delete {
+			url("/film/123/view?cinema=789&date=${fixtDate.toInstant().toEpochMilli()}")
 		}
 
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
-		assertEquals("Can't find user.", call.response.content)
+		assertEquals(HttpStatusCode.NotFound, response.status)
+		assertEquals("Can't find user.", response.bodyAsText())
 	}
 
 	/** @see Views.Routes.RemoveView */
@@ -132,29 +136,28 @@ class ViewsIntgTest {
 		val fixtUser = mockAuth.setupAuth()
 		val fixtDate: OffsetDateTime = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.MILLIS)
 
-		val call = handleRequestAuth {
-			method = HttpMethod.Delete
-			uri = "/film/123/view?cinema=456&date=${fixtDate.toInstant().toEpochMilli()}"
+		val response = noRedirectClient.delete {
+			url("/film/123/view?cinema=456&date=${fixtDate.toInstant().toEpochMilli()}")
+			sendTestAuth()
 		}
 
 		verify(mockRepository).removeView(fixtUser.id, 123, 456, fixtDate.withOffsetSameInstant(ZoneOffset.UTC))
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
-		assertEquals("", call.response.content)
+		assertEquals(HttpStatusCode.OK, response.status)
+		assertEquals("", response.bodyAsText())
 	}
 
 	/** @see Views.Routes.IgnoreView */
 	@Test fun `ignore a view (unauthenticated)`() = viewEndpointTest {
-		val call = handleRequest {
-			method = HttpMethod.Put
-			uri = "/film/123/ignore?reason=${fixture.build<String>()}"
+		val response = noRedirectClient.put {
+			url("/film/123/ignore?reason=${fixture.build<String>()}")
 		}
 
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.NotFound, call.response.status())
-		assertEquals("Can't find user.", call.response.content)
+		assertEquals(HttpStatusCode.NotFound, response.status)
+		assertEquals("Can't find user.", response.bodyAsText())
 	}
 
 	/** @see Views.Routes.IgnoreView */
@@ -164,25 +167,25 @@ class ViewsIntgTest {
 		val fixtIgnore: IgnoreResponse = fixture.build()
 		whenever(mockRepository.ignoreView(any(), any(), any())).thenReturn(fixtIgnore)
 
-		val call = handleRequestAuth {
-			method = HttpMethod.Put
-			uri = "/film/123/ignore?reason=${fixtReason}"
+		val response = noRedirectClient.put {
+			url("/film/123/ignore?reason=${fixtReason}")
+			sendTestAuth()
 		}
 
 		verify(mockRepository).ignoreView(fixtUser.id, 123, fixtReason)
 		verifyNoMoreInteractions(mockRepository)
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 		JSONAssert.assertEquals(
 			"""
 				${serialized(fixtIgnore)}
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 	}
 
-	private fun viewEndpointTest(posts: Boolean = false, test: TestApplicationEngine.() -> Unit) {
+	private fun viewEndpointTest(posts: Boolean = false, test: suspend ClientProvider.() -> Unit) {
 		endpointTest(
 			test = test,
 			logLevel = if (posts) ServerLogging.LogLevel.HEADERS else ServerLogging.LogLevel.ALL,

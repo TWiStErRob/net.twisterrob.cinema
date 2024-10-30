@@ -2,9 +2,10 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.cinema
 
 import com.google.gson.JsonParser
 import dagger.Component
-import io.ktor.http.HttpMethod
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.endpointTest
@@ -20,16 +21,16 @@ import javax.inject.Singleton
 class CinemasIntgExtTest {
 
 	@Test fun `list all cinemas`() = cinemasEndpointTest {
-		val call = handleRequest { method = HttpMethod.Get; uri = "/cinema" }
+		val response = client.get("/cinema")
 
-		assertEquals(HttpStatusCode.OK, call.response.status())
+		assertEquals(HttpStatusCode.OK, response.status)
 
 		// Should be an array of cinema objects.
-		val parse = JsonParser().parse(call.response.content).asJsonArray
+		val parse = JsonParser().parse(response.bodyAsText()).asJsonArray
 		assertThat(parse.toList(), hasSize(102))
 	}
 
-	private fun cinemasEndpointTest(test: TestApplicationEngine.() -> Unit) {
+	private fun cinemasEndpointTest(test: suspend ClientProvider.() -> Unit) {
 		endpointTest(
 			test = test,
 			daggerApp = { daggerApplication(DaggerCinemasIntgExtTestComponent::builder) }
