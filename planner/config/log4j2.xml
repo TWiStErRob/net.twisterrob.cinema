@@ -18,8 +18,8 @@
 			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=bright black, TRACE=cyan
 		</Property>
 		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
-		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
-		pattern_level_colors}} %style{%message}{bright_white}%n%style{%throwable}{BG_red,white}
+		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{
+			${pattern_level_colors}} %style{%message}{bright_white}%n%style{%throwable}{BG_red,white}
 		</Property>
 	</Properties>
 
