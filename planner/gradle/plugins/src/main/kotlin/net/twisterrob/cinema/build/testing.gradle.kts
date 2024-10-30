@@ -27,6 +27,20 @@ kotlin.target.compilations.named("testFixtures") {
 @Suppress("UnstableApiUsage")
 testing {
 	suites {
+		withType<JvmTestSuite>().configureEach {
+			targets.configureEach {
+				testTask.configure {
+					jvmArgs(
+						// Reduce occurrences of warning:
+						// > Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+						"-Xshare:off",
+					)
+					// Ensure pattern_level_colors get applied from log4j2.xml.
+					// See https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#jansi
+					systemProperty("log4j2.skipJansi", "false")
+				}
+			}
+		}
 		withType<JvmTestSuite>().named { it != JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
@@ -77,6 +91,15 @@ testing {
 					forkEvery = 1
 					shouldRunAfter(unitTest, functionalTest)
 				}
+			}
+			configurations.named(sources.runtimeClasspathConfigurationName).configure {
+				// Prevent Neo4J stealing log output:
+				// > SLF4J(W): Class path contains multiple SLF4J providers.
+				// > SLF4J(W): Found provider [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				// > SLF4J(W): Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@541f03d7]
+				// > SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+				// > SLF4J(I): Actual provider is of type [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				exclude("org.neo4j", "neo4j-slf4j-provider")
 			}
 		}
 

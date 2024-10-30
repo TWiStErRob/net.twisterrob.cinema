@@ -5,11 +5,13 @@ plugins {
 application {
 	mainClass = "net.twisterrob.cinema.cineworld.sync.Main"
 	tasks.named<JavaExec>("run") {
+		val configFiles = if (project.property("net.twisterrob.run.verboseSync").toString().toBoolean())
+			"log4j2.xml"
+		else
+			"log4j2.xml,log4j2-sync.xml"
 		jvmArgs(
-			if (project.property("net.twisterrob.run.verboseSync").toString().toBoolean())
-				"-Dlog4j.configurationFile=log4j2.xml"
-			else
-				"-Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml"
+			"-Dlog4j.configurationFile=${configFiles}",
+			"-Dlog4j2.skipJansi=false",
 		)
 		// Can be overridden with `gradlew :backend:sync:run --args="<sync-type...>"`.
 		args(
