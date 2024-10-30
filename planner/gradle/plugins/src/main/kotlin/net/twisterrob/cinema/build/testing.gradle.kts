@@ -35,6 +35,9 @@ testing {
 						// > Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 						"-Xshare:off",
 					)
+					// Ensure pattern_level_colors get applied from log4j2.xml.
+					// See https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#jansi
+					systemProperty("log4j2.skipJansi", "false")
 				}
 			}
 		}
