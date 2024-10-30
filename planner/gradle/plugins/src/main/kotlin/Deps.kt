@@ -25,6 +25,7 @@ object Deps {
 		project.dependencies {
 			add("implementation", project.libs.slf4j.core)
 			add("runtimeOnly", project.libs.bundles.log4j)
+			add("runtimeOnly", project.libs.jansi)
 		}
 	}
 
