@@ -24,7 +24,7 @@ jobs:
 
     env:
       RELEASE_BRANCH: 'release'
-      TRIGGER_BRANCH: 'main'
+      TRIGGER_BRANCH: 'release-fix'
 
     runs-on: ubuntu-24.04
     defaults:
