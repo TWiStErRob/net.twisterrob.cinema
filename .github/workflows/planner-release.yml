@@ -18,8 +18,8 @@ jobs:
     timeout-minutes: 1
 
     permissions:
-      # actions/checkout
-      # gh workflow run
+      # read/write: actions/checkout
+      # write: gh workflow run
       contents: write
 
     env:
@@ -52,6 +52,7 @@ jobs:
         # https://stackoverflow.com/a/71955944/253468
         run: >
           gh workflow run
-          'Deploy to Google App Engine.yml'
-          -f production=true
-          -f reason="${REASON}"
+          'planner-appengine-deploy.yml'
+          --ref "${RELEASE_BRANCH}"
+          --raw-field production=true
+          --raw-field reason="${REASON}"
