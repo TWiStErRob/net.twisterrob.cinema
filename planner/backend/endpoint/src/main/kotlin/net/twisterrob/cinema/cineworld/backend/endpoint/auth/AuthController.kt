@@ -18,6 +18,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.intercept
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
@@ -66,6 +67,7 @@ class AuthController @Inject constructor(
 	 */
 	@Suppress("LongMethod", "CognitiveComplexMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
+		@Suppress("DEPRECATION") // STOPSHIP
 		intercept(ApplicationCallPipeline.Plugins) {
 			val session: AuthSession? = call.sessions.get()
 			if (session != null) {
