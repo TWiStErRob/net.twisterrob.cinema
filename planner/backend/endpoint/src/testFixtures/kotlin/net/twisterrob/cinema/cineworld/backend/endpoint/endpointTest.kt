@@ -29,13 +29,15 @@ fun endpointTest(
 ) {
 	val testLog = KtorSimpleLogger("ktor.test")
 	val application = TestApplication {
+		serverConfig {
+			developmentMode = true
+		}
 		environment {
 			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
 				putIfAbsent("twisterrob.cinema.environment", "test")
 				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
 			}
-			developmentMode = true
 			log = testLog
 		}
 		application {
