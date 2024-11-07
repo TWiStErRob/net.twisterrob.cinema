@@ -2,8 +2,10 @@ package net.twisterrob.cinema.cineworld.backend.app
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingApplicationCall
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.hooks.MonitoringEvent
+import io.ktor.server.routing.RoutingCall
+import io.ktor.server.routing.RoutingRoot
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
@@ -32,11 +34,12 @@ object ApplicationAttributes {
 	var Attributes.currentUser: CurrentUser? by optionalKey(CurrentUserAttribute)
 
 	@Suppress("unused") // not needed yet, ApplicationComponent is alive for the whole Application lifecycle
-	private fun Application.registerDaggerForEachCall(dagger: ApplicationComponent) {
-		environment.monitor.subscribe(Routing.RoutingCallStarted) { call: RoutingApplicationCall ->
-			call.attributes.put(DaggerComponentAttribute, dagger)
+	private fun registerDaggerForEachCall(dagger: ApplicationComponent) =
+		createApplicationPlugin("RegisterDaggerForEachCall") {
+			on(MonitoringEvent(RoutingRoot.RoutingCallStarted)) { call: RoutingCall ->
+				call.attributes.put(DaggerComponentAttribute, dagger)
+			}
 		}
-	}
 }
 
 private fun <T : Any> requiredKey(attributeKey: AttributeKey<T>) =
