@@ -1,8 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint
 
 import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.application.log
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ClientProvider
 import io.ktor.server.testing.TestApplication
@@ -40,14 +38,12 @@ fun endpointTest(
 			}
 			log = testLog
 		}
-		application {
-			install(ServerLogging) {
-				logger = this@application.log
-				level = logLevel
-			}
-			configure()
-			daggerApp()
+		install(ServerLogging) {
+			logger = testLog
+			level = logLevel
 		}
+		application(configure)
+		application(daggerApp)
 	}
 	runBlocking(application.client.engine.coroutineContext) {
 		application.start()
