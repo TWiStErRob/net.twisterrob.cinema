@@ -23,6 +23,10 @@ object ApplicationAttributes {
 
 	var Attributes.dagger: ApplicationComponent by requiredKey(DaggerComponentAttribute)
 
+	private val EndpointTestInstance = AttributeKey<Any>("testInstance")
+
+	var Attributes.testInstance: Any by requiredKey(EndpointTestInstance)
+
 	private val CurrentUserAttribute = AttributeKey<CurrentUser>("currentUser")
 
 	/**
