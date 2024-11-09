@@ -4,7 +4,7 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 testing.suites.named<JvmTestSuite>("integrationTest") {
-	sources.resources.srcDir(projects.backend.sync.dependencyProject.file("test"))
+	sources.resources.srcDir("../sync/test")
 }
 
 dependencies {
