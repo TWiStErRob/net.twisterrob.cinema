@@ -36,7 +36,7 @@ neo4j = "5.25.1"
 neo4j-java = "5.26.2"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "4.0.11"
+neo4j-ogm = "4.0.12"
 
 jackson = "2.18.1"
 jackson-databind = "2.18.1"
