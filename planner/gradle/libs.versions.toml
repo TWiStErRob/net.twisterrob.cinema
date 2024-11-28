@@ -38,7 +38,7 @@ neo4j-java = "5.26.3"
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "4.0.12"
 
-jackson = "2.18.1"
+jackson = "2.18.2"
 jackson-databind = "2.18.1"
 
 slf4j = "2.0.16"
