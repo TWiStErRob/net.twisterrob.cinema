@@ -1,3 +1,6 @@
+@use "sass:list";
+@use "sass:map";
+
 // Retrieved from below url and included in the project, because upgrading to Bootstrap 4 is long way ahead.
 // Without BS4 there's no SCSS Bootstrap mixins yet.
 // https://github.com/twbs/bootstrap/blob/2416801c7ea6e67d728096e0ed74568f6c742fc7/scss/mixins/_breakpoints.scss
@@ -26,9 +29,9 @@ $grid-breakpoints: (
 //    md
 //    >> breakpoint-next(sm, $breakpoint-names: (xs sm md lg xl))
 //    md
-@function breakpoint-next($name, $breakpoints: $grid-breakpoints, $breakpoint-names: map-keys($breakpoints)) {
-	$n: index($breakpoint-names, $name);
-	@return if($n < length($breakpoint-names), nth($breakpoint-names, $n + 1), null);
+@function breakpoint-next($name, $breakpoints: $grid-breakpoints, $breakpoint-names: map.keys($breakpoints)) {
+	$n: list.index($breakpoint-names, $name);
+	@return if($n < list.length($breakpoint-names), list.nth($breakpoint-names, $n + 1), null);
 }
 
 // Minimum breakpoint width. Null for the smallest (first) breakpoint.
@@ -36,7 +39,7 @@ $grid-breakpoints: (
 //    >> breakpoint-min(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
 //    576px
 @function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
-	$min: map-get($breakpoints, $name);
+	$min: map.get($breakpoints, $name);
 	@return if($min != 0, $min, null);
 }
 
