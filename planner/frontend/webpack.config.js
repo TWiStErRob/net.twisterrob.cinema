@@ -2,6 +2,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // https://github.com/jantimon/html-webpack-plugin#options
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/webpack-contrib/copy-webpack-plugin
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://github.com/webpack-contrib/mini-css-extract-plugin
+const WarningsToErrorsPlugin = require('warnings-to-errors-webpack-plugin'); // https://github.com/taehwanno/warnings-to-errors-webpack-plugin
 const path = require('path');
 
 module.exports = (env, argv) => {
@@ -22,6 +23,7 @@ module.exports = (env, argv) => {
 				? 'inline-source-map'
 				: undefined,
 		plugins: [
+			new WarningsToErrorsPlugin(),
 			new MiniCssExtractPlugin(),
 			new CopyWebpackPlugin({
 				patterns: [
@@ -78,6 +80,7 @@ module.exports = (env, argv) => {
 								sassOptions: {
 									outputStyle: 'expanded',
 								},
+								warnRuleAsWarning: true,
 							},
 						},
 					],
