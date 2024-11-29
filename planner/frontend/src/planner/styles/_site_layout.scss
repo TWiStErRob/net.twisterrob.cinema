@@ -1,5 +1,5 @@
-@import '_theme';
-@import 'bootstrap_breakpoints';
+@use '_theme';
+@use 'bootstrap_breakpoints';
 
 #main > header {
 	border-bottom: 1px solid white;
@@ -32,26 +32,26 @@
 }
 
 #cinemas, #films {
-	@include media-breakpoint-between(md, lg) {
+	@include bootstrap_breakpoints.media-breakpoint-between(md, lg) {
 		display: inline-block;
 		width: 50%;
 		vertical-align: top;
 	}
-	@include media-breakpoint-only(sm) {
+	@include bootstrap_breakpoints.media-breakpoint-only(sm) {
 		[uib-accordion] ul {
 			column-count: 2;
 			column-gap: 32px;
 			column-rule: 1px solid;
 		}
 	}
-	@include media-breakpoint-only(lg) {
+	@include bootstrap_breakpoints.media-breakpoint-only(lg) {
 		[uib-accordion] ul {
 			column-count: 2;
 			column-gap: 32px;
 			column-rule: 1px solid;
 		}
 	}
-	@include media-breakpoint-up(xl) {
+	@include bootstrap_breakpoints.media-breakpoint-up(xl) {
 		display: inline-block;
 		width: 275px;
 		vertical-align: top;
@@ -61,14 +61,14 @@
 }
 
 #performances {
-	@include media-breakpoint-up(xl) {
+	@include bootstrap_breakpoints.media-breakpoint-up(xl) {
 		display: inline-block;
 		vertical-align: top;
 	}
 }
 
 // center-align stuff on small screens
-@include media-breakpoint-down(sm) {
+@include bootstrap_breakpoints.media-breakpoint-down(sm) {
 	[name='cineworldDateForm'] {
 		text-align: center;
 	}
