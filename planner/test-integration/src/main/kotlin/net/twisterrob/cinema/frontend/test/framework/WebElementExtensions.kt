@@ -21,7 +21,7 @@ val WebElement.glyphicon: String?
 	}
 
 val WebElement.classes: List<String>
-	get() = this.getDomProperty("class").orEmpty().split(Regex("""\s+"""))
+	get() = this.getDomAttribute("class").orEmpty().split(Regex("""\s+"""))
 
 fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
 	val index = this.indexOfFirst(filter)
