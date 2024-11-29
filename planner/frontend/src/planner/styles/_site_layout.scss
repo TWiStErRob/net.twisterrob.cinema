@@ -1,5 +1,5 @@
-@use '_theme';
-@use 'bootstrap_breakpoints';
+@use "_theme.scss";
+@use "_bootstrap_breakpoints.scss";
 
 #main > header {
 	border-bottom: 1px solid white;

@@ -1,6 +1,6 @@
 @use "sass:color";
-@use '_theme';
-@use 'bootstrap_breakpoints';
+@use "_theme.scss";
+@use "_bootstrap_breakpoints.scss";
 
 $card-distance: 4px;
 
