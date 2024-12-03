@@ -15,7 +15,7 @@ kotlinx-serialization = "1.7.3"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.23.7"
 
-dagger = "2.52"
+dagger = "2.53"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
