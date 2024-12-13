@@ -42,7 +42,7 @@ jackson = "2.18.2"
 jackson-databind = "2.18.2"
 
 slf4j = "2.0.16"
-log4j = "2.24.2"
+log4j = "2.24.3"
 jansi = "2.4.1"
 
 test-junit-vintage = "4.13.2"
