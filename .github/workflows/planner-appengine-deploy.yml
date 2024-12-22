@@ -117,7 +117,7 @@ jobs:
 
       - name: "Set up NPM."
         # https://github.com/actions/setup-node/issues/324
-        run: npm install --global npm@10
+        run: npm install --global npm@11
 
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v2
