@@ -43,7 +43,7 @@ jobs:
         with:
           node-version-file: planner/package.json
 
-      - name: "Set up NPM 10.x."
+      - name: "Set up NPM."
         # https://github.com/actions/setup-node/issues/324
         run: npm install --global npm@10
 
