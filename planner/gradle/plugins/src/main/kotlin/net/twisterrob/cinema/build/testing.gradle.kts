@@ -52,7 +52,6 @@ testing {
 		 * Most/all dependencies are mocked, stubbed or faked out.
 		 */
 		val unitTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.UNIT_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is not relevant in unit tests.
@@ -67,7 +66,6 @@ testing {
 		 * Building a dependency graph, but still mocking/stubbing out partially.
 		 */
 		val functionalTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.FUNCTIONAL_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
@@ -82,7 +80,6 @@ testing {
 		 * For example using a full embedded database.
 		 */
 		val integrationTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.INTEGRATION_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests, so the methods need to be synchronized.
@@ -109,7 +106,6 @@ testing {
 		 * For example hitting a network endpoint.
 		 */
 		val integrationExternalTest by registering(JvmTestSuite::class) {
-			testType = "integration-external-test"
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests.
@@ -128,7 +124,6 @@ testing {
 		 * So reusing it as a hook for all other tests.
 		 */
 		named<JvmTestSuite>(JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME) {
-			testType = "ignored" // Allow unitTest to be unit-test.
 			targets.configureEach {
 				testTask.configure {
 					dependsOn(unitTest)
