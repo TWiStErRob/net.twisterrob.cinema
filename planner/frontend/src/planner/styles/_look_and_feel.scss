@@ -1,22 +1,22 @@
-@import '_theme.scss';
+@use "_theme.scss";
 
 body, .panel-body {
-	background-color: $color-background;
-	color: $color-copy;
+	background-color: theme.$color-background;
+	color: theme.$color-copy;
 }
 
 .modal-content {
-	background-color: $color-background;
+	background-color: theme.$color-background;
 	border: 1px solid #999999;
 }
 
 .panel > .panel-heading {
 	background-color: #333333;
-	color: $color-copy-important;
+	color: theme.$color-copy-important;
 }
 
 a {
-	color: $color-copy-important;
+	color: theme.$color-copy-important;
 }
 
 [ng-click] {
@@ -55,15 +55,15 @@ a {
 }
 
 .length {
-	color: $color-runtime;
+	color: theme.$color-runtime;
 }
 
 .film-runtime {
 
-	color: $color-runtime;
+	color: theme.$color-runtime;
 
 	&:before, &:after {
-		color: $color-copy;
+		color: theme.$color-copy;
 	}
 	&:before {
 		content: '(';
@@ -74,7 +74,7 @@ a {
 
 	&:empty {
 		&:before, &:after {
-			color: $color-offense;
+			color: theme.$color-offense;
 		}
 		&:before {
 			content: '(???)';
@@ -88,12 +88,12 @@ a {
 .time,
 .film-start,
 .film-end {
-	color: $color-time;
+	color: theme.$color-time;
 }
 
 .plan-vis-break {
 	background: #333333;
-	color: $color-time;
+	color: theme.$color-time;
 }
 
 .time.offense,
@@ -102,25 +102,25 @@ a {
 .film-start.offense,
 .film-end.offense,
 .offenseDetails {
-	color: $color-offense;
+	color: theme.$color-offense;
 	font-size: x-small;
 }
 
 .film-title {
-	color: $color-film;
+	color: theme.$color-film;
 }
 
 a, [ng-click] {
 	&.film-title:hover {
-		color: $color-film-highlight;
+		color: theme.$color-film-highlight;
 	}
 }
 
 .plan-vis-film {
-	background: $color-film;
+	background: theme.$color-film;
 	color: black;
 	&.offense {
-		background: $color-offense;
+		background: theme.$color-offense;
 	}
 }
 
@@ -129,18 +129,18 @@ a, [ng-click] {
 }
 
 .cinema-name {
-	color: $color-cinema;
+	color: theme.$color-cinema;
 }
 
 a, [ng-click] {
 	&.cinema-name:hover {
-		color: $color-cinema-highlight;
+		color: theme.$color-cinema-highlight;
 	}
 }
 
 .cinema {
 	input:checked {
-		outline: 2px outset $color-cinema-highlight;
+		outline: 2px outset theme.$color-cinema-highlight;
 
 		+ * {
 			background-color: #400;
@@ -148,21 +148,21 @@ a, [ng-click] {
 	}
 
 	.glyphicon-heart {
-		color: $color-cinema-highlight;
+		color: theme.$color-cinema-highlight;
 	}
 }
 
 .film {
 
 	input:checked {
-		outline: 2px outset $color-film-highlight;
+		outline: 2px outset theme.$color-film-highlight;
 		+ * {
 			background-color: #030;
 		}
 	}
 
 	.glyphicon-eye-close {
-		color: $color-film-highlight;
+		color: theme.$color-film-highlight;
 	}
 }
 

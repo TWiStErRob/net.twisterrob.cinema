@@ -5,18 +5,21 @@ import dagger.BindsInstance
 import dagger.Component
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.content.TextContent
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.decodeURLPart
+import io.ktor.http.URLBuilder
+import io.ktor.http.Url
 import io.ktor.http.headersOf
+import io.ktor.http.setCookie
 import io.ktor.server.application.Application
-import io.ktor.server.testing.TestApplicationCall
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationComponent
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthTestConstants.realisticCookie
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthTestConstants.realisticUserId
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
@@ -31,6 +34,10 @@ import net.twisterrob.test.verify
 import net.twisterrob.test.verifyNoInteractions
 import net.twisterrob.test.verifyNoMoreInteractions
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -70,14 +77,16 @@ class AuthIntgTest {
 		val stubClient = HttpClient(mockEngine())
 		endpointTest(
 			configure = fakeClient(stubClient, fakeClientId, fakeClientSecret),
-			daggerApp = createAppForAuthIntgTest(stubClient)
+			daggerApp = createAppForAuthIntgTest(stubClient),
 		) {
+			// Start the authorization flow.
 			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeClientId)
 			stubClient.verifyNoInteractions()
 			verifyNoInteractions(mockRepository)
 			stubClient.stubGoogleToken(fakeAccessToken, fakeRefreshToken)
 			stubClient.stubGoogleOpenIdUserInfo(fakeUserId, fakeEmail, fakeName)
 
+			// Simulate the client receiving the authorization via redirect_uri from user interaction.
 			val cookie = receiveAuthorizationFromGoogle(state, fakeHost, fakeRelativeUri)
 
 			stubClient.verifyGoogleTokenRequest(fakeHost, fakeRelativeUri, state, fakeClientId, fakeClientSecret)
@@ -97,12 +106,9 @@ class AuthIntgTest {
 	fun `login redirects to google`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/login"
-		}
+		val response = noRedirectClient.get("/login")
 
-		call.assertRedirect("/auth/google")
+		response.assertRedirect("/auth/google")
 	}
 
 	/**
@@ -114,14 +120,18 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/logout"
-			addHeader(HttpHeaders.Cookie, realisticCookie)
-		}
+		val response = noRedirectClient.get("/logout") { sendTestAuth() }
 
-		assertThat(call.response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
-		call.assertRedirect("/")
+		assertThat(
+			response.setCookie(),
+			contains(
+				allOf(
+					hasProperty("name", equalTo("auth")),
+					hasProperty("value", equalTo("")),
+				),
+			)
+		)
+		response.assertRedirect("/")
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
@@ -134,13 +144,9 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(JFixture().build())
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/auth/google"
-			addHeader(HttpHeaders.Cookie, realisticCookie)
-		}
+		val response = noRedirectClient.get("/auth/google") { sendTestAuth() }
 
-		call.assertRedirect("/")
+		response.assertRedirect("/")
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
@@ -151,12 +157,9 @@ class AuthIntgTest {
 	fun `account page shows no user without session cookie`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/account"
-		}
+		val response = noRedirectClient.get("/account")
 
-		assertEquals("no user", call.response.content)
+		assertEquals("no user", response.bodyAsText())
 	}
 
 	/**
@@ -168,14 +171,15 @@ class AuthIntgTest {
 	) {
 		whenever(mockRepository.findUser(realisticUserId)).thenThrow(UnknownUserException("fake error"))
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/account"
-			addHeader(HttpHeaders.Cookie, realisticCookie)
-		}
+		val response = noRedirectClient.get("/account") { sendTestAuth() }
 
-		assertThat(call.response.headers[HttpHeaders.SetCookie], startsWith("auth=; "))
-		assertEquals("no user", call.response.content)
+		assertThat(
+			response.setCookie(),
+			contains(
+				hasProperty("name", equalTo("auth")),
+			)
+		)
+		assertEquals("no user", response.bodyAsText())
 		verify(mockRepository).findUser(realisticUserId)
 	}
 
@@ -189,11 +193,7 @@ class AuthIntgTest {
 		val user: User = JFixture().build()
 		whenever(mockRepository.findUser(realisticUserId)).thenReturn(user)
 
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/account"
-			addHeader(HttpHeaders.Cookie, realisticCookie)
-		}
+		val response = noRedirectClient.get("/account") { sendTestAuth() }
 
 		JSONAssert.assertEquals(
 			"""
@@ -202,7 +202,7 @@ class AuthIntgTest {
 				  "email" : "${user.email}"
 				}
 			""".trimIndent(),
-			call.response.content,
+			response.bodyAsText(),
 			JSONCompareMode.STRICT
 		)
 		verify(mockRepository).findUser(realisticUserId)
@@ -216,12 +216,9 @@ class AuthIntgTest {
 	fun `authorizing new session with Google redirects to google-return`() = endpointTest(
 		daggerApp = createAppForAuthIntgTest()
 	) {
-		val call = handleRequest {
-			method = HttpMethod.Get
-			uri = "/auth/google"
-		}
+		val response = noRedirectClient.get("/auth/google")
 
-		call.assertRedirect("/auth/google/return")
+		response.assertRedirect("/auth/google/return")
 	}
 
 	private fun createAppForAuthIntgTest(
@@ -276,45 +273,40 @@ private fun fakeClient(
 	)
 }
 
-private fun TestApplicationEngine.authorizeWithGoogle(host: String, relativeUri: String, clientId: String): String {
-	val call = handleRequest {
-		method = HttpMethod.Get
-		uri = relativeUri
-		addHeader(HttpHeaders.Host, host)
+private suspend fun ClientProvider.authorizeWithGoogle(host: String, relativeUri: String, clientId: String): String {
+	val response = noRedirectClient.get(relativeUri) {
+		header(HttpHeaders.Host, host)
 	}
 
-	val location = call.response.headers[HttpHeaders.Location].orEmpty()
+	val location = Url(response.headers[HttpHeaders.Location].orEmpty())
 	assertEquals(
 		"https://accounts.google.com/o/oauth2/auth" +
 				"?client_id=${clientId}" +
 				"&redirect_uri=http%3A%2F%2F${host}${relativeUri.replace("/", "%2F")}" +
 				"&scope=openid+email+profile" +
-				"&state=****" +
+				"&state=____" +
 				"&response_type=code",
-		Regex("state=(\\w+)").replace(location, "state=****")
+		URLBuilder(location).apply { parameters["state"] = "____" }.build().toString()
 	)
-	val stateInfo = Regex("state=(?<state>\\w+)").find(location)
-	call.assertStatus(HttpStatusCode.Found)
-	return stateInfo!!.groups["state"]!!.value
+	response.assertStatus(HttpStatusCode.Found)
+	return location.parameters["state"]!!
 }
 
 @CheckReturnValue
-private fun TestApplicationEngine.receiveAuthorizationFromGoogle(
+private suspend fun ClientProvider.receiveAuthorizationFromGoogle(
 	state: String,
 	host: String,
 	relativeUri: String
 ): String {
-	val call = handleRequest {
-		method = HttpMethod.Get
-		uri = "${relativeUri}?state=${state}&code=fake_code"
-		addHeader(HttpHeaders.Host, host)
+	val response = noRedirectClient.get("${relativeUri}?state=${state}&code=fake_code") {
+		header(HttpHeaders.Host, host)
 	}
 
-	call.assertRedirect("/")
-	val setCookie = call.response.headers[HttpHeaders.SetCookie]!!
-	val cookieDetails = Regex("auth=(?<value>[^;]+)(;.+)?").find(setCookie)
-		?: error("Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${setCookie}'.")
-	return cookieDetails.groups["value"]!!.value.decodeURLPart()
+	response.assertRedirect("/")
+	val setCookie = checkNotNull(response.setCookie().singleOrNull { it.name == "auth" }) {
+		"Cannot find a valid 'auth' cookie in ${HttpHeaders.SetCookie}: '${response.headers[HttpHeaders.SetCookie]}'."
+	}
+	return setCookie.value
 }
 
 private fun HttpClient.stubGoogleToken(accessToken: String, refreshToken: String) {
@@ -380,12 +372,12 @@ private fun HttpClient.verifyGoogleOpenIdUserInfoRequest(accessToken: String) {
 	}
 }
 
-private fun TestApplicationCall.assertRedirect(url: String) {
+private fun HttpResponse.assertRedirect(url: String) {
 	assertStatus(HttpStatusCode.Found)
-	assertEquals(url, response.headers[HttpHeaders.Location])
+	assertEquals(url, headers[HttpHeaders.Location])
 }
 
-private fun TestApplicationCall.assertStatus(statusCode: HttpStatusCode) {
-	assertEquals(statusCode, response.status())
+private fun HttpResponse.assertStatus(statusCode: HttpStatusCode) {
+	assertEquals(statusCode, status)
 }
 

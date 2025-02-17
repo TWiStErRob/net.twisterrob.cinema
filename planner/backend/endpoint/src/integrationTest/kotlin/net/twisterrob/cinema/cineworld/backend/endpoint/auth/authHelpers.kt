@@ -3,10 +3,11 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
 import com.flextrade.jfixture.JFixture
+import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
-import io.ktor.server.testing.TestApplicationCall
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.TestApplicationRequest
+import io.ktor.server.testing.ClientProvider
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.User
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
@@ -35,7 +36,7 @@ object AuthTestConstants {
 /**
  * Makes sure that auth interceptor works as expected.
  * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
- * @see handleRequestAuth
+ * @see sendTestAuth
  */
 fun AuthRepository.setupAuth(): User {
 	val fixtUser: User = JFixture().build()
@@ -48,8 +49,11 @@ fun AuthRepository.setupAuth(): User {
  * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.AuthController
  * @see setupAuth
  */
-fun TestApplicationEngine.handleRequestAuth(block: TestApplicationRequest.() -> Unit): TestApplicationCall =
-	handleRequest {
-		addHeader(HttpHeaders.Cookie, AuthTestConstants.realisticCookie)
-		block()
+fun HttpRequestBuilder.sendTestAuth() {
+	header(HttpHeaders.Cookie, AuthTestConstants.realisticCookie)
+}
+
+val ClientProvider.noRedirectClient: HttpClient
+	get() = this.createClient {
+		followRedirects = false
 	}

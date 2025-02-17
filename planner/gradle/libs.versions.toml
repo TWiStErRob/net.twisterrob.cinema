@@ -6,22 +6,22 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
-kotlin = "2.0.21"
-kotlin-ksp = "2.0.21-1.0.26"
+kotlin = "2.1.10"
+kotlin-ksp = "2.1.10-1.0.30"
 kotlinx-html = "0.7.3"
 # @see kotlin
-kotlinx-coroutines = "1.9.0"
-kotlinx-serialization = "1.7.3"
+kotlinx-coroutines = "1.10.1"
+kotlinx-serialization = "1.8.0"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.23.7"
 
-dagger = "2.52"
+dagger = "2.55"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "2.3.12"
+ktor = "2.3.13"
 
-appengine = "2.8.1"
+appengine = "2.8.3"
 
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
@@ -30,35 +30,36 @@ appengine = "2.8.1"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "5.24.2"
+neo4j = "2025.01.0"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
-neo4j-java = "5.26.0"
+neo4j-java = "5.28.1"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "4.0.11"
+neo4j-ogm = "4.0.15"
 
-jackson = "2.18.0"
-jackson-databind = "2.18.0"
+jackson = "2.18.2"
+jackson-databind = "2.18.2"
 
 slf4j = "2.0.16"
-log4j = "2.24.1"
+log4j = "2.24.3"
+jansi = "2.4.1"
 
 test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.11.3"
+test-junit-jupiter = "5.11.4"
 test-junit-pioneer = "2.3.0"
 
 test-hamcrest = "3.0"
 test-shazamcrest = "0.11"
 test-jsonAssert = "1.5.3"
-test-assertj = "3.26.3"
+test-assertj = "3.27.3"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "5.14.2"
+test-mockito = "5.15.2"
 test-mockito-kotlin = "5.4.0"
 
-test-selenium = "4.25.0"
+test-selenium = "4.28.1"
 test-ngWebDriver = "1.2"
 
 [libraries]
@@ -126,6 +127,7 @@ log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4
 # See https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html
 log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 log4j-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log4j" }
+jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 
 test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
 test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }

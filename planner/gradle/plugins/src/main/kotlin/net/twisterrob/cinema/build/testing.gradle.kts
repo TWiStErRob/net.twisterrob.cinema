@@ -27,6 +27,20 @@ kotlin.target.compilations.named("testFixtures") {
 @Suppress("UnstableApiUsage")
 testing {
 	suites {
+		withType<JvmTestSuite>().configureEach {
+			targets.configureEach {
+				testTask.configure {
+					jvmArgs(
+						// Reduce occurrences of warning:
+						// > Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+						"-Xshare:off",
+					)
+					// Ensure pattern_level_colors get applied from log4j2.xml.
+					// See https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#jansi
+					systemProperty("log4j2.skipJansi", "false")
+				}
+			}
+		}
 		withType<JvmTestSuite>().named { it != JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME }.configureEach {
 			useJUnitJupiter(libs.versions.test.junit.jupiter)
 			conventionalSetup(configurations)
@@ -38,7 +52,6 @@ testing {
 		 * Most/all dependencies are mocked, stubbed or faked out.
 		 */
 		val unitTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.UNIT_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is not relevant in unit tests.
@@ -53,7 +66,6 @@ testing {
 		 * Building a dependency graph, but still mocking/stubbing out partially.
 		 */
 		val functionalTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.FUNCTIONAL_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
@@ -68,7 +80,6 @@ testing {
 		 * For example using a full embedded database.
 		 */
 		val integrationTest by registering(JvmTestSuite::class) {
-			testType = TestSuiteType.INTEGRATION_TEST
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests, so the methods need to be synchronized.
@@ -78,6 +89,15 @@ testing {
 					shouldRunAfter(unitTest, functionalTest)
 				}
 			}
+			configurations.named(sources.runtimeClasspathConfigurationName).configure {
+				// Prevent Neo4J stealing log output:
+				// > SLF4J(W): Class path contains multiple SLF4J providers.
+				// > SLF4J(W): Found provider [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				// > SLF4J(W): Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@541f03d7]
+				// > SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+				// > SLF4J(I): Actual provider is of type [org.neo4j.server.logging.slf4j.SLF4JLogBridge@6f576b33]
+				exclude("org.neo4j", "neo4j-slf4j-provider")
+			}
 		}
 
 		/**
@@ -86,7 +106,6 @@ testing {
 		 * For example hitting a network endpoint.
 		 */
 		val integrationExternalTest by registering(JvmTestSuite::class) {
-			testType = "integration-external-test"
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests.
@@ -105,7 +124,6 @@ testing {
 		 * So reusing it as a hook for all other tests.
 		 */
 		named<JvmTestSuite>(JvmTestSuitePlugin.DEFAULT_TEST_SUITE_NAME) {
-			testType = "ignored" // Allow unitTest to be unit-test.
 			targets.configureEach {
 				testTask.configure {
 					dependsOn(unitTest)

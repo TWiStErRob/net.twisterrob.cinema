@@ -18,7 +18,7 @@ jobs:
 
   validate:
     name: "🦺 Validation"
-    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@1e06403c5d561d70e40109c2701ea3092ca6ded7 # v3
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@1851e9c09214df39596b289eef626688ba3a0269 # v3
     permissions:
       contents: read
       security-events: write
@@ -115,9 +115,9 @@ jobs:
         with:
           node-version-file: planner/package.json
 
-      - name: "Set up NPM 10.x."
+      - name: "Set up NPM."
         # https://github.com/actions/setup-node/issues/324
-        run: npm install --global npm@10
+        run: npm install --global npm@11
 
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v2

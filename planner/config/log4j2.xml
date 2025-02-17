@@ -15,11 +15,11 @@
 		<!-- See org.apache.logging.log4j.core.pattern.AnsiEscape for keywords  -->
 		<!-- %highlight separates keywords by spaces, %style separates keywords by commas! -->
 		<Property name="pattern_level_colors">
-			FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=dim white, DEBUG=bright black, TRACE=cyan
+			FATAL=bright_magenta, ERROR=bright_red, WARN=bright_yellow, INFO=dim white, DEBUG=bright_black, TRACE=cyan
 		</Property>
 		<!-- Whitespace within color configuration (highlight/style) will be ignored -->
-		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{${
-		pattern_level_colors}} %style{%message}{bright_white}%n%style{%throwable}{BG_red,white}
+		<Property name="pattern_styled">%highlight{%date{ISO8601} %-5level [%thread] %logger(%file:%line)}{
+			${pattern_level_colors}} %style{%message}{bright_white}%n%style{%throwable}{BG_red,white}
 		</Property>
 	</Properties>
 
@@ -182,6 +182,13 @@
 			DEBUG (ByteBufUtil.java:98) -Dio.netty.maxThreadLocalCharBufferSize: 16384
 		-->
 		<Logger name="io.netty" level="INFO" />
+		
+		<!-- on test startup, repeated many times and many others
+			DEBUG org.eclipse.jetty.util.component.ContainerLifeCycle(ContainerLifeCycle.java:419) org.eclipse.jetty.server.session.SessionHandler1378287256==dftMaxIdleSec=-1 added {ConstraintSecurityHandler@6722f78d{STOPPED},MANAGED}
+			DEBUG org.eclipse.jetty.util.thread.QueuedThreadPool(QueuedThreadPool.java:863) Starting Thread[qtp2105949564-59,5,main]
+			DEBUG org.eclipse.jetty.util.thread.QueuedThreadPool(QueuedThreadPool.java:1131) Runner started for QueuedThreadPool[qtp2105949564]@7d863d7c{STARTING,15<=6<=33,i=6,r=-1,t=59999ms,q=0}[ReservedThreadExecutor@7cd7e3c0{reserved=0/3,pending=0}]
+		-->
+		<Logger name="org.eclipse.jetty" level="WARN" />
 
 	</Loggers>
 
