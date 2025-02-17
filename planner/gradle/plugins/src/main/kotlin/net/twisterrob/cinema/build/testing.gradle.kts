@@ -162,6 +162,7 @@ fun JvmTestSuite.conventionalSetup(configurations: ConfigurationContainer) {
 	// Allow usages of internal code elements in tests.
 	kotlin.target.compilations.named(this.name) {
 		associateWith(kotlin.target.compilations.getByName("main"))
+		associateWith(kotlin.target.compilations.getByName("testFixtures"))
 	}
 }
 

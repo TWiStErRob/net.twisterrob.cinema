@@ -2,7 +2,6 @@ package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.flextrade.jfixture.JFixture
-import net.twisterrob.cinema.cineworld.backend.endpoint.serialized
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.GENRES
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.SCREENING_TYPES
 import net.twisterrob.test.build
