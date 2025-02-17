@@ -2,15 +2,18 @@ import net.twisterrob.cinema.build.dsl.isCI
 
 plugins {
 	id("org.gradle.test-report-aggregation")
+	// Apply a similar setup to all other modules in the project.
 	id("net.twisterrob.cinema.build.testing")
 }
 
 dependencies {
-	rootProject.allprojects.forEach {
-		if (it.path !in setOf(":", ":backend", ":deploy", project.path)) {
-			implementation(it)
-		}
-	}
+	rootProject.allprojects
+		// Skip ourselves to prevent circular dependency.
+		.filterNot { it.path == project.path }
+		// Skip grouping modules (they don't have suites, i.e. no variants exists in these modules).
+		.filterNot { it.path in setOf(":", ":backend", ":deploy") }
+		// Add dependency on all modules.
+		.forEach { implementation(it) }
 }
 
 @Suppress("UnstableApiUsage") // Gradle Test Suites are incubating.
@@ -41,15 +44,18 @@ tasks.withType<TestReport>().configureEach {
 	}
 }
 
-testing.suites.register<JvmTestSuite>("all")
-tasks.named<TestReport>("allAggregateTestReport") {
+// `gradlew allATR --continue`, otherwise the failures from suite-aggregation tasks fail the build early.
+tasks.register<TestReport>("allAggregateTestReport") {
+	group = "verification"
+	destinationDirectory.convention(java.testReportDir.map { it.dir("all/aggregated-results") })
 	testResults.from(testSuite("unitTest"))
 	testResults.from(testSuite("functionalTest"))
 	testResults.from(testSuite("integrationTest"))
 }
 
-fun testSuite(testSuiteName: String): Provider<FileCollection> =
+fun testSuite(name: String): Provider<FileCollection> =
 	project.provider {
+		@Suppress("UnstableApiUsage")
 		configurations.aggregateTestReportResults.get().incoming.artifactView {
 			withVariantReselection()
 			componentFilter { id -> id is ProjectComponentIdentifier }
@@ -60,7 +66,7 @@ fun testSuite(testSuiteName: String): Provider<FileCollection> =
 				)
 				attributes.attribute(
 					TestSuiteName.TEST_SUITE_NAME_ATTRIBUTE,
-					objects.named(TestSuiteName::class, testSuiteName)
+					objects.named(TestSuiteName::class, name)
 				)
 				attribute(
 					VerificationType.VERIFICATION_TYPE_ATTRIBUTE,
