@@ -91,7 +91,7 @@ jobs:
           --no-build-cache
           --stacktrace
           --continue
-          :allTestsReport
+          :test-reports:allAggregateTestReport
           -Pnet.twisterrob.build.verboseReports=true
           -Pnet.twisterrob.build.testConcurrencyOverride=PerSuite
 
@@ -109,7 +109,7 @@ jobs:
         with:
           name: 'Test Results HTML'
           if-no-files-found: error
-          path: planner/build/reports/tests/all/
+          path: planner/test-reports/build/reports/tests/all/aggregated-results/
 
       - name: "Upload 'Test Results HTMLs' artifact."
         if: ${{ success() || failure() }}
