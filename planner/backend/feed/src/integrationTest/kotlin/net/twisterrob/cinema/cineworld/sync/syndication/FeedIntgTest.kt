@@ -95,7 +95,7 @@ class FeedIntgTest {
 			  <performances>
 			    <screening film="${fixtFilm.id}" cinema="${fixtCinema.id}">
 			      <url>${fixtPerformance.url}</url>
-			      <date>${fixtPerformance.date}</date>
+			      <date>${serialized(fixtPerformance.date)}</date>
 			      <attributes>${fixtPerformance.attributes}</attributes>
 			    </screening>
 			  </performances>
