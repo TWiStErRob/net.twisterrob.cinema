@@ -40,3 +40,32 @@ tasks.withType<TestReport>().configureEach {
 		}
 	}
 }
+
+testing.suites.register<JvmTestSuite>("all")
+tasks.named<TestReport>("allAggregateTestReport") {
+	testResults.from(testSuite("unitTest"))
+	testResults.from(testSuite("functionalTest"))
+	testResults.from(testSuite("integrationTest"))
+}
+
+fun testSuite(testSuiteName: String): Provider<FileCollection> =
+	project.provider {
+		configurations.aggregateTestReportResults.get().incoming.artifactView {
+			withVariantReselection()
+			componentFilter { id -> id is ProjectComponentIdentifier }
+			attributes {
+				attribute(
+					Category.CATEGORY_ATTRIBUTE,
+					objects.named(Category::class, Category.VERIFICATION)
+				)
+				attributes.attribute(
+					TestSuiteName.TEST_SUITE_NAME_ATTRIBUTE,
+					objects.named(TestSuiteName::class, testSuiteName)
+				)
+				attribute(
+					VerificationType.VERIFICATION_TYPE_ATTRIBUTE,
+					objects.named(VerificationType::class, VerificationType.TEST_RESULTS)
+				)
+			}
+		}.files
+	}
