@@ -18,6 +18,7 @@ include(":shared")
 
 include(":test-helpers")
 include(":test-integration")
+include(":test-reports")
 
 pluginManagement {
 	includeBuild("gradle/plugins")
