@@ -54,9 +54,9 @@ tasks.register<TestReport>("allAggregateTestReport") {
 }
 
 fun testSuite(name: String): Provider<FileCollection> =
-	project.provider {
+	configurations.aggregateTestReportResults.map { configuration ->
 		@Suppress("UnstableApiUsage")
-		configurations.aggregateTestReportResults.get().incoming.artifactView {
+		configuration.incoming.artifactView {
 			withVariantReselection()
 			componentFilter { id -> id is ProjectComponentIdentifier }
 			attributes {
