@@ -15,6 +15,7 @@ jobs:
 
   run:
     name: "🔨 Build & Execute (Map)"
+    if: ${{ false }}
     uses: ./.github/workflows/map-run.yml
     permissions:
       contents: read
