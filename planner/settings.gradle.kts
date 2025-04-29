@@ -18,6 +18,7 @@ include(":shared")
 
 include(":test-helpers")
 include(":test-integration")
+include(":test-reports")
 
 pluginManagement {
 	includeBuild("gradle/plugins")
@@ -37,7 +38,7 @@ pluginManagement {
 
 plugins {
 	id("net.twisterrob.cinema.settings")
-	id("net.twisterrob.gradle.plugin.nagging") version "0.17"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.18"
 }
 
 dependencyResolutionManagement {

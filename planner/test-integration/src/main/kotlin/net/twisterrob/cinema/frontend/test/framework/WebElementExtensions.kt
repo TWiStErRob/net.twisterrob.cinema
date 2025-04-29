@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement
 
 val WebElement.textContent: String?
 	get() = when (this.tagName) {
-		"input", "textarea" -> this.getAttribute("value")
+		"input", "textarea" -> this.getDomProperty("value")
 		else -> this.text
 	}
 
@@ -21,7 +21,7 @@ val WebElement.glyphicon: String?
 	}
 
 val WebElement.classes: List<String>
-	get() = this.getAttribute("class").orEmpty().split(Regex("""\s+"""))
+	get() = this.getDomAttribute("class").orEmpty().split(Regex("""\s+"""))
 
 fun List<WebElement>.safeIndexOf(filter: (WebElement) -> Boolean): Int {
 	val index = this.indexOfFirst(filter)

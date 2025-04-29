@@ -18,11 +18,10 @@ table.performance-details {
 
 	th {
 		max-width: 150px;
+		font-weight: bold;
 		@media screen and (min-width: 1200px) {
 			max-width: 250px;
 		}
-
-		font-weight: bold;
 
 		&:first-child {
 			white-space: nowrap;

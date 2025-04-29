@@ -18,9 +18,22 @@
 			"registryUrlTemplate": "https://repo1.maven.org/maven2",
 			"depNameTemplate": "io.gitlab.arturbosch.detekt:detekt-cli",
 			"matchStrings": [
-				"DETEKT_VERSION=(?<currentValue>.*)"
+				"DETEKT_VERSION=(?<currentValue>.+)"
 			],
 			"versioningTemplate": "gradle"
+		},
+		{
+			description: "Update NPM setups.",
+			customType: "regex",
+			fileMatch: [
+				"^\\.github/workflows/.+\\.yml$",
+				"(^|/)action\\.yml$",
+			],
+			datasourceTemplate: "npm",
+			depNameTemplate: "npm",
+			matchStrings: [
+				"npm i(nstall)? (--global|-g) npm@v?(?<currentValue>.+)"
+			],
 		}
 	],
 	"packageRules": [
