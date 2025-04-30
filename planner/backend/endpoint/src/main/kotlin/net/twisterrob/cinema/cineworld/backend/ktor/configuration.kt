@@ -65,7 +65,7 @@ internal fun Application.configuration(
 	config: Map<String, Any?> = jacksonObjectMapper()
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
 ) {
-	log.info("Configuring app as ${environment.config.environment} environment.", Throwable())
+	log.info("Configuring app as ${environment.config.environment} environment.", Throwable("Stacktrace."))
 
 	install(DefaultHeaders)
 	install(CallLogging)
