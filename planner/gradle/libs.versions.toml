@@ -59,7 +59,7 @@ test-jfixture = "2.7.2"
 test-mockito = "5.17.0"
 test-mockito-kotlin = "5.4.0"
 
-test-selenium = "4.31.0"
+test-selenium = "4.32.0"
 test-ngWebDriver = "1.2"
 
 [libraries]
