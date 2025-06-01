@@ -6,8 +6,8 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
-kotlin = "2.1.20"
-kotlin-ksp = "2.1.20-2.0.1"
+kotlin = "2.1.21"
+kotlin-ksp = "2.1.21-2.0.1"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
@@ -36,7 +36,7 @@ neo4j = "2025.04.0"
 neo4j-java = "5.28.5"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "4.0.17"
+neo4j-ogm = "4.0.18"
 
 jackson = "2.19.0"
 jackson-databind = "2.19.0"
@@ -46,7 +46,7 @@ log4j = "2.24.3"
 jansi = "2.4.2"
 
 test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.12.2"
+test-junit-jupiter = "5.13.0"
 test-junit-pioneer = "2.3.0"
 
 test-hamcrest = "3.0"
@@ -56,10 +56,10 @@ test-assertj = "3.27.3"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "5.17.0"
+test-mockito = "5.18.0"
 test-mockito-kotlin = "5.4.0"
 
-test-selenium = "4.32.0"
+test-selenium = "4.33.0"
 test-ngWebDriver = "1.2"
 
 [libraries]
