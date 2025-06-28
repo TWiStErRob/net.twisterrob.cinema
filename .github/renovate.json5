@@ -1,78 +1,78 @@
 {
-	$schema: 'https://docs.renovatebot.com/renovate-schema.json',
+	$schema: "https://docs.renovatebot.com/renovate-schema.json",
 	extends: [
-		'local>TWiStErRob/renovate-config',
+		"local>TWiStErRob/renovate-config",
 	],
 	ignorePaths: [
-		'android/',
-		'AppEngine/',
-		'Database/',
-		'Models/',
+		"android/",
+		"AppEngine/",
+		"Database/",
+		"Models/",
 	],
 	customManagers: [
 		{
-			description: 'Update Detekt CLI in map.',
-			customType: 'regex',
+			description: "Update Detekt CLI in map.",
+			customType: "regex",
 			managerFilePatterns: [
-				'/^\\.github/workflows/map\\.yml$/',
+				".github/workflows/map.yml",
 			],
-			datasourceTemplate: 'maven',
-			registryUrlTemplate: 'https://repo1.maven.org/maven2',
-			depNameTemplate: 'io.gitlab.arturbosch.detekt:detekt-cli',
+			datasourceTemplate: "maven",
+			registryUrlTemplate: "https://repo1.maven.org/maven2",
+			depNameTemplate: "io.gitlab.arturbosch.detekt:detekt-cli",
 			matchStrings: [
-				'DETEKT_VERSION=(?<currentValue>.+)',
+				"DETEKT_VERSION=(?<currentValue>.+)",
 			],
-			versioningTemplate: 'gradle',
+			versioningTemplate: "gradle",
 		},
 		{
-			description: 'Update NPM setups.',
-			customType: 'regex',
+			description: "Update NPM setups.",
+			customType: "regex",
 			managerFilePatterns: [
-				'/^\\.github/workflows/.+\\.yml$/',
-				'/(^|/)action\\.yml$/',
+				".github/workflows/*.yml",
+				"**/action.yml",
 			],
-			datasourceTemplate: 'npm',
-			depNameTemplate: 'npm',
+			datasourceTemplate: "npm",
+			depNameTemplate: "npm",
 			matchStrings: [
-				'npm i(nstall)? (--global|-g) npm@v?(?<currentValue>.+)',
+				"npm i(nstall)? (--global|-g) npm@v?(?<currentValue>.+)",
 			],
 		},
 	],
 	packageRules: [
 		{
-			description: 'Disable updating Bootstrap, as major versions contain breaking changes which would fully break the UI.',
+			description: "Disable updating Bootstrap, as major versions contain breaking changes which would fully break the UI.",
 			matchPackageNames: [
-				'bootstrap',
+				"bootstrap",
 			],
 			matchFileNames: [
-				'planner/frontend/package.json',
+				"planner/frontend/package.json",
 			],
 			matchUpdateTypes: [
-				'major',
+				"major",
 			],
 			enabled: false,
 		},
 		{
 			description: "Disable these Gradle Plugin Markers, because they don't exist. The mapping from id(com.google.cloud.tools.appengine*) to com.google.cloud.tools:appengine-gradle-plugin is done in settings.gradle.kts.",
 			matchPackageNames: [
-				'com.google.cloud.tools.appengine:com.google.cloud.tools.appengine.gradle.plugin',
-				'com.google.cloud.tools.appengine-appyaml:com.google.cloud.tools.appengine-appyaml.gradle.plugin',
-				'com.google.cloud.tools.appengine-appenginewebxml:com.google.cloud.tools.appengine-appenginewebxml.gradle.plugin',
+				"com.google.cloud.tools.appengine:com.google.cloud.tools.appengine.gradle.plugin",
+				"com.google.cloud.tools.appengine-appyaml:com.google.cloud.tools.appengine-appyaml.gradle.plugin",
+				"com.google.cloud.tools.appengine-appenginewebxml:com.google.cloud.tools.appengine-appenginewebxml.gradle.plugin",
 			],
 			matchFileNames: [
-				'planner/gradle/libs.versions.toml',
+				"planner/gradle/libs.versions.toml",
 			],
 			enabled: false,
 		},
 		{
-			description: 'Disable updating GSON, see https://github.com/shazam/shazamcrest/pull/39.',
+			description: "Disable updating GSON, see https://github.com/shazam/shazamcrest/pull/39.",
 			matchPackageNames: [
-				'com.google.code.gson:gson',
+				"com.google.code.gson:gson",
 			],
 			matchFileNames: [
-				'planner/backend/database/build.gradle.kts',
+				"planner/backend/database/build.gradle.kts",
 			],
-			matchCurrentVersion: '2.8.9',
+			matchCurrentVersion: "2.8.9",
 			enabled: false,
 		},
 	],
