@@ -26,7 +26,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	val dagger = builder.build()
 	componentReady(dagger)
 	this.attributes.dagger = dagger
-	environment.monitor.subscribe(ApplicationStopped) { application ->
+	monitor.subscribe(ApplicationStopped) { application ->
 		application.attributes.dagger.httpClient.close()
 	}
 

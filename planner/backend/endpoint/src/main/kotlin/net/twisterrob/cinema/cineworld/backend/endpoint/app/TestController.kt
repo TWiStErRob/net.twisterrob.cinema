@@ -3,8 +3,8 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.app
 import io.ktor.http.HttpHeaders
 import io.ktor.http.encodeURLPath
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.PipelineCall
 import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.server.request.path
@@ -12,6 +12,7 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.header
 import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.intercept
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.launch
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
@@ -39,6 +40,7 @@ class TestController @Inject constructor(
 				  -> ${root.canonicalPath}
 			""".trimIndent()
 		)
+		@Suppress("DEPRECATION") // STOPSHIP
 		intercept(ApplicationCallPipeline.Call) {
 			val fullPathAndQuery = this.call.request.uri.ending
 			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
@@ -58,7 +60,7 @@ class TestController @Inject constructor(
 		}
 	}
 
-	private fun PipelineContext<Unit, ApplicationCall>.respondFake(path: File) {
+	private fun PipelineContext<Unit, PipelineCall>.respondFake(path: File) {
 		launch {
 			call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
 			call.response.header(HttpHeaders.XForwardedServer, "fakes")
