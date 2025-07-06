@@ -166,7 +166,7 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
-          junit_files: ${{ github.workspace }}/planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
+          files: ${{ github.workspace }}/planner/test-integration/build/test-results/integrationExternalTest/TEST-*.xml
 
       - name: "Upload 'Integration Test Logs' artifact."
         if: ${{ success() || failure() }}
