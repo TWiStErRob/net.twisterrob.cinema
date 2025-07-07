@@ -20,13 +20,6 @@ dependencyLocking {
 	lockFile = file("../../gradle/dependency-locks/plugins.lockfile")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions {
-		freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
-		freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
-	}
-}
-
 detekt {
 	ignoreFailures = isCI
 	// TODEL https://github.com/detekt/detekt/issues/4926
