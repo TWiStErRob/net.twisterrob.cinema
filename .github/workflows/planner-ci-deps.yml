@@ -41,7 +41,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ inputs.base-ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ format('refs/heads/{0}', inputs.base-ref) }}
 
@@ -98,7 +98,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ inputs.head-ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ format('refs/heads/{0}', inputs.head-ref) }}
 
