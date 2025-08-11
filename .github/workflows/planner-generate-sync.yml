@@ -27,7 +27,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Java."
         uses: actions/setup-java@v4
@@ -36,7 +36,7 @@ jobs:
           distribution: temurin
 
       - name: "Checkout default branch in ${{ env.HISTORY_REPO }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ env.HISTORY_REPO }}
           path: ${{ env.HISTORY_DIR }}
