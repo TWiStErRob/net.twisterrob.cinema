@@ -18,8 +18,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.util.InternalAPI
 import io.ktor.util.rootCause
+import io.ktor.utils.io.InternalAPI
 import net.twisterrob.test.assertAll
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
