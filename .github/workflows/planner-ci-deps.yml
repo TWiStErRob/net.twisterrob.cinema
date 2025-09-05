@@ -329,7 +329,7 @@ jobs:
           path: diff/curr
 
       - name: "Create 'Dependency Diff' check run (if any diffs)."
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           action_url: 'https://github.com/${{ github.repository }}/actions/workflows/planner-ci-deps-review.yml?query=branch%3A${{ inputs.head-ref }}'
           branch: ${{ inputs.head-ref }}
