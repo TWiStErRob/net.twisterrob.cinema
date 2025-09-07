@@ -60,8 +60,6 @@ jobs:
       - name: "Determine which PR this commit belongs to, so we can clone its base branch for comparison."
         id: current-pr
         uses: 8BitJonny/gh-get-current-pr@4.0.0
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: "Pull Request #${{ steps.current-pr.outputs.number }}"
         shell: bash
