@@ -2,7 +2,6 @@ package net.twisterrob.cinema.build
 
 import net.twisterrob.cinema.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
 	id("org.gradle.java")
@@ -19,8 +18,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		jvmTarget = JvmTarget.fromTarget(libs.versions.java.get())
 		allWarningsAsErrors = true
 		verbose = true
-
-		languageVersion = KotlinVersion.KOTLIN_2_0
 
 		// Enable flag to help suppress compiler warnings.
 		freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
