@@ -21,9 +21,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		verbose = true
 
 		languageVersion = KotlinVersion.KOTLIN_2_0
-		// Suppress compileKotlin's warning:
-		// > Language version 2.0 is experimental, there are no backwards compatibility guarantees for new language and library features
-		freeCompilerArgs.add("-Xsuppress-version-warnings")
 
 		// Enable flag to help suppress compiler warnings.
 		freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
