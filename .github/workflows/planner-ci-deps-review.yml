@@ -31,7 +31,7 @@ jobs:
     steps:
 
       - name: "Update 'Dependency Diff' check run."
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           ref: ${{ github.ref }}
           resolution: ${{ inputs.resolution }}

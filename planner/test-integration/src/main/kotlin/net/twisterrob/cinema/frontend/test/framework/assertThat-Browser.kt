@@ -1,9 +1,9 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.assertj.core.annotation.CheckReturnValue
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.AbstractUriAssert
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.util.CheckReturnValue
 import java.net.URI
 
 @Suppress("NOTHING_TO_INLINE")
