@@ -65,8 +65,6 @@ class PerformanceServiceIntgTest {
 		val expected = fixtCinemasFound.flatMap { cinema ->
 			fixtFilmsFound.map { film ->
 				performances.single {
-					// TODEL False positive, see https://youtrack.jetbrains.com/issue/KT-78352
-					@Suppress("IDENTITY_SENSITIVE_OPERATIONS_WITH_VALUE_TYPE")
 					it.time.toLocalDate() == fixtToday && it.inCinema == cinema && it.screensFilm == film
 				}
 			}
