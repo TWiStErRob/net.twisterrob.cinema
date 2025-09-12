@@ -33,7 +33,7 @@ appengine = "2.8.3"
 neo4j = "2025.08.0"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
-neo4j-java = "5.28.9"
+neo4j-java = "6.0.0-beta01"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
 neo4j-ogm = "4.0.20"
