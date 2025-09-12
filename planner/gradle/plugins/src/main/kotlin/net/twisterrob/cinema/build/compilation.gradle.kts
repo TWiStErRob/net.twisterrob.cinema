@@ -13,7 +13,7 @@ java {
 	targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+kotlin {
 	compilerOptions {
 		jvmTarget = JvmTarget.fromTarget(libs.versions.java.get())
 		allWarningsAsErrors = true
