@@ -17,7 +17,7 @@ detekt = "1.23.8"
 
 dagger = "2.57.1"
 
-# http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
+# https://ktor.io/docs/releases.html
 ktor = "3.1.2"
 
 appengine = "2.8.3"
