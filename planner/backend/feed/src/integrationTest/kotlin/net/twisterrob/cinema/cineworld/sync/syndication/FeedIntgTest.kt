@@ -11,6 +11,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
@@ -49,7 +50,7 @@ class FeedIntgTest {
 			film = fixtFilm,
 			cinema = fixtCinema,
 			url = fixture.build(),
-			date = fixture.build<OffsetDateTime>().truncatedTo(ChronoUnit.SECONDS),
+			date = fixture.build<LocalDateTime>().truncatedTo(ChronoUnit.SECONDS).atOffset(ZoneOffset.UTC),
 			attributes = fixture.build(),
 		)
 
