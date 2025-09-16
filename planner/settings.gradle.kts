@@ -68,3 +68,15 @@ doNotNagAbout(
 			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#reporting_extension_file",
 	"at io.gitlab.arturbosch.detekt.DetektPlugin.apply(DetektPlugin.kt:28)",
 )
+
+// TODEL Gradle 9.1 vs IDEA 2025.2.1 https://youtrack.jetbrains.com/issue/IDEA-379286
+@Suppress("detekt.MaxLineLength")
+doNotNagAbout(
+	"The Configuration.isVisible method has been deprecated. " +
+			"This is scheduled to be removed in Gradle 10. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#deprecate-visible-property",
+	// Don't include line number, because of recent changes to the file.
+	// It's line 89 in 2025.2.1, but in upcoming IDEA releases it will move twice.
+	"at org.jetbrains.plugins.gradle.tooling.builder.ProjectExtensionsDataBuilderImpl\$Companion.collectConfigurations(ProjectExtensionsDataBuilderImpl.kt:",
+)
