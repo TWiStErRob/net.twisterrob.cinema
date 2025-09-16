@@ -1,5 +1,6 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.assertj.core.annotation.CheckReturnValue
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.AbstractIterableAssert
 import org.assertj.core.api.AbstractObjectAssert
@@ -8,7 +9,6 @@ import org.assertj.core.api.AssertFactory
 import org.assertj.core.api.BooleanAssert
 import org.assertj.core.api.ListAssert
 import org.assertj.core.api.StringAssert
-import org.assertj.core.util.CheckReturnValue
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
