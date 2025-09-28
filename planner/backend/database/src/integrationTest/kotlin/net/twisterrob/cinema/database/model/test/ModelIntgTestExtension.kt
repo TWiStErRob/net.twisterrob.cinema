@@ -4,8 +4,6 @@ import dagger.Component
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.test.get
-import net.twisterrob.test.neo4j.boltURI
-import net.twisterrob.test.neo4j.createDriver
 import net.twisterrob.test.put
 import net.twisterrob.test.remove
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -15,9 +13,11 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 import org.neo4j.driver.Driver
-import org.neo4j.harness.Neo4j
-import org.neo4j.harness.Neo4jBuilders
+import org.neo4j.driver.GraphDatabase
 import org.neo4j.ogm.session.Session
+import org.testcontainers.containers.Neo4jContainer
+import org.testcontainers.utility.DockerImageName
+import java.net.URI
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -55,12 +55,15 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
-		val testServer = Neo4jBuilders.newInProcessBuilder().build()
+		val testServer =
+			Neo4jContainer(DockerImageName.parse("neo4j:2025.07.1"))
+				.withoutAuthentication()
+				.apply { start() }
 		extensionContext.store.put(testServer)
-		extensionContext.store.put(testServer.createDriver())
+		extensionContext.store.put(GraphDatabase.driver(testServer.boltUrl))
 		val dagger = DaggerModelIntgTestExtensionComponent
 			.builder()
-			.graphDBUri(testServer.boltURI)
+			.graphDBUri(URI(testServer.boltUrl))
 			.build()
 		extensionContext.store.put(dagger)
 	}
@@ -69,13 +72,13 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 		if (!extensionContext.executionException.isPresent) {
 			// Don't try to close if there was an error during initialization.
 			extensionContext.store.get<Driver>()?.close()
-			extensionContext.store.get<Neo4j>()?.close()
+			extensionContext.store.get<Neo4jContainer<*>>()?.stop()
 		} else {
 			extensionContext.store.get<Driver>()!!.close()
-			extensionContext.store.get<Neo4j>()!!.close()
+			extensionContext.store.get<Neo4jContainer<*>>()!!.stop()
 		}
 		extensionContext.store.remove<Driver>()
-		extensionContext.store.remove<Neo4j>()
+		extensionContext.store.remove<Neo4jContainer<*>>()
 		extensionContext.store.remove<ModelIntgTestExtensionComponent>()
 	}
 
