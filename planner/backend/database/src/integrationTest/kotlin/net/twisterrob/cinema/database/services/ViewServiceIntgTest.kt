@@ -21,14 +21,26 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Label
+import org.neo4j.driver.GraphDatabase
+import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
+import org.testcontainers.containers.Neo4jContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
+import net.twisterrob.test.neo4j.allNodes
+import net.twisterrob.test.neo4j.allRelationships
+import net.twisterrob.test.neo4j.session
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
+@Testcontainers(disabledWithoutDocker = true)
 class ViewServiceIntgTest {
+
+	@Container
+	private val neo4jContainer = Neo4jContainer(DockerImageName.parse("neo4j:2025.07.1"))
+		.withoutAuthentication()
 
 	private lateinit var fixture: JFixture
 	private lateinit var sut: ViewService
@@ -68,7 +80,8 @@ class ViewServiceIntgTest {
 		assertThat(result.userRef, sameBeanAs(fixtUser))
 	}
 
-	@Test fun `addView saves the right graph`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `addView saves the right graph`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtCinema: Cinema = fixture.build()
 		val fixtFilm: Film = fixture.build()
 		val fixtUser: User = fixture.build()
@@ -79,18 +92,18 @@ class ViewServiceIntgTest {
 
 		sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
-		graph.beginTx().use { tx ->
-			val nodes = tx.allNodes.toList()
+		graph.session {
+			val nodes = allNodes.toList()
 			assertThat(nodes, hasSize(4))
-			val cinema = nodes.single { it.hasLabel(Label.label("Cinema")) }
+			val cinema = nodes.single { it.labels().contains("Cinema") }
 			assertSameData(fixtCinema, cinema)
-			val film = nodes.single { it.hasLabel(Label.label("Film")) }
+			val film = nodes.single { it.labels().contains("Film") }
 			assertSameData(fixtFilm, film)
-			val user = nodes.single { it.hasLabel(Label.label("User")) }
+			val user = nodes.single { it.labels().contains("User") }
 			assertSameData(fixtUser, user)
-			val view = nodes.single { it.hasLabel(Label.label("View")) }
+			val view = nodes.single { it.labels().contains("View") }
 			assertThat(
-				tx.allRelationships, containsInAnyOrder(
+				allRelationships, containsInAnyOrder(
 					hasRelationship(view, "AT", cinema),
 					hasRelationship(view, "WATCHED", film),
 					hasRelationship(user, "ATTENDED", view)
@@ -142,7 +155,8 @@ class ViewServiceIntgTest {
 		assertNull(result)
 	}
 
-	@Test fun `removeView deletes node and relationships`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `removeView deletes node and relationships`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtView: View = fixture.build()
 		session.save(fixtView)
 
@@ -153,16 +167,16 @@ class ViewServiceIntgTest {
 			time = fixtView.date.atOffset(ZoneOffset.UTC)
 		)
 
-		graph.beginTx().use { tx ->
-			val nodes = tx.allNodes.toList()
+		graph.session {
+			val nodes = allNodes.toList()
 			assertThat(nodes, hasSize(3))
-			val cinema = nodes.single { it.hasLabel(Label.label("Cinema")) }
+			val cinema = nodes.single { it.labels().contains("Cinema") }
 			assertSameData(fixtView.atCinema, cinema)
-			val film = nodes.single { it.hasLabel(Label.label("Film")) }
+			val film = nodes.single { it.labels().contains("Film") }
 			assertSameData(fixtView.watchedFilm, film)
-			val user = nodes.single { it.hasLabel(Label.label("User")) }
+			val user = nodes.single { it.labels().contains("User") }
 			assertSameData(fixtView.userRef, user)
-			assertThat(tx.allRelationships.toList(), empty())
+			assertThat(allRelationships.toList(), empty())
 		}
 	}
 }

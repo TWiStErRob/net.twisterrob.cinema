@@ -21,6 +21,19 @@ val SimpleQueryRunner.allNodes: Iterable<Node>
 			.map { it["n"].asNode() }
 			.asIterable()
 
+/**
+ * @receiver org.neo4j.driver.Session
+ */
+val SimpleQueryRunner.allRelationships: Iterable<Relationship>
+	get() =
+		this
+			.run(
+				"MATCH ()-[r]->() RETURN r",
+			)
+			.asSequence()
+			.map { it["r"].asRelationship() }
+			.asIterable()
+
 @Deprecated("id is deprecated, use elementId instead.", ReplaceWith("elementId"))
 val Node.id: Long
 	@Suppress("DEPRECATION", "DEPRECATED_JAVA_ANNOTATION") // Replicating original harness behavior.
@@ -46,3 +59,22 @@ fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 context(session: SimpleQueryRunner)
 val Node.relationships: Iterable<Relationship>
 	get() = session.relationshipsOf(this)
+
+/**
+ * @receiver org.neo4j.driver.Session
+ */
+fun SimpleQueryRunner.nodeOf(elementId: String): Node =
+	this
+		.run(
+			$$"MATCH (n) WHERE elementId(n) = $elementId RETURN n",
+			mapOf("elementId" to elementId),
+		)
+		.single()["n"].asNode()
+
+context(session: SimpleQueryRunner)
+fun Relationship.startNode(): Node =
+	session.nodeOf(this.startNodeElementId())
+
+context(session: SimpleQueryRunner)
+fun Relationship.endNode(): Node =
+	session.nodeOf(this.endNodeElementId())
