@@ -20,9 +20,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.driver.Driver
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.load
+import org.testcontainers.containers.Neo4jContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.relationships
 import net.twisterrob.test.neo4j.session
@@ -30,7 +33,12 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
+@Testcontainers(disabledWithoutDocker = true)
 class UserServiceIntgTest {
+
+	@Container
+	private val neo4jContainer = Neo4jContainer(DockerImageName.parse("neo4j:2025.07.1"))
+		.withoutAuthentication()
 
 	private lateinit var fixture: JFixture
 	private lateinit var sut: UserService
@@ -78,7 +86,8 @@ class UserServiceIntgTest {
 		assertThat("Data in database is the same as just added User", data, sameBeanAs(result))
 	}
 
-	@Test fun `addUser() does not create a new identical user`(session: Session, graph: Driver) {
+	@Test fun `addUser() does not create a new identical user`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -113,7 +122,8 @@ class UserServiceIntgTest {
 		}
 	}
 
-	@Test fun `addUser() does create a new totally different user`(session: Session, graph: Driver) {
+	@Test fun `addUser() does create a new totally different user`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -155,7 +165,8 @@ class UserServiceIntgTest {
 	}
 
 	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
-	@Test fun `addUser() preserves date format`(graph: Driver) {
+	@Test fun `addUser() preserves date format`() {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -196,7 +207,8 @@ class UserServiceIntgTest {
 	}
 
 	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
-	@Test fun `addUser() preserves date format (no millies)`(graph: Driver) {
+	@Test fun `addUser() preserves date format (no millies)`() {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -237,8 +249,9 @@ class UserServiceIntgTest {
 	}
 
 	@Test fun `addUser() does create a new different user with exact same properties`(
-		session: Session, graph: Driver
+		session: Session
 	) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUser: User = fixture.build()
 		session.save(fixtUser)
 		val fixtDifferentId: String = fixture.build()
@@ -267,7 +280,8 @@ class UserServiceIntgTest {
 		}
 	}
 
-	@Test fun `addUser() updates all fields on change`(session: Session, graph: Driver) {
+	@Test fun `addUser() updates all fields on change`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
