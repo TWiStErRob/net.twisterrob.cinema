@@ -5,11 +5,8 @@ import org.neo4j.driver.SimpleQueryRunner
 import org.neo4j.driver.types.Node
 import org.neo4j.driver.types.Relationship
 
-fun Driver.session(block: (session: org.neo4j.driver.Session) -> Unit) {
-	this.session().use { session ->
-		block(session)
-	}
-}
+fun <R> Driver.session(block: (org.neo4j.driver.Session).() -> R): R =
+	this.session().use(block)
 
 /**
  * @receiver org.neo4j.driver.Session
@@ -36,7 +33,7 @@ val Node.allProperties: Map<String, Any?>
 /**
  * @receiver org.neo4j.driver.Session
  */
-fun SimpleQueryRunner.relationshipOf(node: Node): Iterable<Relationship> =
+fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 	this
 		.run(
 			$$"MATCH (n)-[r]->() WHERE elementId(n) = $elementId RETURN r",
@@ -45,3 +42,7 @@ fun SimpleQueryRunner.relationshipOf(node: Node): Iterable<Relationship> =
 		.asSequence()
 		.map { it["r"].asRelationship() }
 		.asIterable()
+
+context(session: SimpleQueryRunner)
+val Node.relationships: Iterable<Relationship>
+	get() = session.relationshipsOf(this)

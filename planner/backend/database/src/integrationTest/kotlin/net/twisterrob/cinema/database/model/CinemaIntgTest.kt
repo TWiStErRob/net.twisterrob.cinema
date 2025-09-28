@@ -12,7 +12,7 @@ import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.neo4j.allProperties
 import net.twisterrob.test.neo4j.id
-import net.twisterrob.test.neo4j.relationshipOf
+import net.twisterrob.test.neo4j.relationships
 import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
@@ -61,13 +61,13 @@ class CinemaIntgTest {
 		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
 
-		graph.session { session ->
-			val cinemas = session.allNodes.toList()
+		graph.session {
+			val cinemas = allNodes.toList()
 
 			assertThat(cinemas, hasSize(1))
 			val cinema = cinemas.single()
 			assertSameData(fixtCinema, cinema)
-			assertThat(session.relationshipOf(cinema), emptyIterable())
+			assertThat(cinema.relationships, emptyIterable())
 		}
 	}
 
