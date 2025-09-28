@@ -17,7 +17,7 @@ import org.gradle.kotlin.dsl.withModule
  * SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
  * SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
  * ```
- * 
+ *
  * See https://github.com/neo4j/neo4j/issues/12770
  */
 fun Project.configureSLF4JBindings() {
