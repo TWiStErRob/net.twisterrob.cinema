@@ -103,7 +103,7 @@ class UserServiceIntgTest {
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->
@@ -140,7 +140,7 @@ class UserServiceIntgTest {
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -185,7 +185,7 @@ class UserServiceIntgTest {
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -226,7 +226,7 @@ class UserServiceIntgTest {
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -253,7 +253,7 @@ class UserServiceIntgTest {
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -292,7 +292,7 @@ class UserServiceIntgTest {
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
 		graph.session {
-			val users = allNodes.toList()
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->

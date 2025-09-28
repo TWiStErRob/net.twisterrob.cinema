@@ -82,7 +82,7 @@ class ViewServiceIntgTest {
 		sut.addView(user = fixtUser.id, film = fixtFilm.edi, cinema = fixtCinema.cineworldID, time = fixtTime)
 
 		graph.session {
-			val nodes = allNodes.toList()
+			val nodes = this.allNodes.toList()
 			assertThat(nodes, hasSize(4))
 			val cinema = nodes.single { "Cinema" in it.labels() }
 			assertSameData(fixtCinema, cinema)
@@ -156,7 +156,7 @@ class ViewServiceIntgTest {
 		)
 
 		graph.session {
-			val nodes = allNodes.toList()
+			val nodes = this.allNodes.toList()
 			assertThat(nodes, hasSize(3))
 			val cinema = nodes.single { "Cinema" in it.labels() }
 			assertSameData(fixtView.atCinema, cinema)
@@ -164,7 +164,7 @@ class ViewServiceIntgTest {
 			assertSameData(fixtView.watchedFilm, film)
 			val user = nodes.single { "User" in it.labels() }
 			assertSameData(fixtView.userRef, user)
-			assertThat(allRelationships.toList(), empty())
+			assertThat(this.allRelationships.toList(), empty())
 		}
 	}
 }

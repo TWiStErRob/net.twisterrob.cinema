@@ -51,7 +51,7 @@ class PerformanceIntgTest {
 		session.clear() // drop cached Performance objects, start fresh
 
 		graph.session {
-			val nodes = allNodes.toList()
+			val nodes = this.allNodes.toList()
 
 			assertThat(nodes, hasSize(3))
 			val (film, performance, cinema) = nodes

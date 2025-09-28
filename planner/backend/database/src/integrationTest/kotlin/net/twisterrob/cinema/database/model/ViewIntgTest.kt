@@ -69,7 +69,7 @@ class ViewIntgTest {
 
 		@Suppress("DestructuringDeclarationWithTooManyEntries") // https://github.com/detekt/detekt/discussions/5123
 		graph.session {
-			val nodes = allNodes.toList()
+			val nodes = this.allNodes.toList()
 
 			assertThat(nodes, hasSize(4))
 			val (user, film, view, cinema) = nodes
