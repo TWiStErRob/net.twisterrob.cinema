@@ -20,22 +20,14 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.neo4j.driver.Driver
 import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
-import org.testcontainers.containers.Neo4jContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
-@Testcontainers(disabledWithoutDocker = true)
 class FilmIntgTest {
-
-	@Container
-	private val neo4jContainer = Neo4jContainer(DockerImageName.parse("neo4j:2025.07.1"))
-		.withoutAuthentication()
 
 	private lateinit var fixture: JFixture
 
@@ -54,8 +46,7 @@ class FilmIntgTest {
 		assertThat(films.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new film contains the right node information`(session: Session) {
-		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
+	@Test fun `new film contains the right node information`(session: Session, graph: Driver) {
 		val fixtFilm: Film = fixture.build()
 		session.save(fixtFilm, -1)
 		session.clear() // drop cached Film objects, start fresh
