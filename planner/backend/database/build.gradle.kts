@@ -34,6 +34,8 @@ dependencies {
 
 	testImplementation(libs.neo4j)
 	testImplementation(libs.neo4j.harness)
+	testImplementation(libs.test.containersJupiter)
+	testImplementation(libs.test.containersNeo4j)
 
 	Deps.slf4jToLog4jForTest(project)
 

@@ -61,6 +61,7 @@ test-mockito-kotlin = "6.0.0"
 
 test-selenium = "4.35.0"
 test-ngWebDriver = "1.2"
+test-containers = "1.21.3"
 
 [libraries]
 
@@ -131,6 +132,8 @@ jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 
 test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
 test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }
+test-containersJupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "test-containers" }
+test-containersNeo4j = { module = "org.testcontainers:neo4j", version.ref = "test-containers" }
 
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
 test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }

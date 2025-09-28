@@ -8,21 +8,35 @@ import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
+import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
+import net.twisterrob.test.neo4j.allProperties
+import net.twisterrob.test.neo4j.id
+import net.twisterrob.test.neo4j.relationshipOf
+import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Node
+import org.neo4j.driver.GraphDatabase
+import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
+import org.testcontainers.containers.Neo4jContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import java.time.ZoneOffset
 
 @ExtendWith(ModelIntgTestExtension::class, ModelFixtureExtension::class)
+@Testcontainers(disabledWithoutDocker = true)
 class CinemaIntgTest {
+
+	@Container
+	private val neo4jContainer = Neo4jContainer(DockerImageName.parse("neo4j:2025.07.1"))
+		.withoutAuthentication()
 
 	private lateinit var fixture: JFixture
 
@@ -41,18 +55,19 @@ class CinemaIntgTest {
 		assertThat(cinemas.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new cinema contains the right node information`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `new cinema contains the right node information`(session: Session) {
+		val graph = GraphDatabase.driver(neo4jContainer.boltUrl)
 		val fixtCinema: Cinema = fixture.build()
 		session.save(fixtCinema, -1)
 		session.clear() // drop cached Cinema objects, start fresh
 
-		graph.beginTx().use { tx ->
-			val cinemas = tx.allNodes.toList()
+		graph.session { session ->
+			val cinemas = session.allNodes.toList()
 
 			assertThat(cinemas, hasSize(1))
 			val cinema = cinemas.single()
 			assertSameData(fixtCinema, cinema)
-			assertThat(cinema.relationships, emptyIterable())
+			assertThat(session.relationshipOf(cinema), emptyIterable())
 		}
 	}
 
