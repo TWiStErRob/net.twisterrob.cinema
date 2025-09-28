@@ -7,34 +7,30 @@ import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.services.Services
 import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.boltURI
+import net.twisterrob.test.neo4j.neo4jContainer
 import net.twisterrob.test.neo4j.session
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.neo4j.harness.Neo4j
-import org.neo4j.harness.Neo4jBuilders
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
+@Testcontainers
 class CinemaSyncIntgTest {
 
-	private lateinit var neo4j: Neo4j
+	@Container
+	private val neo4j = neo4jContainer()
 
 	private lateinit var sut: CinemaSync
 
 	@BeforeEach fun setUp() {
-		neo4j = Neo4jBuilders.newInProcessBuilder().build()
-
 		val dagger = DaggerCinemaSyncIntgTestComponent
 			.builder()
 			.graphDBUri(neo4j.boltURI)
 			.build()
 
 		sut = dagger.sync
-	}
-
-	@AfterEach fun tearDown() {
-		neo4j.close()
 	}
 
 	@Test fun `no cinemas in feed result in no data synced`() {

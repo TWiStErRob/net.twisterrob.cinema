@@ -2,6 +2,7 @@ package net.twisterrob.test.neo4j
 
 import org.neo4j.driver.Driver
 import org.neo4j.driver.GraphDatabase
+import org.neo4j.driver.Session
 import org.testcontainers.containers.Neo4jContainer
 import org.testcontainers.utility.DockerImageName
 import java.net.URI
@@ -15,3 +16,8 @@ val Neo4jContainer<*>.boltURI: URI
 
 fun Neo4jContainer<*>.createDriver(): Driver =
 	GraphDatabase.driver(this.boltUrl)
+
+fun <R> Neo4jContainer<*>.session(block: (Session).() -> R): R =
+	this.createDriver().use { driver ->
+		driver.session().use(block)
+	}
