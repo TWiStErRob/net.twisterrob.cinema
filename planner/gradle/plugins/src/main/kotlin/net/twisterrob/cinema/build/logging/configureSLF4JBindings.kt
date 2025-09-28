@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withModule
 
 /**
- * Catch this error during compilation:
+ * Catch this error during runtime:
  * ```
  * SLF4J: Class path contains multiple SLF4J bindings.
  * SLF4J: Found binding in [.../log4j-slf4j-impl-2.14.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
@@ -17,6 +17,8 @@ import org.gradle.kotlin.dsl.withModule
  * SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
  * SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
  * ```
+ * 
+ * See https://github.com/neo4j/neo4j/issues/12770
  */
 fun Project.configureSLF4JBindings() {
 	dependencies {
