@@ -27,19 +27,14 @@ fun <R> Neo4jContainer<*>.session(block: (Session).() -> R): R =
 		driver.session().use(block)
 	}
 
-private fun readManifestEntry(manifestEntry: String): String {
+private fun readManifestEntry(name: String): String {
 	val aClassInJar = object {}.javaClass
 	val aClassName = aClassInJar.enclosingClass.simpleName + ".class"
 	val res = aClassInJar.getResource(aClassName) ?: error("Cannot find class file ${aClassName}")
 	val url = res.openConnection() ?: error("Cannot open ${res}")
-	when {
-		url is JarURLConnection -> {
-			val mf = url.manifest ?: error("Cannot find manifest in ${url.jarFileURL}")
-			val version = mf.mainAttributes.getValue(manifestEntry)
-				?: error("${manifestEntry} attribute not present in manifest\n${url.manifest.mainAttributes.toMap()}")
-			return version
-		}
-
-		else -> error("Unsupported packaging mechanism, no JAR file to get manifest from.")
-	}
+	url as? JarURLConnection ?: error("Unsupported packaging mechanism: ${url}, no JAR file to get manifest from.")
+	val mf = url.manifest ?: error("Cannot find manifest in ${url.jarFileURL}")
+	val version = mf.mainAttributes.getValue(name)
+		?: error("${name} attribute not present in manifest\n${url.manifest.mainAttributes.toMap()}")
+	return version
 }

@@ -36,8 +36,8 @@ val SimpleQueryRunner.allRelationships: Iterable<Relationship>
 
 @Deprecated("id is deprecated, use elementId instead.", ReplaceWith("elementId"))
 val Node.id: Long
-	@Suppress("DEPRECATION", "DEPRECATED_JAVA_ANNOTATION") // Replicating original harness behavior.
-	@java.lang.Deprecated(forRemoval = true)
+	@Suppress("DEPRECATION", "DEPRECATED_JAVA_ANNOTATION", "detekt.ForbiddenAnnotation")
+	@java.lang.Deprecated(forRemoval = true) // Replicating original harness behavior.
 	get() = this.id()
 
 val Node.allProperties: Map<String, Any?>
