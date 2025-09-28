@@ -59,22 +59,3 @@ fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 context(session: SimpleQueryRunner)
 val Node.relationships: Iterable<Relationship>
 	get() = session.relationshipsOf(this)
-
-/**
- * @receiver org.neo4j.driver.Session
- */
-fun SimpleQueryRunner.nodeOf(elementId: String): Node =
-	this
-		.run(
-			$$"MATCH (n) WHERE elementId(n) = $elementId RETURN n",
-			mapOf("elementId" to elementId),
-		)
-		.single()["n"].asNode()
-
-context(session: SimpleQueryRunner)
-fun Relationship.startNode(): Node =
-	session.nodeOf(this.startNodeElementId())
-
-context(session: SimpleQueryRunner)
-fun Relationship.endNode(): Node =
-	session.nodeOf(this.endNodeElementId())
