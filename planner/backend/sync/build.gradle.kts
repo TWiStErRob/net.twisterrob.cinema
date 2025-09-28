@@ -58,6 +58,8 @@ dependencies {
 	testImplementation(libs.jackson.datatype.java8)
 	testImplementation(libs.neo4j)
 	testImplementation(libs.neo4j.harness)
+	testImplementation(libs.test.containersJupiter)
+	testImplementation(libs.test.containersNeo4j)
 
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)
