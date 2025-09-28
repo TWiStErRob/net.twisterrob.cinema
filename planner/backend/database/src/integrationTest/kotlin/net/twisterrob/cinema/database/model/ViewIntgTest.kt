@@ -78,7 +78,7 @@ class ViewIntgTest {
 			assertSameData(fixtView.watchedFilm, film)
 			assertSameData(fixtView.atCinema, cinema)
 			assertThat(
-				view.relationships, containsInAnyOrder(
+				view.relationships.toList(), containsInAnyOrder(
 					hasRelationship(view, "AT", cinema),
 					hasRelationship(view, "WATCHED", film),
 					hasRelationship(user, "ATTENDED", view)

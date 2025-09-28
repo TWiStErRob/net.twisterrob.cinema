@@ -49,7 +49,7 @@ val Node.allProperties: Map<String, Any?>
 fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 	this
 		.run(
-			$$"MATCH (n)-[r]->() WHERE elementId(n) = $elementId RETURN r",
+			$$"MATCH (n)-[r]-() WHERE elementId(n) = $elementId RETURN r",
 			mapOf("elementId" to node.elementId()),
 		)
 		.asSequence()
