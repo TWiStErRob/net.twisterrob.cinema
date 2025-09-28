@@ -84,13 +84,13 @@ class ViewServiceIntgTest {
 		graph.session {
 			val nodes = allNodes.toList()
 			assertThat(nodes, hasSize(4))
-			val cinema = nodes.single { it.labels().contains("Cinema") }
+			val cinema = nodes.single { "Cinema" in it.labels() }
 			assertSameData(fixtCinema, cinema)
-			val film = nodes.single { it.labels().contains("Film") }
+			val film = nodes.single { "Film" in it.labels() }
 			assertSameData(fixtFilm, film)
-			val user = nodes.single { it.labels().contains("User") }
+			val user = nodes.single { "User" in it.labels() }
 			assertSameData(fixtUser, user)
-			val view = nodes.single { it.labels().contains("View") }
+			val view = nodes.single { "View" in it.labels() }
 			assertThat(
 				allRelationships, containsInAnyOrder(
 					hasRelationship(view, "AT", cinema),
@@ -158,11 +158,11 @@ class ViewServiceIntgTest {
 		graph.session {
 			val nodes = allNodes.toList()
 			assertThat(nodes, hasSize(3))
-			val cinema = nodes.single { it.labels().contains("Cinema") }
+			val cinema = nodes.single { "Cinema" in it.labels() }
 			assertSameData(fixtView.atCinema, cinema)
-			val film = nodes.single { it.labels().contains("Film") }
+			val film = nodes.single { "Film" in it.labels() }
 			assertSameData(fixtView.watchedFilm, film)
-			val user = nodes.single { it.labels().contains("User") }
+			val user = nodes.single { "User" in it.labels() }
 			assertSameData(fixtView.userRef, user)
 			assertThat(allRelationships.toList(), empty())
 		}

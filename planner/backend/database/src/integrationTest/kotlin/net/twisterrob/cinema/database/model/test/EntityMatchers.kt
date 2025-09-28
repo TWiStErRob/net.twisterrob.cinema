@@ -10,11 +10,11 @@ import org.neo4j.driver.types.Relationship
  * @sample `assertThat(node.relationships, containsInAnyOrder(hasRelationship(node, "name", node)))`
  */
 fun hasRelationship(start: Node, name: String, end: Node): Matcher<Relationship> = Matchers.allOf(
-	object : FeatureMatcher<Relationship, String>(Matchers.equalTo(start.elementId()), "relationship start node elementId", "startNodeElementId") {
+	object : FeatureMatcher<Relationship, String>(Matchers.equalTo(start.elementId()), "relationship start node", "startNodeElementId") {
 		override fun featureValueOf(actual: Relationship): String =
 			actual.startNodeElementId()
 	},
-	object : FeatureMatcher<Relationship, String>(Matchers.equalTo(end.elementId()), "relationship end node elementId", "endNodeElementId") {
+	object : FeatureMatcher<Relationship, String>(Matchers.equalTo(end.elementId()), "relationship end node", "endNodeElementId") {
 		override fun featureValueOf(actual: Relationship): String =
 			actual.endNodeElementId()
 	},
