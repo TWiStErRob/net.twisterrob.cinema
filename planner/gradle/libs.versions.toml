@@ -106,6 +106,7 @@ ktor-server-status = { module = "io.ktor:ktor-server-status-pages", version.ref 
 neo4j-ogm = { module = "org.neo4j:neo4j-ogm-core", version.ref = "neo4j-ogm" }
 neo4j-ogm-driver-bolt = { module = "org.neo4j:neo4j-ogm-bolt-driver", version.ref = "neo4j-ogm" }
 
+neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 neo4j-driver = { module = "org.neo4j.driver:neo4j-java-driver", version.ref = "neo4j-java" }
 
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
