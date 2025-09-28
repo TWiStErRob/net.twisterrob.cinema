@@ -16,6 +16,7 @@ dependencies {
 
 	compileOnly(libs.neo4j.driver)
 	compileOnly(libs.neo4j.harness)
+	compileOnly(libs.test.containersNeo4j)
 
 	compileOnly(libs.ktor.client.mock)
 	compileOnly(libs.ktor.server.test)
