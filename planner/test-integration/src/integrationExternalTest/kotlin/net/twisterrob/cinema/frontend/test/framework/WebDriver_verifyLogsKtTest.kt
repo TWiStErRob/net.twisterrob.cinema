@@ -1,6 +1,8 @@
 package net.twisterrob.cinema.frontend.test.framework
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -10,7 +12,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource
 import org.junit.jupiter.params.support.ParameterDeclarations
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
@@ -25,13 +26,15 @@ import kotlin.random.Random
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+private val NL: String = System.lineSeparator()
+
 class WebDriver_verifyLogsKtTest {
 
 	@Test fun `no logs pass and print nothing`() {
 		val driver: WebDriver = fakeDriverWithLogs()
 
 		val log: (LogEntry) -> Unit = mock()
-		driver.verifyLogs(log)
+		assertDoesNotThrow { driver.verifyLogs(log) }
 
 		verifyNoInteractions(log)
 	}
@@ -43,9 +46,12 @@ class WebDriver_verifyLogsKtTest {
 		val driver: WebDriver = fakeDriverWithLogs(log1)
 
 		val log: (LogEntry) -> Unit = mock()
-		assertThrows<AssertionError> { driver.verifyLogs(log) }
+		val ex = assertThrows<AssertionError> { driver.verifyLogs(log) }
+		assertEquals("${System.lineSeparator()}Expecting empty but was: [${log1}]", ex.message)
 
-		verify(log).invoke(log1)
+		inOrder(log) {
+			verify(log).invoke(log1)
+		}
 		verifyNoMoreInteractions(log)
 	}
 
@@ -57,18 +63,41 @@ class WebDriver_verifyLogsKtTest {
 		val driver: WebDriver = fakeDriverWithLogs(log1, log2, log3)
 
 		val log: (LogEntry) -> Unit = mock()
-		assertThrows<AssertionError> { driver.verifyLogs(log) }
+		val ex = assertThrows<AssertionError> { driver.verifyLogs(log) }
+		assertEquals("${NL}Expecting empty but was: [${log1},${NL}    ${log2},${NL}    ${log3}]", ex.message)
 
 		inOrder(log) {
 			verify(log).invoke(log1)
 			verify(log).invoke(log2)
 			verify(log).invoke(log3)
-			verifyNoMoreInteractions()
 		}
+		verifyNoMoreInteractions(log)
 	}
 
 	@Test
 	fun `slow network log is ignored`() {
+		val slowNetwork = LogEntry(
+			Level.INFO,
+			Random.nextLong(),
+			"http://127.0.0.1:8080/planner/index.bundle.js " +
+					"5286 Slow network is detected. " +
+					"See https://www.chromestatus.com/feature/5636954674692096 for more details. " +
+					"Fallback font will be used while loading: " +
+					"http://127.0.0.1:8080/fonts/glyphicons-halflings-regular-be810be3a3e14c682a25.woff2"
+		)
+		val driver: WebDriver = fakeDriverWithLogs(slowNetwork)
+
+		val log: (LogEntry) -> Unit = mock()
+		assertDoesNotThrow { driver.verifyLogs(log) }
+
+		inOrder(log) {
+			verify(log).invoke(slowNetwork)
+		}
+		verifyNoMoreInteractions(log)
+	}
+
+	@Test
+	fun `slow network log is filtered`() {
 		val slowNetwork = LogEntry(
 			Level.INFO,
 			Random.nextLong(),
@@ -83,13 +112,15 @@ class WebDriver_verifyLogsKtTest {
 		val driver: WebDriver = fakeDriverWithLogs(log1, slowNetwork, log2)
 
 		val log: (LogEntry) -> Unit = mock()
-		assertThrows<AssertionError> { driver.verifyLogs(log) }
+		val ex = assertThrows<AssertionError> { driver.verifyLogs(log) }
+		assertEquals("${System.lineSeparator()}Expecting empty but was: [${log1},${NL}    ${log2}]", ex.message)
 
 		inOrder(log) {
 			verify(log).invoke(log1)
+			verify(log).invoke(slowNetwork)
 			verify(log).invoke(log2)
-			verifyNoMoreInteractions()
 		}
+		verifyNoMoreInteractions(log)
 	}
 }
 

@@ -29,8 +29,8 @@ internal fun WebDriver.verifyLogs(log: (LogEntry) -> Unit = LogPrinter()::print)
 	val filteredLogs = logs
 		.filterNot {
 			// See https://www.chromestatus.com/feature/5636954674692096 for more details.
-			it.level == Level.INFO && it.message.matches(Regex("""Slow network is detected\. .*Fallback font will be used while loading"""))
+			it.level == Level.INFO && it.message.matches(Regex(""".*Slow network is detected\. .*Fallback font will be used while loading:.*$"""))
 		}
 	logs.forEach(log)
-	assertThat(logs).isEmpty()
+	assertThat(filteredLogs).isEmpty()
 }
