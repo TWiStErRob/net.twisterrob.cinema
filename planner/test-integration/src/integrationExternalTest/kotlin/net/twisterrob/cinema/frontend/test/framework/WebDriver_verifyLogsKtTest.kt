@@ -28,6 +28,7 @@ import kotlin.uuid.Uuid
 
 private val NL: String = System.lineSeparator()
 
+@Suppress("detekt.ClassNaming")
 class WebDriver_verifyLogsKtTest {
 
 	@Test fun `no logs pass and print nothing`() {
