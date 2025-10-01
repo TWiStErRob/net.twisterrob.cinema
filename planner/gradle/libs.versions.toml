@@ -45,9 +45,9 @@ slf4j = "2.0.17"
 log4j = "2.25.2"
 jansi = "2.4.2"
 
-test-junit-vintage = "4.13.2"
 test-junit-jupiter = "6.0.0"
 test-junit-pioneer = "2.3.0"
+test-junit-vintage = "4.13.2"
 
 test-hamcrest = "3.0"
 test-shazamcrest = "0.11"
@@ -132,11 +132,9 @@ jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
 test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }
 
-test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
-test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "test-junit-jupiter" }
 test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "test-junit-pioneer" }
+test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
 test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }
