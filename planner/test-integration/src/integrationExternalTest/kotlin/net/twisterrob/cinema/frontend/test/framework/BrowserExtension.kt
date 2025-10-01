@@ -10,6 +10,7 @@ import org.openqa.selenium.OutputType
 import org.openqa.selenium.TakesScreenshot
 import org.openqa.selenium.WebDriver
 import java.io.File
+import kotlin.jvm.java
 
 // TODO rewrite using https://bonigarcia.dev/selenium-jupiter/
 class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback, ParameterResolver {
@@ -54,7 +55,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 
 	companion object {
 
-		private val NAMESPACE = ExtensionContext.Namespace.create(BrowserExtension::class.qualifiedName)
+		private val NAMESPACE = ExtensionContext.Namespace.create(BrowserExtension::class.qualifiedName!!)
 
 		private val ExtensionContext.store: ExtensionContext.Store
 			get() = this.getStore(NAMESPACE)
