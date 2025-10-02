@@ -5,33 +5,32 @@ import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.services.Services
+import net.twisterrob.test.neo4j.allNodes
+import net.twisterrob.test.neo4j.boltURI
+import net.twisterrob.test.neo4j.neo4jContainer
+import net.twisterrob.test.neo4j.session
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.neo4j.harness.Neo4j
-import org.neo4j.harness.Neo4jBuilders
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
+@Testcontainers
 class CinemaSyncIntgTest {
 
-	private lateinit var testServer: Neo4j
+	@Container
+	private val neo4j = neo4jContainer()
 
 	private lateinit var sut: CinemaSync
 
 	@BeforeEach fun setUp() {
-		testServer = Neo4jBuilders.newInProcessBuilder().build()
-
 		val dagger = DaggerCinemaSyncIntgTestComponent
 			.builder()
-			.graphDBUri(testServer.boltURI())
+			.graphDBUri(neo4j.boltURI)
 			.build()
 
 		sut = dagger.sync
-	}
-
-	@AfterEach fun tearDown() {
-		testServer.close()
 	}
 
 	@Test fun `no cinemas in feed result in no data synced`() {
@@ -39,7 +38,7 @@ class CinemaSyncIntgTest {
 
 		sut.sync(emptyFeed)
 
-		testServer.defaultDatabaseService().beginTx().apply {
+		neo4j.session {
 			val allNodes = this.allNodes.toList()
 			assertThat(allNodes, empty())
 			// no relationships either, since there are no nodes to connect

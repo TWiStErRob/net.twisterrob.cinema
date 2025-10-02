@@ -7,7 +7,12 @@ import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
+import net.twisterrob.test.neo4j.allProperties
+import net.twisterrob.test.neo4j.id
+import net.twisterrob.test.neo4j.relationships
+import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
@@ -15,8 +20,8 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Node
+import org.neo4j.driver.Driver
+import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import java.time.temporal.ChronoUnit
@@ -57,14 +62,14 @@ class ViewIntgTest {
 		assertThat(views.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new view contains the right node information`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `new view contains the right node information`(session: Session, graph: Driver) {
 		val fixtView: View = fixture.build()
 		session.save(fixtView, -1)
 		session.clear() // drop cached View objects, start fresh
 
 		@Suppress("DestructuringDeclarationWithTooManyEntries") // https://github.com/detekt/detekt/discussions/5123
-		graph.beginTx().use { tx ->
-			val nodes = tx.allNodes.toList()
+		graph.session {
+			val nodes = this.allNodes.toList()
 
 			assertThat(nodes, hasSize(4))
 			val (user, film, view, cinema) = nodes
@@ -73,7 +78,7 @@ class ViewIntgTest {
 			assertSameData(fixtView.watchedFilm, film)
 			assertSameData(fixtView.atCinema, cinema)
 			assertThat(
-				view.relationships, containsInAnyOrder(
+				view.relationships.toList(), containsInAnyOrder(
 					hasRelationship(view, "AT", cinema),
 					hasRelationship(view, "WATCHED", film),
 					hasRelationship(user, "ATTENDED", view)

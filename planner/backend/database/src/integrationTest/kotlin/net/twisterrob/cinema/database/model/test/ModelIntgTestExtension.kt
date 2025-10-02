@@ -4,6 +4,9 @@ import dagger.Component
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.test.get
+import net.twisterrob.test.neo4j.boltURI
+import net.twisterrob.test.neo4j.createDriver
+import net.twisterrob.test.neo4j.neo4jContainer
 import net.twisterrob.test.put
 import net.twisterrob.test.remove
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -12,14 +15,13 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.harness.Neo4j
-import org.neo4j.harness.Neo4jBuilders
+import org.neo4j.driver.Driver
 import org.neo4j.ogm.session.Session
+import org.testcontainers.containers.Neo4jContainer
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Injects parameter [GraphDatabaseService], only one graph will exist during a test.
+ * Injects parameter [Driver], only one graph will exist during a test.
  * Injects parameter [Session], supports multiple sessions in one method.
  *
  * Tip: it is recommended to use a separate [Session] for `sut` and [org.junit.jupiter.api.Test].
@@ -53,11 +55,12 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
-		val testServer = Neo4jBuilders.newInProcessBuilder().build()
+		val testServer = neo4jContainer().apply { start() }
 		extensionContext.store.put(testServer)
+		extensionContext.store.put(testServer.createDriver())
 		val dagger = DaggerModelIntgTestExtensionComponent
 			.builder()
-			.graphDBUri(testServer.boltURI())
+			.graphDBUri(testServer.boltURI)
 			.build()
 		extensionContext.store.put(dagger)
 	}
@@ -65,11 +68,14 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	override fun afterEach(extensionContext: ExtensionContext) {
 		if (!extensionContext.executionException.isPresent) {
 			// Don't try to close if there was an error during initialization.
-			extensionContext.store.get<Neo4j>()?.close()
+			extensionContext.store.get<Driver>()?.close()
+			extensionContext.store.get<Neo4jContainer<*>>()?.stop()
 		} else {
-			extensionContext.store.get<Neo4j>()!!.close()
+			extensionContext.store.get<Driver>()!!.close()
+			extensionContext.store.get<Neo4jContainer<*>>()!!.stop()
 		}
-		extensionContext.store.remove<Neo4j>()
+		extensionContext.store.remove<Driver>()
+		extensionContext.store.remove<Neo4jContainer<*>>()
 		extensionContext.store.remove<ModelIntgTestExtensionComponent>()
 	}
 
@@ -78,8 +84,10 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 
 	override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? =
 		when (parameterContext.parameter.type) {
-			GraphDatabaseService::class.java ->
-				extensionContext.store.get<Neo4j>()!!.defaultDatabaseService()
+			Driver::class.java ->
+				extensionContext.store.get<Driver>()!!
+			Neo4jContainer::class.java ->
+				extensionContext.store.get<Neo4jContainer<*>>()!!
 			Session::class.java ->
 				extensionContext.store.get<ModelIntgTestExtensionComponent>()!!.session
 			else -> error("Unsupported $parameterContext")
@@ -88,7 +96,8 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	companion object {
 
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
-			org.neo4j.graphdb.GraphDatabaseService::class.java,
+			org.neo4j.driver.Driver::class.java,
+			org.testcontainers.containers.Neo4jContainer::class.java,
 			org.neo4j.ogm.session.Session::class.java,
 		)
 	}

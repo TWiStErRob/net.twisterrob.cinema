@@ -7,7 +7,12 @@ import net.twisterrob.cinema.database.model.test.ModelIntgTestExtension
 import net.twisterrob.cinema.database.model.test.hasRelationship
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
+import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
+import net.twisterrob.test.neo4j.allProperties
+import net.twisterrob.test.neo4j.id
+import net.twisterrob.test.neo4j.relationships
+import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
@@ -15,8 +20,8 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Node
+import org.neo4j.driver.Driver
+import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 
@@ -40,13 +45,13 @@ class PerformanceIntgTest {
 		assertThat(performances.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new performance contains the right node information`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `new performance contains the right node information`(session: Session, graph: Driver) {
 		val fixtPerformance: Performance = fixture.build()
 		session.save(fixtPerformance, -1)
 		session.clear() // drop cached Performance objects, start fresh
 
-		graph.beginTx().use { tx ->
-			val nodes = tx.allNodes.toList()
+		graph.session {
+			val nodes = this.allNodes.toList()
 
 			assertThat(nodes, hasSize(3))
 			val (film, performance, cinema) = nodes
