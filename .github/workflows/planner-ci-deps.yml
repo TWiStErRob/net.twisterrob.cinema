@@ -52,7 +52,7 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: "Get the script from ${{ env.HEAD }} branch (so both head and base run the same command)."
         env:
@@ -109,7 +109,7 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: "Dump Dependencies on branch ${{ inputs.head-ref }}."
         working-directory: planner
