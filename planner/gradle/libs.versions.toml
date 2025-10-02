@@ -6,8 +6,8 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
-kotlin = "2.1.21"
-kotlin-ksp = "2.1.21-2.0.2"
+kotlin = "2.2.20"
+kotlin-ksp = "2.2.20-2.0.3"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
@@ -15,7 +15,7 @@ kotlinx-serialization = "1.9.0"
 # TODO review TODELs with detekt mentioned in them.
 detekt = "1.23.8"
 
-dagger = "2.57.1"
+dagger = "2.57.2"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
@@ -42,22 +42,22 @@ jackson = "2.20.0"
 jackson-databind = "2.20.0"
 
 slf4j = "2.0.17"
-log4j = "2.25.1"
+log4j = "2.25.2"
 jansi = "2.4.2"
 
-test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.13.4"
+test-junit-jupiter = "6.0.0"
 test-junit-pioneer = "2.3.0"
+test-junit-vintage = "4.13.2"
 
 test-hamcrest = "3.0"
 test-shazamcrest = "0.11"
 test-jsonAssert = "1.5.3"
-test-assertj = "3.27.4"
+test-assertj = "3.27.6"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "5.19.0"
-test-mockito-kotlin = "6.0.0"
+test-mockito = "5.20.0"
+test-mockito-kotlin = "6.1.0"
 
 test-selenium = "4.35.0"
 test-ngWebDriver = "1.2"
@@ -132,11 +132,9 @@ jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
 test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }
 
-test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
-test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "test-junit-jupiter" }
 test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "test-junit-pioneer" }
+test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
 test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }
