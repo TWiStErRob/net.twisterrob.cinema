@@ -77,7 +77,7 @@ jobs:
           path: planner/**/build/reports/detekt/*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/planner/build/reports/detekt/merge.sarif
