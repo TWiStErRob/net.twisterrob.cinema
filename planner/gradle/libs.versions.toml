@@ -6,7 +6,7 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 kotlin-ksp = "2.3.0"
 kotlinx-html = "0.7.3"
 # @see kotlin
