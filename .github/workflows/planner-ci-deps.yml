@@ -75,7 +75,7 @@ jobs:
 
       - name: "Upload 'Dependencies - Base' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Dependencies - Base'
           if-no-files-found: error
@@ -125,7 +125,7 @@ jobs:
 
       - name: "Upload 'Dependencies - Head' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Dependencies - Head'
           if-no-files-found: error
@@ -149,13 +149,13 @@ jobs:
     steps:
 
       - name: "Download 'Dependencies - Base' artifact."
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: 'Dependencies - Base'
           path: diff/prev
 
       - name: "Download 'Dependencies - Head' artifact."
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: 'Dependencies - Head'
           path: diff/curr
@@ -281,7 +281,7 @@ jobs:
 
       - name: "Upload 'Dependencies - Diffs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Dependencies - Diffs'
           if-no-files-found: error
@@ -311,19 +311,19 @@ jobs:
     steps:
 
       - name: "Download 'Dependencies - Diffs' artifact."
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: 'Dependencies - Diffs'
           path: diff
 
       - name: "Download 'Dependencies - Base' artifact."
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: 'Dependencies - Base'
           path: diff/prev
 
       - name: "Download 'Dependencies - Head' artifact."
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: 'Dependencies - Head'
           path: diff/curr
