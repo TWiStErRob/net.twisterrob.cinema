@@ -4,7 +4,7 @@
 	"license": "UNLICENCED",
 	"repository": "local",
 	"engines": {
-		"node": "22.x",
+		"node": "24.x",
 		"npm": "11.x"
 	},
 	"scripts": {
