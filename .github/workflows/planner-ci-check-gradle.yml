@@ -40,7 +40,7 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: "Build Planner."
         working-directory: planner
@@ -70,14 +70,14 @@ jobs:
 
       - name: "Upload 'Detekt Results'."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Detekt Results'
           if-no-files-found: error
           path: planner/**/build/reports/detekt/*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/planner/build/reports/detekt/merge.sarif
@@ -97,7 +97,7 @@ jobs:
 
       - name: "Upload 'Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Test Results XMLs'
           if-no-files-found: error
@@ -105,7 +105,7 @@ jobs:
 
       - name: "Upload 'Test Results HTML' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Test Results HTML'
           if-no-files-found: error
@@ -113,7 +113,7 @@ jobs:
 
       - name: "Upload 'Test Results HTMLs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Test Results HTMLs'
           if-no-files-found: error

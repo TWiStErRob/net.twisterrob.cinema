@@ -36,10 +36,10 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: "Set up Node."
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version-file: planner/package.json
 
@@ -135,7 +135,7 @@ jobs:
 
       - name: "Upload 'Integration Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Integration Test Results XMLs'
           if-no-files-found: error
@@ -143,7 +143,7 @@ jobs:
 
       - name: "Upload 'Integration Test Results HTML' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Integration Test Results HTML'
           if-no-files-found: error
@@ -151,7 +151,7 @@ jobs:
 
       - name: "Upload 'Integration Test Failure Screenshots' artifact."
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Integration Test Failure Screenshots'
           if-no-files-found: error
@@ -170,7 +170,7 @@ jobs:
 
       - name: "Upload 'Integration Test Logs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Integration Test Logs'
           if-no-files-found: error

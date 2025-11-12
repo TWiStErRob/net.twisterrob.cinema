@@ -12,6 +12,7 @@ dependencies {
 	Deps.junit5(project)
 	Deps.slf4jToLog4jForTest(project, testType = "integrationExternalTest")
 	integrationExternalTestImplementation(projects.testHelpers)
+	integrationExternalTestImplementation(libs.test.mockito.kotlin)
 
 	implementation(libs.test.assertj)
 	implementation(libs.test.selenium)

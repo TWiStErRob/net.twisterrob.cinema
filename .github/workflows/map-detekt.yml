@@ -48,14 +48,14 @@ jobs:
 
       - name: "Upload 'Detekt Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Detekt Results'
           if-no-files-found: error
           path: map/detekt.*
 
       - name: "Publish 'detekt' GitHub Code Scanning analysis."
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/map/detekt.sarif

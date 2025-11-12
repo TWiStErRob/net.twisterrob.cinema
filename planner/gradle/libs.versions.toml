@@ -6,8 +6,8 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
-kotlin = "2.2.20"
-kotlin-ksp = "2.2.20-2.0.3"
+kotlin = "2.2.21"
+kotlin-ksp = "2.3.2"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
@@ -21,32 +21,32 @@ dagger = "2.57.2"
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
 ktor = "2.3.13"
 
-appengine = "2.8.3"
+appengine = "2.8.4"
 
 # To be sure neo4j and neo4j-ogm are compatible,
-# Make sure to match supporting version at https://neo4j.com/developer/neo4j-ogm/#reference:getting-started:versions.
+# Make sure to match supporting version at https://neo4j.com/docs/ogm-manual/current/reference/#reference:getting-started:versions.
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
-neo4j = "2025.07.1"
+neo4j = "2025.10.1"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
-neo4j-java = "5.28.9"
+neo4j-java = "6.0.2"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "4.0.20"
+neo4j-ogm = "5.0.0"
 
-jackson = "2.20.0"
-jackson-databind = "2.20.0"
+jackson = "2.20.1"
+jackson-databind = "2.20.1"
 
 slf4j = "2.0.17"
 log4j = "2.25.2"
 jansi = "2.4.2"
 
-test-junit-vintage = "4.13.2"
-test-junit-jupiter = "5.13.4"
+test-junit-jupiter = "6.0.1"
 test-junit-pioneer = "2.3.0"
+test-junit-vintage = "4.13.2"
 
 test-hamcrest = "3.0"
 test-shazamcrest = "0.11"
@@ -56,9 +56,9 @@ test-assertj = "3.27.6"
 test-jfixture = "2.7.2"
 
 test-mockito = "5.20.0"
-test-mockito-kotlin = "6.0.0"
+test-mockito-kotlin = "6.1.0"
 
-test-selenium = "4.35.0"
+test-selenium = "4.38.0"
 test-ngWebDriver = "1.2"
 test-containers = "1.21.3"
 
@@ -131,11 +131,9 @@ test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = 
 test-containersJupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "test-containers" }
 test-containersNeo4j = { module = "org.testcontainers:neo4j", version.ref = "test-containers" }
 
-test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "test-junit-jupiter" }
-test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-junit-jupiter" }
-test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "test-junit-jupiter" }
 test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "test-junit-pioneer" }
+test-junit-vintage = { module = "junit:junit", version.ref = "test-junit-vintage" }
 
 test-hamcrest = { module = "org.hamcrest:hamcrest-core", version.ref = "test-hamcrest" }
 test-shazamcrest = { module = "com.shazam:shazamcrest", version.ref = "test-shazamcrest" }

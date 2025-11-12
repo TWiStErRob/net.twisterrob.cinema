@@ -1,10 +1,5 @@
 package net.twisterrob.cinema.build
 
-import org.gradle.api.artifacts.dsl.DependencyCollector
-import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.plugins.jvm.JvmTestSuite
-import org.gradle.kotlin.dsl.withType
-
 plugins {
 	id("org.gradle.jvm-test-suite")
 	id("com.google.devtools.ksp")
@@ -18,9 +13,19 @@ testing.suites.withType<JvmTestSuite>().configureEach {
 
 	// Source
 	val collector: DependencyCollector = objects.dependencyCollector()
-	// For use later by JvmComponentDependencies.ksp extension function.
+	// For use later by JvmComponentDependencies.ksp extension property.
 	(this.dependencies as ExtensionAware).extensions.add("ksp", collector)
 
 	// Link
 	kspConfiguration.dependencies.addAllLater(collector.dependencies)
+}
+
+/**
+ * https://docs.gradle.org/9.2.0-rc-1/userguide/upgrading_version_9.html#removed_incubating_objectfactorydependencycollector_method
+ */
+private fun ObjectFactory.dependencyCollector(): DependencyCollector {
+	abstract class DependencyCollectorCreator {
+		abstract val dependencyCollector: DependencyCollector
+	}
+	return newInstance<DependencyCollectorCreator>().dependencyCollector
 }
