@@ -21,7 +21,7 @@ dagger = "2.57.2"
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
 ktor = "2.3.13"
 
-appengine = "2.8.4"
+appengine = "2.8.5"
 
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/docs/ogm-manual/current/reference/#reference:getting-started:versions.
