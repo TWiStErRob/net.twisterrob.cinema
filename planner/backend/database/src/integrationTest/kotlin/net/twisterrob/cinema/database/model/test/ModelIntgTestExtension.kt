@@ -6,7 +6,6 @@ import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.test.get
 import net.twisterrob.test.neo4j.boltURI
 import net.twisterrob.test.neo4j.createDriver
-import net.twisterrob.test.neo4j.neo4jContainer
 import net.twisterrob.test.put
 import net.twisterrob.test.remove
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -16,8 +15,9 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 import org.neo4j.driver.Driver
+import org.neo4j.harness.Neo4j
+import org.neo4j.harness.Neo4jBuilders
 import org.neo4j.ogm.session.Session
-import org.testcontainers.containers.Neo4jContainer
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -55,7 +55,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	}
 
 	override fun beforeEach(extensionContext: ExtensionContext) {
-		val testServer = neo4jContainer().apply { start() }
+		val testServer = Neo4jBuilders.newInProcessBuilder().build()
 		extensionContext.store.put(testServer)
 		extensionContext.store.put(testServer.createDriver())
 		val dagger = DaggerModelIntgTestExtensionComponent
@@ -69,13 +69,13 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 		if (!extensionContext.executionException.isPresent) {
 			// Don't try to close if there was an error during initialization.
 			extensionContext.store.get<Driver>()?.close()
-			extensionContext.store.get<Neo4jContainer<*>>()?.stop()
+			extensionContext.store.get<Neo4j>()?.close()
 		} else {
 			extensionContext.store.get<Driver>()!!.close()
-			extensionContext.store.get<Neo4jContainer<*>>()!!.stop()
+			extensionContext.store.get<Neo4j>()!!.close()
 		}
 		extensionContext.store.remove<Driver>()
-		extensionContext.store.remove<Neo4jContainer<*>>()
+		extensionContext.store.remove<Neo4j>()
 		extensionContext.store.remove<ModelIntgTestExtensionComponent>()
 	}
 
@@ -86,8 +86,8 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 		when (parameterContext.parameter.type) {
 			Driver::class.java ->
 				extensionContext.store.get<Driver>()!!
-			Neo4jContainer::class.java ->
-				extensionContext.store.get<Neo4jContainer<*>>()!!
+			Neo4j::class.java ->
+				extensionContext.store.get<Neo4j>()!!
 			Session::class.java ->
 				extensionContext.store.get<ModelIntgTestExtensionComponent>()!!.session
 			else -> error("Unsupported $parameterContext")
@@ -95,9 +95,10 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 
 	companion object {
 
+		@Suppress("RemoveRedundantQualifierName")
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.driver.Driver::class.java,
-			org.testcontainers.containers.Neo4jContainer::class.java,
+			org.neo4j.harness.Neo4j::class.java,
 			org.neo4j.ogm.session.Session::class.java,
 		)
 	}

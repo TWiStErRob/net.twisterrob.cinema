@@ -27,6 +27,7 @@ appengine = "2.8.6"
 # Make sure to match supporting version at https://neo4j.com/docs/ogm-manual/current/reference/#reference:getting-started:versions.
 # @see log4j should match shaded dependency in [https://github.com/neo4j/neo4j/blob/4.2/pom.xml](neo4j)
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j
+# Artifacts: https://mvnrepository.com/artifact/org.neo4j.test/neo4j-harness
 # Changelog: https://github.com/neo4j/neo4j/wiki/Changelog
 # Upgrades: https://neo4j.com/docs/upgrade-migration-guide/current/
 neo4j = "2025.10.1"
@@ -60,7 +61,6 @@ test-mockito-kotlin = "6.1.0"
 
 test-selenium = "4.38.0"
 test-ngWebDriver = "1.2"
-test-containers = "1.21.3"
 
 [libraries]
 
@@ -108,6 +108,9 @@ neo4j-ogm-driver-bolt = { module = "org.neo4j:neo4j-ogm-bolt-driver", version.re
 
 neo4j = { module = "org.neo4j:neo4j", version.ref = "neo4j" }
 neo4j-driver = { module = "org.neo4j.driver:neo4j-java-driver", version.ref = "neo4j-java" }
+# When using this, mind https://github.com/neo4j/neo4j/issues/12770.
+# To work around, use (applied in root Gradle): Project.configureSLF4JBindings()
+neo4j-harness = { module = "org.neo4j.test:neo4j-harness", version.ref = "neo4j" }
 
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
 jackson-dataformat-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
@@ -128,8 +131,6 @@ jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 
 test-selenium = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "test-selenium" }
 test-selenium-angular = { module = "com.paulhammant:ngwebdriver", version.ref = "test-ngWebDriver" }
-test-containersJupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "test-containers" }
-test-containersNeo4j = { module = "org.testcontainers:neo4j", version.ref = "test-containers" }
 
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "test-junit-jupiter" }
 test-junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "test-junit-pioneer" }

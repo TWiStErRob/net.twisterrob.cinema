@@ -15,7 +15,7 @@ dependencies {
 	compileOnly(libs.test.mockito.kotlin)
 
 	compileOnly(libs.neo4j.driver)
-	compileOnly(libs.test.containersNeo4j)
+	compileOnly(libs.neo4j.harness)
 
 	compileOnly(libs.ktor.client.mock)
 	compileOnly(libs.ktor.server.test)
@@ -28,14 +28,4 @@ dependencies {
 	testImplementation(libs.test.hamcrest)
 	Deps.slf4jToLog4jForTest(project)
 	// TODO add more testImplementation when writing tests
-}
-
-// TODO this should be `java {`, but then it doesn't work, quick repro:
-// gradlew :test-helpers:jar && jar -xf test-helpers/build/libs/twisterrob-cinema-test-helpers.jar META-INF/MANIFEST.MF && type META-INF\MANIFEST.MF
-tasks.named<Jar>("jar").configure {
-	manifest {
-		attributes(
-			"Neo4j-Version" to libs.versions.neo4j.asProvider().get()
-		)
-	}
 }

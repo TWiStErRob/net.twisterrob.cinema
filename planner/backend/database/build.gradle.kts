@@ -32,7 +32,8 @@ dependencies {
 	testImplementation(enforcedPlatform("com.google.code.gson:gson:2.8.9"))
 	testImplementation(projects.testHelpers)
 
-	testImplementation(libs.test.containersNeo4j)
+	testImplementation(libs.neo4j)
+	testImplementation(libs.neo4j.harness)
 
 	Deps.slf4jToLog4jForTest(project)
 
