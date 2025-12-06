@@ -7,7 +7,7 @@ java = "17"
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
 kotlin = "2.2.21"
-kotlin-ksp = "2.3.2"
+kotlin-ksp = "2.3.3"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
@@ -21,7 +21,7 @@ dagger = "2.57.2"
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
 ktor = "2.3.13"
 
-appengine = "2.8.4"
+appengine = "2.8.6"
 
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/docs/ogm-manual/current/reference/#reference:getting-started:versions.
@@ -35,7 +35,7 @@ neo4j = "2025.10.1"
 neo4j-java = "6.0.2"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "5.0.0"
+neo4j-ogm = "5.0.1"
 
 jackson = "2.20.1"
 jackson-databind = "2.20.1"
