@@ -29,8 +29,11 @@ tasks.withType<TestReport>().configureEach {
 	inputs.property("isCI", isCI)
 	doLast {
 		val reportFile = destinationDirectory.file("index.html").get().asFile
-		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
-		if (!successRegex.containsMatchIn(reportFile.readText())) {
+		val reportHtml = reportFile.readText()
+		val failureRegex = """(?s)<div class="infoBox">\s*<div class="counter">(\d+)<\/div>\s*<p>failures</p>""".toRegex()
+		if (!failureRegex.containsMatchIn(reportHtml)
+			|| failureRegex.findAll(reportHtml).any { it.groups[1]?.value != "0" }
+		) {
 			val clickableUri = reportFile.toURI().toString().replace("file:/", "file:///")
 			val message = "There were failing tests. See the report at: ${clickableUri}"
 			if (isCI) {
