@@ -55,7 +55,7 @@ val Node.allProperties: Map<String, Any?>
 /**
  * @receiver org.neo4j.driver.Session
  */
-fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
+private fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 	this
 		.run(
 			// language=cypher
