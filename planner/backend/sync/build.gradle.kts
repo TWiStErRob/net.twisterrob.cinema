@@ -59,7 +59,7 @@ dependencies {
 	testImplementation(libs.test.containersJupiter)
 	testImplementation(libs.test.containersNeo4j)
 
-	integrationTestImplementation(projects.testHelpers)
+	integrationTestCompileOnly(libs.neo4j.driver)
 
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)
