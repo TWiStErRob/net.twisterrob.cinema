@@ -86,8 +86,6 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 		when (parameterContext.parameter.type) {
 			Driver::class.java ->
 				extensionContext.store.get<Driver>()!!
-			Neo4j::class.java ->
-				extensionContext.store.get<Neo4j>()!!
 			Session::class.java ->
 				extensionContext.store.get<ModelIntgTestExtensionComponent>()!!.session
 			else -> error("Unsupported $parameterContext")
@@ -98,7 +96,6 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 		@Suppress("RemoveRedundantQualifierName")
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.driver.Driver::class.java,
-			org.neo4j.harness.Neo4j::class.java,
 			org.neo4j.ogm.session.Session::class.java,
 		)
 	}

@@ -1,11 +1,12 @@
 package net.twisterrob.test.neo4j
 
 import org.neo4j.driver.Driver
+import org.neo4j.driver.Session
 import org.neo4j.driver.SimpleQueryRunner
 import org.neo4j.driver.types.Node
 import org.neo4j.driver.types.Relationship
 
-fun <R> Driver.session(block: (org.neo4j.driver.Session).() -> R): R =
+fun <R> Driver.session(block: (Session).() -> R): R =
 	this.session().use(block)
 
 /**
@@ -15,7 +16,11 @@ val SimpleQueryRunner.allNodes: Iterable<Node>
 	get() =
 		this
 			.run(
-				"MATCH (n) RETURN n",
+				// language=cypher
+				"""
+						MATCH (n)
+						RETURN n
+				""".trimIndent(),
 			)
 			.asSequence()
 			.map { it["n"].asNode() }
@@ -28,7 +33,11 @@ val SimpleQueryRunner.allRelationships: Iterable<Relationship>
 	get() =
 		this
 			.run(
-				"MATCH ()-[r]->() RETURN r",
+				// language=cypher
+				"""
+						MATCH ()-[r]->()
+						RETURN r
+				""".trimIndent(),
 			)
 			.asSequence()
 			.map { it["r"].asRelationship() }
@@ -49,7 +58,12 @@ val Node.allProperties: Map<String, Any?>
 fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship> =
 	this
 		.run(
-			$$"MATCH (n)-[r]-() WHERE elementId(n) = $elementId RETURN r",
+			// language=cypher
+			$$"""
+					MATCH (n)-[r]-()
+					WHERE elementId(n) = $elementId
+					RETURN r
+			""".trimIndent(),
 			mapOf("elementId" to node.elementId()),
 		)
 		.asSequence()
