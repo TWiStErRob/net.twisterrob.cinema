@@ -19,6 +19,9 @@ kotlin {
 		allWarningsAsErrors = true
 		verbose = true
 
+		// Opt in to Context Parameters.
+		freeCompilerArgs.add("-Xcontext-parameters")
+
 		// Enable flag to help suppress compiler warnings.
 		freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
 

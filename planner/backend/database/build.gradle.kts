@@ -14,7 +14,7 @@ dependencies {
 dependencies {
 	api(libs.jackson.databind) // override to equalize versions
 	api(libs.neo4j.ogm)
-	implementation(libs.neo4j.ogm.driver)
+	implementation(libs.neo4j.driver)
 	runtimeOnly(libs.neo4j.ogm.driver.bolt)
 }
 
@@ -32,7 +32,6 @@ dependencies {
 	testImplementation(enforcedPlatform("com.google.code.gson:gson:2.8.9"))
 	testImplementation(projects.testHelpers)
 
-	testImplementation(libs.neo4j)
 	testImplementation(libs.neo4j.harness)
 
 	Deps.slf4jToLog4jForTest(project)

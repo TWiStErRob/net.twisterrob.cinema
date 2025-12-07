@@ -8,15 +8,20 @@ import net.twisterrob.neo4j.ogm.TimestampConverter
 import net.twisterrob.test.assertAll
 import net.twisterrob.test.build
 import net.twisterrob.test.emptyIterable
+import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
+import net.twisterrob.test.neo4j.allProperties
+import net.twisterrob.test.neo4j.id
+import net.twisterrob.test.neo4j.relationships
+import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
-import org.neo4j.graphdb.Node
+import org.neo4j.driver.Driver
+import org.neo4j.driver.types.Node
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import java.time.ZoneOffset
@@ -41,13 +46,13 @@ class FilmIntgTest {
 		assertThat(films.elementAt(0), sameBeanAs(expected))
 	}
 
-	@Test fun `new film contains the right node information`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `new film contains the right node information`(session: Session, graph: Driver) {
 		val fixtFilm: Film = fixture.build()
 		session.save(fixtFilm, -1)
 		session.clear() // drop cached Film objects, start fresh
 
-		graph.beginTx().use { tx ->
-			val films = tx.allNodes.toList()
+		graph.session {
+			val films = this.allNodes.toList()
 
 			assertThat(films, hasSize(1))
 			val film = films.single()

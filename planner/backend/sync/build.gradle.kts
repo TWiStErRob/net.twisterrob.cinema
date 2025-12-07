@@ -56,8 +56,9 @@ dependencies {
 
 	testImplementation(libs.jackson.module.kotlin)
 	testImplementation(libs.jackson.datatype.java8)
-	testImplementation(libs.neo4j)
 	testImplementation(libs.neo4j.harness)
+
+	integrationTestImplementation(projects.testHelpers)
 
 	testFixturesImplementation(projects.backend.database)
 	testFixturesImplementation(projects.testHelpers)

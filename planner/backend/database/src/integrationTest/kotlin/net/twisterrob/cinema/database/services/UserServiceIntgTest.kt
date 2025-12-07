@@ -20,9 +20,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.neo4j.graphdb.GraphDatabaseService
+import org.neo4j.driver.Driver
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.load
+import net.twisterrob.test.neo4j.allNodes
+import net.twisterrob.test.neo4j.relationships
+import net.twisterrob.test.neo4j.session
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -75,7 +78,7 @@ class UserServiceIntgTest {
 		assertThat("Data in database is the same as just added User", data, sameBeanAs(result))
 	}
 
-	@Test fun `addUser() does not create a new identical user`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `addUser() does not create a new identical user`(session: Session, graph: Driver) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -99,8 +102,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->
@@ -110,7 +113,7 @@ class UserServiceIntgTest {
 		}
 	}
 
-	@Test fun `addUser() does create a new totally different user`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `addUser() does create a new totally different user`(session: Session, graph: Driver) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -136,8 +139,8 @@ class UserServiceIntgTest {
 			this.realm = fixtRealm
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -152,7 +155,7 @@ class UserServiceIntgTest {
 	}
 
 	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
-	@Test fun `addUser() preserves date format`(graph: GraphDatabaseService) {
+	@Test fun `addUser() preserves date format`(graph: Driver) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -181,8 +184,8 @@ class UserServiceIntgTest {
 			this.realm = fixtRealm
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -193,7 +196,7 @@ class UserServiceIntgTest {
 	}
 
 	// Regression for https://github.com/neo4j/neo4j-ogm/issues/766
-	@Test fun `addUser() preserves date format (no millies)`(graph: GraphDatabaseService) {
+	@Test fun `addUser() preserves date format (no millies)`(graph: Driver) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -222,8 +225,8 @@ class UserServiceIntgTest {
 			this.realm = fixtRealm
 			this._created = fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)
 		}
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { user ->
@@ -234,7 +237,7 @@ class UserServiceIntgTest {
 	}
 
 	@Test fun `addUser() does create a new different user with exact same properties`(
-		session: Session, graph: GraphDatabaseService
+		session: Session, graph: Driver
 	) {
 		val fixtUser: User = fixture.build()
 		session.save(fixtUser)
@@ -249,8 +252,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtUser._created.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, not(equalTo(fixtUser.graphId)))
 
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(2))
 			users[0].let { userNode ->
@@ -264,7 +267,7 @@ class UserServiceIntgTest {
 		}
 	}
 
-	@Test fun `addUser() updates all fields on change`(session: Session, graph: GraphDatabaseService) {
+	@Test fun `addUser() updates all fields on change`(session: Session, graph: Driver) {
 		val fixtUserId: String = fixture.build()
 		val fixtEmail: String = fixture.build()
 		val fixtName: String = fixture.build()
@@ -288,8 +291,8 @@ class UserServiceIntgTest {
 		assertThat(result._created, equalTo(fixtCreated.withOffsetSameInstant(ZoneOffset.UTC)))
 		assertThat(result.graphId, equalTo(savedUser.graphId))
 
-		graph.beginTx().use { tx ->
-			val users = tx.allNodes.toList()
+		graph.session {
+			val users = this.allNodes.toList()
 
 			assertThat(users, hasSize(1))
 			users.single().let { userNode ->

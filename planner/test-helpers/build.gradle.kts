@@ -14,7 +14,7 @@ dependencies {
 	compileOnly(libs.test.mockito)
 	compileOnly(libs.test.mockito.kotlin)
 
-	compileOnly(libs.neo4j)
+	compileOnly(libs.neo4j.driver)
 	compileOnly(libs.neo4j.harness)
 
 	compileOnly(libs.ktor.client.mock)

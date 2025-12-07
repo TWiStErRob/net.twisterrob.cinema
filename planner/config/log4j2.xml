@@ -95,6 +95,7 @@
 			but then the level is ALL by default from <Root>.
 		-->
 		<Logger name="org.neo4j.driver.internal" level="INFO" />
+		<Logger name="org.neo4j.bolt.connection" level="INFO" />
 
 		<!-- on every request these lines are logged:
 			DEBUG (BoltTransaction.java:61) No current transaction, starting a new one
@@ -102,6 +103,10 @@
 			DEBUG (BoltTransaction.java:94) Committing native transaction: org.neo4j.driver.internal.InternalTransaction@520cd73
 		-->
 		<Logger name="org.neo4j.ogm.drivers.bolt.transaction.BoltTransaction" level="INFO" />
+		<!--
+			DEBUG (BoltRequest.java:177) Request: <cypher query>
+		-->
+		<Logger name="org.neo4j.ogm.drivers.bolt.request.BoltRequest" level="INFO" />
 
 		<!-- not using transactions yet:
 			DEBUG (AbstractTransaction.java:83) Thread 78: Commit transaction extent: 0
@@ -125,6 +130,11 @@
 			DEBUG (MetaData.java:198) no implementing class or concrete subclass found!
 		-->
 		<Logger name="org.neo4j.ogm.metadata.MetaData" level="INFO" />
+		<!--
+			DEBUG (DomainInfo.java:177) Processing: Model -> Parent
+			DEBUG (DomainInfo.java:257) Post-processing: Model
+		-->
+		<Logger name="org.neo4j.ogm.metadata.DomainInfo" level="INFO" />
 
 		<!-- on startup
 			DEBUG (PlatformDependent.java:987) Platform: Windows
@@ -182,7 +192,11 @@
 			DEBUG (ByteBufUtil.java:98) -Dio.netty.maxThreadLocalCharBufferSize: 16384
 		-->
 		<Logger name="io.netty" level="INFO" />
-		
+		<!--
+			Low-level Bolt protocol stuff.
+		--> 
+		<Logger name="org.neo4j.bolt.connection.netty" level="INFO" />
+
 		<!-- on test startup, repeated many times and many others
 			DEBUG org.eclipse.jetty.util.component.ContainerLifeCycle(ContainerLifeCycle.java:419) org.eclipse.jetty.server.session.SessionHandler1378287256==dftMaxIdleSec=-1 added {ConstraintSecurityHandler@6722f78d{STOPPED},MANAGED}
 			DEBUG org.eclipse.jetty.util.thread.QueuedThreadPool(QueuedThreadPool.java:863) Starting Thread[qtp2105949564-59,5,main]
