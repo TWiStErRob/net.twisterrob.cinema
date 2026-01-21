@@ -19,7 +19,7 @@
 		"test:jshint": "jshint --verbose --show-non-errors src/planner/scripts"
 	},
 	"dependencies": {
-		"lodash": "4.17.21",
+		"lodash": "4.17.23",
 		"bootstrap": "3.4.1",
 		"angular": "1.8.3",
 		"angular-resource": "1.8.3",
