@@ -39,7 +39,7 @@ pluginManagement {
 
 plugins {
 	id("net.twisterrob.cinema.settings")
-	id("net.twisterrob.gradle.plugin.nagging") version "0.18"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.19"
 }
 
 dependencyResolutionManagement {
