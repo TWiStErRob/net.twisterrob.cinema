@@ -7,8 +7,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.call
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
@@ -18,7 +19,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.intercept
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
@@ -67,19 +67,21 @@ class AuthController @Inject constructor(
 	 */
 	@Suppress("LongMethod", "CognitiveComplexMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
-		@Suppress("DEPRECATION") // STOPSHIP
-		intercept(ApplicationCallPipeline.Plugins) {
-			val session: AuthSession? = call.sessions.get()
-			if (session != null) {
-				try {
-					val user = authRepository.findUser(session.userId)
-					call.attributes.currentUser = CurrentUser(user.id, user.email)
-				} catch (ex: UnknownUserException) {
-					call.application.log.error("Invalid session: {}", call.sessions, ex)
-					call.sessions.clear<AuthSession>()
+		// Install user session loading plugin
+		application.install(createApplicationPlugin(name = "UserSessionPlugin") {
+			onCall { call ->
+				val session: AuthSession? = call.sessions.get()
+				if (session != null) {
+					try {
+						val user = authRepository.findUser(session.userId)
+						call.attributes.currentUser = CurrentUser(user.id, user.email)
+					} catch (ex: UnknownUserException) {
+						call.application.log.error("Invalid session: {}", call.sessions, ex)
+						call.sessions.clear<AuthSession>()
+					}
 				}
 			}
-		}
+		})
 
 		authenticate(optional = true) {
 			get<Auth.Routes.Account> {
