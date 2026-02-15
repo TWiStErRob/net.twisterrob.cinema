@@ -32,7 +32,6 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.resources.Resources
-import io.ktor.serialization.kotlinx.KotlinxSessionSerializer
 import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
@@ -105,7 +104,6 @@ internal fun Application.configuration(
 	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
-			serializer = KotlinxSessionSerializer(AuthSession.serializer())
 			val secretSignKey = "twister".toByteArray()
 			transform(SessionTransportTransformerMessageAuthentication(secretSignKey))
 		}

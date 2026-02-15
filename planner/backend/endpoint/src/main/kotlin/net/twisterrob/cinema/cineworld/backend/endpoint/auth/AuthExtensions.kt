@@ -2,7 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.auth
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.auth.getPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.response.respondText
 import io.ktor.util.Attributes
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
@@ -10,7 +10,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
 
 // TODO what's the difference to hasUser?
 val ApplicationCall.isAuthenticated: Boolean
-	get() = this.getPrincipal<io.ktor.server.auth.Principal>() != null
+	get() = this.principal<Any>() != null
 
 /**
  * @see userId if this is `true`, the user ID can be retrieved
