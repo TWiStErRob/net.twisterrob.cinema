@@ -36,7 +36,6 @@ import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.get
-import io.ktor.server.sessions.reflectionSessionSerializer
 import io.ktor.server.sessions.sessions
 import kotlinx.html.HTML
 import kotlinx.html.body
@@ -105,7 +104,6 @@ internal fun Application.configuration(
 	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
-			serializer = reflectionSessionSerializer() // STOPSHIP wasn't needed before
 			val secretSignKey = "twister".toByteArray()
 			transform(SessionTransportTransformerMessageAuthentication(secretSignKey))
 		}
