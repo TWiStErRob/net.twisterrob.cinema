@@ -1,6 +1,6 @@
 [versions]
 
-java = "17"
+java = "21"
 # @see jackson
 # @see ktor
 # @see kotlinx-coroutines
@@ -86,6 +86,7 @@ ktor-client-engine-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
+ktor-serialization-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx", version.ref = "ktor" }
 
 ktor-server = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-test = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
