@@ -10,8 +10,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
 
 // TODO what's the difference to hasUser?
 val ApplicationCall.isAuthenticated: Boolean
-	@Suppress("DEPRECATION") // STOPSHIP
-	get() = this.authentication.principal<io.ktor.server.auth.Principal>() != null
+	get() = this.authentication.principal<Any>() != null
 
 /**
  * @see userId if this is `true`, the user ID can be retrieved
