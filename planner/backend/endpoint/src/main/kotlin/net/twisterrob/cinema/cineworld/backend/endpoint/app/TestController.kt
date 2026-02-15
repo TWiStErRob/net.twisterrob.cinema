@@ -40,8 +40,7 @@ class TestController @Inject constructor(
 				  -> ${root.canonicalPath}
 			""".trimIndent()
 		)
-		@Suppress("DEPRECATION") // STOPSHIP
-		intercept(ApplicationCallPipeline.Call) {
+		intercept(ApplicationCallPipeline.Monitoring) {
 			val fullPathAndQuery = this.call.request.uri.ending
 			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
 			if (fakeFullPathAndQueryFile.exists()) {

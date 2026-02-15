@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory
  */
 @TestInstance(Lifecycle.PER_METHOD)
 @Execution(ExecutionMode.SAME_THREAD)
-@Disabled // STOPSHIP
 class ConfigureLoggingFuncTest {
 
 	/**

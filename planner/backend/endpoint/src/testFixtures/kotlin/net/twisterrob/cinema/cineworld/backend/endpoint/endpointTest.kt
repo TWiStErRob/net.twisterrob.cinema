@@ -21,7 +21,7 @@ import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
  * @param testConfig Configuration overrides for the ktor application. See `src/main/resources/application.conf`.
  * @param test Test code to execute after the application has started up.
  */
-fun Any.endpointTest( // STOPSHIP why receiver?
+fun endpointTest(
 	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { daggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
@@ -30,12 +30,6 @@ fun Any.endpointTest( // STOPSHIP why receiver?
 ) {
 	val testLog = KtorSimpleLogger("ktor.test")
 	val application = TestApplication {
-		application {
-			intercept(ApplicationCallPipeline.Monitoring) {
-				call.attributes.testInstance = this@endpointTest
-				proceed()
-			}
-		}
 		serverConfig {
 			developmentMode = true
 		}
