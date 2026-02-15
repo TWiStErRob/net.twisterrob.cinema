@@ -4,17 +4,17 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.encodeURLPath
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
-import io.ktor.server.application.PipelineCall
+import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.request.path
 import io.ktor.server.request.uri
 import io.ktor.server.response.header
 import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.intercept
-import io.ktor.util.pipeline.PipelineContext
-import kotlinx.coroutines.launch
+import io.ktor.util.AttributeKey
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.environment
@@ -40,32 +40,42 @@ class TestController @Inject constructor(
 				  -> ${root.canonicalPath}
 			""".trimIndent()
 		)
-		@Suppress("DEPRECATION") // STOPSHIP
-		intercept(ApplicationCallPipeline.Call) {
-			val fullPathAndQuery = this.call.request.uri.ending
-			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
-			if (fakeFullPathAndQueryFile.exists()) {
-				respondFake(fakeFullPathAndQueryFile)
-				return@intercept
-			}
-
-			val fullPath = this.call.request.path().ending
-			val fakeFullPathFile = root.resolve(fullPath)
-			if (fakeFullPathFile.exists()) {
-				respondFake(fakeFullPathFile)
-				return@intercept
-			}
-
-			// no fake found, respond normally
+		
+		application.install(FakeContentPlugin) {
+			this.root = root
 		}
 	}
+	
+	private class FakeContentConfiguration {
+		var root: File = File(".")
+	}
+	
+	private val FakeContentPlugin = createApplicationPlugin(
+		name = "FakeContentPlugin",
+		createConfiguration = ::FakeContentConfiguration
+	) {
+		val root = pluginConfig.root
+		
+		onCall { call ->
+			val fullPathAndQuery = call.request.uri.ending
+			val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
+			if (fakeFullPathAndQueryFile.exists()) {
+				call.application.log.warn("Fake response to ${call.request.uri} with ${fakeFullPathAndQueryFile.canonicalPath}")
+				call.response.header(HttpHeaders.XForwardedServer, "fakes")
+				call.respondFile(fakeFullPathAndQueryFile)
+				return@onCall
+			}
 
-	private fun PipelineContext<Unit, PipelineCall>.respondFake(path: File) {
-		launch {
-			call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
-			call.response.header(HttpHeaders.XForwardedServer, "fakes")
-			call.respondFile(path)
-			finish()
+			val fullPath = call.request.path().ending
+			val fakeFullPathFile = root.resolve(fullPath)
+			if (fakeFullPathFile.exists()) {
+				call.application.log.warn("Fake response to ${call.request.uri} with ${fakeFullPathFile.canonicalPath}")
+				call.response.header(HttpHeaders.XForwardedServer, "fakes")
+				call.respondFile(fakeFullPathFile)
+				return@onCall
+			}
+
+			// no fake found, proceed normally
 		}
 	}
 }
