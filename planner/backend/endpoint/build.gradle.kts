@@ -33,6 +33,8 @@ dependencies {
 	implementation(libs.ktor.server.auth)
 	implementation(libs.ktor.server.content)
 	implementation(libs.ktor.serialization.jackson)
+	implementation(libs.ktor.serialization.kotlinx)
+	implementation(libs.kotlinx.serialization.json)
 	implementation(libs.ktor.server.logging)
 	implementation(libs.ktor.server.caching)
 	implementation(libs.ktor.server.compression)
