@@ -531,24 +531,24 @@ This document contains evidence-based recommendations for Ktor improvements, der
 ## 🎯 Implementation Priority
 
 ### Phase 1: Critical & High Priority (Do First)
-1. ✅ **Fix session security** (#18) - Critical security issue
-2. ✅ **Upgrade to Ktor 3.4.0** (#1) - Unlocks all other improvements
-3. ✅ **Remove runBlocking** (#2) - Better concurrency
-4. ✅ **Add HttpRequestRetry** (#5) - Better reliability
-5. ✅ **Add DoubleReceive** (#9) - Fix existing logging issues
+1. ✅ **Fix session security** (Item 18) - Critical security issue
+2. ✅ **Upgrade to Ktor 3.4.0** (Item 1) - Unlocks all other improvements
+3. ✅ **Remove runBlocking** (Item 2) - Better concurrency
+4. ✅ **Add HttpRequestRetry** (Item 5) - Better reliability
+5. ✅ **Add DoubleReceive** (Item 9) - Fix existing logging issues
 
 ### Phase 2: High Value (Do Next)
-6. **Add typed configuration** (#3) - Better type safety
-7. **Add DefaultRequest** (#6) - Cleaner code
-8. **Add CallId** (#8) - Better debugging
-9. **Enable HTTP/2** (#10) - Performance
-10. **Fix deprecated APIs** (#11, #12) - Future-proofing
+6. **Add typed configuration** (Item 3) - Better type safety
+7. **Add DefaultRequest** (Item 6) - Cleaner code
+8. **Add CallId** (Item 8) - Better debugging
+9. **Enable HTTP/2** (Item 10) - Performance
+10. **Fix deprecated APIs** (Items 11, 12) - Future-proofing
 
 ### Phase 3: Nice to Have (Do Later)
-11. **OpenAPI generation** (#4) - Better documentation
-12. **Dependency Injection** (#7) - Evaluate vs Dagger
-13. **Static content improvements** (#13)
-14. **Testing improvements** (#23, #24)
+11. **OpenAPI generation** (Item 4) - Better documentation
+12. **Dependency Injection** (Item 7) - Evaluate vs Dagger
+13. **Static content improvements** (Item 13)
+14. **Testing improvements** (Items 23, 24)
 15. All remaining improvements
 
 ---
