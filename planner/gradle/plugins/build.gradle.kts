@@ -27,7 +27,7 @@ detekt {
 	allRules = true
 	config.setFrom(rootProject.file("../../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
-	basePath = rootProject.projectDir.parentFile.parentFile.parentFile.absolutePath
+	basePath = rootProject.projectDir.parentFile.parentFile.parentFile
 	// TODO doesn't work, "detektMain" is disabled because https://github.com/detekt/detekt/issues/5501.
 	// > Execution failed for task ':plugins:detektMain'.
 	// > > Front-end Internal error: Failed to analyze declaration gradle_plugins_src_main_kotlin_net_twisterrob_cinema_build_compilation_gradle
@@ -38,31 +38,31 @@ detekt {
 
 	parallel = true
 
-	tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		reports {
 			html.required = true // human
-			xml.required = true // checkstyle
-			txt.required = true // console
+			checkstyle.required = true // checkstyle
+			markdown.required = true // console
 			// https://sarifweb.azurewebsites.net
 			sarif.required = true // GitHub Code Scanning
 		}
 	}
 }
 
-val detektReportMergeTask = rootProject.tasks.register<io.gitlab.arturbosch.detekt.report.ReportMergeTask>("detektReportMergeSarif") {
+val detektReportMergeTask = rootProject.tasks.register<dev.detekt.gradle.report.ReportMergeTask>("detektReportMergeSarif") {
 	output = rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif")
 }
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 	reports {
 		// https://sarifweb.azurewebsites.net
 		sarif.required = true // GitHub Code Scanning
 	}
 }
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
+tasks.withType<dev.detekt.gradle.Detekt> {
 	val detektReportingTask = this@withType
 	detektReportMergeTask.configure {
 		mustRunAfter(detektReportingTask)
-		input.from(detektReportingTask.sarifReportFile)
+		input.from(detektReportingTask.reports.sarif.outputLocation)
 	}
 }
 
@@ -70,7 +70,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 tasks.register("detektEach") {
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
 	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
-	dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().named { it != "detektMain" })
+	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" })
 }
 
 val isCI: Boolean
