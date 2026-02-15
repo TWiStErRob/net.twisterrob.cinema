@@ -1,422 +1,590 @@
-# Ktor Improvements Recommendations
+# Ktor Improvements - Evidence-Based Recommendations
 
 ## Overview
-This document contains a comprehensive list of proposed improvements for the Ktor usage in this project. The project currently uses **Ktor 2.3.13** and could benefit from various optimizations, new features, and best practices.
+This document contains evidence-based recommendations for Ktor improvements, derived from official release notes from the [Ktor GitHub repository](https://github.com/ktorio/ktor/releases) and [Ktor documentation](https://github.com/ktorio/ktor-documentation).
 
-## Current State Analysis
-
-### Dependencies
-- **Ktor Version**: 2.3.13
-- **Server Engine**: Netty
-- **Client Engine**: OkHttp
-- **Serialization**: Jackson (for both server and client)
-- **Key Server Plugins**: Authentication, Sessions, ContentNegotiation, CallLogging, CachingHeaders, Compression, DefaultHeaders, StatusPages, Resources
-- **Key Client Plugins**: ContentNegotiation, Logging
-
-### Architecture
-- Multiple backend modules using Ktor client (quickbook, feed, network)
-- Custom server logging plugin (`ServerLogging`)
-- Custom header logging feature (`HeaderLoggingFeature`)
-- OAuth 2.0 authentication with Google
-- Type-safe routing with Resources plugin
-- Uses `runBlocking` in several client service implementations
+**Current Version**: Ktor 2.3.13 (Released: November 20, 2024)  
+**Latest Stable**: Ktor 3.4.0 (Released: January 23, 2026)  
+**Recommendation**: Upgrade to Ktor 3.x to access 2+ years of improvements
 
 ---
 
-## Proposed Improvements
+## 🔴 Critical Issues in Current Code
 
-### 🚀 Major Improvements
+### Current Anti-Patterns Found
 
-#### 1. Upgrade to Ktor 3.0+
-- [ ] **Upgrade Ktor from 2.3.13 to 3.0.x (or latest 3.x)**
-  - **Benefits**: 
-    - 90%+ performance improvements in I/O operations (kotlinx-io migration)
-    - Server-Sent Events (SSE) support
-    - Better structured concurrency
-    - Improved stability and bug fixes
-  - **Migration effort**: Medium
-  - **Breaking changes**: 
-    - `ApplicationEngine` relationship changes
-    - Some deprecated APIs need updating
-    - I/O classes (`Input`, `Output`, `ByteReadChannel`, `ByteWriteChannel`) migrated to kotlinx-io
-  - **References**: 
-    - https://ktor.io/docs/migrating-3.html
-    - https://blog.jetbrains.com/kotlin/2024/10/ktor-3-0/
-  - **Files to update**: `planner/gradle/libs.versions.toml`, potentially all Ktor-using files
+1. **Using `runBlocking` in Service Methods**
+   - **Location**: `QuickbookServiceNetwork.kt`, `FeedServiceNetwork.kt`
+   - **Problem**: Blocks threads unnecessarily, prevents proper structured concurrency
+   - **Solution**: Make service methods suspend functions (supported since Ktor 3.2.0)
+   - **Reference**: [KTOR-8005](https://youtrack.jetbrains.com/issue/KTOR-8005) - "Allow suspend Ktor modules"
 
-#### 2. Replace Jackson with kotlinx-serialization
-- [ ] **Migrate from Jackson to kotlinx-serialization for JSON content negotiation**
-  - **Benefits**:
-    - Native Kotlin support with first-class null safety
-    - Compile-time safety (no reflection)
-    - Better performance (faster startup, lower memory usage)
-    - Multiplatform ready (if needed in future)
-    - Better integration with Kotlin idioms (data classes, default parameters)
-    - Smaller runtime footprint
-  - **Migration effort**: Medium-High
-  - **Considerations**: 
-    - Need to migrate custom serializers (e.g., `OffsetDateTimeJsonSerializer`)
-    - XML parsing still needs Jackson (for feed module)
-    - Some Jackson-specific features may need alternatives
-  - **References**: 
-    - https://ktor.io/docs/server-serialization.html
-    - https://kotlinlang.org/docs/serialization.html
-  - **Files affected**: 
-    - `configuration.kt`, `QuickbookServiceNetwork.kt`, `FeedServiceNetwork.kt`
-    - All data classes need `@Serializable` annotation
+2. **Hardcoded Session Secret**
+   - **Location**: `configuration.kt` line 107: `val secretSignKey = "twister".toByteArray()`
+   - **Problem**: Security vulnerability, weak encryption
+   - **Solution**: Load from environment variable or secure configuration
+   - **Impact**: High security risk
 
-#### 3. Remove `runBlocking` and use proper suspend functions
-- [ ] **Refactor service methods to be proper suspend functions instead of using `runBlocking`**
-  - **Benefits**:
-    - Better structured concurrency
-    - Proper cancellation support
-    - More efficient resource usage
-    - No thread blocking
-    - Better testability
-  - **Migration effort**: Medium
-  - **Changes needed**:
-    - Make service interface methods suspend
-    - Update all callers to use coroutine context
-    - Update tests to use proper coroutine test utilities
-  - **References**: 
-    - https://ktor.io/docs/server-http-request-lifecycle.html
-    - https://kotlinlang.org/docs/coroutines-guide.html
-  - **Files affected**:
-    - `QuickbookServiceNetwork.kt`
-    - `FeedServiceNetwork.kt`
-    - All service implementations and callers
+3. **No Retry Logic for HTTP Requests**
+   - **Problem**: Network failures cause immediate errors
+   - **Solution**: Use `HttpRequestRetry` plugin (available in all Ktor 2.x)
+   - **Reference**: [KTOR-6770](https://youtrack.jetbrains.com/issue/KTOR-6770) - Retry improvements
 
 ---
 
-### 🔧 Medium Improvements
+## 🚀 Major Improvements (High Priority)
 
-#### 4. Add HttpRequestRetry plugin for resilience
-- [ ] **Add retry logic to HTTP clients for better resilience**
-  - **Benefits**:
-    - Automatic retries on transient failures
-    - Exponential backoff support
-    - Better handling of network issues
-    - Configurable retry strategies
-  - **Migration effort**: Low
-  - **Configuration example**:
-    ```kotlin
-    install(HttpRequestRetry) {
-        retryOnServerErrors(maxRetries = 3)
-        exponentialDelay()
-    }
-    ```
-  - **References**: https://ktor.io/docs/client-request-retry.html
-  - **Files affected**: `SyncAppModule.kt`, `GenerateAppModule.kt`, `App.kt` (where HttpClient is created)
+### 1. Upgrade to Ktor 3.0+ ⭐⭐⭐⭐⭐
+- [ ] **Upgrade from 2.3.13 to 3.4.0 (or latest 3.x)**
+  
+  **Benefits from Official Release Notes**:
+  - **Performance**: 90%+ I/O performance improvements via kotlinx-io migration (Ktor 3.0.0)
+  - **Server-Sent Events**: Built-in SSE support for both server and client (Ktor 3.0.0-beta-1)
+  - **Zstd Compression**: Support for Zstandard compression algorithm ([KTOR-7075](https://youtrack.jetbrains.com/issue/KTOR-7075), Ktor 3.4.0)
+  - **Jackson 3**: Support for latest Jackson version ([KTOR-9209](https://youtrack.jetbrains.com/issue/KTOR-9209), Ktor 3.4.0)
+  - **HTTP/2**: Java engines now use HTTP/2 by default ([KTOR-9097](https://youtrack.jetbrains.com/issue/KTOR-9097), Ktor 3.4.0)
+  - **OkHttp 5**: Upgraded from 4.12.0 to 5.1.0 ([KTOR-8652](https://youtrack.jetbrains.com/issue/KTOR-8652), Ktor 3.3.0)
+  - **Jetty 12**: Server/client upgraded to Jetty 12 ([KTOR-6734](https://youtrack.jetbrains.com/issue/KTOR-6734), Ktor 3.3.0)
+  - **Kotlin 2.3**: Latest Kotlin version support ([KTOR-9242](https://youtrack.jetbrains.com/issue/KTOR-9242), Ktor 3.4.0)
+  
+  **Migration Effort**: Medium  
+  **Breaking Changes**:
+  - Application/Engine relationship changes
+  - kotlinx-io migration (old I/O APIs deprecated but still work)
+  - Some API renames and deprecations
+  
+  **Migration Guide**: https://ktor.io/docs/migrating-3.html  
+  **Files to Update**: `planner/gradle/libs.versions.toml`
 
-#### 5. Use DefaultRequest plugin for base URLs
-- [ ] **Consolidate common request configuration using DefaultRequest plugin**
-  - **Benefits**:
-    - DRY principle for common headers/parameters
-    - Centralized base URL configuration
-    - Cleaner request code
-  - **Migration effort**: Low
-  - **Configuration example**:
-    ```kotlin
-    install(DefaultRequest) {
-        url("https://www.cineworld.co.uk/api/")
-        header("User-Agent", "TWiStErRob Cinema App")
-    }
-    ```
-  - **References**: https://ktor.io/docs/client-default-request.html
-  - **Files affected**: `QuickbookServiceNetwork.kt`, `FeedDownloader.kt`
+### 2. Replace `runBlocking` with Suspend Functions ⭐⭐⭐⭐⭐
+- [ ] **Convert service methods to proper suspend functions**
+  
+  **Ktor 3.2.0 Feature**: [Suspendable module functions](https://ktor.io/docs/whats-new-320.html#suspendable-module-functions)
+  - **Reference**: [KTOR-8005](https://youtrack.jetbrains.com/issue/KTOR-8005)
+  - **Problem Statement**: "Previously, adding asynchronous functions inside Ktor modules required the `runBlocking` block that could lead to a deadlock on server creation"
+  - **Solution**: Use `suspend` keyword for async operations
+  
+  **Benefits**:
+  - No thread blocking
+  - Proper structured concurrency
+  - Better cancellation support
+  - Concurrent module loading support (Ktor 3.2.0+)
+  
+  **Migration Pattern**:
+  ```kotlin
+  // BEFORE (Current Code)
+  fun cinemas(full: Boolean): List<QuickbookCinema> = runBlocking {
+      client.getCinemasAsync(full) { /* ... */ }.await()
+  }
+  
+  // AFTER (Recommended)
+  suspend fun cinemas(full: Boolean): List<QuickbookCinema> {
+      return client.getCinemasAsync(full) { /* ... */ }.await()
+  }
+  ```
+  
+  **Files Affected**:
+  - `QuickbookServiceNetwork.kt` (4 methods)
+  - `FeedServiceNetwork.kt` (2 methods)
+  - All callers of these services
+  - Service interface definitions
 
-#### 6. Add CallId plugin for request tracing
-- [ ] **Install CallId plugin for better request tracing and debugging**
-  - **Benefits**:
-    - Unique request ID for correlation
-    - Better log analysis
-    - Easier debugging in production
-    - Can propagate to downstream services
-  - **Migration effort**: Low
-  - **Configuration example**:
-    ```kotlin
-    install(CallId) {
-        header(HttpHeaders.XRequestId)
-        generate { UUID.randomUUID().toString() }
-        verify { it.isNotEmpty() }
-    }
-    ```
-  - **References**: https://ktor.io/docs/server-call-id.html
-  - **Files affected**: `configuration.kt`
+### 3. Add Typed Configuration Deserialization ⭐⭐⭐⭐
+- [ ] **Use new `.property<T>()` extension for type-safe configuration**
+  
+  **Ktor 3.2.0 Feature**: [Configuration file deserialization](https://ktor.io/docs/whats-new-320.html#config-deserialization)
+  - **Reference**: [KTOR-7874](https://youtrack.jetbrains.com/issue/KTOR-7874)
+  - **Benefit**: "Significantly reduces boilerplate when working with nested or grouped settings"
+  
+  **Current Code Issue**:
+  ```kotlin
+  // configuration.kt line 64-65
+  config: Map<String, Any?> = jacksonObjectMapper()
+      .readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
+  ```
+  
+  **Recommended Approach**:
+  ```kotlin
+  @Serializable
+  data class AppConfig(
+      val googleClientId: String,
+      val googleClientSecret: String,
+      val neo4jUrl: String
+  )
+  
+  val config: AppConfig = application.property("app")
+  ```
+  
+  **Benefits**:
+  - Type safety at compile time
+  - Automatic validation
+  - Better IDE support
+  - Supports YAML and HOCON
+  
+  **Files Affected**: `configuration.kt`, `config.kt`, YAML/HOCON config files
 
-#### 7. Add DoubleReceive plugin for request logging
-- [ ] **Install DoubleReceive plugin to fix request body logging**
-  - **Benefits**:
-    - Proper request body logging
-    - No "RequestAlreadyConsumedException" errors
-    - Better debugging capabilities
-  - **Migration effort**: Low
-  - **Note**: Already referenced in TODO comment in `ServerLogging.kt`
-  - **Configuration example**:
-    ```kotlin
-    install(DoubleReceive) {
-        cacheRawRequest = true
-    }
-    ```
-  - **References**: https://ktor.io/docs/server-double-receive.html
-  - **Files affected**: `configuration.kt`, `ServerLogging.kt`, `FeedDownloader.kt`
-
-#### 8. Consider migrating to Ktor's built-in plugins
-- [ ] **Evaluate migrating custom `ServerLogging` to CallLogging with custom formatting**
-  - **Benefits**:
-    - Less custom code to maintain
-    - Better integration with Ktor ecosystem
-    - Standard patterns
-  - **Migration effort**: Low-Medium
-  - **Note**: Current CallLogging is already installed, but custom ServerLogging could be merged
-  - **Files affected**: `ServerLogging.kt`, `configuration.kt`
-
-#### 9. Add client-side Resources plugin
-- [ ] **Use Resources plugin for type-safe client requests**
-  - **Benefits**:
-    - Type-safe URLs on client side
-    - Shared resource definitions between client/server
-    - Compile-time safety for API contracts
-    - Auto-completion in IDE
-  - **Migration effort**: Medium
-  - **References**: https://ktor.io/docs/client-resources.html
-  - **Files affected**: `QuickbookServiceNetwork.kt`, client request code
-
----
-
-### 🎯 Minor Improvements / Optimizations
-
-#### 10. Enable HTTP/2 support
-- [ ] **Enable HTTP/2 support in Netty engine**
-  - **Benefits**:
-    - Better performance (multiplexing, header compression)
-    - Reduced latency
-    - Modern protocol support
-  - **Migration effort**: Low
-  - **Configuration**: Add to engine configuration in `build.gradle.kts` or programmatically
-  - **References**: https://ktor.io/docs/server-engines.html#http2
-  - **Files affected**: `configuration.kt` or engine configuration
-
-#### 11. Configure client connection pooling
-- [ ] **Explicitly configure OkHttp connection pooling for better resource management**
-  - **Benefits**:
-    - Better control over connections
-    - Potential performance improvements
-    - Explicit resource limits
-  - **Migration effort**: Low
-  - **Configuration**: Configure OkHttp engine settings
-  - **Files affected**: HttpClient creation sites
-
-#### 12. Add request/response validation
-- [ ] **Consider adding request validation plugin for API endpoints**
-  - **Benefits**:
-    - Automatic validation
-    - Better error messages
-    - API contract enforcement
-  - **Migration effort**: Medium
-  - **Note**: Could use kotlinx-serialization validation or custom validation
-  - **Files affected**: Controller classes, data classes
-
-#### 13. Optimize caching configuration
-- [ ] **Review and optimize CachingHeaders configuration**
-  - **Benefits**:
-    - Better cache control
-    - Reduced bandwidth
-    - Improved performance
-  - **Migration effort**: Low
-  - **Current state**: Only default configuration in `configuration.kt`
-  - **Files affected**: `configuration.kt`, `caching.kt`
-
-#### 14. Add request throttling/rate limiting
-- [ ] **Add rate limiting for external API calls**
-  - **Benefits**:
-    - Avoid API quota exhaustion
-    - Better resilience
-    - Predictable resource usage
-  - **Migration effort**: Medium
-  - **Note**: Could use custom plugin or third-party solution
-  - **Files affected**: Client creation in modules
-
-#### 15. Improve error handling with StatusPages
-- [ ] **Enhance StatusPages configuration with more specific error handlers**
-  - **Benefits**:
-    - Better error responses
-    - Consistent error format
-    - Better client experience
-  - **Migration effort**: Low
-  - **Current state**: Only catches Throwable
-  - **Files affected**: `configuration.kt`
-
-#### 16. Add metrics/monitoring support
-- [ ] **Add MicrometerMetrics plugin for application monitoring**
-  - **Benefits**:
-    - Production monitoring
-    - Performance insights
-    - Resource usage tracking
-  - **Migration effort**: Medium
-  - **References**: https://ktor.io/docs/server-metrics-micrometer.html
-  - **Files affected**: `configuration.kt`, dependencies in `build.gradle.kts`
-
-#### 17. Add CORS configuration
-- [ ] **Explicitly configure CORS if needed for frontend**
-  - **Benefits**:
-    - Secure cross-origin access
-    - Clear API boundaries
-    - Better security posture
-  - **Migration effort**: Low
-  - **References**: https://ktor.io/docs/server-cors.html
-  - **Files affected**: `configuration.kt`
-
-#### 18. Optimize OAuth configuration
-- [ ] **Review OAuth implementation for security best practices**
-  - **Benefits**:
-    - Enhanced security
-    - Better token management
-    - Updated OAuth patterns
-  - **Migration effort**: Low-Medium
-  - **Current state**: Using OAuth with Google, session-based
-  - **Files affected**: `configuration.kt`, `AuthController.kt`
-
-#### 19. Review and update deprecated API usage
-- [ ] **Search for and update any deprecated Ktor APIs**
-  - **Benefits**:
-    - Future-proof code
-    - Better performance
-    - Use of latest features
-  - **Migration effort**: Low
-  - **Note**: Especially relevant after upgrading to Ktor 3.0
-  - **Files affected**: All Ktor-using files
-
-#### 20. Add compression configuration for client
-- [ ] **Add compression support to HTTP clients**
-  - **Benefits**:
-    - Reduced bandwidth usage
-    - Faster transfers
-    - Lower costs (especially on mobile)
-  - **Migration effort**: Low
-  - **Configuration**: Install ContentEncoding plugin
-  - **References**: https://ktor.io/docs/client-content-encoding.html
-  - **Files affected**: Client creation sites
+### 4. Add OpenAPI Generation ⭐⭐⭐⭐
+- [ ] **Use Ktor 3.3.0+ experimental OpenAPI generation**
+  
+  **Ktor 3.3.0 Feature**: [OpenAPI specification generation](https://ktor.io/docs/whats-new-330.html#openapi-spec-gen)
+  - **References**: [KTOR-8316](https://youtrack.jetbrains.com/issue/KTOR-8316), [KTOR-8859](https://youtrack.jetbrains.com/issue/KTOR-8859)
+  - **New in 3.4.0**: Runtime-generated specs ([KTOR-8993](https://youtrack.jetbrains.com/issue/KTOR-8993))
+  
+  **Capabilities**:
+  - Analyze route definitions automatically
+  - Parse KDoc for API documentation
+  - Infer request/response types from code
+  - Generate JSON schema for Jackson/Gson
+  - Read security details from Authentication plugin
+  
+  **Usage**:
+  ```bash
+  ./gradlew buildOpenApi
+  ```
+  
+  ```kotlin
+  routing {
+      openAPI("/docs", swaggerFile = "openapi/generated.json")
+  }
+  ```
+  
+  **Benefits**:
+  - Auto-generated API documentation
+  - Always in sync with code
+  - No manual OpenAPI writing
+  
+  **Files Affected**: Add KDoc to controllers, update build configuration
 
 ---
 
-### 🧪 Testing & Quality
+## 🔧 High-Value Improvements (Medium Priority)
 
-#### 21. Improve test infrastructure
-- [ ] **Use Ktor's TestApplication for more realistic integration tests**
-  - **Benefits**:
-    - Better test coverage
-    - More realistic tests
-    - Easier to write tests
-  - **Migration effort**: Low-Medium
-  - **Current state**: Uses test helpers but could be enhanced
-  - **Files affected**: Test files in `integrationTest` source sets
+### 5. Add HttpRequestRetry Plugin ⭐⭐⭐⭐
+- [ ] **Implement automatic retry logic for transient failures**
+  
+  **Available Since**: Ktor 2.0+  
+  **Improvements**:
+  - [KTOR-5850](https://youtrack.jetbrains.com/issue/KTOR-5850) - Fixed retry count issues (3.3.2)
+  - [KTOR-6770](https://youtrack.jetbrains.com/issue/KTOR-6770) - Improved exception handling (3.2.0)
+  
+  **Configuration**:
+  ```kotlin
+  install(HttpRequestRetry) {
+      retryOnServerErrors(maxRetries = 3)
+      exponentialDelay()
+      retryIf { _, response -> !response.status.isSuccess() }
+  }
+  ```
+  
+  **Files Affected**: `SyncAppModule.kt`, `GenerateAppModule.kt`, client creation sites
 
-#### 22. Add client testing with MockEngine improvements
-- [ ] **Enhance MockEngine usage with better stubs and verification**
-  - **Benefits**:
-    - Better client tests
-    - Easier mocking
-    - More reliable tests
-  - **Migration effort**: Low
-  - **Current state**: Already has some mock support in `Ktor.kt`
-  - **Files affected**: `Ktor.kt`, test files
+### 6. Use DefaultRequest Plugin ⭐⭐⭐⭐
+- [ ] **Consolidate common request configuration**
+  
+  **Available Since**: Ktor 2.0+  
+  **Fixed Issues**:
+  - [KTOR-7162](https://youtrack.jetbrains.com/issue/KTOR-7162) - Configuration applied twice (fixed in 3.4.0)
+  - [KTOR-9258](https://youtrack.jetbrains.com/issue/KTOR-9258) - Headers block collision (fixed in 3.4.0)
+  
+  **Configuration**:
+  ```kotlin
+  install(DefaultRequest) {
+      url("https://www.cineworld.co.uk/api/")
+      header("User-Agent", "TWiStErRob Cinema")
+  }
+  ```
+  
+  **Benefit**: DRY principle for common headers, base URLs
+  
+  **Files Affected**: `QuickbookServiceNetwork.kt`, `FeedDownloader.kt`
+
+### 7. Add Dependency Injection ⭐⭐⭐⭐
+- [ ] **Use Ktor 3.2.0 built-in DI support**
+  
+  **Ktor 3.2.0 Feature**: [Dependency Injection](https://ktor.io/docs/whats-new-320.html#dependency-injection)
+  - **Reference**: [KTOR-8267](https://youtrack.jetbrains.com/issue/KTOR-8267)
+  
+  **Benefits Over Dagger**:
+  - Native Ktor integration
+  - Async/suspend support
+  - Configuration-based registration
+  - Automatic cleanup
+  - Simpler than Dagger
+  
+  **Configuration**:
+  ```yaml
+  ktor:
+    application:
+      dependencies:
+        - com.example.RepositoriesKt.provideDatabase
+        - com.example.UserRepository
+  ```
+  
+  ```kotlin
+  val service: GreetingService by dependencies
+  ```
+  
+  **Consideration**: Evaluate vs keeping Dagger - Ktor DI is simpler but less feature-rich
+  
+  **Files Affected**: All Dagger-related files, module configuration
+
+### 8. Add CallId Plugin ⭐⭐⭐
+- [ ] **Install CallId for request tracing**
+  
+  **Available Since**: Ktor 2.0+  
+  
+  **Configuration**:
+  ```kotlin
+  install(CallId) {
+      header(HttpHeaders.XRequestId)
+      generate { UUID.randomUUID().toString() }
+      verify { it.isNotEmpty() }
+  }
+  ```
+  
+  **Benefits**:
+  - Request correlation across services
+  - Better log analysis
+  - Easier debugging in production
+  
+  **Files Affected**: `configuration.kt`
+
+### 9. Add DoubleReceive Plugin ⭐⭐⭐
+- [ ] **Fix request body logging issues**
+  
+  **Available Since**: Ktor 2.0+  
+  **Related Issue**: Already mentioned in code comments (`ServerLogging.kt` line 118, `FeedDownloader.kt`)
+  
+  **Configuration**:
+  ```kotlin
+  install(DoubleReceive) {
+      cacheRawRequest = true
+  }
+  ```
+  
+  **Fixes**:
+  - RequestAlreadyConsumedException
+  - Request body logging
+  
+  **Files Affected**: `configuration.kt`, `ServerLogging.kt`
+
+### 10. Enable HTTP/2 by Default ⭐⭐⭐
+- [ ] **Enable HTTP/2 support (now default in Ktor 3.4.0)**
+  
+  **Ktor 3.4.0 Feature**: Java engines use HTTP/2 by default
+  - **Reference**: [KTOR-9097](https://youtrack.jetbrains.com/issue/KTOR-9097)
+  
+  **For Netty (server)**:
+  - **Ktor 3.3.0**: HTTP/2 cleartext (h2c) support ([KTOR-4750](https://youtrack.jetbrains.com/issue/KTOR-4750))
+  
+  **Configuration**:
+  ```kotlin
+  // For h2c (HTTP/2 without TLS)
+  connector {
+      enableH2c = true
+  }
+  ```
+  
+  **Benefits**:
+  - Multiplexing
+  - Header compression
+  - Reduced latency
+  
+  **Files Affected**: Engine configuration in `configuration.kt`
+
+### 11. Fix SaveBodyPlugin Deprecation ⭐⭐⭐
+- [ ] **Update code to not use deprecated SaveBodyPlugin**
+  
+  **Deprecated**: Ktor 3.2.0+  
+  **Reference**: [KTOR-8367](https://youtrack.jetbrains.com/issue/KTOR-8367)
+  
+  **Migration**:
+  ```kotlin
+  // OLD (deprecated)
+  client.get("/file") { skipSavingBody() }
+  
+  // NEW (recommended)
+  client.prepareGet("/file").execute { response ->
+      saveFile(response.bodyAsChannel())
+  }
+  ```
+  
+  **Files Affected**: Client code if using `skipSavingBody()`
+
+### 12. Use `.replaceResponse()` Instead of `.wrapWithContent()` ⭐⭐⭐
+- [ ] **Update to new response wrapping API**
+  
+  **Deprecated**: Ktor 3.2.0+  
+  **Reference**: Ktor 3.2.0 release notes
+  
+  **Problem**: Old APIs could only be read once, breaking plugin compatibility
+  
+  **Migration**:
+  ```kotlin
+  // OLD (deprecated)
+  call.wrapWithContent(decodedBody).response
+  
+  // NEW
+  call.replaceResponse { decode(response.rawContent) }
+  ```
+  
+  **Files Affected**: Any custom plugins or response transformation
 
 ---
 
-### 🔐 Security
+## 🎯 Medium-Value Improvements (Lower Priority)
 
-#### 23. Review session security
-- [ ] **Enhance session security with stronger encryption**
-  - **Benefits**:
-    - Better security
-    - Protection against tampering
-    - Compliance with best practices
-  - **Migration effort**: Low
-  - **Current issue**: Uses "twister" as secret key (hardcoded)
-  - **Files affected**: `configuration.kt`
+### 13. Add Static Content Improvements ⭐⭐⭐
+- [ ] **Use Ktor 3.3.0 static content enhancements**
+  
+  **Ktor 3.3.0 Features**:
+  - Custom fallback mechanism ([KTOR-8496](https://youtrack.jetbrains.com/issue/KTOR-8496))
+  - ETag based on SHA-256 ([KTOR-6700](https://youtrack.jetbrains.com/issue/KTOR-6700))
+  - LastModified and ETag headers
+  
+  **Usage**:
+  ```kotlin
+  staticFiles("/") {
+      // Custom fallback when file not found
+      fallback { path, call ->
+          if (path.endsWith(".html")) {
+              call.respondText("Custom 404")
+          }
+      }
+      
+      // Strong ETags with SHA-256
+      etag { file -> strongEtag(sha256(file)) }
+  }
+  ```
+  
+  **Files Affected**: `AppController.kt` (currently uses basic staticFiles)
 
-#### 24. Add security headers plugin
-- [ ] **Install HSTS, XSS protection, and other security headers**
-  - **Benefits**:
-    - Better security posture
-    - Protection against common attacks
-    - Security best practices
-  - **Migration effort**: Low
-  - **References**: https://ktor.io/docs/server-hsts.html
-  - **Files affected**: `configuration.kt`
+### 14. Consider Replacing Jackson with kotlinx-serialization ⭐⭐⭐
+- [ ] **Evaluate migrating to kotlinx-serialization**
+  
+  **Considerations**:
+  - ✅ Native Kotlin support
+  - ✅ Compile-time safety
+  - ✅ Better performance
+  - ✅ Ktor 3.4.0 supports Jackson 3 ([KTOR-9209](https://youtrack.jetbrains.com/issue/KTOR-9209))
+  - ❌ Need to migrate custom serializers (e.g., `OffsetDateTimeJsonSerializer`)
+  - ❌ XML parsing still needs Jackson (feed module)
+  
+  **Decision**: Can upgrade to Jackson 3 with Ktor 3.4.0, or evaluate migration later
+  
+  **Files Affected**: All content negotiation, data classes
+
+### 15. Add HTTP Cache Clearing ⭐⭐
+- [ ] **Use new cache management APIs**
+  
+  **Ktor 3.2.0 Feature**: [HTTP cache clearing](https://ktor.io/docs/whats-new-320.html#cache-clearing)
+  - **Reference**: [KTOR-6653](https://youtrack.jetbrains.com/issue/KTOR-6653)
+  
+  **New APIs**:
+  ```kotlin
+  cacheStorage.removeAll(url)  // Remove all for URL
+  cacheStorage.remove(url, varyKeys)  // Remove specific
+  ```
+  
+  **Benefit**: Better cache invalidation control
+
+### 16. Add Compression Support to Client ⭐⭐
+- [ ] **Install ContentEncoding plugin**
+  
+  **Available Since**: Ktor 2.0+  
+  **Ktor 3.4.0**: Added Zstd support ([KTOR-7075](https://youtrack.jetbrains.com/issue/KTOR-7075))
+  
+  **Configuration**:
+  ```kotlin
+  install(ContentEncoding) {
+      gzip()
+      deflate()
+      zstd()  // New in 3.4.0
+  }
+  ```
+  
+  **Benefits**:
+  - Reduced bandwidth
+  - Faster transfers
+  - Cost savings
+
+### 17. Add Security Headers ⭐⭐
+- [ ] **Install HSTS and security headers**
+  
+  **Available Since**: Ktor 2.0+  
+  
+  **Configuration**:
+  ```kotlin
+  install(HSTS) {
+      includeSubDomains = true
+      maxAgeInSeconds = 31536000
+  }
+  ```
+  
+  **Files Affected**: `configuration.kt`
+
+### 18. Fix Session Security ⭐⭐⭐⭐⭐
+- [ ] **Use secure session secret from environment**
+  
+  **Current Issue**: Hardcoded "twister" key (line 107 in `configuration.kt`)
+  
+  **Solution**:
+  ```kotlin
+  val secretSignKey = environment.config
+      .propertyOrNull("ktor.security.sessionSecret")
+      ?.getString()
+      ?.toByteArray()
+      ?: error("Session secret not configured")
+  ```
+  
+  **Critical Security Fix**
+
+### 19. Add MicrometerMetrics ⭐⭐
+- [ ] **Add monitoring with Micrometer**
+  
+  **Available Since**: Ktor 2.0+  
+  **Improvements**:
+  - [KTOR-8276](https://youtrack.jetbrains.com/issue/KTOR-8276) - Fixed OOM issue (3.1.3)
+  - [KTOR-7274](https://youtrack.jetbrains.com/issue/KTOR-7274) - Route label improvements (3.2.0)
+  - [KTOR-8183](https://youtrack.jetbrains.com/issue/KTOR-8183) - Configurable route labels (3.2.0)
+  
+  **Files Affected**: `configuration.kt`, add dependencies
+
+### 20. Review OAuth Security ⭐⭐
+- [ ] **Update OAuth implementation**
+  
+  **Improvements in Recent Versions**:
+  - [KTOR-2404](https://youtrack.jetbrains.com/issue/KTOR-2404) - Better 401 responses (3.4.0)
+  - [KTOR-4420](https://youtrack.jetbrains.com/issue/KTOR-4420) - Fixed form-urlencoded POST (3.2.1)
+  - Bearer token caching issues fixed in multiple releases
+  
+  **Files Affected**: `configuration.kt`, `AuthController.kt`
+
+### 21. Add Bearer Auth Token Control ⭐⭐
+- [ ] **Use new token control APIs**
+  
+  **Ktor 3.4.0 Feature**: Better token control
+  - **Reference**: [KTOR-8180](https://youtrack.jetbrains.com/issue/KTOR-8180)
+  - **Related**: [KTOR-4946](https://youtrack.jetbrains.com/issue/KTOR-4946), [KTOR-4759](https://youtrack.jetbrains.com/issue/KTOR-4759)
+  
+  **Benefit**: Better token refresh and invalidation control
+
+### 22. Add Auth API Key Plugin ⭐⭐
+- [ ] **Use new API key authentication plugin**
+  
+  **Ktor 3.4.0 Feature**: API key auth support
+  - **Reference**: [KTOR-9162](https://youtrack.jetbrains.com/issue/KTOR-9162)
+  
+  **Benefit**: First-party API key auth (currently using custom solution with quickbook API key)
 
 ---
 
-### 📦 Dependency Management
+## 🧪 Testing Improvements
 
-#### 25. Review and update all Ktor dependencies
-- [ ] **Ensure all Ktor artifacts are on the same version**
-  - **Benefits**:
-    - Consistency
-    - Avoid version conflicts
-    - Easier upgrades
-  - **Migration effort**: Low
-  - **Current state**: All using same version ref in TOML
-  - **Files affected**: `libs.versions.toml`
+### 23. Use TestApplication Improvements ⭐⭐⭐
+- [ ] **Use new testing features**
+  
+  **Ktor 3.2.0 Features**:
+  - Configurable `client` property ([KTOR-8465](https://youtrack.jetbrains.com/issue/KTOR-8465))
+  - Access to `Application` instance ([KTOR-8215](https://youtrack.jetbrains.com/issue/KTOR-8215))
+  - Create `ApplicationCall` for testing ([KTOR-7607](https://youtrack.jetbrains.com/issue/KTOR-7607))
+  
+  **Example**:
+  ```kotlin
+  testApplication {
+      // Configure reusable client
+      client = createClient {
+          install(ContentNegotiation) { json() }
+      }
+      
+      // Access application instance
+      val app: Application = application
+      assertTrue(app.pluginOrNull(CORS) != null)
+  }
+  ```
+  
+  **Files Affected**: Test files using `testApplication`
 
-#### 26. Consider removing unused dependencies
-- [ ] **Audit Ktor-related dependencies for unused artifacts**
-  - **Benefits**:
-    - Smaller artifact size
-    - Fewer vulnerabilities
-    - Cleaner dependency tree
-  - **Migration effort**: Low
-  - **Files affected**: `build.gradle.kts` files
-
----
-
-## Implementation Priority Recommendations
-
-### High Priority (Highest Impact)
-1. ✅ Upgrade to Ktor 3.0+ (#1)
-2. ✅ Remove `runBlocking` and use proper suspend functions (#3)
-3. ✅ Add HttpRequestRetry plugin (#4)
-4. ✅ Fix session security (#23)
-
-### Medium Priority (Good Impact/Effort Ratio)
-5. Replace Jackson with kotlinx-serialization (#2)
-6. Add CallId plugin (#6)
-7. Add DoubleReceive plugin (#7)
-8. Use DefaultRequest plugin (#5)
-9. Add security headers (#24)
-
-### Low Priority (Nice to Have)
-10. All remaining improvements as time/need permits
+### 24. Fix SSE Testing ⭐⭐
+- [ ] **Use improved SSE test support**
+  
+  **Fixed in 3.2.2**: SSE acts as stream in test environment
+  - **Reference**: [KTOR-7910](https://youtrack.jetbrains.com/issue/KTOR-7910)
+  
+  **Files Affected**: Any SSE-related tests
 
 ---
 
-## Testing Strategy
+## 📦 Bug Fixes Available in Newer Versions
 
-For each improvement:
-1. Update code
-2. Run existing tests
-3. Add new tests if needed
-4. Test manually if applicable
-5. Review for security implications
-6. Update documentation
+### Critical Bug Fixes
 
----
-
-## Notes
-
-- Some improvements are dependent on others (e.g., #2 should be done after #1)
-- Breaking changes should be carefully tested
-- Consider feature flags for gradual rollout
-- Monitor performance before and after changes
-- Keep backward compatibility where possible
+1. **[KTOR-4828](https://youtrack.jetbrains.com/issue/KTOR-4828)** - NumberFormatException with null bytes in Content-Length (Fixed in 3.3.1)
+2. **[KTOR-8523](https://youtrack.jetbrains.com/issue/KTOR-8523)** - Multipart parsing race condition (Fixed in 3.2.3)
+3. **[KTOR-8682](https://youtrack.jetbrains.com/issue/KTOR-8682)** - Infinite loop in ByteReadChannel.readFully (Fixed in 3.2.3)
+4. **[KTOR-8770](https://youtrack.jetbrains.com/issue/KTOR-8770)** - Server shutdown blocking twice as long (Fixed in 3.3.1)
+5. **[KTOR-6790](https://youtrack.jetbrains.com/issue/KTOR-6790)** - OkHttp MultiPart with onUpload (Fixed in 3.2.1)
+6. **[KTOR-8916](https://youtrack.jetbrains.com/issue/KTOR-8916)** - Android VerifyError with Netty (Fixed in 3.3.2)
 
 ---
 
-## References
+## 🎯 Implementation Priority
 
-- [Ktor Official Documentation](https://ktor.io/docs/)
-- [Ktor 3.0 Migration Guide](https://ktor.io/docs/migrating-3.html)
-- [Ktor Changelog](https://ktor.io/changelog/)
-- [Ktor GitHub Repository](https://github.com/ktorio/ktor)
-- [kotlinx.serialization](https://kotlinlang.org/docs/serialization.html)
+### Phase 1: Critical & High Priority (Do First)
+1. ✅ **Fix session security** (#18) - Critical security issue
+2. ✅ **Upgrade to Ktor 3.4.0** (#1) - Unlocks all other improvements
+3. ✅ **Remove runBlocking** (#2) - Better concurrency
+4. ✅ **Add HttpRequestRetry** (#5) - Better reliability
+5. ✅ **Add DoubleReceive** (#9) - Fix existing logging issues
+
+### Phase 2: High Value (Do Next)
+6. **Add typed configuration** (#3) - Better type safety
+7. **Add DefaultRequest** (#6) - Cleaner code
+8. **Add CallId** (#8) - Better debugging
+9. **Enable HTTP/2** (#10) - Performance
+10. **Fix deprecated APIs** (#11, #12) - Future-proofing
+
+### Phase 3: Nice to Have (Do Later)
+11. **OpenAPI generation** (#4) - Better documentation
+12. **Dependency Injection** (#7) - Evaluate vs Dagger
+13. **Static content improvements** (#13)
+14. **Testing improvements** (#23, #24)
+15. All remaining improvements
+
+---
+
+## 📚 References
+
+### Official Documentation
+- **Migration Guide**: https://ktor.io/docs/migrating-3.html
+- **Ktor 3.3.0 Release**: https://ktor.io/docs/whats-new-330.html
+- **Ktor 3.2.0 Release**: https://ktor.io/docs/whats-new-320.html
+- **Release Notes**: https://github.com/ktorio/ktor/releases
+- **Changelog**: https://github.com/ktorio/ktor/blob/main/CHANGELOG.md
+
+### Key YouTrack Issues Referenced
+All issues listed are from https://youtrack.jetbrains.com/issues/KTOR
+
+---
+
+## 📝 Notes
+
+- All recommendations are based on official Ktor release notes and GitHub releases
+- Issue numbers (KTOR-XXXX) are directly from Ktor's YouTrack
+- Version numbers indicate when features were introduced or bugs were fixed
+- This project is on 2.3.13, missing 1+ years of improvements from 3.x line
+- Breaking changes in 3.0 are well-documented and mostly affect low-level I/O
+
+---
+
+## ✅ Quick Wins (Can Do Immediately)
+
+Even before upgrading, you can:
+1. Fix session security (load from env)
+2. Add HttpRequestRetry plugin (available in 2.3.13)
+3. Add DefaultRequest plugin (available in 2.3.13)
+4. Add CallId plugin (available in 2.3.13)
+5. Add DoubleReceive plugin (available in 2.3.13)
+6. Add compression to client (available in 2.3.13)
+
+These don't require version upgrade!
