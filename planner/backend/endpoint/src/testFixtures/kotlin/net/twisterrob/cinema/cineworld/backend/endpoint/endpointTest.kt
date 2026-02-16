@@ -34,8 +34,8 @@ fun endpointTest(
 				putIfAbsent("twisterrob.cinema.environment", "test")
 				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
+				putIfAbsent("ktor.development", "true")
 			}
-			developmentMode = true
 			log = testLog
 		}
 		application {
