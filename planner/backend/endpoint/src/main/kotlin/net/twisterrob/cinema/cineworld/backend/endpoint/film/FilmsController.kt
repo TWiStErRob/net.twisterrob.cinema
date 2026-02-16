@@ -11,7 +11,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.hasUser
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.film.data.FilmRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
-import net.twisterrob.cinema.cineworld.backend.ktor.cached
+import net.twisterrob.cinema.cineworld.backend.ktor.withCaching
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,7 +35,7 @@ class FilmsController @Inject constructor(
 				// Note: this is not cache-able because of `Film.view` property in the response.
 				call.respond(repository.getFilmsAuth(call.userId, listFilms.date, listFilms.cinemaIDs))
 			} else {
-				cached { call.respond(repository.getFilms(listFilms.date, listFilms.cinemaIDs)) }
+				withCaching(call) { call.respond(repository.getFilms(listFilms.date, listFilms.cinemaIDs)) }
 			}
 		}
 

@@ -7,7 +7,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
 import net.twisterrob.cinema.cineworld.backend.endpoint.performance.data.PerformanceRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
-import net.twisterrob.cinema.cineworld.backend.ktor.cached
+import net.twisterrob.cinema.cineworld.backend.ktor.withCaching
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,7 +31,7 @@ class PerformanceController @Inject constructor(
 				films = list.filmEDIs,
 				cinemas = list.cinemaIDs
 			)
-			cached { call.respond(performances) }
+			withCaching(call) { call.respond(performances) }
 		}
 	}
 }

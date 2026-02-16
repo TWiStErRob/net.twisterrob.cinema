@@ -19,7 +19,8 @@ dagger = "2.59.1"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "2.3.13"
+# Ktor 3.x migration guide: https://ktor.io/docs/migrating-3.html
+ktor = "3.4.0"
 
 appengine = "2.8.6"
 

@@ -4,21 +4,19 @@ import io.ktor.http.CacheControl.MaxAge
 import io.ktor.http.CacheControl.Visibility
 import io.ktor.http.content.CachingOptions
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.application
-import io.ktor.server.application.call
 import io.ktor.server.plugins.cachingheaders.caching
 import io.ktor.util.date.GMTDate
 import io.ktor.util.date.plus
-import io.ktor.util.pipeline.PipelineContext
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
-inline fun PipelineContext<Unit, ApplicationCall>.cached(
-	caching: CachingOptions = defaultCacheOptions(application.environment.config.environment),
-	block: PipelineContext<Unit, ApplicationCall>.() -> Unit
-) {
-	this.call.caching = caching
-	block()
+suspend inline fun <T> withCaching(
+	call: ApplicationCall,
+	caching: CachingOptions = defaultCacheOptions(call.application.environment.config.environment),
+	block: () -> T
+): T {
+	call.caching = caching
+	return block()
 }
 
 fun defaultCacheOptions(environment: Env): CachingOptions {

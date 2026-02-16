@@ -19,6 +19,7 @@ import io.ktor.util.pipeline.PipelinePhase
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.charsets.Charset
 import io.ktor.utils.io.core.readText
+import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -143,6 +144,11 @@ class ServerLogging(
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
+			}
+
+			is OutgoingContent.ContentWrapper -> {
+				// ContentWrapper delegates to another content, so just unwrap it
+				content.delegate().asString()
 			}
 
 			is OutgoingContent.ByteArrayContent,

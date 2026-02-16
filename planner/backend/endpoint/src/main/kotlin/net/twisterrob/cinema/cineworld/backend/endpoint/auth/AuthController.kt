@@ -7,8 +7,8 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.call
+import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.application.log
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
@@ -66,18 +66,22 @@ class AuthController @Inject constructor(
 	 */
 	@Suppress("LongMethod", "CognitiveComplexMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
-		intercept(ApplicationCallPipeline.Plugins) {
-			val session: AuthSession? = call.sessions.get()
-			if (session != null) {
-				try {
-					val user = authRepository.findUser(session.userId)
-					call.attributes.currentUser = CurrentUser(user.id, user.email)
-				} catch (ex: UnknownUserException) {
-					call.application.log.error("Invalid session: {}", call.sessions, ex)
-					call.sessions.clear<AuthSession>()
+		val authSessionPlugin = createRouteScopedPlugin("AuthSessionPlugin") {
+			onCall { call ->
+				val session: AuthSession? = call.sessions.get()
+				if (session != null) {
+					try {
+						val user = authRepository.findUser(session.userId)
+						call.attributes.currentUser = CurrentUser(user.id, user.email)
+					} catch (ex: UnknownUserException) {
+						call.application.log.error("Invalid session: {}", call.sessions, ex)
+						call.sessions.clear<AuthSession>()
+					}
 				}
 			}
 		}
+
+		install(authSessionPlugin)
 
 		authenticate(optional = true) {
 			get<Auth.Routes.Account> {

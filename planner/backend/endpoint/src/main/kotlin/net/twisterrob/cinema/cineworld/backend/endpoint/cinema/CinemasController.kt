@@ -14,7 +14,7 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.auth.respondUserNotFound
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.userId
 import net.twisterrob.cinema.cineworld.backend.endpoint.cinema.data.CinemaRepository
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
-import net.twisterrob.cinema.cineworld.backend.ktor.cached
+import net.twisterrob.cinema.cineworld.backend.ktor.withCaching
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,7 +38,7 @@ class CinemasController @Inject constructor(
 				// Note: this is not cache-able because of `Cinema.fav` property in the response.
 				call.respond(repository.getCinemasAuth(userID = call.userId))
 			} else {
-				cached { call.respond(repository.getActiveCinemas()) }
+				withCaching(call) { call.respond(repository.getActiveCinemas()) }
 			}
 		}
 
