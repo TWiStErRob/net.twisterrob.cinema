@@ -26,9 +26,8 @@ private class MostParameterConstructorQuery : ConstructorQuery {
 				.lastOrNull()
 				?: return emptyList() // Oops, this class has no constructors.
 			return listOf(constructor)
-		} else {
-			return null // We have nothing to do here, use default behavior.
 		}
+		return null // We have nothing to do here, use default behavior.
 	}
 }
 

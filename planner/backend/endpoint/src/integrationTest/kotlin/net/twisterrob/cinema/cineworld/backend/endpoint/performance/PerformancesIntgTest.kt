@@ -130,6 +130,7 @@ private fun serialized(performances: PerformancesModel): String =
 		}
 	""".trimIndent()
 
+@Suppress("UnusedPrivateMember") // Used in string template at line 127
 @Language("json")
 private fun serialized(performance: Performance): String =
 	// order intentionally switched up

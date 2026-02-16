@@ -21,7 +21,7 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 			ctor.parameters.all { param -> param.isOptional || propertyValues.containsKey(param.name) }
 		}
 
-		@Suppress("TrimMultilineRawString") // https://github.com/detekt/detekt/issues/5428
+		@Suppress("TrimMultilineRawString", "UnreachableCode") // https://github.com/detekt/detekt/issues/5428
 		val ctor = usableCtors.singleOrNull() ?: throw MappingException(
 			"Unable to find unique constructor to instantiate $clazz using ${propertyValues.keys}\n${
 				allCtors.joinToString("\n") { ctor -> ctor.toMismatchString(ctor in usableCtors, propertyValues) }
@@ -32,7 +32,7 @@ class KotlinReflectionEntityInstantiator : EntityInstantiator {
 	}
 
 	override fun <T : Any> createInstance(clazz: Class<T>, propertyValues: Map<String, Any>): T =
-		createInstance(clazz, emptyMap())
+		createInstanceWithConstructorArgs(clazz, propertyValues)
 }
 
 private fun <T : Any> KFunction<T>.toMismatchString(usable: Boolean, propertyValues: Map<String, Any>): String =

@@ -30,4 +30,5 @@ inline fun <reified T> JFixture.buildRange(range: ClosedRange<T>): T
 inline fun <reified T> CreateExtensions.range(range: ClosedRange<T>): T
 		where T : Number,
 		      T : Comparable<T> =
+	@Suppress("UnsafeCallOnNullableType") // JFixture's inRange always returns a value for valid inputs
 	this.inRange(T::class.java, range.start, range.endInclusive)!!
