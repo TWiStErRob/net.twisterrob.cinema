@@ -365,7 +365,7 @@ private fun HttpClient.stubGoogleOpenIdUserInfo(userId: String, email: String, n
 	}
 }
 
-@Suppress("FunctionMaxLength")
+@Suppress("FunctionNameMaxLength")
 private fun HttpClient.verifyGoogleOpenIdUserInfoRequest(accessToken: String) {
 	verify("https://openidconnect.googleapis.com/v1/userinfo") { request, _ ->
 		assertEquals("Bearer ${accessToken}", request.headers[HttpHeaders.Authorization])

@@ -12,7 +12,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
-@Suppress("FunctionMaxLength")
+@Suppress("FunctionNameMaxLength")
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
 		// disable all events, output handled by custom callbacks below
