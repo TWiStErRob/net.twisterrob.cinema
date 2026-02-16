@@ -6,7 +6,6 @@ import net.twisterrob.cinema.database.model.User
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.loadAll
 import org.neo4j.ogm.session.query
-import org.neo4j.ogm.session.queryForObject
 import java.time.LocalDate
 import javax.inject.Inject
 

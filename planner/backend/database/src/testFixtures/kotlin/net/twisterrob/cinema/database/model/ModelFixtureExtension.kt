@@ -2,7 +2,6 @@ package net.twisterrob.cinema.database.model
 
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.test.applyCustomisation
-import net.twisterrob.test.put
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
 

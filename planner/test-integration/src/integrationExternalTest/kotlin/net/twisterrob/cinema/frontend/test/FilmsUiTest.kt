@@ -2,7 +2,6 @@ package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BaseInteractivePlannerUiTest
 import net.twisterrob.cinema.frontend.test.framework.allMeet
-import net.twisterrob.cinema.frontend.test.framework.assertThat
 import net.twisterrob.cinema.frontend.test.framework.noneMeet
 import net.twisterrob.cinema.frontend.test.pages.planner.Film
 import org.assertj.core.api.Assertions.assertThat

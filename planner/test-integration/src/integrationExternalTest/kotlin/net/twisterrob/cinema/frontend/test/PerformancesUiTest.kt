@@ -1,7 +1,6 @@
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BasePlannerUiTest
-import net.twisterrob.cinema.frontend.test.framework.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

@@ -5,7 +5,6 @@ import net.twisterrob.cinema.database.model.Film
 import net.twisterrob.cinema.database.model.Performance
 import net.twisterrob.neo4j.ogm.deleteForCount
 import org.neo4j.ogm.session.Session
-import org.neo4j.ogm.session.query
 import java.time.LocalDate
 import javax.inject.Inject
 

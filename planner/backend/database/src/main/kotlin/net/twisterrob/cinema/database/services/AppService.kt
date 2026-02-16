@@ -1,7 +1,6 @@
 package net.twisterrob.cinema.database.services
 
 import org.neo4j.ogm.session.Session
-import org.neo4j.ogm.session.queryForObject
 import javax.inject.Inject
 
 class AppService @Inject constructor(

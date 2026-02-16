@@ -29,10 +29,6 @@ import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.test.build
 import net.twisterrob.test.mockEngine
-import net.twisterrob.test.stub
-import net.twisterrob.test.verify
-import net.twisterrob.test.verifyNoInteractions
-import net.twisterrob.test.verifyNoMoreInteractions
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains

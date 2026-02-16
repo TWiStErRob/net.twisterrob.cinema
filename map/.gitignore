@@ -3,3 +3,5 @@
 /*.json
 /*.kml
 /*.kmz
+detekt-cli-*
+detekt.*

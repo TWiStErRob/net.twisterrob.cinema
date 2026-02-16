@@ -6,7 +6,6 @@ import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.cinema.database.services.Services
 import net.twisterrob.test.neo4j.allNodes
-import net.twisterrob.test.neo4j.boltURI
 import net.twisterrob.test.neo4j.session
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
