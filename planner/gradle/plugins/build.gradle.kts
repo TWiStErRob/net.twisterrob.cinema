@@ -69,10 +69,9 @@ tasks.withType<dev.detekt.gradle.Detekt> {
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
-	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
-	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
-	// detektMain and detektMainSourceSet are excluded because they analyze generated sources
-	// which contain false positives that cannot be fixed.
+	// detektMain is excluded because kotlin-dsl plugin causes type resolution errors (see detekt { source } above).
+	// detektMainSourceSet is excluded because it analyzes generated Gradle plugin adapter sources
+	// which contain false positives (MissingPackageDeclaration, MaxLineLength) that cannot be fixed.
 	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" && it != "detektMainSourceSet" })
 }
 
