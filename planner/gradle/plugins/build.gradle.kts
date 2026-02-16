@@ -21,7 +21,6 @@ dependencyLocking {
 }
 
 detekt {
-	ignoreFailures = isCI
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
@@ -39,6 +38,8 @@ detekt {
 	parallel = true
 
 	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
+		// Exclude generated sources from analysis to avoid false positives
+		exclude("**/build/generated-sources/**")
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle
@@ -70,7 +71,9 @@ tasks.withType<dev.detekt.gradle.Detekt> {
 tasks.register("detektEach") {
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
 	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
-	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" })
+	// detektMain and detektMainSourceSet are excluded because they analyze generated sources
+	// which contain false positives that cannot be fixed.
+	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" && it != "detektMainSourceSet" })
 }
 
 val isCI: Boolean
