@@ -18,8 +18,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.util.InternalAPI
-import io.ktor.util.rootCause
 import net.twisterrob.test.assertAll
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -430,10 +428,18 @@ private fun Any?.short(): String =
 	@Suppress("detekt.NullableToStringCall")
 	this.toString().replace("[\r\n]".toRegex(), "")
 
-@OptIn(InternalAPI::class)
 private fun details(expectedData: Any, e: Throwable): String =
 	@Suppress("StringShouldBeRawString")
-	"\n\t\t${expectedData.short()}\n\t\t${e.rootCause!!.message ?: "No message"}"
+	"\n\t\t${expectedData.short()}\n\t\t${e.rootCause.message ?: "No message"}"
+
+private val Throwable.rootCause: Throwable
+	get() {
+		var cause = this
+		while (cause.cause != null && cause.cause != cause) {
+			cause = cause.cause!!
+		}
+		return cause
+	}
 
 private inline fun <reified T : Any> testSerialization(sut: XmlMapper, expectedData: T, expectedXml: String): T {
 	assertAll {
