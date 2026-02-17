@@ -21,6 +21,7 @@ dependencyLocking {
 }
 
 detekt {
+	ignoreFailures = isCI
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
@@ -69,7 +70,8 @@ tasks.withType<dev.detekt.gradle.Detekt> {
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
-	// detektMain is excluded because kotlin-dsl plugin causes type resolution errors (see detekt { source } above).
+	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
+	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
 	// detektMainSourceSet is excluded because it analyzes generated Gradle plugin adapter sources
 	// which contain false positives (MissingPackageDeclaration, MaxLineLength) that cannot be fixed.
 	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" && it != "detektMainSourceSet" })

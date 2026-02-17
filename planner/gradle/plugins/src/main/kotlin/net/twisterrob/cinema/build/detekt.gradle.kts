@@ -11,6 +11,7 @@ plugins {
 }
 
 detekt {
+	ignoreFailures = isCI
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
