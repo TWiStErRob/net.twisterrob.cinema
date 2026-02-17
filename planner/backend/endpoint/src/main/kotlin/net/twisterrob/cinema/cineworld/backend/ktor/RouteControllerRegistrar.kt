@@ -26,8 +26,7 @@ class RouteControllerRegistrar @Inject constructor(
 	companion object {
 
 		val CONTROLLER_ORDER: Comparator<RouteController> = compareBy(
-			RouteController::order,
-			{ it::class.java.name }
-		)
+			RouteController::order
+		) { it::class.java.name }
 	}
 }

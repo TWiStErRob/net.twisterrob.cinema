@@ -12,7 +12,6 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.header
 import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
-import kotlinx.coroutines.launch
 import net.twisterrob.cinema.cineworld.backend.ktor.Env
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.environment

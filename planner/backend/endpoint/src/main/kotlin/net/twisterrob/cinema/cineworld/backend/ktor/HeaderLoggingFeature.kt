@@ -1,6 +1,5 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call

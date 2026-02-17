@@ -1,3 +1,4 @@
+@file:Suppress("UnusedImports") // False positive: assertThat is an extension function used in the code
 package net.twisterrob.cinema.frontend.test
 
 import net.twisterrob.cinema.frontend.test.framework.BaseInteractivePlannerUiTest

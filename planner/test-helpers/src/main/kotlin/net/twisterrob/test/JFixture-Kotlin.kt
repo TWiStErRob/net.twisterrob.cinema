@@ -24,8 +24,11 @@ private class MostParameterConstructorQuery : ConstructorQuery {
 				.filter(Constructor<*>::hasNoDefaultConstructorMarker)
 				.sortedWith(ConstructorParameterCountComparator())
 				.lastOrNull()
-				?: return emptyList() // Oops, this class has no constructors.
-			return listOf(constructor)
+			return if (constructor != null) {
+				listOf(constructor)
+			} else {
+				emptyList() // Oops, this class has no constructors.
+			}
 		} else {
 			return null // We have nothing to do here, use default behavior.
 		}

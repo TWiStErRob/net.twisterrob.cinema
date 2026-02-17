@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.neo4j.driver.Driver
 import org.neo4j.ogm.session.Session
-import org.neo4j.ogm.session.load
 import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.relationships
 import net.twisterrob.test.neo4j.session

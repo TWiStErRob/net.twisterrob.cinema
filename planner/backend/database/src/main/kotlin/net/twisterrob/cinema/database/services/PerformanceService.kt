@@ -1,3 +1,4 @@
+@file:Suppress("UnusedImports") // False positive: extension functions are used
 package net.twisterrob.cinema.database.services
 
 import net.twisterrob.cinema.database.model.Cinema

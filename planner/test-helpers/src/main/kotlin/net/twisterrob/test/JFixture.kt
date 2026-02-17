@@ -30,4 +30,5 @@ inline fun <reified T> JFixture.buildRange(range: ClosedRange<T>): T
 inline fun <reified T> CreateExtensions.range(range: ClosedRange<T>): T
 		where T : Number,
 		      T : Comparable<T> =
-	this.inRange(T::class.java, range.start, range.endInclusive)!!
+	this.inRange(T::class.java, range.start, range.endInclusive)
+		?: error("Failed to create instance of ${T::class.java.simpleName} in range $range")
