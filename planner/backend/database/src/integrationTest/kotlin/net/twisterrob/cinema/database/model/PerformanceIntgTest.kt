@@ -10,6 +10,7 @@ import net.twisterrob.test.build
 import net.twisterrob.test.neo4j.allNodes
 import net.twisterrob.test.neo4j.mockito.hasLabels
 import net.twisterrob.test.neo4j.allProperties
+import net.twisterrob.test.neo4j.id
 import net.twisterrob.test.neo4j.relationships
 import net.twisterrob.test.neo4j.session
 import net.twisterrob.test.that

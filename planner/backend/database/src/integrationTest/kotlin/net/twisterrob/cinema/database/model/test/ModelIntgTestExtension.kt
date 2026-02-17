@@ -4,6 +4,9 @@ import dagger.Component
 import net.twisterrob.cinema.database.Neo4J
 import net.twisterrob.cinema.database.Neo4JModule
 import net.twisterrob.test.get
+import net.twisterrob.test.neo4j.boltURI
+import net.twisterrob.test.put
+import net.twisterrob.test.remove
 import net.twisterrob.test.neo4j.createDriver
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback

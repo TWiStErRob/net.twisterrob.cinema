@@ -6,6 +6,22 @@
  * `git clone https://github.com/TWiStErRob/net.twisterrob.cinema.history.git history`
  * `scripts/env.bat` (or copy contents to global vars)
 
+### Testing
+
+To run the full test suite (`gradlew test`), the following environment variables must be set:
+
+* `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` - Java 21 required for Neo4j test harness (class file version 65.0)
+* `NEO4J_URL=neo4j://test` - Required for integration tests to pass
+* `GITHUB_ACTIONS=agent` - Required for detekt to fail on findings during CI builds
+
+Example:
+```bash
+export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
+export NEO4J_URL=neo4j://test
+export GITHUB_ACTIONS=agent
+./gradlew test
+```
+
 ### Running
 
 `frontend` continuously builds into `deploy/frontend` via `npm start`
