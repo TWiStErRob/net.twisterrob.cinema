@@ -435,7 +435,10 @@ private fun details(expectedData: Any, e: Throwable): String =
 private val Throwable.rootCause: Throwable
 	get() {
 		var cause = this
-		while (cause.cause != null && cause.cause != cause) {
+		// Prevent infinite loops from circular references
+		val seen = mutableSetOf<Throwable>()
+		while (cause.cause != null && cause.cause !in seen) {
+			seen.add(cause)
 			cause = cause.cause!!
 		}
 		return cause

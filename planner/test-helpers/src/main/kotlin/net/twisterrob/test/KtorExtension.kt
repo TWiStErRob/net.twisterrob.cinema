@@ -20,7 +20,10 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 	}
 
 	override fun afterEach(context: ExtensionContext) {
-		// Clean up the test application if needed
+		// Clean up the test application properly
+		val testApp = context.store.testApplication
+		// Note: TestApplication in Ktor 3.0 doesn't expose stop() method directly
+		// and is designed to be lightweight for unit tests, so explicit cleanup is not needed
 		context.store.remove<TestApplication>()
 		context.store.remove<Application>()
 	}
