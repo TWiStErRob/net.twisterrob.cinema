@@ -1,5 +1,3 @@
-import org.gradle.api.logging.LogLevel
-
 plugins {
 	`kotlin-dsl`
 	id("java-gradle-plugin")
@@ -43,11 +41,6 @@ detekt {
 	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		// Exclude generated sources from analysis to avoid false positives
 		exclude("**/build/generated-sources/**")
-		// Suppress "Successfully generated" report messages by redirecting them to debug level
-		doFirst {
-			logging.captureStandardOutput(LogLevel.DEBUG)
-			logging.captureStandardError(LogLevel.DEBUG)
-		}
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle

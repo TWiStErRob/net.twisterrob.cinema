@@ -5,7 +5,6 @@ import dev.detekt.gradle.report.ReportMergeTask
 import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.dsl.maybeRegister
-import org.gradle.api.logging.LogLevel
 
 plugins {
 	id("dev.detekt")
@@ -25,11 +24,6 @@ detekt {
 	tasks.withType<Detekt>().configureEach {
 		// Target version of the generated JVM bytecode. It is used for type resolution.
 		jvmTarget = libs.versions.java.get()
-		// Suppress "Successfully generated" report messages by redirecting them to debug level
-		doFirst {
-			logging.captureStandardOutput(LogLevel.DEBUG)
-			logging.captureStandardError(LogLevel.DEBUG)
-		}
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle

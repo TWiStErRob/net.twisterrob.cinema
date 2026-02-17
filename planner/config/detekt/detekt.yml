@@ -8,6 +8,18 @@ processors:
   active: false
 
 
+console-reports:
+  exclude:
+    # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
+    - 'NotificationReport'
+    # Enabled, because it gives the category of the rules.
+    #- 'FindingsReport'
+    # Disabled, because it's very verbose, even more so than FindingsReport.
+    - 'FileBasedFindingsReport'
+    # Disabled, because this gives enough context to see the problems, but doesn't group rules.
+    - 'LiteFindingsReport'
+
+
 comments:
 
   DocumentationOverPrivateFunction:
