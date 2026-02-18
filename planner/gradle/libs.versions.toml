@@ -16,9 +16,8 @@ detekt = "2.0.0-alpha.2"
 
 dagger = "2.59.1"
 
-# http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
-# `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "3.0.1"
+# https://ktor.io/docs/releases.html
+ktor = "3.4.0"
 
 appengine = "2.8.6"
 
