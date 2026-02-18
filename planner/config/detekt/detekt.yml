@@ -13,11 +13,11 @@ console-reports:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
     - 'NotificationReport'
     # Enabled, because it gives the category of the rules.
-    #- 'FindingsReport'
-    # Disabled, because it's very verbose, even more so than FindingsReport.
-    - 'FileBasedFindingsReport'
+    #- 'IssuesReport'
+    # Disabled, because it's very verbose, even more so than IssuesReport.
+    - 'FileBasedIssuesReport'
     # Disabled, because this gives enough context to see the problems, but doesn't group rules.
-    - 'LiteFindingsReport'
+    - 'LiteIssuesReport'
 
 
 comments:
@@ -29,6 +29,9 @@ comments:
   DocumentationOverPrivateProperty:
     # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
     active: false
+
+  OutdatedDocumentation:
+    allowParamOnConstructorProperties: true
 
   UndocumentedPublicClass:
     # Disabled as this is not a public library. For now it's not even all in Kotlin.

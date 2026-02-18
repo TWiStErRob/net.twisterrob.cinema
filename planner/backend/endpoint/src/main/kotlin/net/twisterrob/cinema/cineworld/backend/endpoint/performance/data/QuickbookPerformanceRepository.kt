@@ -28,7 +28,7 @@ class QuickbookPerformanceRepository @Inject constructor(
 		}
 }
 
-@Suppress("FunctionMinLength")
+@Suppress("FunctionNameMinLength")
 private infix fun <T1, T2> Iterable<T1>.x(other: Iterable<T2>): Iterable<Pair<T1, T2>> =
 	this.flatMap { item1 ->
 		other.map { item2 ->

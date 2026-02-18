@@ -1,5 +1,5 @@
 @file:Suppress(
-	"FunctionMinLength", // They're meant to be short and/or/not are traditional names.
+	"FunctionNameMinLength", // They're meant to be short and/or/not are traditional names.
 )
 
 package net.twisterrob.cinema.frontend.test.framework
