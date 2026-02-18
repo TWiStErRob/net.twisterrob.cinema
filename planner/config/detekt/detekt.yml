@@ -100,10 +100,6 @@ naming:
       - 'org.junitpioneer.jupiter.RetryingTest'
       - 'org.junitpioneer.jupiter.cartesian.CartesianTest'
 
-  LambdaParameterNaming:
-    # TODEL too many false positives https://github.com/detekt/detekt/issues/5433
-    active: false
-
   VariableNaming:
     excludes:
       - '**/database/model/*.kt'
@@ -143,10 +139,6 @@ potential-bugs:
 
 style:
 
-  DataClassContainsFunctions:
-    # TODEL Looks like there's no use for this https://github.com/detekt/detekt/issues/5321#issuecomment-1252937894
-    active: false
-
   ForbiddenComment:
     comments:
       - 'FIXME'
@@ -164,8 +156,8 @@ style:
     excludeCommentStatements: true
 
   MultilineRawStringIndentation:
-    # TODEL false positives with tabs: https://github.com/detekt/detekt/issues/5429
-    active: false
+    # Account for tabs.
+    indentSize: 1
 
   UnusedPrivateClass:
     excludes:

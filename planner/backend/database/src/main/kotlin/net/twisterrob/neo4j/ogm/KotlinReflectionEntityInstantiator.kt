@@ -9,7 +9,6 @@ import kotlin.reflect.KParameter
 @Deprecated("Not used right now, but might be useful in the future.")
 class KotlinReflectionEntityInstantiator : EntityInstantiator {
 
-	@Suppress("FunctionMaxNameLength") // TODEL https://github.com/detekt/detekt/issues/5590
 	override fun <T : Any> createInstanceWithConstructorArgs(clazz: Class<T>, propertyValues: Map<String, Any>): T {
 		val allCtors = clazz.kotlin.constructors
 

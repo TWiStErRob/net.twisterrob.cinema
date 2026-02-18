@@ -51,7 +51,6 @@ object Neo4JModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
-		@Suppress("PropertyUsedBeforeDeclaration") // TODEL False positive. https://github.com/detekt/detekt/issues/6125
 		fun graphDBUri(@Named(GRAPH_DB) uri: URI): Builder
 	}
 

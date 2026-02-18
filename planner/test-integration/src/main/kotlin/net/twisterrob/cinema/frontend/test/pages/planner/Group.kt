@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement
  * @param contentCss CSS selector inside root
  * @param itemsCss CSS selector in content
  */
-@Suppress("OutdatedDocumentation") // TODEL https://github.com/detekt/detekt/issues/6362
 open class Group(
 	val root: WebElement,
 	private val contentCss: String,
