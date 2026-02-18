@@ -34,13 +34,16 @@ detekt {
 	// > File being compiled: (4,49) in gradle\plugins\src\main\kotlin\net\twisterrob\cinema\build\compilation.gradle.kts
 	// > The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at:
 	// > org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
-	//source.update { it.asFileTree.filter { file -> !file.name.endsWith(".gradle.kts") } }
+	//source.setFrom(source.asFileTree.filter { file -> !file.name.endsWith(".gradle.kts") })
 
 	parallel = true
 
 	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		// Exclude generated sources from analysis to avoid false positives
-		exclude("**/build/generated-sources/**")
+		// The trivial `exclude("**/build/generated-sources/**/*.kt")` doesn't work,
+		// because the trees are rooted at the "kotlin" folder, so exclude known patterns:
+		exclude("gradle/kotlin/dsl/accessors/")
+		exclude("Net_twisterrob_cinema_*.kt")
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle
@@ -72,9 +75,7 @@ tasks.withType<dev.detekt.gradle.Detekt> {
 tasks.register("detektEach") {
 	// Note: this includes :detekt which will run without type resolution, that's an accepted hit,
 	// because it's not possible to use `kotlin-dsl` otherwise, see detekt { source } above.
-	// detektMainSourceSet is excluded because it analyzes generated Gradle plugin adapter sources
-	// which contain false positives (MissingPackageDeclaration, MaxLineLength) that cannot be fixed.
-	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" && it != "detektMainSourceSet" })
+	dependsOn(tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" })
 }
 
 val isCI: Boolean
