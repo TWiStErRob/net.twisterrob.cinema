@@ -22,7 +22,12 @@ class PerformanceGenerator @Inject constructor(
 		val cinemas = cinemaService.getActiveCinemas()
 		val films = filmService.getAllFilms()
 		val feedCinemas = cinemas.map(::mapCinema)
-		val feedFilms = films.shuffled().take(ACTIVE_FILM_COUNT).map(::mapFilm)
+		val feedFilms = films
+			.asSequence()
+			.shuffled()
+			.take(ACTIVE_FILM_COUNT)
+			.map(::mapFilm)
+			.toList()
 		return Feed(
 			_attributes = emptyList(),
 			_cinemas = feedCinemas,

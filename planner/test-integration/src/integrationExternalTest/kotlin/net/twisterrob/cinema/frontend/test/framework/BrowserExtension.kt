@@ -26,9 +26,11 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 			extensionContext.store.browser?.apply {
 				val file = driver.takeScreenshot(
 					extensionContext.hierarchy
+						.asSequence()
 						.drop(1) // EngineExecutionContext (i.e. junit-jupiter)
 						.map { it.displayName }
 						.plus(sessionId)
+						.toList()
 				)
 				extensionContext.publishReportEntry("Screenshot of failure", file.absolutePath)
 			}
@@ -72,6 +74,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 		private fun injectBrowser(instance: Any, browser: Browser) {
 			instance::class.java
 				.superHierarchy
+				.asSequence()
 				.flatMap { it.declaredFields.toList() }
 				.filter { it.type == BROWSER_VALUE_TYPE }
 				.onEach { it.isAccessible = true }
@@ -81,6 +84,7 @@ class BrowserExtension : BeforeEachCallback, AfterEachCallback, AfterTestExecuti
 		private fun injectPages(instance: Any, browser: Browser) {
 			instance::class.java
 				.superHierarchy
+				.asSequence()
 				.flatMap { it.declaredFields.toList() }
 				.filter { BasePage::class.java.isAssignableFrom(it.type) }
 				.onEach { it.isAccessible = true }
