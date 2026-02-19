@@ -2,7 +2,7 @@ package net.twisterrob.cinema.frontend.test.framework
 
 import org.openqa.selenium.support.PageFactory
 
-@Suppress("UnnecessaryAbstractClass")
+@Suppress("detekt.AbstractClassCanBeConcreteClass")
 abstract class BasePage(
 	protected val browser: Browser
 ) {
