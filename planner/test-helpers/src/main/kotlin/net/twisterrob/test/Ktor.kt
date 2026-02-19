@@ -36,6 +36,7 @@ fun mockEngine(block: MockEngineConfig.() -> Unit = {}): MockEngine {
 	val config = MockEngineConfig().apply {
 		addHandler { error("Dummy Stub to satisfy MockEngine's constructor") }
 	}
+	@Suppress("detekt.MissingUseCall") // It's the responsibility of the user.
 	return MockEngine(config).apply {
 		// clear Dummy Stub after MockEngine has been created.
 		config.requestHandlers.clear()

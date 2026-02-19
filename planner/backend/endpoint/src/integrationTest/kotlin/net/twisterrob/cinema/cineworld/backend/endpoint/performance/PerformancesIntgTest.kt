@@ -79,6 +79,7 @@ class PerformancesIntgTest {
 		endpointTest(
 			test = test,
 			daggerApp = {
+				@Suppress("detekt.MissingUseCall") // TODO close HttpClient.
 				daggerApplication(
 					createComponentBuilder = DaggerPerformancesIntgTestComponent::builder,
 					initComponent = { it.repo(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },

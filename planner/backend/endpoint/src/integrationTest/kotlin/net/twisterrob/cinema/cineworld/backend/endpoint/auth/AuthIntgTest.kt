@@ -74,39 +74,44 @@ class AuthIntgTest {
 		val fakeEmail = "fake@google.email"
 		val fakeName = "Fake Google Name"
 
-		val stubClient = HttpClient(mockEngine())
-		endpointTest(
-			configure = fakeClient(stubClient, fakeClientId, fakeClientSecret),
-			daggerApp = createAppForAuthIntgTest(stubClient),
-		) {
-			// Start the authorization flow.
-			val state = authorizeWithGoogle(host = fakeHost, relativeUri = fakeRelativeUri, clientId = fakeClientId)
-			stubClient.verifyNoInteractions()
-			verifyNoInteractions(mockRepository)
-			stubClient.stubGoogleToken(accessToken = fakeAccessToken, refreshToken = fakeRefreshToken)
-			stubClient.stubGoogleOpenIdUserInfo(userId = fakeUserId, email = fakeEmail, name = fakeName)
+		HttpClient(mockEngine()).use { stubClient ->
+			endpointTest(
+				configure = fakeClient(stubClient, fakeClientId, fakeClientSecret),
+				daggerApp = createAppForAuthIntgTest(stubClient),
+			) {
+				// Start the authorization flow.
+				val state = authorizeWithGoogle(host = fakeHost, relativeUri = fakeRelativeUri, clientId = fakeClientId)
+				stubClient.verifyNoInteractions()
+				verifyNoInteractions(mockRepository)
+				stubClient.stubGoogleToken(accessToken = fakeAccessToken, refreshToken = fakeRefreshToken)
+				stubClient.stubGoogleOpenIdUserInfo(userId = fakeUserId, email = fakeEmail, name = fakeName)
 
-			// Simulate the client receiving the authorization via redirect_uri from user interaction.
-			val cookie = receiveAuthorizationFromGoogle(state = state, host = fakeHost, relativeUri = fakeRelativeUri)
+				// Simulate the client receiving the authorization via redirect_uri from user interaction.
+				val cookie = receiveAuthorizationFromGoogle(
+					state = state,
+					host = fakeHost,
+					relativeUri = fakeRelativeUri,
+				)
 
-			stubClient.verifyGoogleTokenRequest(
-				host = fakeHost,
-				relativeUri = fakeRelativeUri,
-				state = state,
-				clientId = fakeClientId,
-				clientSecret = fakeClientSecret,
-			)
-			stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
-			verify(mockRepository).addUser(
-				userId = eq(fakeUserId),
-				email = eq(fakeEmail),
-				name = eq(fakeName),
-				realm = eq("http://${fakeHost}/"),
-				created = any(),
-			)
-			assertThat(cookie, startsWith("userId=%23s${fakeUserId}/")) // %23 is # double-encoded.
-			verifyNoMoreInteractions(mockRepository)
-			stubClient.verifyNoMoreInteractions()
+				stubClient.verifyGoogleTokenRequest(
+					host = fakeHost,
+					relativeUri = fakeRelativeUri,
+					state = state,
+					clientId = fakeClientId,
+					clientSecret = fakeClientSecret,
+				)
+				stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
+				verify(mockRepository).addUser(
+					userId = eq(fakeUserId),
+					email = eq(fakeEmail),
+					name = eq(fakeName),
+					realm = eq("http://${fakeHost}/"),
+					created = any(),
+				)
+				assertThat(cookie, startsWith("userId=%23s${fakeUserId}/")) // %23 is # double-encoded.
+				verifyNoMoreInteractions(mockRepository)
+				stubClient.verifyNoMoreInteractions()
+			}
 		}
 	}
 
@@ -233,6 +238,7 @@ class AuthIntgTest {
 	}
 
 	private fun createAppForAuthIntgTest(
+		@Suppress("detekt.MissingUseCall") // TODO how do I close this?
 		stubClient: HttpClient = HttpClient(mockEngine())
 	): Application.() -> Unit = {
 		daggerApplication(

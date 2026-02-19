@@ -158,7 +158,7 @@ class ServerLogging(
 
 	private suspend inline fun ByteReadChannel.tryReadText(charset: Charset): String? =
 		try {
-			readRemaining().readText(charset = charset)
+			readRemaining().use { it.readText(charset = charset) }
 		} catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
 			logger.error("Cannot read text", cause)
 			null

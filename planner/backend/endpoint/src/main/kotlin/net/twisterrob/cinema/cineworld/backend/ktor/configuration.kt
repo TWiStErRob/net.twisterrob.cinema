@@ -60,6 +60,7 @@ import java.time.ZoneOffset
  */
 @Suppress("LongMethod") // TODO find a way to split this up into smaller pieces, while keeping visibility.
 internal fun Application.configuration(
+	@Suppress("detekt.MissingUseCall") // This dies when process dies.
 	oauthHttpClient: HttpClient = HttpClient(),
 	config: Map<String, Any?> = jacksonObjectMapper()
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)

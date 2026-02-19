@@ -48,6 +48,7 @@ class AuthController @Inject constructor(
 	private val authRepository: AuthRepository
 ) : RouteController(application) {
 
+	@Suppress("detekt.MissingUseCall") // This dies when process dies.
 	private val httpClient = httpClient.config {
 		// to handle UserInfo
 		install(ContentNegotiation) {

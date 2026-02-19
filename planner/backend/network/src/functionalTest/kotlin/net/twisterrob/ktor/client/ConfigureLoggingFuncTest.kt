@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import net.twisterrob.test.captureSingle
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -79,10 +80,15 @@ class ConfigureLoggingFuncTest {
 	 * Needs to be initialized after mock stubs, because it calls [mockLogger] methods.
 	 */
 	private val sut: HttpClient by lazy {
+		@Suppress("detekt.MissingUseCall") // See @AfterEach.
 		HttpClient(mockEngine()).config {
 			// Real sut is the extension method.
 			configureLogging(mockLogger)
 		}
+	}
+
+	@AfterEach fun tearDown() {
+		sut.close()
 	}
 
 	private fun HttpClient.stubFakeRequestResponse() {

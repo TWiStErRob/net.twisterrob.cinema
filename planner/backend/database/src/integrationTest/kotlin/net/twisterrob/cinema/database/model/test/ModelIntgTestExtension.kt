@@ -57,6 +57,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val testServer = Neo4jBuilders.newInProcessBuilder().build()
 		extensionContext.store.put(testServer)
+		@Suppress("detekt.MissingUseCall") // Closed in afterEach.
 		extensionContext.store.put(testServer.createDriver())
 		val dagger = DaggerModelIntgTestExtensionComponent
 			.builder()

@@ -15,6 +15,7 @@ import io.ktor.http.Url
 import io.ktor.http.headersOf
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -24,6 +25,7 @@ import kotlin.reflect.full.memberProperties
 
 class QuickbookServiceNetworkIntgTest {
 
+	@Suppress("detekt.MissingUseCall")
 	private val mockClient = HttpClient(mockEngine()).config {
 		install(Logging) {
 			logger = Logger.DEFAULT
@@ -32,6 +34,10 @@ class QuickbookServiceNetworkIntgTest {
 	}
 
 	private val sut = QuickbookServiceNetwork(mockClient, "fake-key")
+
+	@AfterEach fun tearDown() {
+		mockClient.close()
+	}
 
 	@Test fun `can load all cinemas`() {
 		mockClient.stubQuickbook()

@@ -200,6 +200,7 @@ class ViewsIntgTest {
 			test = test,
 			logLevel = if (posts) ServerLogging.LogLevel.HEADERS else ServerLogging.LogLevel.ALL,
 			daggerApp = {
+				@Suppress("detekt.MissingUseCall") // TODO close HttpClient.
 				daggerApplication(
 					createComponentBuilder = DaggerViewsIntgTestComponent::builder,
 					initComponent = { it.repo(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },

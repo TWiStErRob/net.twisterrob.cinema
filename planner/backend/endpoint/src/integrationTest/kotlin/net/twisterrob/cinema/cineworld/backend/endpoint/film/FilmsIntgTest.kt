@@ -138,6 +138,7 @@ class FilmsIntgTest {
 		endpointTest(
 			test = test,
 			daggerApp = {
+				@Suppress("detekt.MissingUseCall") // TODO close HttpClient.
 				daggerApplication(
 					createComponentBuilder = DaggerFilmsIntgTestComponent::builder,
 					initComponent = { it.repo(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },

@@ -9,14 +9,20 @@ import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.GENRES
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedData.SCREENING_TYPES
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class FeedServiceNetworkIntgTest {
 
+	@Suppress("detekt.MissingUseCall")
 	private val mockClient = HttpClient(mockEngine())
 
 	private val sut = FeedServiceNetwork(mockClient)
+
+	@AfterEach fun tearDown() {
+		mockClient.close()
+	}
 
 	@Test fun `read weekly film times XML`() {
 		mockClient.stub { request ->
