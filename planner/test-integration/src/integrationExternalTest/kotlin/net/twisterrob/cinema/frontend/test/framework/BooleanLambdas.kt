@@ -29,6 +29,7 @@ operator fun <T> ((T) -> Boolean).not(): (T) -> Boolean =
  * ```
  */
 operator fun <T> KFunction1<T, Boolean>.not(): KFunction1<T, Boolean> =
+	@Suppress("detekt.ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> !this(it) }::invoke
 
 /**
@@ -41,6 +42,7 @@ infix fun <T> ((T) -> Boolean).or(other: (T) -> Boolean): (T) -> Boolean =
  * Kotlin version of [java.util.function.Predicate.or] for method references.
  */
 infix fun <T> KFunction1<T, Boolean>.or(other: KFunction1<T, Boolean>): KFunction1<T, Boolean> =
+	@Suppress("detekt.ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> this(it) || other(it) }::invoke
 
 /**
@@ -53,4 +55,5 @@ infix fun <T> ((T) -> Boolean).and(other: (T) -> Boolean): (T) -> Boolean =
  * Kotlin version of [java.util.function.Predicate.and] for method references.
  */
 infix fun <T> KFunction1<T, Boolean>.and(other: KFunction1<T, Boolean>): KFunction1<T, Boolean> =
+	@Suppress("detekt.ExplicitItLambdaParameter") // TODEL https://github.com/detekt/detekt/issues/6364
 	{ it: T -> this(it) && other(it) }::invoke

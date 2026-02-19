@@ -41,7 +41,7 @@ fun mockEngine(block: MockEngineConfig.() -> Unit = {}): MockEngine {
 		// clear Dummy Stub after MockEngine has been created.
 		config.requestHandlers.clear()
 		// allow setting up configuration (e.g. reuseHandlers)
-		@Suppress("NestedScopeFunctions") // REPORT false positive
+		@Suppress("detekt.NestedScopeFunctions") // REPORT False positive: not a block, just a function call.
 		config.apply(block)
 	}
 }

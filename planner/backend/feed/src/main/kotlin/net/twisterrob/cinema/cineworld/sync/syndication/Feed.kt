@@ -141,6 +141,7 @@ data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmuta
 		verifyPerformanceAttributes()
 	}
 
+	@Suppress("detekt.DataClassContainsFunctions") // Ensures valid construction.
 	private fun verifyPerformanceAttributes() {
 		val attributeCodes = attributes.map { it.code }
 		performances.forEach { performance ->
@@ -251,6 +252,7 @@ data class Feed @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmuta
 		 * @sample `15`
 		 * @sample `U`
 		 */
+		@Suppress("detekt.UnnecessaryBackticks")
 		val classification: String,
 
 		/**

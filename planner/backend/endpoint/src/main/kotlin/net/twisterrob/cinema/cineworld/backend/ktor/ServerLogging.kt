@@ -126,7 +126,6 @@ class ServerLogging(
 	}
 
 	private fun OutgoingContent.asString(): String? =
-		@Suppress("OptionalWhenBraces")
 		when (val content = this) {
 
 			is OutgoingContent.NoContent -> {
