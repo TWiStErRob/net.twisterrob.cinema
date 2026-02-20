@@ -52,8 +52,9 @@ fun Project.configureSarifMerging() {
 	}
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
 		val detektReportMergeTask = this@named
-		tasks.withType<Detekt> {
-			val detektReportingTask = this@withType
+		// Intentionally eager. When running report, we must configure all tasks.
+		tasks.withType<Detekt>().all {
+			val detektReportingTask = this@all
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
 			detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 		}

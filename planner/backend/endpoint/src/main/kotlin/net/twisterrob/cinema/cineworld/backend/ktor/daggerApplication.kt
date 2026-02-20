@@ -34,7 +34,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 }
 
 private fun getNeo4jUrl(): URI {
-	val url = System.getenv()["NEO4J_URL"]
+	val url = System.getenv("NEO4J_URL")
 		?: error("NEO4J_URL environment variable must be defined (=neo4j+s://username:password@hostname:port).")
 	return URI.create(url)
 }

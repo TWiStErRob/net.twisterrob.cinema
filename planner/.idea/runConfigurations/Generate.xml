@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Generate" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="net.twisterrob.cinema.cineworld.generate.Main" />
+    <module name="net-twisterrob-cinema-planner.backend.sync.main" />
+    <option name="PROGRAM_PARAMETERS" value="backend/sync/test/weekly_film_times.xml" />
+    <shortenClasspath name="NONE" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
