@@ -35,8 +35,17 @@ class Films(
 			get() = root.findElement(By.id("films-none"))
 	}
 
-	val new get() = FilmGroup("#films-group", "#films-list")
-	val watched get() = FilmGroup("#films-group-watched", "#films-list-watched")
+	val new
+		get() = FilmGroup(
+			groupCSS = "#films-group",
+			listCSS = "#films-list",
+		)
+
+	val watched
+		get() = FilmGroup(
+			groupCSS = "#films-group-watched",
+			listCSS = "#films-list-watched",
+		)
 
 	val addViewDialog get() = AddViewDialog(app.findElement(By.className("modal-dialog")))
 

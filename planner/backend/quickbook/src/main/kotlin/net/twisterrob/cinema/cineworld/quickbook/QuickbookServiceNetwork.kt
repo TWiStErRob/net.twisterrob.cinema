@@ -32,6 +32,7 @@ class QuickbookServiceNetwork @Inject constructor(
 	private val key: String
 ) : QuickbookService {
 
+	@Suppress("detekt.MissingUseCall") // This dies when process dies.
 	private val client = client.config {
 		install(ContentNegotiation) {
 			val mapper = jsonMapper {

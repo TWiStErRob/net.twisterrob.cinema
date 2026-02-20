@@ -18,8 +18,8 @@ val SimpleQueryRunner.allNodes: Iterable<Node>
 			.run(
 				// language=cypher
 				"""
-						MATCH (n)
-						RETURN n
+					MATCH (n)
+					RETURN n
 				""".trimIndent(),
 			)
 			.asSequence()
@@ -35,8 +35,8 @@ val SimpleQueryRunner.allRelationships: Iterable<Relationship>
 			.run(
 				// language=cypher
 				"""
-						MATCH ()-[r]->()
-						RETURN r
+					MATCH ()-[r]->()
+					RETURN r
 				""".trimIndent(),
 			)
 			.asSequence()
@@ -45,7 +45,10 @@ val SimpleQueryRunner.allRelationships: Iterable<Relationship>
 
 @Deprecated("id is deprecated, use elementId instead.", ReplaceWith("elementId"))
 val Node.id: Long
-	@Suppress("DEPRECATION", "DEPRECATED_JAVA_ANNOTATION", "detekt.ForbiddenAnnotation")
+	@Suppress(
+		"DEPRECATION", "DEPRECATED_JAVA_ANNOTATION",
+		"detekt.ForbiddenAnnotation", "detekt.UnnecessaryFullyQualifiedName",
+	)
 	@java.lang.Deprecated(forRemoval = true) // Replicating original harness behavior.
 	get() = this.id()
 
@@ -60,9 +63,9 @@ private fun SimpleQueryRunner.relationshipsOf(node: Node): Iterable<Relationship
 		.run(
 			// language=cypher
 			$$"""
-					MATCH (n)-[r]-()
-					WHERE elementId(n) = $elementId
-					RETURN r
+				MATCH (n)-[r]-()
+				WHERE elementId(n) = $elementId
+				RETURN r
 			""".trimIndent(),
 			mapOf("elementId" to node.elementId()),
 		)

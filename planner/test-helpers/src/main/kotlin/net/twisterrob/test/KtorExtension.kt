@@ -44,7 +44,7 @@ class KtorExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 	companion object {
 
-		@Suppress("RemoveRedundantQualifierName")
+		@Suppress("RemoveRedundantQualifierName", "detekt.UnnecessaryFullyQualifiedName")
 		private val SUPPORTED_PARAMETER_TYPES = setOf(
 			io.ktor.server.testing.TestApplicationEngine::class.java,
 			io.ktor.server.engine.ApplicationEngine::class.java,

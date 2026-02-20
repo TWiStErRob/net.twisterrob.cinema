@@ -14,9 +14,9 @@ class PerformanceMapper @Inject constructor() {
 	fun map(date: LocalDate, performances: List<Performance>): List<Performances> =
 		performances
 			.groupBy { it.inCinema to it.screensFilm }
-			.map { (key, performances) ->
+			.map { (key, filteredPerformances) ->
 				val (cinema, film) = key
-				map(date = date, cinema = cinema, film = film, performances = performances)
+				map(date = date, cinema = cinema, film = film, performances = filteredPerformances)
 			}
 
 	private fun map(date: LocalDate, cinema: Cinema, film: Film, performances: List<Performance>): Performances =

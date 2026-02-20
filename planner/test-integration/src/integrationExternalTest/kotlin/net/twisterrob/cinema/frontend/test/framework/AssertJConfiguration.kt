@@ -8,6 +8,11 @@ class AssertJConfiguration : Configuration() {
 	init {
 		setPreferredAssumptionException(PreferredAssumptionException.JUNIT5)
 		setPrintAssertionsDescriptionEnabled(true)
+		registerFormatters()
+	}
+
+	@Suppress("detekt.UnnecessaryFullyQualifiedName") // Qualified to be clear what is being formatted.
+	private fun registerFormatters() {
 		registerFormatterForType<org.openqa.selenium.WebElement> { element ->
 			"selenium.WebElement(${element})"
 				// See org.openqa.selenium.remote.RemoteWebDriver.toString.

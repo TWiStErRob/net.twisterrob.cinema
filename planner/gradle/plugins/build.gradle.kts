@@ -22,8 +22,7 @@ dependencyLocking {
 
 detekt {
 	ignoreFailures = isCI
-	// TODEL https://github.com/detekt/detekt/issues/4926
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	config.setFrom(rootProject.file("../../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../../config/detekt/detekt-baseline-${project.name}.xml")
@@ -43,7 +42,10 @@ detekt {
 		// The trivial `exclude("**/build/generated-sources/**/*.kt")` doesn't work,
 		// because the trees are rooted at the "kotlin" folder, so exclude known patterns:
 		exclude("gradle/kotlin/dsl/accessors/")
+		exclude("net/twisterrob/cinema/build/*Plugin.kt")
 		exclude("Net_twisterrob_cinema_*.kt")
+		// UnnecessaryFullyQualifiedName because of implicitly imported extensions (kotlin.target.compilations.* looks like FQFN)
+		exclude("net/twisterrob/cinema/build/testing.gradle.kts")
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle

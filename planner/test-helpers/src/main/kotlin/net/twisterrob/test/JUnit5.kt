@@ -43,7 +43,7 @@ constructor(
 	@Deprecated("Internal property, only visible because of inlining, do not use!", level = ERROR)
 	val failures: MutableList<Throwable> = mutableListOf()
 
-	@Suppress("FunctionMinLength")
+	@Suppress("FunctionNameMinLength")
 	inline fun o(crossinline function: () -> Unit) {
 		try {
 			function.invoke()

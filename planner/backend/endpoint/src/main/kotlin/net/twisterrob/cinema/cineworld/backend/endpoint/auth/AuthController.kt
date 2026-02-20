@@ -48,6 +48,7 @@ class AuthController @Inject constructor(
 	private val authRepository: AuthRepository
 ) : RouteController(application) {
 
+	@Suppress("detekt.MissingUseCall") // This dies when process dies.
 	private val httpClient = httpClient.config {
 		// to handle UserInfo
 		install(ContentNegotiation) {
@@ -71,7 +72,7 @@ class AuthController @Inject constructor(
 			if (session != null) {
 				try {
 					val user = authRepository.findUser(session.userId)
-					call.attributes.currentUser = CurrentUser(user.id, user.email)
+					call.attributes.currentUser = CurrentUser(id = user.id, email = user.email)
 				} catch (ex: UnknownUserException) {
 					call.application.log.error("Invalid session: {}", call.sessions, ex)
 					call.sessions.clear<AuthSession>()

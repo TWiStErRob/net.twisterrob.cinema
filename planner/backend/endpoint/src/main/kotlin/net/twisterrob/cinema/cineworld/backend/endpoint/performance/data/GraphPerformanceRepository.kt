@@ -12,5 +12,5 @@ class GraphPerformanceRepository @Inject constructor(
 ) : PerformanceRepository {
 
 	override fun list(date: LocalDate, films: List<Long>, cinemas: List<Long>): List<Performances> =
-		mapper.map(date, service.getPerformances(date, cinemas, films).toList())
+		mapper.map(date, service.getPerformances(date = date, cinemaIDs = cinemas, filmEDIs = films).toList())
 }
