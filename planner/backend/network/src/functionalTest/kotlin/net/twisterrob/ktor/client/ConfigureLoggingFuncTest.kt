@@ -238,7 +238,7 @@ class ConfigureLoggingFuncTest {
 			.joinToString("\n")
 	}
 
-	@Suppress("FunctionMaxLength")
+	@Suppress("FunctionNameMaxLength")
 	private fun verifyNoMoreLogLevelInteractions(method: Logger.(String) -> Unit) {
 		verify(mockLogger, atMost(1)).isErrorEnabled
 		verify(mockLogger, atMost(1)).isWarnEnabled

@@ -1,13 +1,13 @@
 package net.twisterrob.cinema.build
 
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.report.ReportMergeTask
 import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.dsl.maybeRegister
 
 plugins {
-	id("io.gitlab.arturbosch.detekt")
+	id("dev.detekt")
 }
 
 detekt {
@@ -17,7 +17,7 @@ detekt {
 	allRules = true
 	config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 	baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
-	basePath = rootProject.projectDir.parentFile.absolutePath
+	basePath = rootProject.projectDir.parentFile
 
 	parallel = true
 
@@ -26,8 +26,8 @@ detekt {
 		jvmTarget = libs.versions.java.get()
 		reports {
 			html.required = true // human
-			xml.required = true // checkstyle
-			txt.required = true // console
+			checkstyle.required = true // checkstyle
+			markdown.required = true // console
 			// https://sarifweb.azurewebsites.net
 			sarif.required = true // GitHub Code Scanning
 		}
@@ -56,7 +56,7 @@ fun Project.configureSarifMerging() {
 		tasks.withType<Detekt> {
 			val detektReportingTask = this@withType
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
-			detektReportMergeTask.input.from(detektReportingTask.sarifReportFile)
+			detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 		}
 		gradle.includedBuilds.forEach { includedBuild ->
 			detektReportMergeTask.dependsOn(includedBuild.task(":detektReportMergeSarif"))

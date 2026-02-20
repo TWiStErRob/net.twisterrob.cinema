@@ -13,7 +13,7 @@ kotlinx-html = "0.7.3"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.10.0"
 # TODO review TODELs with detekt mentioned in them.
-detekt = "1.23.8"
+detekt = "2.0.0-alpha.2"
 
 dagger = "2.59.1"
 
@@ -65,7 +65,7 @@ test-ngWebDriver = "1.2"
 
 [libraries]
 
-detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-gradle = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 appengine-gradle = { module = "com.google.cloud.tools:appengine-gradle-plugin", version.ref = "appengine" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -151,6 +151,6 @@ test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.r
 log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 # From `com.google.cloud.tools:appengine-gradle-plugin`
 appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version.ref = "appengine" }
