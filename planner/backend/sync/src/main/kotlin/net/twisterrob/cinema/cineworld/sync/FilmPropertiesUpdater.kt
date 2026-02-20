@@ -36,7 +36,7 @@ private fun ukMidnight(date: LocalDate): OffsetDateTime {
 	return date.atTime(LocalTime.of(0, 0).atOffset(ukZone))
 }
 
-private fun formatTitle(title: String, attributeList: List<String>): String {
+internal fun formatTitle(title: String, attributeList: List<String>): String {
 	val format = attributeList
 		.asSequence()
 		.filterNot { it.startsWith("gn:") }
@@ -47,7 +47,7 @@ private fun formatTitle(title: String, attributeList: List<String>): String {
 	// Ignore (2D) in front coming from feed, and [IMAX, 3D, AD] in the end coming from generator so import is idempotent.
 	// https://regex101.com/r/NWTzLC/1
 	@Suppress("RegExpRedundantEscape")
-	val noFormatTitle = Regex("""^(?:\(.*?\) )?(.*?)( \[[^\[\]]*\])?${'$'}""")
+	val noFormatTitle = Regex("""^(?:\(.*?\) )?(.+?)( \[[^\[\]]*\])?(?: \[\])*$""")
 		.find(title)
 		?.let { it.groupValues[1] }
 		?: title
