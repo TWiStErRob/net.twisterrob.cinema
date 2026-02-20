@@ -32,6 +32,30 @@ class FilmAttributesInferrerUnitTest {
 		assertEquals(listOf("4DX", "AC", "AD"), result)
 	}
 
+	@Test fun `title with brackets in front is ignored`() {
+		val film = film(title = "[NEW] Some Film [AD]")
+
+		val result = sut.infer(film)
+
+		assertEquals(listOf("AD"), result)
+	}
+
+	@Test fun `title with invalid brackets is ignored`() {
+		val film = film(title = "Some Film [AD] [] []")
+
+		val result = sut.infer(film)
+
+		assertEquals(listOf("AD"), result)
+	}
+
+	@Test fun `title only takes the last bracket`() {
+		val film = film(title = "Some Film [IMAX, 3D] [AC, AD]")
+
+		val result = sut.infer(film)
+
+		assertEquals(listOf("AC", "AD"), result)
+	}
+
 	@Test fun `is3D flag adds 3D`() {
 		val film = film(is3D = true)
 

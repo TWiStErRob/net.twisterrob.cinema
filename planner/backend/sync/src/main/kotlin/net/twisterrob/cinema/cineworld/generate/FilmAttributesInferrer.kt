@@ -23,7 +23,7 @@ class FilmAttributesInferrer @Inject constructor() {
 	/** @see net.twisterrob.cinema.cineworld.sync.formatTitle */
 	private fun parseAttributesFromTitle(title: String): List<String> =
 		@Suppress("RegExpRedundantEscape")
-		Regex("""^.*? \[(.*)\]$""")
+		Regex("""^.*? \[([^\[\]]+)\](?: \[\])*$""")
 			.find(title)
 			?.let { it.groupValues[1].split(", ") }
 			.orEmpty()
