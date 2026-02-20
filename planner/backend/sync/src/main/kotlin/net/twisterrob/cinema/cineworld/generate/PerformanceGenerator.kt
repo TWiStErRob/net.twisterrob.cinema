@@ -76,10 +76,10 @@ class PerformanceGenerator @Inject constructor(
 				"IMAX" -> arrayOf("IMAX")
 				else -> emptyArray()
 			},
-			// See net.twisterrob.cinema.cineworld.sync.formatTitle
 			*parseAttributesFromTitle(film.title).toTypedArray()
 		).distinct().sorted()
 
+	/** @see net.twisterrob.cinema.cineworld.sync.formatTitle */
 	private fun parseAttributesFromTitle(title: String): List<String> =
 		@Suppress("RegExpRedundantEscape")
 		Regex("""^.*? \[(.*)\]$""")
