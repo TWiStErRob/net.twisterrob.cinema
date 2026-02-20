@@ -57,7 +57,13 @@ detekt {
 }
 
 val detektReportMergeTask = rootProject.tasks.register<dev.detekt.gradle.report.ReportMergeTask>("detektReportMergeSarif") {
+	val detektReportMergeTask = this@register
 	output = rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif")
+	tasks.withType<dev.detekt.gradle.Detekt> { // Intentionally eager. When running report, we must configure all tasks.
+		detektReportMergeTask.mustRunAfter(this)
+		detektReportMergeTask.input.from(this.reports.sarif.outputLocation)
+	}
+
 }
 tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 	reports {
@@ -65,14 +71,7 @@ tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		sarif.required = true // GitHub Code Scanning
 	}
 }
-detektReportMergeTask.configure {
-	val detektReportMergeTask = this@configure
-	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
-		val detektReportingTask = this@configureEach
-		detektReportMergeTask.mustRunAfter(detektReportingTask)
-		detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
-	}
-}
+
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {
