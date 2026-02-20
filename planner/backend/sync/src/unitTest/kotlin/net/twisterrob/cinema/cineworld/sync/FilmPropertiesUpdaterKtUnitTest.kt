@@ -123,4 +123,68 @@ class FilmPropertiesUpdaterKtUnitTest {
 			assertEquals("Some Film (Telugu) [SS]", result)
 		}
 	}
+
+	@Nested
+	inner class FindFormat {
+
+		@Test fun `no attributes returns empty`() {
+			val result = findFormat(emptyList())
+
+			assertEquals("", result)
+		}
+
+		@Test fun `unrecognised attributes return empty`() {
+			val result = findFormat(listOf("SS", "AD", "gn:drama"))
+
+			assertEquals("", result)
+		}
+
+		@Test fun `2D returns 2D`() {
+			val result = findFormat(listOf("2D"))
+
+			assertEquals("2D", result)
+		}
+
+		@Test fun `3D returns 3D`() {
+			val result = findFormat(listOf("3D"))
+
+			assertEquals("3D", result)
+		}
+
+		@Test fun `IMAX returns IMAX`() {
+			val result = findFormat(listOf("IMAX"))
+
+			assertEquals("IMAX", result)
+		}
+
+		@Test fun `IMAX with 2D returns IMAX2D`() {
+			val result = findFormat(listOf("IMAX", "2D"))
+
+			assertEquals("IMAX2D", result)
+		}
+
+		@Test fun `IMAX with 3D returns IMAX3D`() {
+			val result = findFormat(listOf("IMAX", "3D"))
+
+			assertEquals("IMAX3D", result)
+		}
+
+		@Test fun `IMAX with 3D takes priority over 2D`() {
+			val result = findFormat(listOf("IMAX", "3D", "2D"))
+
+			assertEquals("IMAX3D", result)
+		}
+
+		@Test fun `other attributes alongside IMAX are ignored`() {
+			val result = findFormat(listOf("IMAX", "SS", "AD"))
+
+			assertEquals("IMAX", result)
+		}
+
+		@Test fun `other attributes alongside 3D are ignored`() {
+			val result = findFormat(listOf("3D", "SS", "AD"))
+
+			assertEquals("3D", result)
+		}
+	}
 }

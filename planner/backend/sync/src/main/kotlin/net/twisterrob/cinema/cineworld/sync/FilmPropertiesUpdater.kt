@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.sync
 
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.model.Film
+import org.jetbrains.annotations.VisibleForTesting
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
@@ -36,6 +37,7 @@ private fun ukMidnight(date: LocalDate): OffsetDateTime {
 	return date.atTime(LocalTime.of(0, 0).atOffset(ukZone))
 }
 
+@VisibleForTesting
 internal fun formatTitle(title: String, attributeList: List<String>): String {
 	val format = attributeList
 		.asSequence()
@@ -56,7 +58,8 @@ internal fun formatTitle(title: String, attributeList: List<String>): String {
 	return if (format.isNotEmpty()) "${noFormatTitle} [${format}]" else noFormatTitle
 }
 
-private fun findFormat(attributeList: List<String>): String =
+@VisibleForTesting
+internal fun findFormat(attributeList: List<String>): String =
 	when {
 		"IMAX" in attributeList ->
 			when {
