@@ -10,7 +10,8 @@ plugins {
 configureSLF4JBindings()
 
 tasks.withType<Test>().configureEach {
-	if (project.property("net.twisterrob.build.verboseReports").toString().toBoolean()) {
+	@Suppress("NullableToStringCall") // TODEL https://github.com/detekt/detekt/issues/9074
+	if (project.property("net.twisterrob.build.verboseReports")?.toString().toBoolean()) {
 		configureVerboseReportsForGithubActions()
 	} else {
 		//afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
