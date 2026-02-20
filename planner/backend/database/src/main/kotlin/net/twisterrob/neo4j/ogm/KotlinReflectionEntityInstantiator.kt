@@ -71,9 +71,13 @@ private fun <T : Any> KFunction<T>.callByDescriptive(args: Map<KParameter, Any?>
 	}
 }
 
-private fun <T> KFunction<T>.toConstructorString(returnType: Boolean = false) =
-	parameters.joinToString(", ", "constructor(", if (returnType) ") : ${this.returnType}" else ")") {
-		it.toParamString()
+private fun <T> KFunction<T>.toConstructorString(returnType: Boolean = false): String =
+	parameters.joinToString(
+		prefix = "constructor(",
+		separator = ", ",
+		postfix = if (returnType) ") : ${this.returnType}" else ")",
+	) { param ->
+		param.toParamString()
 	}
 
 private fun Map<KParameter, Any?>.toCallString(): String =

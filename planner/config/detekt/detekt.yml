@@ -135,6 +135,17 @@ potential-bugs:
       - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
+  
+  UnnamedParameterUse:
+    ignoreFunctionCall:
+      - 'io.ktor.client.request.header'
+      - 'io.ktor.client.request.parameter'
+      - 'io.ktor.server.response.header'
+      - 'kotlin.collections.associateBy'
+      - 'kotlin.text.replace'
+      - 'kotlin.text.substring'
+      - 'net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent'
+      - 'net.twisterrob.test.that'
 
   UnsafeCallOnNullableType:
     excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]

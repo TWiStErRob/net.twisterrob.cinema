@@ -28,7 +28,8 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		}
 
 		@Test fun `shows performances (Baby Driver)`() {
-			val times = app.performances.byFilm.performances("Baby Driver", "Leicester Square")
+			val times = app.performances.byFilm
+				.performances(filmName = "Baby Driver", cinemaName = "Leicester Square")
 			assertThat(times).hasSize(4)
 			assertThat(times[0]).hasText("12:00")
 			assertThat(times[1]).hasText("14:40")
@@ -37,7 +38,8 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		}
 
 		@Test fun `shows performances (Spider-Man)`() {
-			val times = app.performances.byFilm.performances("(IMAX 3-D) Spider-Man : HOMECOMING", "Leicester Square")
+			val times = app.performances.byFilm
+				.performances(filmName = "(IMAX 3-D) Spider-Man : HOMECOMING", cinemaName = "Leicester Square")
 			assertThat(times).hasSize(4)
 			assertThat(times[0]).hasText("11:00")
 			assertThat(times[1]).hasText("14:10")
@@ -66,7 +68,8 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		}
 
 		@Test fun `shows performances (1)`() {
-			val times = app.performances.byCinema.performances("Leicester Square", "Baby Driver")
+			val times = app.performances.byCinema
+				.performances(cinemaName = "Leicester Square", filmName = "Baby Driver")
 			assertThat(times).hasSize(4)
 			assertThat(times[0]).hasText("12:00")
 			assertThat(times[1]).hasText("14:40")
@@ -75,7 +78,8 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		}
 
 		@Test fun `shows performances (2)`() {
-			val times = app.performances.byCinema.performances("Wood Green", "Baby Driver")
+			val times = app.performances.byCinema
+				.performances(cinemaName = "Wood Green", filmName = "Baby Driver")
 			assertThat(times).hasSize(5)
 			assertThat(times[0]).hasText("11:50")
 			assertThat(times[1]).hasText("14:00")
@@ -85,7 +89,8 @@ class PerformancesUiTest : BasePlannerUiTest() {
 		}
 
 		@Test fun `shows performances (3)`() {
-			val times = app.performances.byCinema.performances("Wood Green", "(IMAX 3-D) Spider-Man : HOMECOMING")
+			val times = app.performances.byCinema
+				.performances(cinemaName = "Wood Green", filmName = "(IMAX 3-D) Spider-Man : HOMECOMING")
 			assertThat(times).isEmpty()
 		}
 	}

@@ -80,19 +80,30 @@ class AuthIntgTest {
 			daggerApp = createAppForAuthIntgTest(stubClient),
 		) {
 			// Start the authorization flow.
-			val state = authorizeWithGoogle(fakeHost, fakeRelativeUri, fakeClientId)
+			val state = authorizeWithGoogle(host = fakeHost, relativeUri = fakeRelativeUri, clientId = fakeClientId)
 			stubClient.verifyNoInteractions()
 			verifyNoInteractions(mockRepository)
-			stubClient.stubGoogleToken(fakeAccessToken, fakeRefreshToken)
-			stubClient.stubGoogleOpenIdUserInfo(fakeUserId, fakeEmail, fakeName)
+			stubClient.stubGoogleToken(accessToken = fakeAccessToken, refreshToken = fakeRefreshToken)
+			stubClient.stubGoogleOpenIdUserInfo(userId = fakeUserId, email = fakeEmail, name = fakeName)
 
 			// Simulate the client receiving the authorization via redirect_uri from user interaction.
-			val cookie = receiveAuthorizationFromGoogle(state, fakeHost, fakeRelativeUri)
+			val cookie = receiveAuthorizationFromGoogle(state = state, host = fakeHost, relativeUri = fakeRelativeUri)
 
-			stubClient.verifyGoogleTokenRequest(fakeHost, fakeRelativeUri, state, fakeClientId, fakeClientSecret)
+			stubClient.verifyGoogleTokenRequest(
+				host = fakeHost,
+				relativeUri = fakeRelativeUri,
+				state = state,
+				clientId = fakeClientId,
+				clientSecret = fakeClientSecret,
+			)
 			stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
-			verify(mockRepository)
-				.addUser(eq(fakeUserId), eq(fakeEmail), eq(fakeName), eq("http://${fakeHost}/"), any())
+			verify(mockRepository).addUser(
+				userId = eq(fakeUserId),
+				email = eq(fakeEmail),
+				name = eq(fakeName),
+				realm = eq("http://${fakeHost}/"),
+				created = any(),
+			)
 			assertThat(cookie, startsWith("userId=%23s${fakeUserId}/")) // %23 is # double-encoded.
 			verifyNoMoreInteractions(mockRepository)
 			stubClient.verifyNoMoreInteractions()

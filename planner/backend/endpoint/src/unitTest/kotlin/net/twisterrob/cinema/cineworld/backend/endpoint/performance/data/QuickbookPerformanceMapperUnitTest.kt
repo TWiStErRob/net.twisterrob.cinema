@@ -29,7 +29,12 @@ class QuickbookPerformanceMapperUnitTest {
 		val fixtCinema: Long = fixture.build()
 		val fixtFilm: Long = fixture.build()
 
-		val result = sut.map(fixtDate, fixtCinema, fixtFilm, emptyList())
+		val result = sut.map(
+			date = fixtDate,
+			cinema = fixtCinema,
+			film = fixtFilm,
+			qbPerformances = emptyList(),
+		)
 
 		assertAll {
 			that("cinema", result.cinema, equalTo(fixtCinema))

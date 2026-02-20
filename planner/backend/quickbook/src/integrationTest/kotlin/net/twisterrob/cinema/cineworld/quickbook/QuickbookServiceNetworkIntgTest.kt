@@ -102,7 +102,7 @@ class QuickbookServiceNetworkIntgTest {
 	@Test fun `can load filtered performances`() {
 		mockClient.stubQuickbook()
 
-		val performances = sut.performances(LocalDate.now(), 1, 2)
+		val performances = sut.performances(date = LocalDate.now(), cinema = 1, film = 2)
 
 		assertNotNull(performances)
 		performances.forEach { performance ->

@@ -59,7 +59,7 @@ class PerformancesIntgTest {
 			url("/performance?cinemaIDs=123&cinemaIDs=456&date=20190530&filmEDIs=234&filmEDIs=789")
 		}
 
-		verify(mockRepository).list(queryDate, queryFilmIDs, queryCinemaIDs)
+		verify(mockRepository).list(date = queryDate, films = queryFilmIDs, cinemas = queryCinemaIDs)
 		verifyNoMoreInteractions(mockRepository)
 
 		Assertions.assertEquals(HttpStatusCode.OK, response.status)
