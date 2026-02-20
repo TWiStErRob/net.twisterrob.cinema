@@ -2,8 +2,7 @@ package net.twisterrob.cinema.cineworld.backend.app
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingApplicationCall
+import io.ktor.server.routing.RoutingRoot
 import io.ktor.util.AttributeKey
 import io.ktor.util.Attributes
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
@@ -33,7 +32,7 @@ object ApplicationAttributes {
 
 	@Suppress("unused") // not needed yet, ApplicationComponent is alive for the whole Application lifecycle
 	private fun Application.registerDaggerForEachCall(dagger: ApplicationComponent) {
-		environment.monitor.subscribe(Routing.RoutingCallStarted) { call: RoutingApplicationCall ->
+		environment.monitor.subscribe(RoutingRoot.RoutingCallStarted) { call: ApplicationCall ->
 			call.attributes.put(DaggerComponentAttribute, dagger)
 		}
 	}
