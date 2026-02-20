@@ -9,6 +9,12 @@ class FilmPropertiesUpdaterKtUnitTest {
 	@Nested
 	inner class FormatTitle {
 
+		@Test fun `empty title returns empty`() {
+			val result = formatTitle("", emptyList())
+
+			assertEquals("", result)
+		}
+
 		@Test fun `no attributes returns title unchanged`() {
 			val result = formatTitle("Some Film", emptyList())
 
