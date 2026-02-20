@@ -16,6 +16,7 @@ class PerformanceGenerator @Inject constructor(
 	private val cinemaService: CinemaService,
 	private val filmService: FilmService,
 	private val creator: RandomPerformanceCreator,
+	private val filmAttributes: FilmAttributesInferrer,
 ) {
 
 	fun generate(): Feed {
@@ -60,32 +61,9 @@ class PerformanceGenerator @Inject constructor(
 			synopsis = "",
 			posterUrl = film.poster_url,
 			reasonToSee = null,
-			attributes = inferAttributes(film).joinToString(separator = ","),
+			attributes = filmAttributes.infer(film).joinToString(separator = ","),
 			trailerUrl = film.trailer,
 		)
-
-	/** @see net.twisterrob.cinema.cineworld.sync.copyPropertiesFrom */
-	private fun inferAttributes(film: Film): List<String> =
-		listOfNotNull(
-			if (film.is3D) "3D" else null,
-			if (film.isIMAX) "IMAX" else null,
-			// See net.twisterrob.cinema.cineworld.sync.findFormat
-			*when (film.format) {
-				"IMAX2D" -> arrayOf("IMAX", "2D")
-				"IMAX3D" -> arrayOf("IMAX", "3D")
-				"IMAX" -> arrayOf("IMAX")
-				else -> emptyArray()
-			},
-			*parseAttributesFromTitle(film.title).toTypedArray()
-		).distinct().sorted()
-
-	/** @see net.twisterrob.cinema.cineworld.sync.formatTitle */
-	private fun parseAttributesFromTitle(title: String): List<String> =
-		@Suppress("RegExpRedundantEscape")
-		Regex("""^.*? \[(.*)\]$""")
-			.find(title)
-			?.let { it.groupValues[1].split(", ") }
-			.orEmpty()
 
 	companion object {
 
