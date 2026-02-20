@@ -57,13 +57,7 @@ detekt {
 }
 
 val detektReportMergeTask = rootProject.tasks.register<dev.detekt.gradle.report.ReportMergeTask>("detektReportMergeSarif") {
-	val detektReportMergeTask = this@register
 	output = rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif")
-	tasks.withType<dev.detekt.gradle.Detekt> { // Intentionally eager. When running report, we must configure all tasks.
-		detektReportMergeTask.mustRunAfter(this)
-		detektReportMergeTask.input.from(this.reports.sarif.outputLocation)
-	}
-
 }
 tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 	reports {
@@ -72,6 +66,14 @@ tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 	}
 }
 
+tasks.withType<dev.detekt.gradle.Detekt> { // Intentionally eager. When running report, we must configure all tasks.
+	// Sadly I don't know how to express the "when running report" part, because if it's put into named/register/configure block, it just fails.
+	val detektReportingTask = this@withType
+	detektReportMergeTask.configure {
+		mustRunAfter(detektReportingTask)
+		input.from(detektReportingTask.reports.sarif.outputLocation)
+	}
+}
 
 // Expose :detektEach for included build to easily run all Detekt tasks.
 tasks.register("detektEach") {

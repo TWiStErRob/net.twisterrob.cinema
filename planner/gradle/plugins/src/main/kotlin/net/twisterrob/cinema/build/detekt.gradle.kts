@@ -53,8 +53,9 @@ fun Project.configureSarifMerging() {
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
 		val detektReportMergeTask = this@named
 		tasks.withType<Detekt> { // Intentionally eager. When running report, we must configure all tasks.
-			detektReportMergeTask.mustRunAfter(this)
-			detektReportMergeTask.input.from(this.reports.sarif.outputLocation)
+			val detektReportingTask = this@withType
+			detektReportMergeTask.mustRunAfter(detektReportingTask)
+			detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 		}
 		gradle.includedBuilds.forEach { includedBuild ->
 			detektReportMergeTask.dependsOn(includedBuild.task(":detektReportMergeSarif"))
