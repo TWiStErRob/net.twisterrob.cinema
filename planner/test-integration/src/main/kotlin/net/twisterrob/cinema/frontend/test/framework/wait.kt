@@ -3,6 +3,7 @@ package net.twisterrob.cinema.frontend.test.framework
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedCondition
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.util.function.Function
@@ -35,8 +36,10 @@ fun WebDriver.waitForElementToDisappear(element: WebElement) {
 }
 
 fun Browser.delayedExecute(locator: By, action: (WebElement) -> Unit) {
-	val element = this.driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator))
-		?: error("Cannot find $locator") // TODEL https://github.com/SeleniumHQ/selenium/issues/16970
-	this.driver.wait().until(ExpectedConditions.visibilityOf(element))
+	@Suppress("UNCHECKED_CAST") // TODEL https://github.com/SeleniumHQ/selenium/issues/17122
+	val element = this.driver.wait()
+		.until(ExpectedConditions.presenceOfElementLocated(locator) as ExpectedCondition<WebElement>)
+	@Suppress("UNCHECKED_CAST") // TODEL https://github.com/SeleniumHQ/selenium/issues/17122
+	this.driver.wait().until(ExpectedConditions.visibilityOf(element) as ExpectedCondition<WebElement>)
 	action(element)
 }
