@@ -52,8 +52,8 @@ fun Project.configureSarifMerging() {
 	}
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
 		val detektReportMergeTask = this@named
-		tasks.withType<Detekt> {
-			val detektReportingTask = this@withType
+		tasks.withType<Detekt>().configureEach {
+			val detektReportingTask = this@configureEach
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
 			detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 		}

@@ -9,7 +9,7 @@ plugins {
 
 configureSLF4JBindings()
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
 	if (project.property("net.twisterrob.build.verboseReports").toString().toBoolean()) {
 		configureVerboseReportsForGithubActions()
 	} else {
