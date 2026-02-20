@@ -25,7 +25,6 @@ class RouteControllerRegistrar @Inject constructor(
 
 	companion object {
 
-		@Suppress("UnnecessaryBracesAroundTrailingLambda") // compareBy needs multiple selectors
 		val CONTROLLER_ORDER: Comparator<RouteController> = compareBy(
 			RouteController::order,
 			{ it::class.java.name }

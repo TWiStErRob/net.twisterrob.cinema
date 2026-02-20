@@ -1,4 +1,3 @@
-@file:Suppress("UnusedImports") // False positive: queryForObject is an extension function used in the code
 package net.twisterrob.cinema.database.services
 
 import org.neo4j.ogm.session.Session

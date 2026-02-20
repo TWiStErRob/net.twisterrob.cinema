@@ -23,8 +23,8 @@ class Browser {
 	val sessionId: String
 		get() = (driver as RemoteWebDriver).sessionId.toString()
 
-	val currentUrl: String
-		get() = driver.currentUrl?.removePrefix(Options.baseUrl) ?: ""
+	val currentUrl: String?
+		get() = driver.currentUrl?.removePrefix(Options.baseUrl)
 
 	val title: String?
 		get() = driver.title
