@@ -66,9 +66,10 @@ tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 	}
 }
 
-tasks.withType<dev.detekt.gradle.Detekt> { // Intentionally eager. When running report, we must configure all tasks.
+// Intentionally eager. When running report, we must configure all tasks.
+tasks.withType<dev.detekt.gradle.Detekt>().named { it != "detektMain" }.all {
 	// Sadly I don't know how to express the "when running report" part, because if it's put into named/register/configure block, it just fails.
-	val detektReportingTask = this@withType
+	val detektReportingTask = this@all
 	detektReportMergeTask.configure {
 		mustRunAfter(detektReportingTask)
 		input.from(detektReportingTask.reports.sarif.outputLocation)
