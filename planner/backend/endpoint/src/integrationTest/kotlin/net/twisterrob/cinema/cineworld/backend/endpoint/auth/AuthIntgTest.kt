@@ -109,7 +109,7 @@ class AuthIntgTest {
 					created = any(),
 				)
 				// Ktor 3.0 with @Serializable uses JSON format: {"userId":"user_id"}/HMAC_SHA256
-			assertThat(cookie, startsWith("{\"userId\":\"${fakeUserId}\"}/"))
+				assertThat(cookie, startsWith("{\"userId\":\"${fakeUserId}\"}/"))
 				verifyNoMoreInteractions(mockRepository)
 				stubClient.verifyNoMoreInteractions()
 			}
