@@ -37,7 +37,8 @@ fun WebDriver.waitForElementToDisappear(element: WebElement) {
 
 fun Browser.delayedExecute(locator: By, action: (WebElement) -> Unit) {
 	@Suppress("UNCHECKED_CAST") // TODEL https://github.com/SeleniumHQ/selenium/issues/17122
-	val element = this.driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator) as ExpectedCondition<WebElement>)
+	val element = this.driver.wait()
+		.until(ExpectedConditions.presenceOfElementLocated(locator) as ExpectedCondition<WebElement>)
 	@Suppress("UNCHECKED_CAST") // TODEL https://github.com/SeleniumHQ/selenium/issues/17122
 	this.driver.wait().until(ExpectedConditions.visibilityOf(element) as ExpectedCondition<WebElement>)
 	action(element)
