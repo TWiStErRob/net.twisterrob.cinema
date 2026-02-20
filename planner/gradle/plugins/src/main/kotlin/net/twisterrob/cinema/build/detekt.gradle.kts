@@ -12,7 +12,7 @@ plugins {
 
 detekt {
 	ignoreFailures = isCI
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 	baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
