@@ -35,8 +35,7 @@ fun WebDriver.waitForElementToDisappear(element: WebElement) {
 }
 
 fun Browser.delayedExecute(locator: By, action: (WebElement) -> Unit) {
-	val element = this.driver.wait().until(ExpectedConditions.presenceOfElementLocated(locator))
-		?: error("Cannot find $locator") // TODEL https://github.com/SeleniumHQ/selenium/issues/16970
-	this.driver.wait().until(ExpectedConditions.visibilityOf(element))
+	val element = this.driver.waitFor { findElement(locator) }
+	this.driver.waitFor { element.isDisplayed }
 	action(element)
 }
