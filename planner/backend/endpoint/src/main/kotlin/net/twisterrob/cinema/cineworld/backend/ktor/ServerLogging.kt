@@ -134,6 +134,10 @@ class ServerLogging(
 				""
 			}
 
+			is OutgoingContent.ContentWrapper -> {
+				content.delegate().asString()
+			}
+
 			is TextContent -> {
 				content.text
 			}
