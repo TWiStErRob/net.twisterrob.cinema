@@ -1,6 +1,7 @@
 package net.twisterrob.cinema.cineworld.sync.syndication
 
 import com.fasterxml.jackson.databind.deser.impl.PropertyBasedObjectIdGenerator
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException
 import io.ktor.client.HttpClient
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Disabled
@@ -16,7 +17,7 @@ class FeedServiceNetworkIntgExtTest {
 			val feed = sut.getWeeklyFilmTimes()
 			feed.sanityCheck()
 		} catch (e: Throwable) {
-			if (e is com.fasterxml.jackson.databind.exc.ValueInstantiationException) {
+			if (e is ValueInstantiationException) {
 				val message = e.message.orEmpty()
 				val filmClass = Regex.escape(Feed.Film::class.java.name)
 				val filmId = Regex.escape(Long::class.javaObjectType.name)

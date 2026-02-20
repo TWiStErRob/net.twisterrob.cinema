@@ -139,6 +139,9 @@ class ServerLogging(
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
+					@Suppress("detekt.UnnecessaryFullyQualifiedName")
+					// TODO https://youtrack.jetbrains.com/issue/KTOR-6030
+					// interface is deprecated, so can't import, but this is a function call.
 					val channel = io.ktor.utils.io.ByteChannel(true)
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)

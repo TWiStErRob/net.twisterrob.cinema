@@ -93,7 +93,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 
 	companion object {
 
-		@Suppress("RemoveRedundantQualifierName")
+		@Suppress("RemoveRedundantQualifierName", "detekt.UnnecessaryFullyQualifiedName")
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.driver.Driver::class.java,
 			org.neo4j.ogm.session.Session::class.java,
