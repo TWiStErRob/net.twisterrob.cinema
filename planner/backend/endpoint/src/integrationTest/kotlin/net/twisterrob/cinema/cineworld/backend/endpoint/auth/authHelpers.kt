@@ -57,6 +57,7 @@ fun HttpRequestBuilder.sendTestAuth() {
 }
 
 val ClientProvider.noRedirectClient: HttpClient
+	@Suppress("detekt.MissingUseCall") // TODO close these
 	get() = this.createClient {
 		followRedirects = false
 	}

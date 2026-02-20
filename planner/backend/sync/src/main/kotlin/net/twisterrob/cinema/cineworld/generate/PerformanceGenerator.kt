@@ -22,7 +22,12 @@ class PerformanceGenerator @Inject constructor(
 		val cinemas = cinemaService.getActiveCinemas()
 		val films = filmService.getAllFilms()
 		val feedCinemas = cinemas.map(::mapCinema)
-		val feedFilms = films.shuffled().take(ACTIVE_FILM_COUNT).map(::mapFilm)
+		val feedFilms = films
+			.asSequence()
+			.shuffled()
+			.take(ACTIVE_FILM_COUNT)
+			.map(::mapFilm)
+			.toList()
 		return Feed(
 			_attributes = emptyList(),
 			_cinemas = feedCinemas,
@@ -91,7 +96,7 @@ class PerformanceGenerator @Inject constructor(
 class RandomPerformanceCreator @Inject constructor() {
 
 	fun generatePerformances(feedCinemas: List<Feed.Cinema>, feedFilms: List<Feed.Film>): List<Feed.Performance> {
-		val dates = relativeDates(START_DAY_RELATIVE, END_DAY_RELATIVE)
+		val dates = relativeDates(start = START_DAY_RELATIVE, endInclusive = END_DAY_RELATIVE)
 		return feedCinemas
 			.asSequence()
 			.flatMap { cinema ->
@@ -131,8 +136,8 @@ class RandomPerformanceCreator @Inject constructor() {
 	private fun randomTime(date: LocalDate): LocalDateTime =
 		date
 			.atStartOfDay()
-			.plusHours(randBetween(SCREENING_START_HOUR, SCREENING_END_HOUR).toLong())
-			.plusMinutes(@Suppress("MagicNumber") (randBetween(0, 6) * 10).toLong())
+			.plusHours(randBetween(start = SCREENING_START_HOUR, endExclusive = SCREENING_END_HOUR).toLong())
+			.plusMinutes(@Suppress("MagicNumber") (randBetween(start = 0, endExclusive = 6) * 10).toLong())
 
 	private fun randBetween(start: Int, endExclusive: Int): Int =
 		start + (random() * (endExclusive - start)).toInt()

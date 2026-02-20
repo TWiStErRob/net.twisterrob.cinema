@@ -34,6 +34,7 @@ class GenerateAppModule {
 
 	@Provides
 	fun httpClient(): HttpClient =
+		@Suppress("detekt.MissingUseCall") // This dies when process dies.
 		HttpClient().config {
 			configureLogging(LoggerFactory.getLogger(HttpClient::class.java))
 			expectSuccess = true

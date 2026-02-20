@@ -13,11 +13,11 @@ console-reports:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
     - 'NotificationReport'
     # Enabled, because it gives the category of the rules.
-    #- 'FindingsReport'
-    # Disabled, because it's very verbose, even more so than FindingsReport.
-    - 'FileBasedFindingsReport'
+    #- 'IssuesReport'
+    # Disabled, because it's very verbose, even more so than IssuesReport.
+    - 'FileBasedIssuesReport'
     # Disabled, because this gives enough context to see the problems, but doesn't group rules.
-    - 'LiteFindingsReport'
+    - 'LiteIssuesReport'
 
 
 comments:
@@ -29,6 +29,9 @@ comments:
   DocumentationOverPrivateProperty:
     # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
     active: false
+
+  OutdatedDocumentation:
+    allowParamOnConstructorProperties: true
 
   UndocumentedPublicClass:
     # Disabled as this is not a public library. For now it's not even all in Kotlin.
@@ -100,10 +103,6 @@ naming:
       - 'org.junitpioneer.jupiter.RetryingTest'
       - 'org.junitpioneer.jupiter.cartesian.CartesianTest'
 
-  LambdaParameterNaming:
-    # TODEL too many false positives https://github.com/detekt/detekt/issues/5433
-    active: false
-
   VariableNaming:
     excludes:
       - '**/database/model/*.kt'
@@ -136,16 +135,23 @@ potential-bugs:
       - '**/gradle/plugins/src/main/kotlin/**'
       - '**/build.gradle.kts'
       - '**/settings.gradle.kts'
+  
+  UnnamedParameterUse:
+    ignoreFunctionCall:
+      - 'io.ktor.client.request.header'
+      - 'io.ktor.client.request.parameter'
+      - 'io.ktor.server.response.header'
+      - 'kotlin.collections.associateBy'
+      - 'kotlin.text.replace'
+      - 'kotlin.text.substring'
+      - 'net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent'
+      - 'net.twisterrob.test.that'
 
   UnsafeCallOnNullableType:
     excludes: [ '**/unitTest/**', '**/functionalTest/**', '**/integrationTest/**', '**/integrationExternalTest/**' ]
 
 
 style:
-
-  DataClassContainsFunctions:
-    # TODEL Looks like there's no use for this https://github.com/detekt/detekt/issues/5321#issuecomment-1252937894
-    active: false
 
   ForbiddenComment:
     comments:
@@ -164,8 +170,8 @@ style:
     excludeCommentStatements: true
 
   MultilineRawStringIndentation:
-    # TODEL false positives with tabs: https://github.com/detekt/detekt/issues/5429
-    active: false
+    # Account for tabs.
+    indentSize: 1
 
   UnusedPrivateClass:
     excludes:

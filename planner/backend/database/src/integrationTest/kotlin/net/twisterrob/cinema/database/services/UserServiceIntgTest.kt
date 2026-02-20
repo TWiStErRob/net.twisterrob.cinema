@@ -66,7 +66,13 @@ class UserServiceIntgTest {
 		val fixtRealm: String = fixture.build()
 		val fixtCreated: OffsetDateTime = fixture.build()
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))
@@ -93,7 +99,13 @@ class UserServiceIntgTest {
 		}
 		session.save(savedUser)
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))
@@ -122,7 +134,13 @@ class UserServiceIntgTest {
 		val fixtUser: User = fixture.build()
 		session.save(fixtUser)
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))
@@ -168,7 +186,13 @@ class UserServiceIntgTest {
 			"$fixtCreated should have milliseconds ending .??0 to test regression"
 		)
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))
@@ -209,7 +233,13 @@ class UserServiceIntgTest {
 			"$fixtCreated should have milliseconds ending .000 to test regression"
 		)
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))
@@ -243,7 +273,13 @@ class UserServiceIntgTest {
 		session.save(fixtUser)
 		val fixtDifferentId: String = fixture.build()
 
-		val result = sut.addUser(fixtDifferentId, fixtUser.email, fixtUser.name, fixtUser.realm, fixtUser._created)
+		val result = sut.addUser(
+			userId = fixtDifferentId,
+			email = fixtUser.email,
+			name = fixtUser.name,
+			realm = fixtUser.realm,
+			created = fixtUser._created,
+		)
 
 		assertThat(result.id, not(equalTo(fixtUser.id)))
 		assertThat(result.email, equalTo(fixtUser.email))
@@ -282,7 +318,13 @@ class UserServiceIntgTest {
 		}
 		session.save(savedUser)
 
-		val result = sut.addUser(fixtUserId, fixtEmail, fixtName, fixtRealm, fixtCreated)
+		val result = sut.addUser(
+			userId = fixtUserId,
+			email = fixtEmail,
+			name = fixtName,
+			realm = fixtRealm,
+			created = fixtCreated,
+		)
 
 		assertThat(result.id, equalTo(fixtUserId))
 		assertThat(result.email, equalTo(fixtEmail))

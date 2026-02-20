@@ -70,9 +70,13 @@ class PerformanceServiceIntgTest {
 			}
 		}
 
-		val result =
-			sut.getPerformances(fixtToday, fixtCinemasFound.map { it.cineworldID }, fixtFilmsFound.map { it.edi })
-				.toList()
+		val result = sut
+			.getPerformances(
+				date = fixtToday,
+				cinemaIDs = fixtCinemasFound.map { it.cineworldID },
+				filmEDIs = fixtFilmsFound.map { it.edi },
+			)
+			.toList()
 
 		assertThat(result.sortedBy { it.toString() }, sameBeanAs(expected.sortedBy { it.toString() }))
 	}

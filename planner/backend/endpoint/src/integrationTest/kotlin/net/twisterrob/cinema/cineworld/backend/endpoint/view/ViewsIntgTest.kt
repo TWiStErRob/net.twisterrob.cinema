@@ -104,7 +104,12 @@ class ViewsIntgTest {
 			setBody(body)
 		}
 
-		verify(mockRepository).addView(fixtUser.id, 456, 789, fixtDate.withOffsetSameInstant(ZoneOffset.UTC))
+		verify(mockRepository).addView(
+			user = fixtUser.id,
+			film = 456,
+			cinema = 789,
+			time = fixtDate.withOffsetSameInstant(ZoneOffset.UTC),
+		)
 		verifyNoMoreInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.OK, response.status)
@@ -141,7 +146,12 @@ class ViewsIntgTest {
 			sendTestAuth()
 		}
 
-		verify(mockRepository).removeView(fixtUser.id, 123, 456, fixtDate.withOffsetSameInstant(ZoneOffset.UTC))
+		verify(mockRepository).removeView(
+			user = fixtUser.id,
+			film = 123,
+			cinema = 456,
+			time = fixtDate.withOffsetSameInstant(ZoneOffset.UTC),
+		)
 		verifyNoMoreInteractions(mockRepository)
 
 		assertEquals(HttpStatusCode.OK, response.status)
@@ -190,6 +200,7 @@ class ViewsIntgTest {
 			test = test,
 			logLevel = if (posts) ServerLogging.LogLevel.HEADERS else ServerLogging.LogLevel.ALL,
 			daggerApp = {
+				@Suppress("detekt.MissingUseCall") // TODO close HttpClient.
 				daggerApplication(
 					createComponentBuilder = DaggerViewsIntgTestComponent::builder,
 					initComponent = { it.repo(mock()).auth(mock()).httpClient(HttpClient(mockEngine())) },

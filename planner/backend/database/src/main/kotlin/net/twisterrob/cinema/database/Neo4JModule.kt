@@ -51,7 +51,6 @@ object Neo4JModule {
 		 * For most cases just call this method without any argument, the default will work.
 		 */
 		@BindsInstance
-		@Suppress("PropertyUsedBeforeDeclaration") // TODEL False positive. https://github.com/detekt/detekt/issues/6125
 		fun graphDBUri(@Named(GRAPH_DB) uri: URI): Builder
 	}
 
@@ -91,7 +90,10 @@ object Neo4JModule {
 		.connectionLivenessCheckTimeout(CONNECTION_LIVENESS_CHECK_TIMEOUT)
 		.connectionPoolSize(CONNECTION_POOL_SIZE)
 		// org.neo4j.ogm.drivers.bolt.driver.BoltDriver.CONFIG_PARAMETER_BOLT_LOGGING
-		.withCustomProperty("Bolt_Logging", @Suppress("DEPRECATION") org.neo4j.driver.Logging.slf4j())
+		.withCustomProperty(
+			"Bolt_Logging",
+			@Suppress("DEPRECATION", "detekt.UnnecessaryFullyQualifiedName") org.neo4j.driver.Logging.slf4j()
+		)
 		.useNativeTypes()
 		.build()
 

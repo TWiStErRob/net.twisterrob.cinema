@@ -227,7 +227,7 @@ class CinemasUiTest : BaseInteractivePlannerUiTest() {
 	inner class Authenticated {
 
 		@BeforeEach fun beforeEach() {
-			app.login(Options.userName, Options.userPass)
+			app.login(userName = Options.userName, password = Options.userPass)
 			app.goToPlanner()
 		}
 

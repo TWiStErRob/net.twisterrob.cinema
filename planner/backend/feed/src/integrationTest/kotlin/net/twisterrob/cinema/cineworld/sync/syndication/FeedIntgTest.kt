@@ -54,7 +54,7 @@ class FeedIntgTest {
 			attributes = fixture.build(),
 		)
 
-		val fixtAttribute = Feed.Attribute(fixtPerformance.attributes, fixture.build())
+		val fixtAttribute = Feed.Attribute(code = fixtPerformance.attributes, title = fixture.build())
 		val fixtFeed = Feed(
 			attributes = listOf(fixtAttribute),
 			performances = listOf(fixtPerformance),

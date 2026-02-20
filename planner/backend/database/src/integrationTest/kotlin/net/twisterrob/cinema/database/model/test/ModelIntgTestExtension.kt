@@ -57,6 +57,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 	override fun beforeEach(extensionContext: ExtensionContext) {
 		val testServer = Neo4jBuilders.newInProcessBuilder().build()
 		extensionContext.store.put(testServer)
+		@Suppress("detekt.MissingUseCall") // Closed in afterEach.
 		extensionContext.store.put(testServer.createDriver())
 		val dagger = DaggerModelIntgTestExtensionComponent
 			.builder()
@@ -93,7 +94,7 @@ class ModelIntgTestExtension : BeforeAllCallback, BeforeEachCallback, AfterEachC
 
 	companion object {
 
-		@Suppress("RemoveRedundantQualifierName")
+		@Suppress("RemoveRedundantQualifierName", "detekt.UnnecessaryFullyQualifiedName")
 		private val SUPPORTED_PARAMTER_TYPES = setOf(
 			org.neo4j.driver.Driver::class.java,
 			org.neo4j.ogm.session.Session::class.java,

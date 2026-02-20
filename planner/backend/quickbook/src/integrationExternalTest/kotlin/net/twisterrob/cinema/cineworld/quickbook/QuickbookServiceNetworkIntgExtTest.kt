@@ -14,12 +14,14 @@ import java.time.LocalDate
 
 class QuickbookServiceNetworkIntgExtTest {
 
+	@Suppress("detekt.MissingUseCall")
 	private val client = HttpClient().config {
 		install(Logging) {
 			logger = Logger.DEFAULT
 			level = LogLevel.ALL
 		}
 	}
+
 	private val sut = QuickbookServiceNetwork(client, "9qfgpF7B")
 
 	@AfterEach fun tearDown() {

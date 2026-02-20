@@ -127,7 +127,6 @@ class ServerLogging(
 	}
 
 	private fun OutgoingContent.asString(): String? =
-		@Suppress("OptionalWhenBraces")
 		when (val content = this) {
 
 			is OutgoingContent.NoContent -> {
@@ -140,6 +139,9 @@ class ServerLogging(
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
+					@Suppress("detekt.UnnecessaryFullyQualifiedName")
+					// TODO https://youtrack.jetbrains.com/issue/KTOR-6030
+					// interface is deprecated, so can't import, but this is a function call.
 					val channel = io.ktor.utils.io.ByteChannel(true)
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
@@ -161,7 +163,7 @@ class ServerLogging(
 
 	private suspend inline fun ByteReadChannel.tryReadText(charset: Charset): String? =
 		try {
-			readRemaining().readText(charset = charset)
+			readRemaining().use { it.readText(charset = charset) }
 		} catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
 			logger.error("Cannot read text", cause)
 			null
