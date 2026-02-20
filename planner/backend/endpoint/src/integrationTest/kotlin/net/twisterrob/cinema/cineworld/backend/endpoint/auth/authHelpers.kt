@@ -21,11 +21,14 @@ object AuthTestConstants {
 	 * If this is broken, debug a test where [receiveAuthorizationFromGoogle] is visible and capture the value.
 	 * The rest of the [HttpHeaders.SetCookie] is omitted as it's not relevant here.
 	 *
+	 * Note: In Ktor 3.0 with @Serializable, the format changed from custom reflection-based serialization
+	 * to JSON-based kotlinx.serialization format: {"userId":"user_id"}/HMAC_SHA256_hex
+	 *
 	 * @see configuration
 	 * @see net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
 	 */
 	const val realisticCookie =
-		"auth=userId%3D%2523srealistic%5Fgoogle%5Fsub%2F1d9f41780441596d9ec55c20219873d813180e8d1d7caab07e1463fcb6462622"
+		"auth=%7B%22userId%22%3A%22realistic_google_sub%22%7D%2F9eb59086c2ea9b62beaee4bf1665dea5f98730210e005cabf65b5de7b2acfdf9"
 
 	/**
 	 * User ID contained within [realisticCookie]. Needed to ensure session data is passed through the right way.

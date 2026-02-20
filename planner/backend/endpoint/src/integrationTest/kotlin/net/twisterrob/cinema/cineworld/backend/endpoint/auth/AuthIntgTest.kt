@@ -93,7 +93,8 @@ class AuthIntgTest {
 			stubClient.verifyGoogleOpenIdUserInfoRequest(fakeAccessToken)
 			verify(mockRepository)
 				.addUser(eq(fakeUserId), eq(fakeEmail), eq(fakeName), eq("http://${fakeHost}/"), any())
-			assertThat(cookie, startsWith("userId=%23s${fakeUserId}/")) // %23 is # double-encoded.
+			// Ktor 3.0 with @Serializable uses JSON format: {"userId":"user_id"}/HMAC_SHA256
+			assertThat(cookie, startsWith("{\"userId\":\"${fakeUserId}\"}/"))
 			verifyNoMoreInteractions(mockRepository)
 			stubClient.verifyNoMoreInteractions()
 		}
