@@ -65,11 +65,12 @@ tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		sarif.required = true // GitHub Code Scanning
 	}
 }
-tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
-	val detektReportingTask = this@configureEach
-	detektReportMergeTask.configure {
-		mustRunAfter(detektReportingTask)
-		input.from(detektReportingTask.reports.sarif.outputLocation)
+detektReportMergeTask.configure {
+	val detektReportMergeTask = this@configure
+	tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
+		val detektReportingTask = this@configureEach
+		detektReportMergeTask.mustRunAfter(detektReportingTask)
+		detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 	}
 }
 
