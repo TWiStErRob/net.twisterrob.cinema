@@ -24,6 +24,7 @@ testing.suites.withType<JvmTestSuite>().configureEach {
  * https://docs.gradle.org/9.2.0-rc-1/userguide/upgrading_version_9.html#removed_incubating_objectfactorydependencycollector_method
  */
 private fun ObjectFactory.dependencyCollector(): DependencyCollector {
+	@Suppress("detekt.AbstractClassCanBeInterface") // TODEL https://github.com/detekt/detekt/issues/9073
 	abstract class DependencyCollectorCreator {
 		abstract val dependencyCollector: DependencyCollector
 	}

@@ -14,7 +14,7 @@ plugins {
 	id("net.twisterrob.cinema.build.test-suite-ksp")
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
 	maxHeapSize = "512M"
 	allowUnsafe()
 }
@@ -58,6 +58,7 @@ testing {
 					// Logging is not relevant in unit tests.
 					parallelJUnit5Execution(Concurrency.PerMethod)
 					shouldRunAfter()
+					maxHeapSize = "64M"
 				}
 			}
 		}
