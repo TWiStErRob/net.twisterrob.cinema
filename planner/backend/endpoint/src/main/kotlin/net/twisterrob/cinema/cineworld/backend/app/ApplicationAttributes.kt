@@ -32,7 +32,7 @@ object ApplicationAttributes {
 
 	@Suppress("unused") // not needed yet, ApplicationComponent is alive for the whole Application lifecycle
 	private fun Application.registerDaggerForEachCall(dagger: ApplicationComponent) {
-		environment.monitor.subscribe(RoutingRoot.RoutingCallStarted) { call: ApplicationCall ->
+		monitor.subscribe(RoutingRoot.RoutingCallStarted) { call: ApplicationCall ->
 			call.attributes.put(DaggerComponentAttribute, dagger)
 		}
 	}

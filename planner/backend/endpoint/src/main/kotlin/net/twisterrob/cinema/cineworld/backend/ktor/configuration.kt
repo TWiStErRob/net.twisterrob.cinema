@@ -132,7 +132,7 @@ internal fun Application.configuration(
 				false // mandatory for now, TODO use above condition? see ApplicationCall.isAuthenticated
 			}
 			client = oauthHttpClient
-			this@configuration.environment.monitor.subscribe(ApplicationStopped) {
+			this@configuration.monitor.subscribe(ApplicationStopped) {
 				oauthHttpClient.close()
 			}
 			providerLookup = { googleOauthProvider }
