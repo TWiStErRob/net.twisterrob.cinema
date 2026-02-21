@@ -8,7 +8,8 @@ import net.twisterrob.cinema.cineworld.backend.app.DaggerApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import java.net.URI
 
-fun Application.daggerApplication() {
+@Suppress("UNUSED") // See application.conf.
+fun Application.autoDaggerApplication() {
 	daggerApplication(DaggerApplicationComponent::builder)
 }
 

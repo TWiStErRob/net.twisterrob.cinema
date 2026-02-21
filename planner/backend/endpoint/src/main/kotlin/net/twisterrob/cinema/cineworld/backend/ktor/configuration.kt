@@ -54,6 +54,11 @@ import net.twisterrob.cinema.shared.getTypedValue
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
+@Suppress("UNUSED") // See application.conf.
+fun Application.autoConfiguration() {
+	configuration()
+}
+
 /**
  * @param oauthHttpClient [HttpClient] to use for OAuth.
  * @param config configuration containing non-hardcoded constants for the server.
