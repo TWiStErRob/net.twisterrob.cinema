@@ -126,9 +126,9 @@ class ConfigureLoggingFuncTest {
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 			""".trimIndent(),
 			verifyAllLogsFor(Logger::info)
@@ -153,13 +153,13 @@ class ConfigureLoggingFuncTest {
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				BODY Content-Type: null
 				BODY START
 				
 				BODY END
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 				BODY Content-Type: application/xml
 				BODY START
@@ -188,7 +188,7 @@ class ConfigureLoggingFuncTest {
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				COMMON HEADERS
 				-> Accept: */*
 				-> Accept-Charset: UTF-8
@@ -200,7 +200,7 @@ class ConfigureLoggingFuncTest {
 				
 				BODY END
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 				COMMON HEADERS
 				-> Content-Type: application/xml
