@@ -164,7 +164,7 @@ class ServerLogging(
 	fun install(pipeline: Application) {
 		pipeline.intercept(ApplicationCallPipeline.Monitoring) {
 			logRequest(call)
-			proceedWith(subject)
+			proceed()
 		}
 		pipeline.sendPipeline.addPhase(responseLoggingPhase)
 		pipeline.sendPipeline.intercept(responseLoggingPhase) {

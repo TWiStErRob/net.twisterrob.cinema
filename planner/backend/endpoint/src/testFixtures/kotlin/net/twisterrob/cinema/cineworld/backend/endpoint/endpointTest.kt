@@ -50,14 +50,12 @@ fun Any.endpointTest(
 		serverConfig {
 			developmentMode = true
 		}
-		application {
-			install(ServerLogging) {
-				logger = this@application.log
-				level = logLevel
-			}
-			configure()
-			daggerApp()
+		install(ServerLogging) {
+			logger = testLog
+			level = logLevel
 		}
+		application(configure)
+		application(daggerApp)
 	}
 	runBlocking(application.client.engine.coroutineContext) {
 		application.start()
