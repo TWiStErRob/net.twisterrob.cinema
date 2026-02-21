@@ -47,9 +47,9 @@ jobs:
         uses: tj-actions/changed-files@v47
         with:
           files: |
-            - 'planner/**'
-            - '.github/workflows/planner-appengine-deploy.yml'
-            - '.github/workflows/planner-appengine-delete.yml'
+            planner/**
+            .github/workflows/planner-appengine-deploy.yml
+            .github/workflows/planner-appengine-delete.yml
 
     outputs:
       relevant-changes-exist: ${{ steps.changed-files.outputs.any_modified == 'true'}}
