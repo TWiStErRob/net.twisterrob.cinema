@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // https://github.com/
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://github.com/webpack-contrib/mini-css-extract-plugin
 const WarningsToErrorsPlugin = require('warnings-to-errors-webpack-plugin'); // https://github.com/taehwanno/warnings-to-errors-webpack-plugin
 const path = require('path');
+const ONE_MIB = 1024 * 1024;
 
 module.exports = (env, argv) => {
 	const dist = path.resolve(__dirname, '..', 'deploy', 'frontend');
@@ -102,7 +103,9 @@ module.exports = (env, argv) => {
 			],
 		},
 		performance: {
-			hints: false,
+			hints: 'warning',
+			maxEntrypointSize: ONE_MIB,
+			maxAssetSize: ONE_MIB,
 		},
 	};
 };
