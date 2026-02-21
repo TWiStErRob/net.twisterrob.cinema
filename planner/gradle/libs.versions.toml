@@ -14,7 +14,7 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.10.0"
 detekt = "2.0.0-alpha.2"
 
-dagger = "2.59.1"
+dagger = "2.59.2"
 
 # http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
 # `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
