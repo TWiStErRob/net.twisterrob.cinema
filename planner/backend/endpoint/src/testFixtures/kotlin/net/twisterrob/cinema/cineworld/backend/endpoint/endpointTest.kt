@@ -7,7 +7,9 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ClientProvider
 import io.ktor.server.testing.TestApplication
 import io.ktor.util.logging.KtorSimpleLogger
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.autoDaggerApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
@@ -57,7 +59,7 @@ fun endpointTest(
 			application.test()
 		} finally {
 			testLog.trace("Endpoint test finished {}", test::class)
-			application.stop()
+			withContext(NonCancellable) { application.stop() }
 		}
 	}
 }

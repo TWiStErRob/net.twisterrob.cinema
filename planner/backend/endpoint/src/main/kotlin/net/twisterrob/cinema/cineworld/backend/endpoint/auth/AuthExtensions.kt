@@ -19,6 +19,7 @@ val ApplicationCall.isAuthenticated: Boolean
 val ApplicationCall.hasUser: Boolean
 	get() = this.attributes.currentUser != null
 
+@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 suspend fun ApplicationCall.respondUserNotFound() {
 	this.respondText("Can't find user.", status = HttpStatusCode.NotFound)
 }

@@ -9,11 +9,9 @@ import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
 import io.ktor.server.plugins.origin
-import io.ktor.server.request.RequestAlreadyConsumedException
 import io.ktor.server.request.contentCharset
 import io.ktor.server.request.httpVersion
 import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelinePhase
 import io.ktor.utils.io.ByteChannel
@@ -112,19 +110,11 @@ class ServerLogging(
 		}
 	}
 
-	@Suppress("unused")
-	private suspend fun ApplicationCall.requestBodyAlt(): String? =
-		try {
-			String(receive<ByteArray>())
-		} catch (e: RequestAlreadyConsumedException) {
-			logger.error("Logging payloads requires install(DoubleReceive) { cacheRawRequest = true }.", e)
-			null
-		}
-
+	@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 	private suspend fun ApplicationCall.requestBody(): String? {
 		val charset = request.contentCharset() ?: Charsets.UTF_8
 		val channel = request.receiveChannel()
-		return runBlocking { channel.tryReadText(charset) }
+		return channel.tryReadText(charset)
 	}
 
 	private fun OutgoingContent.asString(): String? =

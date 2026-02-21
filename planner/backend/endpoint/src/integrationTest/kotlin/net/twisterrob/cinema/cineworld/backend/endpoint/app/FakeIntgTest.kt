@@ -67,7 +67,7 @@ class FakeIntgTest {
 
 		val response = noRedirectClient.get("/anything")
 
-		response.assertFake("fake thing")
+		assertFake("fake thing", response)
 	}
 
 	@Test fun `file is not served in production`(@TempDir tempDir: File) = fakeEndpointTest(
@@ -89,7 +89,7 @@ class FakeIntgTest {
 
 		val response = noRedirectClient.get("/cinema")
 
-		response.assertFake("fake cinemas")
+		assertFake("fake cinemas", response)
 	}
 
 	@Test fun `does not override normal routing in production`(@TempDir tempDir: File) = fakeEndpointTest(
@@ -113,7 +113,7 @@ class FakeIntgTest {
 
 		val response = noRedirectClient.get("/anything?foo=bar&baz=qux")
 
-		response.assertFake("fake thing")
+		assertFake("fake thing", response)
 	}
 
 	@Test fun `root is served from index`(@TempDir tempDir: File) = fakeEndpointTest(
@@ -123,7 +123,7 @@ class FakeIntgTest {
 
 		val response = noRedirectClient.get("/")
 
-		response.assertFake("fake thing")
+		assertFake("fake thing", response)
 	}
 
 	@Test fun `file is served with query parameters`(@TempDir tempDir: File) = fakeEndpointTest(
@@ -134,7 +134,7 @@ class FakeIntgTest {
 
 		val response = noRedirectClient.get("/anything?foo=bar&baz=qux")
 
-		response.assertFake("fake thing - more specific")
+		assertFake("fake thing - more specific", response)
 	}
 
 	private fun fakeEndpointTest(
@@ -160,7 +160,7 @@ class FakeIntgTest {
 					componentReady = { (it as FakeIntgTestComponent).inject(this@FakeIntgTest) }
 				)
 			},
-			testConfig = mapOf(
+			testConfig = @Suppress("detekt.UnnecessaryLet") mapOf(
 				"twisterrob.cinema.environment" to env?.let { it.name.lowercase(Locale.ROOT) },
 				"twisterrob.cinema.fakeRootFolder" to fakeRoot?.let { it.absolutePath },
 			).filterValues { it != null }.mapValues { it.value!! },
@@ -168,11 +168,11 @@ class FakeIntgTest {
 	}
 }
 
-private suspend fun HttpResponse.assertFake(content: String) {
-	assertEquals(HttpStatusCode.OK, status)
-	assertEquals(content, bodyAsText())
+private suspend fun assertFake(expectedContent: String, actualResponse: HttpResponse) {
+	assertEquals(HttpStatusCode.OK, actualResponse.status)
+	assertEquals(expectedContent, actualResponse.bodyAsText())
 	@Suppress("UastIncorrectHttpHeaderInspection")
-	assertEquals("fakes", headers["X-Forwarded-Server"])
+	assertEquals("fakes", actualResponse.headers["X-Forwarded-Server"])
 	// TODO verify logs
 }
 

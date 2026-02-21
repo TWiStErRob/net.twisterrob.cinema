@@ -54,7 +54,8 @@ private fun HttpRequestBuilder.onDownloadDebounceTrace(source: String, frequency
 	onDownload { bytesSentTotal, contentLength ->
 		val now = System.currentTimeMillis()
 		if (lastMessage < now - frequency) {
-			LOG.trace("$source: ${bytesSentTotal}/${contentLength}")
+			LOG.trace("$source: ${bytesSentTotal}/${contentLength ?: "unknown"}")
+			@Suppress("AssignedValueIsNeverRead") // REPORT False positive, it is read in the `if` above.
 			lastMessage = now
 		}
 	}

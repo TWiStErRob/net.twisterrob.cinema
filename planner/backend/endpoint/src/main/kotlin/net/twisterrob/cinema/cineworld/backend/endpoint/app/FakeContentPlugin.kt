@@ -21,6 +21,7 @@ internal val FakeContentPlugin = createRouteScopedPlugin(
 	}
 }
 
+@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 private suspend fun PipelineCall.tryRespondFakeFrom(root: File) {
 	val fullPathAndQuery = request.uri.ending
 	val fakeFullPathAndQueryFile = root.resolve(fullPathAndQuery)
@@ -39,13 +40,15 @@ private suspend fun PipelineCall.tryRespondFakeFrom(root: File) {
 	// no fake found, respond normally
 }
 
+@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 private suspend fun PipelineCall.respondFake(path: File) {
 	application.log.warn("Fake response to ${request.uri} with ${path.canonicalPath}")
 	response.header(HttpHeaders.XForwardedServer, "fakes")
 	respondFile(path)
 }
 
-internal class FakeContentPluginConfig(
+@Suppress("detekt.DataClassShouldBeImmutable") // Has to be mutable as far as I can see.
+internal data class FakeContentPluginConfig(
 	var root: File? = null,
 )
 

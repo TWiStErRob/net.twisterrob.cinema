@@ -35,6 +35,7 @@ private fun PipelineCall.setupCurrentUserFromSession(findUser: (String) -> User)
 	}
 }
 
-internal class AuthSessionPluginConfig(
+@Suppress("detekt.DataClassShouldBeImmutable") // Has to be mutable as far as I can see.
+internal data class AuthSessionPluginConfig(
 	var findUser: ((userId: String) -> User)? = null,
 )
