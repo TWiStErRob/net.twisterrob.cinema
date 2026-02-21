@@ -6,6 +6,9 @@ import io.ktor.client.plugins.logging.Logging
 import org.slf4j.Logger
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 
+/**
+ * NB: when level includes logging the Body, the stack traces won't work.
+ */
 fun HttpClientConfig<*>.configureLogging(log: Logger) {
 	install(Logging) {
 		when {
