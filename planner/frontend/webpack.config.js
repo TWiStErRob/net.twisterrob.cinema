@@ -103,8 +103,18 @@ module.exports = (env, argv) => {
 			],
 		},
 		performance: {
-			hints: 'warning',
+			// Be strict.
+			hints: 'error',
+			// WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+			// Entrypoints:
+			//   planner/index (903 KiB)
+			//       planner/index.css
+			//       planner/index.bundle.js
 			maxEntrypointSize: ONE_MIB,
+			// WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+			// This can impact web performance.
+			// Assets:
+			//   planner/index.bundle.js (753 KiB)
 			maxAssetSize: ONE_MIB,
 		},
 	};
