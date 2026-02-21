@@ -8,6 +8,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
+import io.ktor.server.http.content.LocalFileContent
 import io.ktor.server.plugins.origin
 import io.ktor.server.request.contentCharset
 import io.ktor.server.request.httpVersion
@@ -138,6 +139,10 @@ class ServerLogging(
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
+			}
+
+			is LocalFileContent -> {
+				"<${content.file.absolutePath}>"
 			}
 
 			is OutgoingContent.ByteArrayContent,
