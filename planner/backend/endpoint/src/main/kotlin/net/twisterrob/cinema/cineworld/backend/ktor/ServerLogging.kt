@@ -8,17 +8,18 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
+import io.ktor.server.http.content.LocalFileContent
 import io.ktor.server.plugins.origin
-import io.ktor.server.request.RequestAlreadyConsumedException
 import io.ktor.server.request.contentCharset
 import io.ktor.server.request.httpVersion
 import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelinePhase
+import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.charsets.Charset
 import io.ktor.utils.io.core.readText
+import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -110,19 +111,11 @@ class ServerLogging(
 		}
 	}
 
-	@Suppress("unused")
-	private suspend fun ApplicationCall.requestBodyAlt(): String? =
-		try {
-			String(receive<ByteArray>())
-		} catch (e: RequestAlreadyConsumedException) {
-			logger.error("Logging payloads requires install(DoubleReceive) { cacheRawRequest = true }.", e)
-			null
-		}
-
+	@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 	private suspend fun ApplicationCall.requestBody(): String? {
 		val charset = request.contentCharset() ?: Charsets.UTF_8
 		val channel = request.receiveChannel()
-		return runBlocking { channel.tryReadText(charset) }
+		return channel.tryReadText(charset)
 	}
 
 	private fun OutgoingContent.asString(): String? =
@@ -132,19 +125,24 @@ class ServerLogging(
 				""
 			}
 
+			is OutgoingContent.ContentWrapper -> {
+				content.delegate().asString()
+			}
+
 			is TextContent -> {
 				content.text
 			}
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
-					@Suppress("detekt.UnnecessaryFullyQualifiedName")
-					// TODO https://youtrack.jetbrains.com/issue/KTOR-6030
-					// interface is deprecated, so can't import, but this is a function call.
-					val channel = io.ktor.utils.io.ByteChannel(true)
+					val channel = ByteChannel(true)
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
+			}
+
+			is LocalFileContent -> {
+				"<${content.file.absolutePath}>"
 			}
 
 			is OutgoingContent.ByteArrayContent,

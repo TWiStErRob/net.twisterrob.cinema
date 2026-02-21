@@ -8,7 +8,8 @@ import net.twisterrob.cinema.cineworld.backend.app.DaggerApplicationComponent
 import net.twisterrob.cinema.cineworld.backend.app.FeatureToggles
 import java.net.URI
 
-fun Application.daggerApplication() {
+@Suppress("UNUSED") // See application.conf.
+fun Application.autoDaggerApplication() {
 	daggerApplication(DaggerApplicationComponent::builder)
 }
 
@@ -26,7 +27,7 @@ internal fun <DaggerComponentBuilder : ApplicationComponent.Builder> Application
 	val dagger = builder.build()
 	componentReady(dagger)
 	this.attributes.dagger = dagger
-	environment.monitor.subscribe(ApplicationStopped) { application ->
+	monitor.subscribe(ApplicationStopped) { application ->
 		application.attributes.dagger.httpClient.close()
 	}
 

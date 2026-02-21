@@ -26,7 +26,7 @@ import io.ktor.server.auth.OAuthServerSettings
 import io.ktor.server.auth.oauth
 import io.ktor.server.html.respondHtml
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
-import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.compression.Compression
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
@@ -36,7 +36,10 @@ import io.ktor.server.sessions.SessionTransportTransformerMessageAuthentication
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.get
+import io.ktor.server.sessions.reflectionSessionSerializer
 import io.ktor.server.sessions.sessions
+import kotlinx.coroutines.DEBUG_PROPERTY_NAME
+import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.h1
@@ -53,6 +56,11 @@ import net.twisterrob.cinema.shared.getTypedValue
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
+@Suppress("UNUSED") // See application.conf.
+fun Application.autoConfiguration() {
+	configuration()
+}
+
 /**
  * @param oauthHttpClient [HttpClient] to use for OAuth.
  * @param config configuration containing non-hardcoded constants for the server.
@@ -66,6 +74,8 @@ internal fun Application.configuration(
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
 ) {
 	log.info("Configuring app as ${environment.config.environment} environment.")
+	// Implicitly enables kotlinx.coroutines.stacktrace.recovery.
+	System.setProperty(DEBUG_PROPERTY_NAME, DEBUG_PROPERTY_VALUE_ON)
 
 	install(DefaultHeaders)
 	install(CallLogging)
@@ -105,6 +115,7 @@ internal fun Application.configuration(
 	install(Resources) // support @Resource
 	install(Sessions) {
 		cookie<AuthSession>("auth") {
+			serializer = reflectionSessionSerializer()
 			val secretSignKey = "twister".toByteArray()
 			transform(SessionTransportTransformerMessageAuthentication(secretSignKey))
 		}
@@ -132,7 +143,7 @@ internal fun Application.configuration(
 				false // mandatory for now, TODO use above condition? see ApplicationCall.isAuthenticated
 			}
 			client = oauthHttpClient
-			this@configuration.environment.monitor.subscribe(ApplicationStopped) {
+			this@configuration.monitor.subscribe(ApplicationStopped) {
 				oauthHttpClient.close()
 			}
 			providerLookup = { googleOauthProvider }

@@ -33,8 +33,12 @@ detekt {
 	}
 }
 
-tasks.register("detektEach") {
+val detektEach = tasks.register("detektEach") {
 	dependsOn(tasks.withType<Detekt>().named { it != "detekt" })
+}
+
+tasks.named("check") {
+	dependsOn(detektEach)
 }
 
 configureSarifMerging()

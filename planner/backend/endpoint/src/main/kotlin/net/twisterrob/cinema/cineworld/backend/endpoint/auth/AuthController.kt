@@ -7,8 +7,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCallPipeline
-import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
@@ -19,7 +17,6 @@ import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.sessions.clear
-import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.currentUser
@@ -27,8 +24,6 @@ import net.twisterrob.cinema.cineworld.backend.endpoint.app.App
 import net.twisterrob.cinema.cineworld.backend.endpoint.app.AppController
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthRepository
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.AuthSession
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.CurrentUser
-import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UnknownUserException
 import net.twisterrob.cinema.cineworld.backend.endpoint.auth.data.UserInfoOpenID
 import net.twisterrob.cinema.cineworld.backend.ktor.RouteController
 import net.twisterrob.cinema.cineworld.backend.ktor.absoluteUrl
@@ -67,17 +62,8 @@ class AuthController @Inject constructor(
 	 */
 	@Suppress("LongMethod", "CognitiveComplexMethod") // It's a collection of small methods without shared scope.
 	override fun Routing.registerRoutes() {
-		intercept(ApplicationCallPipeline.Plugins) {
-			val session: AuthSession? = call.sessions.get()
-			if (session != null) {
-				try {
-					val user = authRepository.findUser(session.userId)
-					call.attributes.currentUser = CurrentUser(id = user.id, email = user.email)
-				} catch (ex: UnknownUserException) {
-					call.application.log.error("Invalid session: {}", call.sessions, ex)
-					call.sessions.clear<AuthSession>()
-				}
-			}
+		install(AuthSessionPlugin) {
+			this.findUser = authRepository::findUser
 		}
 
 		authenticate(optional = true) {

@@ -23,6 +23,13 @@
  
 `NEO4J_URL` and `PORT` must be configured, see [env.bat](scripts/env.bat) for example.
 
+## Testing
+
+To run the full test suite (`gradlew test` or `gradlew build`), the following setup is needed for Copilot:
+
+* `NEO4J_URL=neo4j://test` - Required for integration tests to pass, dependency injection reads the value, but doesn't necessarily use it.
+* `GITHUB_ACTIONS=agent` - Required for copilot's runner to not identify as CI.
+
 ## Deployment
 
 Deployment is done via `:deploy:appengine` Gradle module.
@@ -49,18 +56,23 @@ For PR/manual deployments there's a best-effort `Delete from Google App Engine` 
    Yes, this means that PR merges will execute 2 deletions, but their names are different.
  * Can be run manually to counteract manual deploys. 
 
+## Run with Auth
+
+1. Run on port 8080
+2. Use http://localhost:8080 to access, `127.0.0.1` won't work.
+
 ## Debug Production
 
 1. Redirect localhost:
    1. Disable Antivirus
-   2. edit system32/drivers/etc/hosts to have `127.0.0.1	cinema.twisterrob.net`
+   2. Edit `C:\Windows\System32\drivers\etc\hosts` to have `127.0.0.1	cinema.twisterrob.net`
    3. Enable Antivirus
 2. Set env:
-   * NODE_ENV: production
-   * PORT: 80
-   * NEO4J_URL: ...
-3. run `npm start` in `frontend` (in the background)
-4. Debug `src\main\javascript\index.js` in `backend` folder
+   * `NODE_ENV`: `production`
+   * `PORT`: `80`
+   * `NEO4J_URL`: `...`
+3. Run `npm start` in `frontend` (in the background)
+4. Debug `npm start` in root folder
 
 ## Set up example Database
 Overwrite XML files in `backend/sync/test/` and then import them.
