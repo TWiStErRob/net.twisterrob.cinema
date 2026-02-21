@@ -3,8 +3,8 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.app
 import io.ktor.http.HttpHeaders
 import io.ktor.http.encodeURLPath
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.PipelineCall
 import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.server.request.path
@@ -58,7 +58,7 @@ class TestController @Inject constructor(
 		}
 	}
 
-	private fun PipelineContext<Unit, ApplicationCall>.respondFake(path: File) {
+	private fun PipelineContext<Unit, PipelineCall>.respondFake(path: File) {
 		launch {
 			call.application.log.warn("Fake response to ${call.request.uri} with ${path.canonicalPath}")
 			call.response.header(HttpHeaders.XForwardedServer, "fakes")
