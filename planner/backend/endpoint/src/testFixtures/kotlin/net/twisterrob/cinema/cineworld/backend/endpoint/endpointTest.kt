@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint
 
 import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.application.log
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ClientProvider
 import io.ktor.server.testing.TestApplication
@@ -10,6 +10,7 @@ import io.ktor.util.logging.KtorSimpleLogger
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import net.twisterrob.cinema.cineworld.backend.app.ApplicationAttributes.testInstance
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
 import net.twisterrob.cinema.cineworld.backend.ktor.autoDaggerApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
@@ -23,7 +24,7 @@ import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
  * @param testConfig Configuration overrides for the ktor application. See `src/main/resources/application.conf`.
  * @param test Test code to execute after the application has started up.
  */
-fun endpointTest(
+fun Any.endpointTest(
 	configure: Application.() -> Unit = { configuration() },
 	daggerApp: Application.() -> Unit = { autoDaggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
@@ -32,6 +33,12 @@ fun endpointTest(
 ) {
 	val testLog = KtorSimpleLogger("ktor.test")
 	val application = TestApplication {
+		application {
+			intercept(ApplicationCallPipeline.Monitoring) {
+				call.attributes.testInstance = this@endpointTest
+				proceed()
+			}
+		}
 		environment {
 			config = MapApplicationConfig(testConfig.entries.map { it.key to it.value }).apply {
 				putIfAbsent("twisterrob.cinema.environment", "test")
