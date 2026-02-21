@@ -38,6 +38,8 @@ import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.reflectionSessionSerializer
 import io.ktor.server.sessions.sessions
+import kotlinx.coroutines.DEBUG_PROPERTY_NAME
+import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.h1
@@ -72,6 +74,8 @@ internal fun Application.configuration(
 		.readValue(App::class.java.getResourceAsStream("/default-env.json")!!)
 ) {
 	log.info("Configuring app as ${environment.config.environment} environment.")
+	// Implicitly enables kotlinx.coroutines.stacktrace.recovery.
+	System.setProperty(DEBUG_PROPERTY_NAME, DEBUG_PROPERTY_VALUE_ON)
 
 	install(DefaultHeaders)
 	install(CallLogging)
