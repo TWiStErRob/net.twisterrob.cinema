@@ -3,7 +3,6 @@ package net.twisterrob.cinema.cineworld.backend.endpoint.view
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.Application
-import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.resources.delete
 import io.ktor.server.resources.post
