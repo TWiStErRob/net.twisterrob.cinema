@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // https://gith
 const WarningsToErrorsPlugin = require('warnings-to-errors-webpack-plugin'); // https://github.com/taehwanno/warnings-to-errors-webpack-plugin
 const path = require('path');
 const ONE_MIB = 1024 * 1024;
+const TEN_MIB = 10 * ONE_MIB;
 
 module.exports = (env, argv) => {
 	const dist = path.resolve(__dirname, '..', 'deploy', 'frontend');
@@ -107,15 +108,17 @@ module.exports = (env, argv) => {
 			hints: 'error',
 			// WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
 			// Entrypoints:
-			//   planner/index (903 KiB)
+			//   planner/index (903 KiB) [production]
+			//   planner/index (8.61 MiB) [development]
 			//       planner/index.css
 			//       planner/index.bundle.js
-			maxEntrypointSize: ONE_MIB,
+			maxEntrypointSize: devMode ? TEN_MIB : ONE_MIB,
 			// WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
 			// This can impact web performance.
 			// Assets:
-			//   planner/index.bundle.js (753 KiB)
-			maxAssetSize: ONE_MIB,
+			//   planner/index.bundle.js (753 KiB) [production]
+			//   planner/index.bundle.js (7.94 MiB) [development]
+			maxAssetSize: devMode ? TEN_MIB : ONE_MIB,
 		},
 	};
 };
