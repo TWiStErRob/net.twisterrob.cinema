@@ -23,6 +23,13 @@
  
 `NEO4J_URL` and `PORT` must be configured, see [env.bat](scripts/env.bat) for example.
 
+## Testing
+
+To run the full test suite (`gradlew test` or `gradlew build`), the following setup is needed for Copilot:
+
+* `NEO4J_URL=neo4j://test` - Required for integration tests to pass, dependency injection reads the value, but doesn't necessarily use it.
+* `GITHUB_ACTIONS=agent` - Required for copilot's runner to not identify as CI.
+
 ## Deployment
 
 Deployment is done via `:deploy:appengine` Gradle module.
