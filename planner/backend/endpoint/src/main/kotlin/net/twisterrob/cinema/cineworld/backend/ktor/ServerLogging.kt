@@ -8,17 +8,18 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
 import io.ktor.server.application.call
+import io.ktor.server.http.content.LocalFileContent
 import io.ktor.server.plugins.origin
-import io.ktor.server.request.RequestAlreadyConsumedException
 import io.ktor.server.request.contentCharset
 import io.ktor.server.request.httpVersion
 import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelinePhase
+import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.charsets.Charset
 import io.ktor.utils.io.core.readText
+import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -110,27 +111,22 @@ class ServerLogging(
 		}
 	}
 
-	@Suppress("unused")
-	private suspend fun ApplicationCall.requestBodyAlt(): String? =
-		try {
-			String(receive<ByteArray>())
-		} catch (e: RequestAlreadyConsumedException) {
-			logger.error("Logging payloads requires install(DoubleReceive) { cacheRawRequest = true }.", e)
-			null
-		}
-
+	@Suppress("detekt.SuspendFunWithCoroutineScopeReceiver") // REPORT ktor, how?
 	private suspend fun ApplicationCall.requestBody(): String? {
 		val charset = request.contentCharset() ?: Charsets.UTF_8
 		val channel = request.receiveChannel()
-		return runBlocking { channel.tryReadText(charset) }
+		return channel.tryReadText(charset)
 	}
 
 	private fun OutgoingContent.asString(): String? =
-		@Suppress("OptionalWhenBraces")
 		when (val content = this) {
 
 			is OutgoingContent.NoContent -> {
 				""
+			}
+
+			is OutgoingContent.ContentWrapper -> {
+				content.delegate().asString()
 			}
 
 			is TextContent -> {
@@ -139,10 +135,14 @@ class ServerLogging(
 
 			is OutgoingContent.WriteChannelContent -> {
 				runBlocking {
-					val channel = io.ktor.utils.io.ByteChannel(true)
+					val channel = ByteChannel(true)
 					content.writeTo(channel)
 					channel.tryReadText(Charsets.UTF_8)
 				}
+			}
+
+			is LocalFileContent -> {
+				"<${content.file.absolutePath}>"
 			}
 
 			is OutgoingContent.ByteArrayContent,
@@ -155,7 +155,7 @@ class ServerLogging(
 
 	private suspend inline fun ByteReadChannel.tryReadText(charset: Charset): String? =
 		try {
-			readRemaining().readText(charset = charset)
+			readRemaining().use { it.readText(charset = charset) }
 		} catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
 			logger.error("Cannot read text", cause)
 			null

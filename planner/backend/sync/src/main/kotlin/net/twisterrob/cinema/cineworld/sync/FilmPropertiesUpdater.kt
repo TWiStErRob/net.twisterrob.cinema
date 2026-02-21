@@ -2,6 +2,7 @@ package net.twisterrob.cinema.cineworld.sync
 
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.database.model.Film
+import org.jetbrains.annotations.VisibleForTesting
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
@@ -36,7 +37,8 @@ private fun ukMidnight(date: LocalDate): OffsetDateTime {
 	return date.atTime(LocalTime.of(0, 0).atOffset(ukZone))
 }
 
-private fun formatTitle(title: String, attributeList: List<String>): String {
+@VisibleForTesting
+internal fun formatTitle(title: String, attributeList: List<String>): String {
 	val format = attributeList
 		.asSequence()
 		.filterNot { it.startsWith("gn:") }
@@ -47,7 +49,7 @@ private fun formatTitle(title: String, attributeList: List<String>): String {
 	// Ignore (2D) in front coming from feed, and [IMAX, 3D, AD] in the end coming from generator so import is idempotent.
 	// https://regex101.com/r/NWTzLC/1
 	@Suppress("RegExpRedundantEscape")
-	val noFormatTitle = Regex("""^(?:\(.*?\) )?(.*?)( \[[^\[\]]*\])?${'$'}""")
+	val noFormatTitle = Regex("""^(?:\(.*?\) )?(.+?)( \[[^\[\]]*\])?(?: \[\])*$""")
 		.find(title)
 		?.let { it.groupValues[1] }
 		?: title
@@ -56,7 +58,8 @@ private fun formatTitle(title: String, attributeList: List<String>): String {
 	return if (format.isNotEmpty()) "${noFormatTitle} [${format}]" else noFormatTitle
 }
 
-private fun findFormat(attributeList: List<String>): String =
+@VisibleForTesting
+internal fun findFormat(attributeList: List<String>): String =
 	when {
 		"IMAX" in attributeList ->
 			when {

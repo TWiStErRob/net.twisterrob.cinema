@@ -1,7 +1,6 @@
 package net.twisterrob.cinema.cineworld.backend.endpoint.app
 
 import io.ktor.server.application.Application
-import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.server.http.content.staticFiles
 import io.ktor.server.response.respondRedirect

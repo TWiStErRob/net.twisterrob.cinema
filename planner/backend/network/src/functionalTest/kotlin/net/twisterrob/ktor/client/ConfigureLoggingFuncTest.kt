@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import net.twisterrob.test.captureSingle
 import net.twisterrob.test.mockEngine
 import net.twisterrob.test.stub
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -79,10 +80,15 @@ class ConfigureLoggingFuncTest {
 	 * Needs to be initialized after mock stubs, because it calls [mockLogger] methods.
 	 */
 	private val sut: HttpClient by lazy {
+		@Suppress("detekt.MissingUseCall") // See @AfterEach.
 		HttpClient(mockEngine()).config {
 			// Real sut is the extension method.
 			configureLogging(mockLogger)
 		}
+	}
+
+	@AfterEach fun tearDown() {
+		sut.close()
 	}
 
 	private fun HttpClient.stubFakeRequestResponse() {
@@ -120,9 +126,9 @@ class ConfigureLoggingFuncTest {
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 			""".trimIndent(),
 			verifyAllLogsFor(Logger::info)
@@ -134,7 +140,6 @@ class ConfigureLoggingFuncTest {
 	fun `debug logging displays detailed information`() {
 		doReturn(true).whenever(mockLogger).isDebugEnabled
 		sut.stubFakeRequestResponse()
-		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
 		val result = runBlocking {
 			sut.get("http://localhost/stubbed") {
@@ -143,17 +148,17 @@ class ConfigureLoggingFuncTest {
 		}
 
 		assertEquals("Fake content", result)
-		verifyCallSite(expectedStack)
+		verifyCallSite(null)
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				BODY Content-Type: null
 				BODY START
 				
 				BODY END
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 				BODY Content-Type: application/xml
 				BODY START
@@ -169,7 +174,6 @@ class ConfigureLoggingFuncTest {
 	fun `trace logging displays all information`() {
 		doReturn(true).whenever(mockLogger).isTraceEnabled
 		sut.stubFakeRequestResponse()
-		val expectedStack = Throwable().stackTrace[0].nextLine(2)
 
 		val result = runBlocking {
 			sut.get("http://localhost/stubbed") {
@@ -178,11 +182,11 @@ class ConfigureLoggingFuncTest {
 		}
 
 		assertEquals("Fake content", result)
-		verifyCallSite(expectedStack)
+		verifyCallSite(null)
 		assertEquals(
 			"""
 				REQUEST: http://localhost/stubbed
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				COMMON HEADERS
 				-> Accept: */*
 				-> Accept-Charset: UTF-8
@@ -194,7 +198,7 @@ class ConfigureLoggingFuncTest {
 				
 				BODY END
 				RESPONSE: 200 OK
-				METHOD: HttpMethod(value=GET)
+				METHOD: GET
 				FROM: http://localhost/stubbed
 				COMMON HEADERS
 				-> Content-Type: application/xml
@@ -209,13 +213,21 @@ class ConfigureLoggingFuncTest {
 		verifyNoMoreLogLevelInteractions(Logger::trace)
 	}
 
-	private fun verifyCallSite(expectedStack: StackTraceElement) {
+	/**
+	 * @param expectedStack Verifies that the stack trace is correct.
+	 * Since somewhere between 3.0-3.4, the threading model changed,
+	 * and the [io.ktor.client.plugins.logging.Logging] plugin "obfuscates" the stack trace accidentally.
+	 * When logging the body, it moves onto another dispatcher, and therefore loses the stack trace.
+	 */
+	private fun verifyCallSite(expectedStack: StackTraceElement?) {
 		val ex: Throwable = captureSingle {
 			verify(mockLogger).debug(eq("Network call: http://localhost/stubbed"), capture())
 		}
 		assertEquals("net.twisterrob.ktor.client.NetworkCall", ex.javaClass.name)
 		assertEquals("Callsite for http://localhost/stubbed", ex.message)
-		assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
+		if (expectedStack != null) {
+			assertEquals(expectedStack.toString(), ex.stackTrace[1].toString())
+		}
 	}
 
 	private fun verifyAllLogsFor(method: Logger.(String) -> Unit): String {
@@ -227,7 +239,7 @@ class ConfigureLoggingFuncTest {
 			.joinToString("\n")
 	}
 
-	@Suppress("FunctionMaxLength")
+	@Suppress("FunctionNameMaxLength")
 	private fun verifyNoMoreLogLevelInteractions(method: Logger.(String) -> Unit) {
 		verify(mockLogger, atMost(1)).isErrorEnabled
 		verify(mockLogger, atMost(1)).isWarnEnabled

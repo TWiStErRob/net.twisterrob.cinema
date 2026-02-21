@@ -14,7 +14,7 @@ plugins {
 	id("net.twisterrob.cinema.build.test-suite-ksp")
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
 	maxHeapSize = "512M"
 	allowUnsafe()
 }
@@ -32,10 +32,15 @@ testing {
 				testTask.configure {
 					ignoreFailures = true
 					jvmArgs(
-						// Reduce occurrences of warning:
-						// > Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+						// Hide (https://stackoverflow.com/a/79098701/253468)
+						// > Java HotSpot(TM) 64-Bit Server VM warning:
+						// > Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 						"-Xshare:off",
 					)
+					if (javaVersion.isCompatibleWith(JavaVersion.VERSION_21)) {
+						// https://github.com/mockito/mockito/issues/3037#issuecomment-1588199599
+						jvmArgs("-XX:+EnableDynamicAgentLoading")
+					}
 					// Ensure pattern_level_colors get applied from log4j2.xml.
 					// See https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#jansi
 					systemProperty("log4j2.skipJansi", "false")
@@ -58,6 +63,7 @@ testing {
 					// Logging is not relevant in unit tests.
 					parallelJUnit5Execution(Concurrency.PerMethod)
 					shouldRunAfter()
+					maxHeapSize = "64M"
 				}
 			}
 		}

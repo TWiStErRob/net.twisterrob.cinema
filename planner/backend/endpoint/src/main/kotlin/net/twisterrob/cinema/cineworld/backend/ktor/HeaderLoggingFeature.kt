@@ -1,8 +1,8 @@
 package net.twisterrob.cinema.cineworld.backend.ktor
 
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.BaseApplicationPlugin
+import io.ktor.server.application.PipelineCall
 import io.ktor.server.application.call
 import io.ktor.server.application.log
 import io.ktor.util.AttributeKey
@@ -26,7 +26,7 @@ class HeaderLoggingFeature private constructor() {
 
 class HeaderLoggingConfiguration
 
-private fun PipelineContext<Unit, ApplicationCall>.logRequestHeaders() {
+private fun PipelineContext<Unit, PipelineCall>.logRequestHeaders() {
 	call.request.headers.forEach { name, values ->
 		call.application.log.trace("Header $name: ${values.joinToString()}")
 	}

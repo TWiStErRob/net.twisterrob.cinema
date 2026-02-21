@@ -12,6 +12,7 @@ class FeedServiceNetwork @Inject constructor(
 	client: HttpClient
 ) : FeedService {
 
+	@Suppress("detekt.MissingUseCall") // This dies when process dies.
 	private val client = client.config {
 		install(ContentNegotiation) {
 			// Poor man's XmlPlugin

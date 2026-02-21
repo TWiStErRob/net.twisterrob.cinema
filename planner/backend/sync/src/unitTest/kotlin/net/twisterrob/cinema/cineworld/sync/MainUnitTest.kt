@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed
 import net.twisterrob.cinema.cineworld.sync.syndication.FeedService
 import net.twisterrob.test.build
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,7 +29,12 @@ class MainUnitTest {
 	private lateinit var sut: Main
 
 	@BeforeEach fun setUp() {
+		@Suppress("detekt.MissingUseCall")
 		sut = Main(mockFeedService, mockCinemaSync, mockFilmSync, mockPerformanceSync, mockNeo4j, mockNetwork)
+	}
+
+	@AfterEach fun tearDown() {
+		sut.close()
 	}
 
 	@Test fun `syncs none when requested`() {

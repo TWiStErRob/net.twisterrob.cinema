@@ -7,8 +7,11 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ClientProvider
 import io.ktor.server.testing.TestApplication
 import io.ktor.util.logging.KtorSimpleLogger
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import net.twisterrob.cinema.cineworld.backend.ktor.ServerLogging
+import net.twisterrob.cinema.cineworld.backend.ktor.autoDaggerApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.configuration
 import net.twisterrob.cinema.cineworld.backend.ktor.daggerApplication
 import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
@@ -22,7 +25,7 @@ import net.twisterrob.cinema.cineworld.backend.ktor.putIfAbsent
  */
 fun endpointTest(
 	configure: Application.() -> Unit = { configuration() },
-	daggerApp: Application.() -> Unit = { daggerApplication() },
+	daggerApp: Application.() -> Unit = { autoDaggerApplication() },
 	logLevel: ServerLogging.LogLevel = ServerLogging.LogLevel.ALL,
 	testConfig: Map<String, String> = emptyMap(),
 	test: suspend ClientProvider.() -> Unit
@@ -35,8 +38,10 @@ fun endpointTest(
 				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
 			}
-			developmentMode = true
 			log = testLog
+		}
+		serverConfig {
+			developmentMode = true
 		}
 		application {
 			install(ServerLogging) {
@@ -54,7 +59,7 @@ fun endpointTest(
 			application.test()
 		} finally {
 			testLog.trace("Endpoint test finished {}", test::class)
-			application.stop()
+			withContext(NonCancellable) { application.stop() }
 		}
 	}
 }

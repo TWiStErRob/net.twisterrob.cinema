@@ -1,23 +1,22 @@
 package net.twisterrob.cinema.build
 
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.report.ReportMergeTask
 import net.twisterrob.cinema.build.dsl.isCI
 import net.twisterrob.cinema.build.dsl.libs
 import net.twisterrob.cinema.build.dsl.maybeRegister
 
 plugins {
-	id("io.gitlab.arturbosch.detekt")
+	id("dev.detekt")
 }
 
 detekt {
 	ignoreFailures = isCI
-	// TODEL https://github.com/detekt/detekt/issues/4926
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 	baseline = rootProject.file("config/detekt/detekt-baseline-${project.name}.xml")
-	basePath = rootProject.projectDir.parentFile.absolutePath
+	basePath = rootProject.projectDir.parentFile
 
 	parallel = true
 
@@ -26,16 +25,20 @@ detekt {
 		jvmTarget = libs.versions.java.get()
 		reports {
 			html.required = true // human
-			xml.required = true // checkstyle
-			txt.required = true // console
+			checkstyle.required = true // checkstyle
+			markdown.required = true // console
 			// https://sarifweb.azurewebsites.net
 			sarif.required = true // GitHub Code Scanning
 		}
 	}
 }
 
-tasks.register("detektEach") {
+val detektEach = tasks.register("detektEach") {
 	dependsOn(tasks.withType<Detekt>().named { it != "detekt" })
+}
+
+tasks.named("check") {
+	dependsOn(detektEach)
 }
 
 configureSarifMerging()
@@ -53,10 +56,11 @@ fun Project.configureSarifMerging() {
 	}
 	rootProject.tasks.named<ReportMergeTask>("detektReportMergeSarif") {
 		val detektReportMergeTask = this@named
-		tasks.withType<Detekt> {
-			val detektReportingTask = this@withType
+		// Intentionally eager. When running report, we must configure all tasks.
+		tasks.withType<Detekt>().all {
+			val detektReportingTask = this@all
 			detektReportMergeTask.mustRunAfter(detektReportingTask)
-			detektReportMergeTask.input.from(detektReportingTask.sarifReportFile)
+			detektReportMergeTask.input.from(detektReportingTask.reports.sarif.outputLocation)
 		}
 		gradle.includedBuilds.forEach { includedBuild ->
 			detektReportMergeTask.dependsOn(includedBuild.task(":detektReportMergeSarif"))

@@ -18,6 +18,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import com.shazam.shazamcrest.MatcherAssert.assertThat as shazamThat
 import net.twisterrob.cinema.cineworld.sync.syndication.Feed.Performance as FeedPerformance
 import net.twisterrob.cinema.database.model.Performance as DBPerformance
 
@@ -71,6 +72,6 @@ private inline fun <reified T> T.jsonClone(): T {
 		disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
 	}
 	val cloned: T = mapper.readValue(mapper.writeValueAsString(this))
-	com.shazam.shazamcrest.MatcherAssert.assertThat(cloned, sameBeanAs(this))
+	shazamThat(cloned, sameBeanAs(this))
 	return cloned
 }

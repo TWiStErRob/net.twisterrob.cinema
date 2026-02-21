@@ -43,7 +43,7 @@ fun Project.configureSLF4JBindings() {
 						candidates.joinToString(separator = "\n") { " * $it" }
 			)
 			val slf4jLogger = candidates.singleOrNull { candidate ->
-				candidate.id.isMatching("org.apache.logging.log4j", "log4j-slf4j2-impl")
+				candidate.id.isMatching(group = "org.apache.logging.log4j", module = "log4j-slf4j2-impl")
 			}
 			if (slf4jLogger != null) {
 				logger.info("In ${this@configuration}, the resolved candidate for ${capability} is ${slf4jLogger}.")

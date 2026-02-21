@@ -7,19 +7,17 @@ java = "17"
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # TODO Review validation.mode in gradle.properties when bumping version.
 kotlin = "2.3.10"
-kotlin-ksp = "2.3.5"
+kotlin-ksp = "2.3.6"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.10.0"
-# TODO review TODELs with detekt mentioned in them.
-detekt = "1.23.8"
+detekt = "2.0.0-alpha.2"
 
-dagger = "2.59.1"
+dagger = "2.59.2"
 
-# http://ktor.io/quickstart/quickstart/intellij-idea/gradle.html
-# `maven { name = "ktor"; url = "https://dl.bintray.com/kotlin/ktor" }`
-ktor = "2.3.13"
+# https://ktor.io/docs/releases.html
+ktor = "3.4.0"
 
 appengine = "2.8.6"
 
@@ -33,10 +31,10 @@ appengine = "2.8.6"
 neo4j = "2026.01.4"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver
 # Changelog: https://github.com/neo4j/neo4j-java-driver/wiki
-neo4j-java = "6.0.2"
+neo4j-java = "6.0.3"
 # Artifacts: https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm
 # Changelog: https://github.com/neo4j/neo4j-ogm/blob/master/CHANGES.adoc
-neo4j-ogm = "5.0.2"
+neo4j-ogm = "5.0.3"
 
 jackson = "2.21.0"
 jackson-databind = "2.21.0"
@@ -45,7 +43,7 @@ slf4j = "2.0.17"
 log4j = "2.25.3"
 jansi = "2.4.2"
 
-test-junit-jupiter = "6.0.2"
+test-junit-jupiter = "6.0.3"
 test-junit-pioneer = "2.3.0"
 test-junit-vintage = "4.13.2"
 
@@ -59,12 +57,12 @@ test-jfixture = "2.7.2"
 test-mockito = "5.21.0"
 test-mockito-kotlin = "6.2.3"
 
-test-selenium = "4.40.0"
+test-selenium = "4.41.0"
 test-ngWebDriver = "1.2"
 
 [libraries]
 
-detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-gradle = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 appengine-gradle = { module = "com.google.cloud.tools:appengine-gradle-plugin", version.ref = "appengine" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -89,7 +87,7 @@ ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
 
 ktor-server = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-ktor-server-test = { module = "io.ktor:ktor-server-tests", version.ref = "ktor" }
+ktor-server-test = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
 ktor-server-caching = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktor" }
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
@@ -150,6 +148,6 @@ test-mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.r
 log4j = ["log4j-api", "log4j-core", "log4j-slf4j"]
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 # From `com.google.cloud.tools:appengine-gradle-plugin`
 appengine-yaml = { id = "com.google.cloud.tools.appengine-appyaml", version.ref = "appengine" }

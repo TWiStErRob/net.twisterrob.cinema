@@ -33,9 +33,23 @@ class Cinemas(
 			get() = root.findElement(By.id("cinemas-none"))
 	}
 
-	val london get() = CinemaGroup("#cinemas-group-london", "#cinemas-list-london")
-	val favorites get() = CinemaGroup("#cinemas-group-favs", "#cinemas-list-favs")
-	val other get() = CinemaGroup("#cinemas-group-other", "#cinemas-list-other")
+	val london
+		get() = CinemaGroup(
+			groupCSS = "#cinemas-group-london",
+			listCSS = "#cinemas-list-london",
+		)
+
+	val favorites
+		get() = CinemaGroup(
+			groupCSS = "#cinemas-group-favs",
+			listCSS = "#cinemas-list-favs",
+		)
+
+	val other
+		get() = CinemaGroup(
+			groupCSS = "#cinemas-group-other",
+			listCSS = "#cinemas-list-other",
+		)
 
 	inner class CinemaGroup(
 		groupCSS: String,
