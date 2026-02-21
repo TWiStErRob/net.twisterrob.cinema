@@ -35,8 +35,10 @@ fun endpointTest(
 				putIfAbsent("twisterrob.cinema.fakeRootFolder", ".")
 				putIfAbsent("twisterrob.cinema.staticRootFolder", ".")
 			}
-			developmentMode = true
 			log = testLog
+		}
+		serverConfig {
+			developmentMode = true
 		}
 		application {
 			install(ServerLogging) {
