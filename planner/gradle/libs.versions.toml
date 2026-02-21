@@ -14,7 +14,7 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.10.0"
 detekt = "2.0.0-alpha.2"
 
-dagger = "2.59.1"
+dagger = "2.59.2"
 
 # https://ktor.io/docs/releases.html
 ktor = "3.4.0"
