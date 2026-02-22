@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@Suppress("detekt.UnnecessaryInnerClass") // TODEL https://github.com/detekt/detekt/issues/9072
 class FilmPropertiesUpdaterKtUnitTest {
 
 	@Nested
