@@ -173,6 +173,10 @@ style:
     # Account for tabs.
     indentSize: 1
 
+  UnnecessaryInnerClass:
+    ignoreAnnotated:
+      - 'org.junit.jupiter.api.Nested'
+
   UnusedPrivateClass:
     excludes:
       - '**/*Test.kt'
