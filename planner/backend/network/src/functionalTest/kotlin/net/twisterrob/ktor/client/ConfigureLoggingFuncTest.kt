@@ -189,7 +189,6 @@ class ConfigureLoggingFuncTest {
 				METHOD: GET
 				COMMON HEADERS
 				-> Accept: */*
-				-> Accept-Charset: UTF-8
 				-> X-Custom-Request-Header: x-custom-request-value
 				CONTENT HEADERS
 				-> Content-Length: 0
