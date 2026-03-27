@@ -17,7 +17,7 @@ detekt = "2.0.0-alpha.2"
 dagger = "2.59.2"
 
 # https://ktor.io/docs/releases.html
-ktor = "3.4.1"
+ktor = "3.4.2"
 
 appengine = "2.8.6"
 
