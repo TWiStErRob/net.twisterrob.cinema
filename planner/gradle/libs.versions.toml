@@ -40,7 +40,7 @@ jackson = "2.21.2"
 jackson-databind = "2.21.2"
 
 slf4j = "2.0.17"
-log4j = "2.25.3"
+log4j = "2.25.4"
 jansi = "2.4.3"
 
 test-junit-jupiter = "6.0.3"
