@@ -19,7 +19,7 @@ dagger = "2.59.2"
 # https://ktor.io/docs/releases.html
 ktor = "3.4.2"
 
-appengine = "2.8.6"
+appengine = "2.8.7"
 
 # To be sure neo4j and neo4j-ogm are compatible,
 # Make sure to match supporting version at https://neo4j.com/docs/ogm-manual/current/reference/#reference:getting-started:versions.
