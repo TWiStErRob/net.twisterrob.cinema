@@ -12,7 +12,7 @@ kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.11.0"
-detekt = "2.0.0-alpha.2"
+detekt = "2.0.0-alpha.3"
 
 dagger = "2.59.2"
 
