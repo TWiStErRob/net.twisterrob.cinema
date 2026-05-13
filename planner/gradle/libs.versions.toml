@@ -39,7 +39,7 @@ neo4j-ogm = "5.0.5"
 jackson = "2.21.3"
 jackson-databind = "2.21.3"
 
-slf4j = "2.0.17"
+slf4j = "2.0.18"
 log4j = "2.26.0"
 jansi = "2.4.3"
 
