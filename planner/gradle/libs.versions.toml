@@ -43,7 +43,7 @@ slf4j = "2.0.18"
 log4j = "2.26.0"
 jansi = "2.4.3"
 
-test-junit-jupiter = "6.0.3"
+test-junit-jupiter = "6.1.0"
 test-junit-pioneer = "2.3.0"
 test-junit-vintage = "4.13.2"
 
