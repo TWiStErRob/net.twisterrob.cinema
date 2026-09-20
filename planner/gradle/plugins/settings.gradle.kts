@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.nagging") version "0.19"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.20"
 }
 
 val gradleVersion: String = GradleVersion.current().version
