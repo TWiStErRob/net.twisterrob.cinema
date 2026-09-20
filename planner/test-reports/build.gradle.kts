@@ -13,7 +13,7 @@ dependencies {
 		// Skip grouping modules (they don't have suites, i.e. no variants exists in these modules).
 		.filterNot { it.path in setOf(":", ":backend", ":deploy") }
 		// Add dependency on all modules.
-		.forEach { implementation(it) }
+		.forEach { implementation(project(it.path)) }
 }
 
 @Suppress("UnstableApiUsage") // Gradle Test Suites are incubating.
