@@ -57,7 +57,7 @@ testing {
 		 * Standard Unit tests for a single class or function.
 		 * Most/all dependencies are mocked, stubbed or faked out.
 		 */
-		val unitTest by registering(JvmTestSuite::class) {
+		val unitTest = register<JvmTestSuite>("unitTest") {
 			targets.configureEach {
 				testTask.configure {
 					// Logging is not relevant in unit tests.
@@ -72,7 +72,7 @@ testing {
 		 * Functional tests test multiple classes in tandem.
 		 * Building a dependency graph, but still mocking/stubbing out partially.
 		 */
-		val functionalTest by registering(JvmTestSuite::class) {
+		val functionalTest = register<JvmTestSuite>("functionalTest") {
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in functional tests, so the methods need to be synchronized.
@@ -86,7 +86,7 @@ testing {
 		 * Integration test uses an internal third party to simulate real behavior.
 		 * For example using a full embedded database.
 		 */
-		val integrationTest by registering(JvmTestSuite::class) {
+		val integrationTest = register<JvmTestSuite>("integrationTest") {
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests, so the methods need to be synchronized.
@@ -112,7 +112,7 @@ testing {
 		 * This means that test status depends on something external to the test.
 		 * For example hitting a network endpoint.
 		 */
-		val integrationExternalTest by registering(JvmTestSuite::class) {
+		val integrationExternalTest = register<JvmTestSuite>("integrationExternalTest") {
 			targets.configureEach {
 				testTask.configure {
 					// Logging is relevant in integration tests.
