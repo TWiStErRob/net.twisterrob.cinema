@@ -20,6 +20,7 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.charsets.Charset
 import io.ktor.utils.io.core.readText
 import io.ktor.utils.io.readBuffer
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -156,6 +157,8 @@ class ServerLogging(
 	private suspend inline fun ByteReadChannel.tryReadText(charset: Charset): String? =
 		try {
 			readBuffer().use { it.readText(charset = charset) }
+		} catch (cause: CancellationException) {
+			throw cause
 		} catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
 			logger.error("Cannot read text", cause)
 			null

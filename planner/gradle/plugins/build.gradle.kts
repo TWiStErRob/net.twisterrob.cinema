@@ -44,8 +44,9 @@ detekt {
 		exclude("gradle/kotlin/dsl/accessors/")
 		exclude("net/twisterrob/cinema/build/*Plugin.kt")
 		exclude("Net_twisterrob_cinema_*.kt")
-		// UnnecessaryFullyQualifiedName because of implicitly imported extensions (kotlin.target.compilations.* looks like FQFN)
-		exclude("net/twisterrob/cinema/build/testing.gradle.kts")
+		// Precompiled script plugins cannot be analyzed correctly:
+		// analysis yields false positives and type resolution fails: https://github.com/detekt/detekt/issues/5501
+		exclude("**/*.gradle.kts")
 		reports {
 			html.required = true // human
 			checkstyle.required = true // checkstyle

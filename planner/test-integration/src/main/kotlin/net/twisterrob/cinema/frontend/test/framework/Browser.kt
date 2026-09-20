@@ -21,7 +21,8 @@ class Browser {
 	}
 
 	val sessionId: String
-		get() = (driver as RemoteWebDriver).sessionId.toString()
+		get() = (driver as RemoteWebDriver).sessionId?.toString()
+			?: error("Selenium session ID was not available.")
 
 	val currentUrl: String?
 		get() = driver.currentUrl?.removePrefix(Options.baseUrl)
