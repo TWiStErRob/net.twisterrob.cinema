@@ -60,7 +60,7 @@ jobs:
     needs:
       - validate
       - filter
-    if: ${{ (success() || failure() || cancelled()) && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
+    if: ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped') && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
     timeout-minutes: 10
 
     env:
