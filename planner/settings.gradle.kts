@@ -57,3 +57,12 @@ buildscript {
 }
 
 val gradleVersion: String = GradleVersion.current().version
+
+// TODEL AppEngine Gradle plugin 2.8.7 vs Gradle 9.6.0 https://github.com/GoogleCloudPlatform/appengine-plugins/issues/1078
+doNotNagAbout(
+	"The Project.getProperties method has been deprecated. " +
+			"This will fail with an error in Gradle 10. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#deprecated_get_properties",
+	"at com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin.lambda\$configureExtensions\$0(AppEngineAppYamlPlugin.java:96)"
+)
