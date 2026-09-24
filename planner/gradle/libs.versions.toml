@@ -36,7 +36,7 @@ neo4j-java = "6.3.0"
 neo4j-ogm = "5.0.10"
 
 jackson = "2.22.2"
-jackson-databind = "2.22.2"
+jackson-databind = "2.22.3"
 
 slf4j = "2.0.20"
 log4j = "2.26.1"
