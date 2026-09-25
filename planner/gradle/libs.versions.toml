@@ -53,8 +53,8 @@ test-assertj = "3.27.7"
 
 test-jfixture = "2.7.2"
 
-test-mockito = "5.23.0"
-test-mockito-kotlin = "6.3.0"
+test-mockito = "5.24.0"
+test-mockito-kotlin = "6.4.0"
 
 test-selenium = "4.49.0"
 test-ngWebDriver = "1.2"
