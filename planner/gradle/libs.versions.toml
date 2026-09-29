@@ -6,7 +6,7 @@ java = "17"
 # @see kotlinx-coroutines
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 kotlin = "2.4.20"
-kotlin-ksp = "2.3.8"
+kotlin-ksp = "2.3.12"
 kotlinx-html = "0.7.3"
 # @see kotlin
 kotlinx-coroutines = "1.11.0"
