@@ -14,6 +14,10 @@ on:
         type: boolean
         default: false
 
+# Keep a PR deployment and its cleanup from running at the same time.
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('planner-preview-pr-{0}', github.event.number) || format('planner-appengine-deploy-{0}', github.run_id) }}
+
 jobs:
 
   validate:
@@ -62,6 +66,9 @@ jobs:
       - filter
     if: ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped') && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
     timeout-minutes: 10
+    outputs:
+      environment: ${{ steps.name.outputs.environment }}
+      url: ${{ steps.name.outputs.url }}
 
     env:
       # Convert input toJSON, because in GitHub Actions: false == null == ''.
@@ -88,18 +95,25 @@ jobs:
         with:
           result-encoding: string
           script: |
-            return process.env.INPUT_PROD === 'true'
-              // Use blank to indicate that this is a release to production and should use automatic naming.
-              ? 'release'
-              : context.ref
-                // refs/heads/main from workflow_dispatch and push events.
-                .replace('refs/heads/', 'br-')
-                // refs/pull/123/merge from pull_request event.
-                .replace('refs/pull/', 'pr-')
-                // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
-                // May only contain lowercase letters, digits, and hyphens.
-                // Must begin and end with a letter or digit. Must not exceed 63 characters.
-                .replace(/[^a-z0-9-]/g, '-')
+            if (process.env.INPUT_PROD === 'true') {
+              core.setOutput('environment', 'production')
+              core.setOutput('url', 'https://cinema.twisterrob.net/')
+              // Let Gradle assign the production version ID.
+              return 'release'
+            }
+
+            const version = context.ref
+              // refs/heads/main from workflow_dispatch and push events.
+              .replace('refs/heads/', 'br-')
+              // refs/pull/123/merge from pull_request event.
+              .replace('refs/pull/', 'pr-')
+              // App Engine version IDs allow lowercase letters, digits, and hyphens.
+              .replace(/[^a-z0-9-]/g, '-')
+            if (context.eventName === 'pull_request') {
+              core.setOutput('environment', 'pr-' + context.payload.number)
+              core.setOutput('url', 'https://' + version + '-dot-twisterrob-cinema.appspot.com/')
+            }
+            return version
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v7
@@ -158,3 +172,20 @@ jobs:
           :deploy:appengine:appengineDeploy
           -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
           -Pnet.twisterrob.deploy.versionName="${VERSION}"
+
+
+  record-deployment:
+    name: "Record GitHub deployment"
+    needs: release
+    if: ${{ needs.release.outputs.environment != '' }}
+    timeout-minutes: 2
+    permissions: {}
+    runs-on: ubuntu-26.04
+    environment:
+      name: ${{ needs.release.outputs.environment }}
+      url: ${{ needs.release.outputs.url }}
+    steps:
+      - name: "Record the deployed URL."
+        env:
+          DEPLOYED_URL: ${{ needs.release.outputs.url }}
+        run: echo "App Engine deployed ${DEPLOYED_URL}"
