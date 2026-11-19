@@ -62,8 +62,6 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
 
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v3
