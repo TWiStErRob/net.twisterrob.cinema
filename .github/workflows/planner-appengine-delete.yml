@@ -41,7 +41,9 @@ jobs:
           result-encoding: string
           script: |
             const branch = {
-              // After a merge, the close event's ref points to the base branch. Reconstruct the preview ref.
+              // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
+              // on:pull_request:closed[!pull_request.merged]'s ref is the merge branch.
+              // So reconstruct the merge branch name in both cases.
               pull_request: `refs/pull/${context.payload.number}/merge`,
               // on:delete's context.ref is always `refs/heads/main`
               // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
@@ -82,7 +84,7 @@ jobs:
       - name: "Clean up the PR's GitHub deployments and environment."
         if: ${{ github.event_name == 'pull_request' }}
         env:
-          ENVIRONMENT: pr-${{ github.event.number }}
+          ENVIRONMENT: ${{ steps.name.outputs.result }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           GH_ENVIRONMENT_CLEANUP_TOKEN: ${{ secrets.GH_ENVIRONMENT_CLEANUP_TOKEN }}
