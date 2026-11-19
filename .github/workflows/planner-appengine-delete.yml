@@ -1,11 +1,15 @@
 name: "Delete from Google App Engine"
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
   delete: # branches
   workflow_dispatch:
+
+# Wait for any App Engine deployment of this PR before deleting its preview.
+concurrency:
+  group: ${{ github.event_name == 'pull_request_target' && format('planner-preview-pr-{0}', github.event.number) || format('planner-appengine-delete-{0}', github.run_id) }}
 
 jobs:
 
@@ -18,6 +22,8 @@ jobs:
 
     permissions:
       contents: read  # This is required for actions/checkout.
+      actions: read # Read the PR's GitHub environment.
+      deployments: write # Mark deployments inactive after their preview is deleted.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
 
@@ -35,10 +41,8 @@ jobs:
           result-encoding: string
           script: |
             const branch = {
-              // on:pull_request:closed[pull_request.merged]'s ref is the base branch's simple name.
-              // on:pull_request:closed[!pull_request.merged]'s ref is the merge branch.
-              // So reconstruct the merge branch name in both cases.
-              pull_request: `refs/pull/${context.payload.number}/merge`,
+              // Reconstruct the PR merge ref from the number because pull_request_target uses the base ref.
+              pull_request_target: `refs/pull/${context.payload.number}/merge`,
               // on:delete's context.ref is always `refs/heads/main`
               // So use github.event.ref which is just the name, so polyfill with prefix to be consistent for next steps.
               // See https://stackoverflow.com/a/62293570/253468
@@ -56,14 +60,12 @@ jobs:
               // Must begin and end with a letter or digit. Must not exceed 63 characters.
               .replace(/[^a-z0-9-]/g, '-')
 
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+      # Google Cloud authentication needs a checkout. Use the base commit on pull_request_target.
+      - name: "Checkout the workflow's trusted revision."
         uses: actions/checkout@v7
-
-      - name: "Set up Java."
-        uses: actions/setup-java@v6
         with:
-          java-version-file: planner/.java-version
-          distribution: temurin
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v3
@@ -79,4 +81,49 @@ jobs:
         env:
           VERSION: ${{ steps.name.outputs.result }}
         run: |
-          gcloud app versions delete --quiet --project="twisterrob-cinema" "${VERSION}"
+          deployed_version="$(gcloud app versions list --project="twisterrob-cinema" --service="default" \
+            --filter="version.id=${VERSION}" --format="value(version.id)")"
+          if [[ "${deployed_version}" != "${VERSION}" ]]; then
+            echo "App Engine version ${VERSION} is already absent."
+            exit 0
+          fi
+          gcloud app versions delete --quiet --project="twisterrob-cinema" --service="default" "${VERSION}"
+
+      - name: "Remove the PR's GitHub environment."
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/github-script@v9
+        env:
+          GH_ENVIRONMENT_CLEANUP_TOKEN: ${{ secrets.GH_ENVIRONMENT_CLEANUP_TOKEN }}
+        with:
+          script: |
+            const repo = context.repo
+            const environment = 'pr-' + context.payload.number
+            const deployments = await github.paginate(github.rest.repos.listDeployments, {
+              ...repo,
+              environment,
+              per_page: 100,
+            })
+            for (const {id: deployment_id} of deployments) {
+              const params = {...repo, deployment_id}
+              const {data: [latest]} = await github.rest.repos.listDeploymentStatuses({...params, per_page: 1})
+              if (latest?.state !== 'inactive') {
+                await github.rest.repos.createDeploymentStatus({...params, state: 'inactive'})
+              }
+            }
+
+            const params = {...repo, environment_name: environment}
+            try {
+              await github.rest.repos.getEnvironment(params)
+            } catch (error) {
+              if (error.status === 404) {
+                core.info('GitHub environment ' + environment + ' is already absent.')
+                return
+              }
+              throw error
+            }
+
+            const token = process.env.GH_ENVIRONMENT_CLEANUP_TOKEN
+            if (!token) {
+              throw new Error('Configure GH_ENVIRONMENT_CLEANUP_TOKEN with repository Administration write permission.')
+            }
+            await getOctokit(token).request('DELETE /repos/{owner}/{repo}/environments/{environment_name}', params)
