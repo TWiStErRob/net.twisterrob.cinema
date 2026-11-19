@@ -77,12 +77,6 @@ jobs:
         env:
           VERSION: ${{ steps.name.outputs.result }}
         run: |
-          deployed_version="$(gcloud app versions list --project="twisterrob-cinema" --service="default" \
-            --filter="version.id=${VERSION}" --format="value(version.id)")"
-          if [[ "${deployed_version}" != "${VERSION}" ]]; then
-            echo "App Engine version ${VERSION} is already absent."
-            exit 0
-          fi
           gcloud app versions delete --quiet --project="twisterrob-cinema" --service="default" "${VERSION}"
 
       - name: "Clean up the PR's GitHub deployments and environment."
