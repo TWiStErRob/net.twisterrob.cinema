@@ -38,23 +38,25 @@ Deployment is done via `:deploy:appengine` Gradle module.
 
 On GitHub Actions there are multiple triggers for `Deploy to Google App Engine` workflow:
  * Every branch is deployable with [manual dispatch](https://github.com/TWiStErRob/net.twisterrob.cinema/actions/workflows/planner-appengine-deploy.yml).
- * Every PR is automatically deployed to a unique URL.
+ * PRs that change Planner or its deployment workflows are automatically deployed to a unique preview URL.
  * Every push to `release` branch is automatically deployed to production.
 
 Push code to deploy to `origin/release` branch, or execute "Release from main" workflow from GitHub Actions.
 
 All deployments are visible at [Google Cloud Console - Versions](https://console.cloud.google.com/appengine/versions?project=twisterrob-cinema).
+Successful production and PR deployments also appear under [GitHub Deployments](https://github.com/TWiStErRob/net.twisterrob.cinema/deployments) as `production` and `pr-<number>`, with links to the deployed site.
 
 Manage the app at [Google Cloud Dashboard](https://console.cloud.google.com/appengine?project=twisterrob-cinema).
 
 In domain: `cinema CNAME ghs.googlehosted.com.`
 
 For PR/manual deployments there's a best-effort `Delete from Google App Engine` workflow:
- * Runs when a pull request is closed to counteract automatic deploys.
- * Runs when a pull request is merged to counteract automatic deploys.
- * Runs when a branch is deleted to counteract manual deploys.  
-   Yes, this means that PR merges will execute 2 deletions, but their names are different.
+ * Runs when a pull request is closed or merged. It deletes the App Engine preview, marks its GitHub deployments inactive, and deletes its GitHub environment.
+ * Runs when a branch is deleted to clean up its manual preview. A merge followed by branch deletion can trigger both cleanup paths.
  * Can be run manually to counteract manual deploys. 
+
+To enable GitHub Environment deletion, set the repository Actions secret `GH_ENVIRONMENT_CLEANUP_TOKEN` to a fine-grained token scoped to this repository with **Administration: Read and write**.
+GitHub requires this permission to delete an environment. The built-in workflow token handles deployment statuses.
 
 ## Run with Auth
 
