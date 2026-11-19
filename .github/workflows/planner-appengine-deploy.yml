@@ -57,6 +57,7 @@ jobs:
 
     outputs:
       relevant-changes-exist: ${{ steps.changed-files.outputs.any_modified == 'true'}}
+      preview-version: ${{ format('pr-{0}-merge', github.event.number) }}
 
 
   release:
@@ -64,11 +65,15 @@ jobs:
     needs:
       - validate
       - filter
-    if: ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped') && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
+    if: >-
+      ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped')
+        && needs.validate.result == 'success'
+        && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true')
+        && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
     timeout-minutes: 10
     environment:
       name: >-
-        ${{ (github.event_name == 'pull_request' && format('pr-{0}', github.event.number))
+        ${{ needs.filter.outputs.preview-version
           || ((github.event_name == 'push' || inputs.production == true) && 'production')
           || 'manual-preview' }}
       deployment: ${{ github.event_name != 'workflow_dispatch' || inputs.production }}
@@ -98,17 +103,16 @@ jobs:
         uses: actions/github-script@v9
         env:
           INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
+          PREVIEW_VERSION: ${{ needs.filter.outputs.preview-version }}
         with:
           result-encoding: string
           script: |
             return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
               ? 'release'
-              : context.ref
+              : process.env.PREVIEW_VERSION || context.ref
                 // refs/heads/main from workflow_dispatch and push events.
                 .replace('refs/heads/', 'br-')
-                // refs/pull/123/merge from pull_request event.
-                .replace('refs/pull/', 'pr-')
                 // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
                 // May only contain lowercase letters, digits, and hyphens.
                 // Must begin and end with a letter or digit. Must not exceed 63 characters.
