@@ -66,14 +66,16 @@ jobs:
       - filter
     if: ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped') && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
     timeout-minutes: 10
-    outputs:
-      environment: ${{ steps.name.outputs.environment }}
+    environment:
+      name: >-
+        ${{ (github.event_name == 'pull_request' && format('pr-{0}', github.event.number))
+          || ((github.event_name == 'push' || inputs.production == true) && 'production')
+          || 'manual-preview' }}
+      deployment: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || inputs.production == true }}
       url: ${{ steps.name.outputs.url }}
 
     env:
-      # Convert input toJSON, because in GitHub Actions: false == null == ''.
-      # Convert ternary true part toJSON, to make sure || is not trying to interpret it (toJSON(false) -> 'false' will be truthy).
-      RELEASE_TO_PRODUCTION: ${{ toJSON(inputs.production) == 'null' && toJSON(github.ref == 'refs/heads/release') || inputs.production }}
+      RELEASE_TO_PRODUCTION: ${{ github.event_name == 'push' || inputs.production == true }}
 
     permissions:
       contents: read  # This is required for actions/checkout.
@@ -96,7 +98,6 @@ jobs:
           result-encoding: string
           script: |
             if (process.env.INPUT_PROD === 'true') {
-              core.setOutput('environment', 'production')
               core.setOutput('url', 'https://cinema.twisterrob.net/')
               // Let Gradle assign the production version ID.
               return 'release'
@@ -110,7 +111,6 @@ jobs:
               // App Engine version IDs allow lowercase letters, digits, and hyphens.
               .replace(/[^a-z0-9-]/g, '-')
             if (context.eventName === 'pull_request') {
-              core.setOutput('environment', 'pr-' + context.payload.number)
               core.setOutput('url', 'https://' + version + '-dot-twisterrob-cinema.appspot.com/')
             }
             return version
@@ -172,20 +172,3 @@ jobs:
           :deploy:appengine:appengineDeploy
           -Pnet.twisterrob.deploy.replaceLive="${RELEASE_TO_PRODUCTION}"
           -Pnet.twisterrob.deploy.versionName="${VERSION}"
-
-
-  record-deployment:
-    name: "Record GitHub deployment"
-    needs: release
-    if: ${{ needs.release.outputs.environment != '' }}
-    timeout-minutes: 2
-    permissions: {}
-    runs-on: ubuntu-26.04
-    environment:
-      name: ${{ needs.release.outputs.environment }}
-      url: ${{ needs.release.outputs.url }}
-    steps:
-      - name: "Record the deployed URL."
-        env:
-          DEPLOYED_URL: ${{ needs.release.outputs.url }}
-        run: echo "App Engine deployed ${DEPLOYED_URL}"
