@@ -84,20 +84,19 @@ jobs:
         env:
           ENVIRONMENT: pr-${{ github.event.number }}
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           GH_ENVIRONMENT_CLEANUP_TOKEN: ${{ secrets.GH_ENVIRONMENT_CLEANUP_TOKEN }}
         run: |
-          repo="repos/${GITHUB_REPOSITORY}"
-          deployments="$(gh api --paginate "${repo}/deployments?environment=${ENVIRONMENT}" --jq '.[].id')"
+          deployments="$(gh api --paginate "repos/{owner}/{repo}/deployments?environment=${ENVIRONMENT}" --jq '.[].id')"
           for deployment in ${deployments}; do
-            statuses="${repo}/deployments/${deployment}/statuses"
-            latest_status="$(gh api "${statuses}?per_page=1" --jq '.[0].state')"
+            latest_status="$(gh api "repos/{owner}/{repo}/deployments/${deployment}/statuses?per_page=1" --jq '.[0].state')"
             if [[ "${latest_status}" != "inactive" ]]; then
-              gh api --method POST --silent "${statuses}" --raw-field state=inactive
+              gh api --method POST --silent "repos/{owner}/{repo}/deployments/${deployment}/statuses" --raw-field state=inactive
             fi
           done
 
-          environments="$(gh api --paginate "${repo}/environments" --jq '.environments[].name')"
+          environments="$(gh api --paginate "repos/{owner}/{repo}/environments" --jq '.environments[].name')"
           if grep --fixed-strings --line-regexp --quiet "${ENVIRONMENT}" <<< "${environments}"; then
             : "${GH_ENVIRONMENT_CLEANUP_TOKEN:?Configure the environment cleanup token with Administration write permission}"
-            GH_TOKEN="${GH_ENVIRONMENT_CLEANUP_TOKEN}" gh api --method DELETE --silent "${repo}/environments/${ENVIRONMENT}"
+            GH_TOKEN="${GH_ENVIRONMENT_CLEANUP_TOKEN}" gh api --method DELETE --silent "repos/{owner}/{repo}/environments/${ENVIRONMENT}"
           fi
