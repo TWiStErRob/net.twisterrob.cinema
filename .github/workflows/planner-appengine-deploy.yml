@@ -71,11 +71,15 @@ jobs:
         ${{ (github.event_name == 'pull_request' && format('pr-{0}', github.event.number))
           || ((github.event_name == 'push' || inputs.production == true) && 'production')
           || 'manual-preview' }}
-      deployment: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || inputs.production == true }}
-      url: ${{ steps.name.outputs.url }}
+      deployment: ${{ github.event_name != 'workflow_dispatch' || inputs.production }}
+      url: >-
+        ${{ env.RELEASE_TO_PRODUCTION == 'true' && 'https://cinema.twisterrob.net/'
+          || format('https://{0}-dot-twisterrob-cinema.appspot.com/', steps.name.outputs.result) }}
 
     env:
-      RELEASE_TO_PRODUCTION: ${{ github.event_name == 'push' || inputs.production == true }}
+      # Convert input toJSON, because in GitHub Actions: false == null == ''.
+      # Convert ternary true part toJSON, to make sure || is not trying to interpret it (toJSON(false) -> 'false' will be truthy).
+      RELEASE_TO_PRODUCTION: ${{ toJSON(inputs.production) == 'null' && toJSON(github.ref == 'refs/heads/release') || inputs.production }}
 
     permissions:
       contents: read  # This is required for actions/checkout.
@@ -97,23 +101,18 @@ jobs:
         with:
           result-encoding: string
           script: |
-            if (process.env.INPUT_PROD === 'true') {
-              core.setOutput('url', 'https://cinema.twisterrob.net/')
-              // Let Gradle assign the production version ID.
-              return 'release'
-            }
-
-            const version = context.ref
-              // refs/heads/main from workflow_dispatch and push events.
-              .replace('refs/heads/', 'br-')
-              // refs/pull/123/merge from pull_request event.
-              .replace('refs/pull/', 'pr-')
-              // App Engine version IDs allow lowercase letters, digits, and hyphens.
-              .replace(/[^a-z0-9-]/g, '-')
-            if (context.eventName === 'pull_request') {
-              core.setOutput('url', 'https://' + version + '-dot-twisterrob-cinema.appspot.com/')
-            }
-            return version
+            return process.env.INPUT_PROD === 'true'
+              // Use blank to indicate that this is a release to production and should use automatic naming.
+              ? 'release'
+              : context.ref
+                // refs/heads/main from workflow_dispatch and push events.
+                .replace('refs/heads/', 'br-')
+                // refs/pull/123/merge from pull_request event.
+                .replace('refs/pull/', 'pr-')
+                // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
+                // May only contain lowercase letters, digits, and hyphens.
+                // Must begin and end with a letter or digit. Must not exceed 63 characters.
+                .replace(/[^a-z0-9-]/g, '-')
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v7
