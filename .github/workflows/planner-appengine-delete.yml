@@ -7,6 +7,10 @@ on:
   delete: # branches
   workflow_dispatch:
 
+# Wait for any App Engine deployment of this PR before deleting its preview.
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('planner-preview-pr-{0}', github.event.number) || format('planner-appengine-delete-{0}', github.run_id) }}
+
 jobs:
 
   release:
@@ -18,6 +22,8 @@ jobs:
 
     permissions:
       contents: read  # This is required for actions/checkout.
+      actions: read # Read the PR's GitHub environment.
+      deployments: write # Mark deployments inactive after their preview is deleted.
       # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#updating-your-actions-for-oidc
       id-token: write # This is required for requesting the JWT via google-github-actions/auth.
 
@@ -59,12 +65,6 @@ jobs:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v7
 
-      - name: "Set up Java."
-        uses: actions/setup-java@v6
-        with:
-          java-version-file: planner/.java-version
-          distribution: temurin
-
       - name: "Authenticate to Google Cloud."
         uses: google-github-actions/auth@v3
         with:
@@ -79,4 +79,26 @@ jobs:
         env:
           VERSION: ${{ steps.name.outputs.result }}
         run: |
-          gcloud app versions delete --quiet --project="twisterrob-cinema" "${VERSION}"
+          gcloud app versions delete --quiet --project="twisterrob-cinema" --service="default" "${VERSION}"
+
+      - name: "Clean up the PR's GitHub deployments and environment."
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          ENVIRONMENT: ${{ steps.name.outputs.result }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          GH_ENVIRONMENT_CLEANUP_TOKEN: ${{ secrets.GH_ENVIRONMENT_CLEANUP_TOKEN }}
+        run: |
+          deployments="$(gh api --paginate "repos/{owner}/{repo}/deployments?environment=${ENVIRONMENT}" --jq '.[].id')"
+          for deployment in ${deployments}; do
+            latest_status="$(gh api "repos/{owner}/{repo}/deployments/${deployment}/statuses?per_page=1" --jq '.[0].state')"
+            if [[ "${latest_status}" != "inactive" ]]; then
+              gh api --method POST --silent "repos/{owner}/{repo}/deployments/${deployment}/statuses" --raw-field state=inactive
+            fi
+          done
+
+          environments="$(gh api --paginate "repos/{owner}/{repo}/environments" --jq '.environments[].name')"
+          if grep --fixed-strings --line-regexp --quiet "${ENVIRONMENT}" <<< "${environments}"; then
+            : "${GH_ENVIRONMENT_CLEANUP_TOKEN:?Configure the environment cleanup token with Administration write permission}"
+            GH_TOKEN="${GH_ENVIRONMENT_CLEANUP_TOKEN}" gh api --method DELETE --silent "repos/{owner}/{repo}/environments/${ENVIRONMENT}"
+          fi

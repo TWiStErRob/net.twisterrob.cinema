@@ -14,6 +14,10 @@ on:
         type: boolean
         default: false
 
+# Keep a PR deployment and its cleanup from running at the same time.
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('planner-preview-pr-{0}', github.event.number) || format('planner-appengine-deploy-{0}', github.run_id) }}
+
 jobs:
 
   validate:
@@ -27,7 +31,7 @@ jobs:
 
   filter:
     name: "Detect changes"
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
     timeout-minutes: 2
     permissions:
       # actions/checkout
@@ -52,7 +56,7 @@ jobs:
             .github/workflows/planner-appengine-delete.yml
 
     outputs:
-      relevant-changes-exist: ${{ steps.changed-files.outputs.any_modified == 'true'}}
+      preview-version: ${{ steps.changed-files.outputs.any_modified == 'true' && format('pr-{0}-merge', github.event.number) || '' }}
 
 
   release:
@@ -60,13 +64,31 @@ jobs:
     needs:
       - validate
       - filter
-    if: ${{ (success() || failure() || cancelled() || needs.filter.result == 'skipped') && needs.validate.result == 'success' && (needs.filter.result == 'skipped' || needs.filter.outputs.relevant-changes-exist == 'true') }}
+    if: >-
+      ${{
+        (success() || failure() || cancelled() || needs.filter.result == 'skipped')
+        && needs.validate.result == 'success'
+        && (
+          github.event_name != 'pull_request'
+          || (
+            needs.filter.result == 'success'
+            && needs.filter.outputs.preview-version != ''
+          )
+        )
+      }}
     timeout-minutes: 10
+    environment:
+      name: >-
+        ${{ needs.filter.outputs.preview-version
+          || ((github.event_name == 'push' || inputs.production == true) && 'production')
+          || 'manual-preview' }}
+      deployment: ${{ github.event_name != 'workflow_dispatch' || inputs.production }}
+      url: >-
+        ${{ env.RELEASE_TO_PRODUCTION == 'true' && 'https://cinema.twisterrob.net/'
+          || format('https://{0}-dot-twisterrob-cinema.appspot.com/', steps.name.outputs.result) }}
 
     env:
-      # Convert input toJSON, because in GitHub Actions: false == null == ''.
-      # Convert ternary true part toJSON, to make sure || is not trying to interpret it (toJSON(false) -> 'false' will be truthy).
-      RELEASE_TO_PRODUCTION: ${{ toJSON(inputs.production) == 'null' && toJSON(github.ref == 'refs/heads/release') || inputs.production }}
+      RELEASE_TO_PRODUCTION: ${{ github.event_name == 'push' || inputs.production == true }}
 
     permissions:
       contents: read  # This is required for actions/checkout.
@@ -85,17 +107,16 @@ jobs:
         uses: actions/github-script@v9
         env:
           INPUT_PROD: ${{ env.RELEASE_TO_PRODUCTION }}
+          PREVIEW_VERSION: ${{ needs.filter.outputs.preview-version }}
         with:
           result-encoding: string
           script: |
             return process.env.INPUT_PROD === 'true'
               // Use blank to indicate that this is a release to production and should use automatic naming.
               ? 'release'
-              : context.ref
+              : process.env.PREVIEW_VERSION || context.ref
                 // refs/heads/main from workflow_dispatch and push events.
                 .replace('refs/heads/', 'br-')
-                // refs/pull/123/merge from pull_request event.
-                .replace('refs/pull/', 'pr-')
                 // ERROR: (gcloud.app.deploy) argument --version/-v: Bad value [...]:
                 // May only contain lowercase letters, digits, and hyphens.
                 // Must begin and end with a letter or digit. Must not exceed 63 characters.
