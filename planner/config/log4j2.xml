@@ -23,8 +23,6 @@
 		</Property>
 	</Properties>
 
-	<ThresholdFilter level="TRACE" onMatch="neutral" onMismatch="deny" />
-
 	<Appenders>
 		<Appender type="Console" name="console">
 			<Layout type="PatternLayout" pattern="${pattern}" />
