@@ -5,6 +5,13 @@
 		as an override, for example with JVM flag: -Dlog4j.configurationFile=log4j2.xml,log4j2-sync.xml
 	-->
 
-	<ThresholdFilter level="INFO" />
+	<Loggers>
+		<Root level="INFO" />
+		<Logger name="net.twisterrob" level="INFO" />
+		<Logger name="org.neo4j.ogm" level="INFO" />
+		<Logger name="net.twisterrob.cinema.cineworld.sync.CinemaSyncCalculator" level="INFO" />
+		<Logger name="net.twisterrob.cinema.cineworld.sync.FilmSyncCalculator" level="INFO" />
+		<Logger name="io.netty.channel.nio.NioEventLoop" level="INFO" />
+	</Loggers>
 
 </Configuration>
