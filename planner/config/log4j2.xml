@@ -95,6 +95,17 @@
 		<Logger name="org.neo4j.driver.internal" level="INFO" />
 		<Logger name="org.neo4j.bolt.connection" level="INFO" />
 
+		<!-- Log the server version or failure from Bolt HELLO. -->
+		<Logger name="org.neo4j.bolt.connection.netty.impl.async.inbound.InboundMessageDispatcher" level="DEBUG">
+			<Filters>
+				<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="NEUTRAL" />
+				<RegexFilter
+					regex="(?s)\S+\[\] S: (?:SUCCESS \{.*\bserver=&quot;Neo4j/|FAILURE ).*"
+					onMatch="ACCEPT" onMismatch="DENY"
+				/>
+			</Filters>
+		</Logger>
+
 		<!-- on every request these lines are logged:
 			DEBUG (BoltTransaction.java:61) No current transaction, starting a new one
 			DEBUG (BoltTransaction.java:64) Native transaction: org.neo4j.driver.internal.InternalTransaction@520cd73
